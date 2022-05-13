@@ -1,5 +1,4 @@
 @props([
-    'content',
     'link' => '#'
 ])
-<a href="{{ $link }}">{{ $content }}</a>
+<a class="mr-5 hover:text-gray-900" href="{{ $link }}">{{ $slot }}</a>
