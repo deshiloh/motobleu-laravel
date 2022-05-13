@@ -36,7 +36,6 @@
             </div>
         </header>
     @endauth
-    <x-alerts></x-alerts>
     {{ $slot }}
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
