@@ -6,6 +6,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -59,5 +60,13 @@ class User extends Authenticatable
     public function entreprise()
     {
         return $this->belongsTo(Entreprise::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function passagers()
+    {
+        return $this->hasMany(Passager::class);
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\AdresseEntrepriseController;
 use App\Http\Controllers\Admin\EntrepriseController;
+use App\Http\Controllers\Admin\PassagerController;
 use App\Http\Controllers\Admin\PasswordController;
 use App\Http\Controllers\LoginController;
 use App\Models\AdresseEntreprise;
@@ -27,6 +28,11 @@ Route::get('/', function () {
     return view('welcome');
 })->name('homepage');
 
+Route::get('/login', function () {
+    return view('welcome');
+})
+    ->name('login.form');
+
 Route::post('/login', [LoginController::class, 'authenticate'])
     ->name('login');
 Route::get('/logout', [LoginController::class, 'logout'])
@@ -46,14 +52,19 @@ Route::middleware('guest')->group(function () {
         ->name('password.update');
 });
 
-Route::prefix('/admin')->name('admin.')->group(function () {
+Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
     Route::get('/accounts/{account}/password/edit', [PasswordController::class, 'edit'])->name('accounts.password.edit');
     Route::put('/accounts/{account}/password', [PasswordController::class, 'update'])->name('accounts.password.update');
 
     Route::resource('accounts', AccountController::class)->except(['show']);
+
     Route::resources([
-        'entreprises' => EntrepriseController::class
+        'entreprises' => EntrepriseController::class,
     ]);
+
     Route::resource('entreprises.adresses', AdresseEntrepriseController::class)
+        ->except(['show']);
+
+    Route::resource('passagers', PassagerController::class)
         ->except(['show']);
 });

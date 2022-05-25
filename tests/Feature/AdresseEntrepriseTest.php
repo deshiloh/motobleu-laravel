@@ -6,7 +6,6 @@ use App\Enum\AdresseEntrepriseTypeEnum;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class AdresseEntrepriseTest extends TestCase
@@ -19,9 +18,13 @@ class AdresseEntrepriseTest extends TestCase
     {
         parent::setUp();
 
+        $user = \App\Models\User::factory()->create();
+
         $entreprise = Entreprise::factory()->create();
         $this->adresseEntreprise = AdresseEntreprise::factory()->make();
         $entreprise->adresseEntreprises()->save($this->adresseEntreprise);
+
+        $this->actingAs($user);
     }
 
     public function testCanAccessEditForm()

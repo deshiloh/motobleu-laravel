@@ -23,13 +23,6 @@ class UserSeed extends Seeder
                 'email' => "test" . $i . "@test.com",
                 'password' => Hash::make('test'),
             ])->create();
-
-            /*$entreprise = Entreprise::factory()->create();
-            $adresseEntreprise = AdresseEntreprise::factory()->make();
-
-            $user->entreprise()->save($entreprise);
-
-            $entreprise->adresseEntreprises()->save($adresseEntreprise);*/
         }
     }
 }
