@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -45,21 +46,45 @@ class AccountTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testCanAccessEditAccountPage()
+    {
+        $response = $this->get(route('admin.accounts.edit', ['account' => $this->user->id]));
+        $response->assertStatus(200);
+    }
+
     public function testAddAccountSuccess()
     {
-        $response = $this->post(route('admin.accounts.store'), [
-            'nom' => 'test',
-            'prenom' => 'test',
-            'email' => 'test@test.com',
-            'telephone' => '0489574841',
-            'adresse' => 'test',
-            'adresse_bis' => 'test',
-            'code_postal' => '34000',
-            'ville' => 'montpellier'
-        ]);
+        $entreprise = Entreprise::factory()
+            ->create();
+
+        $user = User::factory(['nom' => 'toto'])
+            ->make()
+            ->toArray();
+
+        $user['entreprise'] = $entreprise->id;
+
+        $response = $this->post(route('admin.accounts.store'), $user);
+
         $response->assertStatus(302);
         $this->assertDatabaseHas('users', [
-            'nom' => 'test'
+            'nom' => 'toto',
+            'entreprise_id' => $entreprise->id
+        ]);
+    }
+
+    public function testUpdateAccount()
+    {
+        $entreprise = Entreprise::factory()->create();
+
+        $user = User::factory(['nom' => 'toto'])->make()->toArray();
+        $user['entreprise'] = $entreprise->id;
+
+        $response = $this->put(route('admin.accounts.update', ['account' => $this->user->id]), $user);
+
+        $response->assertStatus(302);
+        $this->assertDatabaseHas('users', [
+            'nom' => 'toto',
+            'entreprise_id' => $entreprise->id
         ]);
     }
 
@@ -77,5 +102,13 @@ class AccountTest extends TestCase
         ]));
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
+    }
+
+    public function testDeletedAccount()
+    {
+        $response = $this->delete(route('admin.accounts.destroy', ['account' => $this->user]));
+        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('users', ['is_actif' => false]);
     }
 }

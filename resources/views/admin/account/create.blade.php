@@ -1,10 +1,15 @@
 @php
     $selectData = [
-        'Oui' => 1,
-        'Non' => 0
+        1 => 'Oui',
+        0 => 'Non'
     ];
     $isArdian = $account ? $account->is_admin_ardian : false;
     $isActif = $account ? $account->is_actif : false;
+
+    $entreprisesData = [];
+    foreach (\App\Models\Entreprise::all() as $entreprise) {
+        $entreprisesData[$entreprise->id] = $entreprise->nom;
+    }
 @endphp
 <x-admin-layout>
     <x-title-section>
@@ -29,7 +34,9 @@
                           value="{{ $account ? $account->adresse_bis : false }}"></x-form.input>
             <x-form.input type="text" label="Code postal" name="code_postal" required="true"
                           value="{{ $account ? $account->code_postal : false }}"></x-form.input>
-            <x-form.select label="Acompte admin Ardian ?" :datas="$selectData"
+            <x-form.select class="js-example-basic-single" label="Entreprise" :datas="$entreprisesData"
+                           selected="{{ $account ? $account->entreprise->id : false }}" name="entreprise"></x-form.select>
+            <x-form.select label="Compte admin Ardian ?" :datas="$selectData"
                            selected="{{ $isArdian }}" name="is_admin_ardian"></x-form.select>
             <x-form.select label="Utilisateur actif ?" :datas="$selectData" selected="{{ $isActif }}"
                            name="is_actif"></x-form.select>

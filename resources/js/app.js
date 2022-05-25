@@ -1,6 +1,8 @@
 require('./bootstrap');
 
-import 'tw-elements';
+import $ from 'jquery';
+import 'flowbite';
+import 'select2';
 
 checkDarkMode()
 
@@ -27,8 +29,11 @@ function checkDarkMode() {
     }
 }
 
-
-
+$(document).ready(function() {
+    $('.js-example-basic-single').select2({
+        language: "fr"
+    });
+});
 
 // Whenever the user explicitly chooses light mode
 

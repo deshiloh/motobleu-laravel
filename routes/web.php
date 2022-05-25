@@ -1,8 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\AccountController;
+use App\Http\Controllers\Admin\AdresseEntrepriseController;
+use App\Http\Controllers\Admin\EntrepriseController;
 use App\Http\Controllers\Admin\PasswordController;
 use App\Http\Controllers\LoginController;
+use App\Models\AdresseEntreprise;
+use App\Models\Entreprise;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
@@ -41,8 +46,14 @@ Route::middleware('guest')->group(function () {
         ->name('password.update');
 });
 
-Route::prefix('/admin')->name('admin.')->group(function() {
+Route::prefix('/admin')->name('admin.')->group(function () {
     Route::get('/accounts/{account}/password/edit', [PasswordController::class, 'edit'])->name('accounts.password.edit');
     Route::put('/accounts/{account}/password', [PasswordController::class, 'update'])->name('accounts.password.update');
-    Route::resource('accounts', AccountController::class);
+
+    Route::resource('accounts', AccountController::class)->except(['show']);
+    Route::resources([
+        'entreprises' => EntrepriseController::class
+    ]);
+    Route::resource('entreprises.adresses', AdresseEntrepriseController::class)
+        ->except(['show']);
 });

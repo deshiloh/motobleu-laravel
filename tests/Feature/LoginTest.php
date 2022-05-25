@@ -37,6 +37,22 @@ class LoginTest extends TestCase
         $response->assertSessionHasNoErrors();
     }
 
+    public function testLoginWithNonActifAccount()
+    {
+        User::factory([
+            'email' => 'test1@test.com',
+            'password' => Hash::make('test'),
+            'is_actif' => false
+        ])->create();
+
+        $response = $this->post(route('login'), [
+            'email' => 'test1@test.com',
+            'password' => 'test'
+        ]);
+
+        $response->assertSessionHasErrors(['email' => 'Ce compte est désactivé']);
+    }
+
     public function testLoginFailWithWrongEmail()
     {
         $response = $this->post(route('login'), [
