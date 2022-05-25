@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -29,7 +31,7 @@ class User extends Authenticatable
         'code_postal',
         'ville',
         'is_admin_ardian',
-        'is_actif',
+        'is_actif'
     ];
 
     /**
@@ -50,4 +52,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * @return BelongsTo
+     */
+    public function entreprise()
+    {
+        return $this->belongsTo(Entreprise::class);
+    }
 }

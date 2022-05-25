@@ -1,30 +1,19 @@
 @props([
     'datas' => [],
-    'label' => 'Label',
+    'label' => '',
     'name' => '',
     'required' => false,
-    'selected' => false
+    'selected' => ''
 ])
 <div class="form-group">
     <label for="">{{ $label }}</label>
-    <select name="{{ $name }}" class="form-select appearance-none
-      block
-      w-full
-      px-3
-      py-1.5
-      text-base
-      font-normal
-      text-gray-700 dark:text-gray-100
-      bg-white bg-clip-padding bg-no-repeat dark:bg-gray-800
-      border border-solid border-gray-300 dark:border-gray-900
-      rounded
-      transition
-      ease-in-out
-      m-0
-      focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
-        <option>Choisir une valeur</option>
+
+    <select name="{{ $name }}" {{ $attributes->merge(['class' => 'mt-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" aria-label="Default select example']) }}>
+        <option value="">Choisir une valeur</option>
         @foreach($datas as $key => $value)
-            <option @if($value == $selected) selected @endif value="{{ $value }}">{{ $key }}</option>
+            <option @if($key == $selected) selected @endif value="{{ $key }}">{{ $value }}</option>
         @endforeach
     </select>
+
+    @error($name) <x-form.helper error>{{ $message }}</x-form.helper> @enderror
 </div>

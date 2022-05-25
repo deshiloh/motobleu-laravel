@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AccountRequest;
+use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -48,7 +49,14 @@ class AccountController extends Controller
         $request->validated();
         $datas = $request->input();
         $datas['password'] = Hash::make('test');
-        User::create($datas);
+
+        $user = User::create($datas);
+
+        if ($request->has('entreprise')) {
+            $entreprise = Entreprise::find($request->input('entreprise'));
+            $user->entreprise()->associate($entreprise);
+            $user->save();
+        }
         return redirect()
             ->route('admin.accounts.index')
             ->with('success', "Utilisateur créé");
@@ -88,8 +96,14 @@ class AccountController extends Controller
     public function update(AccountRequest $request, User $account)
     {
         $request->validated();
+
         $account->update($request->input());
+
+        $entreprise = Entreprise::find($request->input('entreprise'));
+        $account->entreprise()->associate($entreprise);
+
         $account->save();
+
         return redirect()
             ->route('admin.accounts.edit', ['account' => $account->id])
             ->with('success', "L'utilisateur a bien été mit à jour.");
@@ -103,7 +117,8 @@ class AccountController extends Controller
      */
     public function destroy(User $account)
     {
-        $account->delete();
+        $account->is_actif = false;
+        $account->save();
         return redirect()
             ->route('admin.accounts.index')
             ->with('success', "L'utilisateur a bien été supprimé.");

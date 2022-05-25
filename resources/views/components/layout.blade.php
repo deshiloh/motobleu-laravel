@@ -6,7 +6,9 @@
     <title>Motobleu</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/select2.css') }}">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @livewireStyles()
 </head>
 <body class="antialiased bg-gray-200 dark:bg-gray-800">
     @auth()
@@ -20,6 +22,7 @@
                 </a>
                 <nav class="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400 flex flex-wrap items-center text-base justify-center">
                     <x-menu.item link="{{ route('admin.accounts.index') }}">Comptes</x-menu.item>
+                    <x-menu.item link="{{ route('admin.entreprises.index') }}">Entreprises</x-menu.item>
                 </nav>
                 <button class="dark-mode inline-flex items-center border-0 py-1 px-2 focus:outline-none rounded text-base mt-4 md:mt-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -38,6 +41,8 @@
     @endauth
     {{ $slot }}
     <script src="{{ asset('js/app.js') }}"></script>
+    @livewireScripts()
+    @stack('scripts')
 </body>
 </html>
 

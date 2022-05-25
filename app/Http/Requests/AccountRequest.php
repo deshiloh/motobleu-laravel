@@ -27,7 +27,7 @@ class AccountRequest extends FormRequest
             'nom' => ['required', 'string'],
             'prenom' => ['required', 'string'],
             'email' => ['required', 'email', 'unique:users'],
-            'telephone' => ['required', 'max:10'],
+            'telephone' => ['required'],
             'adresse' => ['required', 'string'],
             'adresse_bis' => ['required', 'string'],
             'code_postal' => ['required'],

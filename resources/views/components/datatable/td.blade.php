@@ -1,1 +1,3 @@
-<td class="text-left first:rounded-l-lg last:rounded-r-lg p-3">{{ $slot }}</td>
+<td {{ $attributes->merge(['class' => 'px-6 py-4']) }}>
+    {{ $slot }}
+</td>

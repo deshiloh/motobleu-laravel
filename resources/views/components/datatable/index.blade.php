@@ -1,21 +1,10 @@
-@props([
-    'heads' => '',
-])
-
-@php
-    $heads = explode(', ', $heads);
-@endphp
-
-<table class="table text-gray-400 border-separate space-y-6 text-sm w-full bg-white dark:bg-gray-900 mt-3 p-2 rounded-lg shadow-sm">
-    <thead class="bg-white dark:bg-gray-900">
-        <tr>
-            @foreach($heads as $head)
-                <th class="text-left p-3 first:rounded-l-lg">{{ $head }}</th>
-            @endforeach
-            <th class="text-left rounded-r-lg p-3">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{ $slot }}
-    </tbody>
-</table>
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            {{ $headers }}
+        </thead>
+        <tbody wire:loading.class.delay="opacity-50">
+            {{ $body }}
+        </tbody>
+    </table>
+</div>

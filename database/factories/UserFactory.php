@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Entreprise;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -18,11 +20,20 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'nom' => $this->faker->name(),
+            'nom' => $this->faker->lastName(),
+            'prenom' => $this->faker->firstName(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
+            'adresse' => $this->faker->streetAddress,
+            'adresse_bis' => $this->faker->streetName,
+            'code_postal' => '34000',
+            'ville' => 'Montpellier',
+            'telephone' => $this->faker->phoneNumber(),
+            'is_admin_ardian' => false,
+            'is_actif' => true,
+            'entreprise_id' => Entreprise::factory()
         ];
     }
 

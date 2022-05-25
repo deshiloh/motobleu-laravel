@@ -18,6 +18,9 @@
         "tailwindcss": "^3.0.24"
     },
     "dependencies": {
+        "flowbite": "^1.4.7",
+        "jquery": "^3.6.0",
+        "select2": "^4.1.0-rc.0",
         "tw-elements": "^1.0.0-alpha12"
     }
 }
