@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
+
     /**
      * @param Request $request
      * @return RedirectResponse

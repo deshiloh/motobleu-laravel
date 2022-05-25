@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Entreprise;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,9 @@ class EntrepriseTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $user = User::factory()->create();
+        $this->actingAs($user);
 
         $this->entreprise = Entreprise::factory()->create();
     }

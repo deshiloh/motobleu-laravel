@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Entreprise;
+use App\Models\Passager;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -48,6 +49,14 @@ class UserFactory extends Factory
             return [
                 'email_verified_at' => null,
             ];
+        });
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (User $user) {
+            $passager = Passager::factory()->count(4)->make()->toArray();
+            $user->passagers()->createMany($passager);
         });
     }
 }
