@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdresseEntrepriseController;
 use App\Http\Controllers\Admin\EntrepriseController;
 use App\Http\Controllers\Admin\PassagerController;
 use App\Http\Controllers\Admin\PasswordController;
+use App\Http\Controllers\Admin\PiloteController;
 use App\Http\Controllers\LoginController;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
@@ -66,5 +67,8 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
         ->except(['show']);
 
     Route::resource('passagers', PassagerController::class)
+        ->except(['show']);
+
+    Route::resource('pilotes', PiloteController::class)
         ->except(['show']);
 });

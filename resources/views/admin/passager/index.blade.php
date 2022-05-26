@@ -3,7 +3,7 @@
         <x-slot name="title">
             Liste des passagers
         </x-slot>
-        <x-link-button link="{{ route('admin.passagers.create') }}">
+        <x-link-button href="{{ route('admin.passagers.create') }}">
             Créer un passager
         </x-link-button>
     </x-title-section>
