@@ -2,23 +2,19 @@
 
 namespace Database\Seeders;
 
+use App\Models\Pilote;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+class PiloteSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      *
      * @return void
      */
     public function run()
     {
-        $this->call([
-            UserSeed::class,
-            PiloteSeeder::class
-        ]);
+        Pilote::factory()->count(20)->create();
     }
 }

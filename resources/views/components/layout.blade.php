@@ -28,6 +28,7 @@
                 <x-menu.index>
                     <x-menu.item-link href="{{ route('admin.accounts.index') }}">Comptes</x-menu.item-link>
                     <x-menu.item-link href="{{ route('admin.entreprises.index') }}">Entreprises</x-menu.item-link>
+                    <x-menu.item-link href="{{ route('admin.pilotes.index') }}">Pilotes</x-menu.item-link>
                     <x-menu.dropdown title="Gestion">
                         <x-menu.dropdown.item-link href="{{ route('admin.passagers.index') }}">
                             Gestion passagers
