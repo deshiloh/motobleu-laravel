@@ -33,6 +33,9 @@
                         <x-menu.dropdown.item-link href="{{ route('admin.passagers.index') }}">
                             Gestion passagers
                         </x-menu.dropdown.item-link>
+                        <x-menu.dropdown.item-link href="{{ route('admin.localisations.index') }}">
+                            Gestion localisations
+                        </x-menu.dropdown.item-link>
                         <x-menu.dropdown.item-link>
                             Gestion des adresses
                         </x-menu.dropdown.item-link>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\AdresseEntrepriseController;
 use App\Http\Controllers\Admin\EntrepriseController;
+use App\Http\Controllers\Admin\LocalisationController;
 use App\Http\Controllers\Admin\PassagerController;
 use App\Http\Controllers\Admin\PasswordController;
 use App\Http\Controllers\Admin\PiloteController;
@@ -70,5 +71,8 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
         ->except(['show']);
 
     Route::resource('pilotes', PiloteController::class)
+        ->except(['show']);
+
+    Route::resource('localisations', LocalisationController::class)
         ->except(['show']);
 });
