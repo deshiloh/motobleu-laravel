@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\CostCenter;
 use App\Models\Localisation;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -20,7 +21,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeed::class,
             PiloteSeeder::class,
-            LocalisationSeeder::class
+            LocalisationSeeder::class,
+            CostCenterSeeder::class
         ]);
     }
 }

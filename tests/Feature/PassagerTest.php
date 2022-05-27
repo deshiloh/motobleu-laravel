@@ -16,6 +16,13 @@ class PassagerTest extends TestCase
     use RefreshDatabase;
 
     /**
+     * Indicates whether the default seeder should run before each test.
+     *
+     * @var bool
+     */
+    protected $seed = true;
+
+    /**
      * @var Collection|HasFactory|Model|mixed
      */
     private mixed $passager;
@@ -24,7 +31,7 @@ class PassagerTest extends TestCase
     {
         parent::setUp();
 
-        $user = User::factory()->create();
+        $user = User::find(1);
         $this->actingAs($user);
 
         $this->passager = $user->passagers()->get()->first();

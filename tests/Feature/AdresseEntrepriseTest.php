@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Enum\AdresseEntrepriseTypeEnum;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -12,17 +13,22 @@ class AdresseEntrepriseTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Indicates whether the default seeder should run before each test.
+     *
+     * @var bool
+     */
+    protected $seed = true;
+
     public $adresseEntreprise;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $user = \App\Models\User::factory()->create();
+        $user = User::find(1);
 
-        $entreprise = Entreprise::factory()->create();
-        $this->adresseEntreprise = AdresseEntreprise::factory()->make();
-        $entreprise->adresseEntreprises()->save($this->adresseEntreprise);
+        $this->adresseEntreprise = AdresseEntreprise::find(1);
 
         $this->actingAs($user);
     }
