@@ -6,21 +6,16 @@ use App\Models\Localisation;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+class LocalisationSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      *
      * @return void
      */
     public function run()
     {
-        $this->call([
-            UserSeed::class,
-            PiloteSeeder::class,
-            LocalisationSeeder::class
-        ]);
+        Localisation::factory()->count(30)->create();
+        Localisation::factory()->count(30)->nonActif()->create();
     }
 }
