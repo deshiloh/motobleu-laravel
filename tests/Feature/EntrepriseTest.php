@@ -16,6 +16,13 @@ class EntrepriseTest extends TestCase
     use RefreshDatabase;
 
     /**
+     * Indicates whether the default seeder should run before each test.
+     *
+     * @var bool
+     */
+    protected $seed = true;
+
+    /**
      * @var Collection|HasFactory|Model|mixed
      */
     private mixed $entreprise;
@@ -24,10 +31,10 @@ class EntrepriseTest extends TestCase
     {
         parent::setUp();
 
-        $user = User::factory()->create();
+        $user = User::find(1);
         $this->actingAs($user);
 
-        $this->entreprise = Entreprise::factory()->create();
+        $this->entreprise = Entreprise::find(1);
     }
 
     public function testAcessListEntreprises()

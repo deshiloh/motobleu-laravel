@@ -16,6 +16,13 @@ class LocalisationTest extends TestCase
     use RefreshDatabase;
 
     /**
+     * Indicates whether the default seeder should run before each test.
+     *
+     * @var bool
+     */
+    protected $seed = true;
+
+    /**
      * @var Collection|HasFactory|Model|mixed
      */
     private mixed $localisation;
@@ -24,10 +31,10 @@ class LocalisationTest extends TestCase
     {
         parent::setUp();
 
-        $user = User::factory()->create();
+        $user = User::find(1);
         $this->actingAs($user);
 
-        $this->localisation = Localisation::factory()->create();
+        $this->localisation = Localisation::find(1);
     }
 
     public function testAcessList()

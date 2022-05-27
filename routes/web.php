@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\AdresseEntrepriseController;
+use App\Http\Controllers\Admin\CostCenterController;
 use App\Http\Controllers\Admin\EntrepriseController;
 use App\Http\Controllers\Admin\LocalisationController;
 use App\Http\Controllers\Admin\PassagerController;
@@ -74,5 +75,8 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
         ->except(['show']);
 
     Route::resource('localisations', LocalisationController::class)
+        ->except(['show']);
+
+    Route::resource('costcenter', CostCenterController::class)
         ->except(['show']);
 });
