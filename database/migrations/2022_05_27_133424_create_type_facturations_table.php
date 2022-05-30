@@ -13,16 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('adresse_entreprises', function (Blueprint $table) {
+        Schema::create('type_facturations', function (Blueprint $table) {
             $table->id();
-            $table->string('adresse');
-            $table->string('adresse_complement');
-            $table->string('code_postal');
-            $table->string('ville');
-            $table->integer('type');
-            $table->string('email');
             $table->string('nom');
-            $table->string('tva');
 
             $table->foreignId('entreprise_id')
                 ->nullable(true)
@@ -39,10 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::dropIfExists('adresses_entreprises');
-
-        Schema::enableForeignKeyConstraints();
+        Schema::dropIfExists('type_facturations');
     }
 };
