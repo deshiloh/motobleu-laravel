@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Livewire\WithPagination;
 
 class Entreprise extends Model
@@ -13,12 +14,18 @@ class Entreprise extends Model
 
     protected $fillable = ['nom'];
 
-    public function adresseEntreprises()
+    /**
+     * @return HasMany
+     */
+    public function adresseEntreprises(): HasMany
     {
         return $this->hasMany(AdresseEntreprise::class);
     }
 
-    public function typeFacturations()
+    /**
+     * @return HasMany
+     */
+    public function typeFacturations(): HasMany
     {
         return $this->hasMany(TypeFacturation::class);
     }

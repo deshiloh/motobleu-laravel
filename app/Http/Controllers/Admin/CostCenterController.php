@@ -44,7 +44,7 @@ class CostCenterController extends Controller
     {
         $request->validated();
 
-        $datas = $request->input();
+        $datas = (array) $request->input();
 
         if (!$request->has('is_actif')) $datas['is_actif'] = false;
 
@@ -79,7 +79,7 @@ class CostCenterController extends Controller
     {
         $request->validated();
 
-        $datas = $request->input();
+        $datas = (array) $request->input();
 
         if (!$request->has('is_actif')) $datas['is_actif'] = false;
 

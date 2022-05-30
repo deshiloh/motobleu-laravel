@@ -47,6 +47,7 @@ class AccountController extends Controller
     public function store(AccountRequest $request)
     {
         $request->validated();
+        /** @var array $datas */
         $datas = $request->input();
         $datas['password'] = Hash::make('test');
 
@@ -60,17 +61,6 @@ class AccountController extends Controller
         return redirect()
             ->route('admin.accounts.index')
             ->with('success', "Utilisateur créé");
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -97,7 +87,7 @@ class AccountController extends Controller
     {
         $request->validated();
 
-        $account->update($request->input());
+        $account->update((array) $request->input());
 
         $entreprise = Entreprise::find($request->input('entreprise'));
         $account->entreprise()->associate($entreprise);

@@ -50,7 +50,7 @@ class PassagerController extends Controller
 
         /** @var User $user */
         $user = User::find($request->input('user_id'));
-        $user->passagers()->create($request->input());
+        $user->passagers()->create((array) $request->input());
 
         return redirect()
             ->route('admin.passagers.index')
@@ -82,7 +82,7 @@ class PassagerController extends Controller
     {
         $request->validated();
 
-        $passager->update($request->input());
+        $passager->update((array) $request->input());
 
         return redirect()
             ->route('admin.passagers.edit', ['passager' => $passager])
