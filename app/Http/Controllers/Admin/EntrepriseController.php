@@ -92,7 +92,7 @@ class EntrepriseController extends Controller
         $request->validate([
             'nom' => 'required|string'
         ]);
-        $entreprise->update($request->input());
+        $entreprise->update((array) $request->input());
         $entreprise->save();
         return back()
             ->with('success', "L'entreprise a bien été modifiée.");

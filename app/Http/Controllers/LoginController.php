@@ -99,7 +99,7 @@ class LoginController extends Controller
      * Display Reset password form
      * @return Application|Factory|View
      */
-    public function resetPasswordEdit(Request $request, $token)
+    public function resetPasswordEdit(Request $request, string $token)
     {
         return view('auth.reset-password', [
             'token' => $token,

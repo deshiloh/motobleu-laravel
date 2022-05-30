@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TypeFacturation extends Model
 {
@@ -11,7 +12,10 @@ class TypeFacturation extends Model
 
     protected $guarded = [];
 
-    public function entreprise()
+    /**
+     * @return BelongsTo
+     */
+    public function entreprise(): BelongsTo
     {
         return $this->belongsTo(Entreprise::class);
     }

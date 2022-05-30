@@ -4,9 +4,13 @@ namespace App\Traits;
 
 Trait WithSorting
 {
-    public $sortDirection = 'asc';
+    public string $sortDirection = 'asc';
 
-    public function sortBy($field)
+    /**
+     * @param string $field
+     * @return void
+     */
+    public function sortBy(string $field): void
     {
         if ($this->sortField === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';

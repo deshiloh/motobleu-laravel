@@ -4,6 +4,9 @@ namespace App\Http\Livewire;
 
 use App\Models\Localisation;
 use App\Traits\WithSorting;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,14 +14,17 @@ class LocalisationDataTable extends Component
 {
     use WithPagination, WithSorting;
 
-    public $perPage = 10;
-    public $sortField = 'nom';
-    public $search;
+    public int $perPage = 10;
+    public string $sortField = 'nom';
+    public string $search = '';
 
-    public function render()
+    /**
+     * @return Application|Factory|View
+     */
+    public function render(): View|Factory|Application
     {
         return view('livewire.localisation-data-table', [
-            'localisations' => Localisation::search('nom', $this->search)
+            'localisations' => Localisation::search('nom', $this->search) // @phpstan-ignore-line
                 ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate($this->perPage)
         ]);

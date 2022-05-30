@@ -39,7 +39,7 @@ class AdresseEntrepriseController extends Controller
 
         $request->getSession()->set('entreprise', $entreprise);
 
-        $adress->update($request->input());
+        $adress->update((array) $request->input());
         $adress->save();
 
         return back()->with('success', "L'adresse a bien été mise à jour");
@@ -74,6 +74,11 @@ class AdresseEntrepriseController extends Controller
             ->with('success', "L'adresse a bien été ajoutée.");
     }
 
+    /**
+     * @param Entreprise $entreprise
+     * @param AdresseEntreprise $adress
+     * @return RedirectResponse
+     */
     public function destroy(Entreprise $entreprise, AdresseEntreprise $adress)
     {
         $adress->delete();

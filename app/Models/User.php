@@ -12,6 +12,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property boolean $is_actif
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, CanResetPassword;
@@ -57,7 +60,7 @@ class User extends Authenticatable
     /**
      * @return BelongsTo
      */
-    public function entreprise()
+    public function entreprise(): BelongsTo
     {
         return $this->belongsTo(Entreprise::class);
     }
@@ -65,7 +68,7 @@ class User extends Authenticatable
     /**
      * @return HasMany
      */
-    public function passagers()
+    public function passagers(): HasMany
     {
         return $this->hasMany(Passager::class);
     }

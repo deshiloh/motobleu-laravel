@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AccountRequest extends FormRequest
@@ -34,6 +35,7 @@ class AccountRequest extends FormRequest
         ];
 
         if (in_array($this->method(), ['PUT', 'PATCH'])) {
+            /** @var User $account */
             $account = $this->route()->parameter('account');
             if ($this->input('email') == $account->email) {
                 $rules['email'] = ['required', 'email'];
