@@ -17,4 +17,9 @@ class Entreprise extends Model
     {
         return $this->hasMany(AdresseEntreprise::class);
     }
+
+    public function typeFacturations()
+    {
+        return $this->hasMany(TypeFacturation::class);
+    }
 }

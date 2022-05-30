@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\LocalisationController;
 use App\Http\Controllers\Admin\PassagerController;
 use App\Http\Controllers\Admin\PasswordController;
 use App\Http\Controllers\Admin\PiloteController;
+use App\Http\Controllers\Admin\TypeFacturationController;
 use App\Http\Controllers\LoginController;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
@@ -78,5 +79,8 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
         ->except(['show']);
 
     Route::resource('costcenter', CostCenterController::class)
+        ->except(['show']);
+
+    Route::resource('typefacturation', TypeFacturationController::class)
         ->except(['show']);
 });
