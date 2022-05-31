@@ -47,4 +47,18 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /**
+     * @param Throwable $exception
+     * @return void
+     * @throws Throwable
+     */
+    public function report(Throwable $exception): void
+    {
+        if (app()->bound('sentry') && $this->shouldReport($exception)) {
+            app('sentry')->captureException($exception);
+        }
+
+        parent::report($exception);
+    }
 }

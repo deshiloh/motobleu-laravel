@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Sentry\Client;
+use function Sentry\captureMessage;
 
 class LoginController extends Controller
 {

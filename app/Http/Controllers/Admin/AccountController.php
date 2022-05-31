@@ -6,13 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AccountRequest;
 use App\Models\Entreprise;
 use App\Models\User;
+use App\Services\SentryService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Sentry\Severity;
+use Sentry\State\Scope;
+use function Sentry\captureMessage;
+use function Sentry\configureScope;
+use function Sentry\withScope;
 
 class AccountController extends Controller
 {
@@ -21,7 +28,7 @@ class AccountController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index()
+    public function index(SentryService $sentryService)
     {
         return view('admin.account.index', [
             'users' => User::all()
