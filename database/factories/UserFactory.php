@@ -2,10 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\AdresseReservation;
 use App\Models\Entreprise;
 use App\Models\Passager;
+use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
@@ -13,6 +16,8 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
+    static int $iteration = 1;
+
     /**
      * Define the model's default state.
      *
@@ -23,9 +28,9 @@ class UserFactory extends Factory
         return [
             'nom' => $this->faker->lastName(),
             'prenom' => $this->faker->firstName(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'email' => 'test'.self::$iteration ++ . '@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => Hash::make('test'),
             'remember_token' => Str::random(10),
             'adresse' => $this->faker->streetAddress,
             'adresse_bis' => $this->faker->streetName,
@@ -33,8 +38,7 @@ class UserFactory extends Factory
             'ville' => 'Montpellier',
             'telephone' => $this->faker->phoneNumber(),
             'is_admin_ardian' => false,
-            'is_actif' => true,
-            'entreprise_id' => Entreprise::factory()
+            'is_actif' => true
         ];
     }
 
@@ -52,11 +56,12 @@ class UserFactory extends Factory
         });
     }
 
-    public function configure()
+    public function nonActif()
     {
-        return $this->afterCreating(function (User $user) {
-            $passager = Passager::factory()->count(4)->make()->toArray();
-            $user->passagers()->createMany($passager);
+        return $this->state(function (array $attributes) {
+            return [
+                'is_actif' => false
+            ];
         });
     }
 }

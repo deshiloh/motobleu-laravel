@@ -6,6 +6,7 @@ use App\Enum\AdresseEntrepriseTypeEnum;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AdresseEntreprise extends Model
 {
@@ -16,6 +17,14 @@ class AdresseEntreprise extends Model
     protected $casts = [
         'type' => AdresseEntrepriseTypeEnum::class
     ];
+
+    /**
+     * @return BelongsTo
+     */
+    public function entreprise(): BelongsTo
+    {
+        return $this->belongsTo(Entreprise::class);
+    }
 
     /**
      * @return Attribute

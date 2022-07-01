@@ -1,8 +1,6 @@
 require('./bootstrap');
-
-import $ from 'jquery';
+import 'alpinejs';
 import 'flowbite';
-import 'select2';
 
 checkDarkMode()
 
@@ -28,14 +26,5 @@ function checkDarkMode() {
         document.documentElement.classList.remove('dark')
     }
 }
-
-$(document).ready(function() {
-    $('.js-example-basic-single').select2({
-        language: "fr"
-    });
-});
-
-// Whenever the user explicitly chooses light mode
-
 
 // Whenever the user explicitly chooses dark mode

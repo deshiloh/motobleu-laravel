@@ -9,3 +9,12 @@
 .form-group {
     @apply my-2;
 }
+
+
+fieldset {
+    @apply border-t border-b dark:border-gray-400 py-3 border-gray-300 mb-3;
+}
+
+fieldset legend {
+    @apply px-2 text-xl;
+}

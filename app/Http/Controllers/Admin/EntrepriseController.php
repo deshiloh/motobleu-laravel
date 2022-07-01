@@ -26,35 +26,6 @@ class EntrepriseController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Application|Factory|View
-     */
-    public function create()
-    {
-        return view('admin.entreprise.form');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return RedirectResponse
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nom' => 'required|string'
-        ]);
-
-        Entreprise::create($request->only('nom'));
-
-        return redirect()
-            ->route('admin.entreprises.index')
-            ->with('success', "Entreprise correctement créée");
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param Entreprise $entreprise
@@ -65,37 +36,6 @@ class EntrepriseController extends Controller
         return view('admin.entreprise.show', [
             'entreprise' => $entreprise
         ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param Entreprise $entreprise
-     * @return Application|Factory|View
-     */
-    public function edit(Entreprise $entreprise)
-    {
-        return view('admin.entreprise.edit', [
-            'entreprise' => $entreprise
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param Entreprise $entreprise
-     * @return RedirectResponse
-     */
-    public function update(Request $request, Entreprise $entreprise)
-    {
-        $request->validate([
-            'nom' => 'required|string'
-        ]);
-        $entreprise->update((array) $request->input());
-        $entreprise->save();
-        return back()
-            ->with('success', "L'entreprise a bien été modifiée.");
     }
 
     /**

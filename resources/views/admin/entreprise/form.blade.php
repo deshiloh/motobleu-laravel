@@ -4,7 +4,7 @@
     </x-title-section>
     <x-admin.content>
         <x-form method="post" route="{{ route('admin.entreprises.store') }}">
-            <x-form.input type="text" label="Nom" name="nom" required="true"></x-form.input>
+            <x-input label="Nom" name="nom" required="required" />
         </x-form>
     </x-admin.content>
 </x-admin-layout>

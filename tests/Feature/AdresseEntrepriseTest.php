@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
+use App\Http\Livewire\Entreprise\AdresseEntrepriseForm;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class AdresseEntrepriseTest extends TestCase
@@ -33,80 +35,52 @@ class AdresseEntrepriseTest extends TestCase
         $this->actingAs($user);
     }
 
-    public function testCanAccessEditForm()
+    public function testCreateAdresseEntrepriseWithErrors()
     {
-        $response = $this->get(route('admin.entreprises.adresses.edit', [
-            'entreprise' => $this->adresseEntreprise->entreprise_id,
-            'adress' => $this->adresseEntreprise->id
-        ]));
-        $response->assertStatus(200);
+        $entreprise = Entreprise::find(1);
+
+        Livewire::test(AdresseEntrepriseForm::class, ['entreprise' => $entreprise])
+            ->set('adresseEntreprise.nom', '')
+            ->set('adresseEntreprise.email', '')
+            ->set('adresseEntreprise.adresse', '')
+            ->set('adresseEntreprise.adresse_complement', '')
+            ->set('adresseEntreprise.code_postal', '')
+            ->set('adresseEntreprise.ville', '')
+            ->set('adresseEntreprise.tva', '')
+            ->call('save')
+            ->assertHasErrors([
+                'adresseEntreprise.nom' => 'required',
+                'adresseEntreprise.email' => 'required',
+                'adresseEntreprise.adresse' => 'required',
+                'adresseEntreprise.code_postal' => 'required',
+                'adresseEntreprise.ville' => 'required',
+                'adresseEntreprise.type' => 'required',
+            ]);
     }
 
-    public function testEditAdresseEntreprise()
+    public function testCreateAdresseEntrepriseOk()
     {
-        $datas = AdresseEntreprise::factory(['tva' => 'test'])->make()->toArray();
-        unset($datas['type']);
+        $entreprise = Entreprise::find(1);
+        $adresseEntreprise = AdresseEntreprise::factory()->make();
 
-        $response = $this->put(route('admin.entreprises.adresses.update', [
-            'entreprise' => $this->adresseEntreprise->entreprise_id,
-            'adress' => $this->adresseEntreprise->id
-        ]), $datas);
+        Livewire::test(AdresseEntrepriseForm::class, ['entreprise' => $entreprise])
+            ->set('adresseEntreprise.nom', $adresseEntreprise->nom)
+            ->set('adresseEntreprise.email', $adresseEntreprise->email)
+            ->set('adresseEntreprise.adresse', $adresseEntreprise->adresse)
+            ->set('adresseEntreprise.adresse_complement', $adresseEntreprise->adresse_complement)
+            ->set('adresseEntreprise.code_postal', $adresseEntreprise->code_postal)
+            ->set('adresseEntreprise.ville', $adresseEntreprise->ville)
+            ->set('adresseEntreprise.tva', $adresseEntreprise->tva)
+            ->set('adresseEntreprise.type', AdresseEntrepriseTypeEnum::FACTURATION)
+            ->call('save')
+            ->assertHasNoErrors()
+            ->assertStatus(200);
 
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('adresse_entreprises', ['tva' => 'test']);
-    }
-
-    public function testEditAdresseEntrepriseWithWrongDatas()
-    {
-        $datas = AdresseEntreprise::factory(['email' => 'test'])->make()->toArray();
-        unset($datas['type']);
-
-        $response = $this->put(route('admin.entreprises.adresses.update', [
-            'entreprise' => $this->adresseEntreprise->entreprise_id,
-            'adress' => $this->adresseEntreprise->id
-        ]), $datas);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(['email']);
-    }
-
-    public function testAcessCreateAdresseEntrepriseForm()
-    {
-        $reponse = $this->get(route('admin.entreprises.adresses.create', [
-            'entreprise' => $this->adresseEntreprise->entreprise_id
-        ]));
-        $reponse->assertStatus(200);
-    }
-
-    public function testCreateAdresseEntreprise()
-    {
-        $datas = AdresseEntreprise::factory([
-            'email' => 'test@test.com',
-            'type' => AdresseEntrepriseTypeEnum::PHYSIQUE
-        ])->make()->toArray();
-        unset($datas['entreprise_id']);
-
-        $response = $this->post(route('admin.entreprises.adresses.store', [
-            'entreprise' => $this->adresseEntreprise->entreprise_id
-        ]), $datas);
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('adresse_entreprises', ['email' => 'test@test.com']);
-    }
-
-    public function testAdresseEntrepriseTypeAlreadyExist()
-    {
-        $datas = AdresseEntreprise::factory([
-            'email' => 'test@test.com',
-        ])->make()->toArray();
-        unset($datas['entreprise_id']);
-
-        $response = $this->post(route('admin.entreprises.adresses.store', [
-            'entreprise' => $this->adresseEntreprise->entreprise_id
-        ]), $datas);
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(['type']);
+        $this->assertDatabaseHas('adresse_entreprises', [
+            'nom' => $adresseEntreprise->nom,
+            'email' => $adresseEntreprise->email,
+            'entreprise_id' => $entreprise->id
+        ]);
     }
 
     public function testDeleteAdresseEntreprise()
