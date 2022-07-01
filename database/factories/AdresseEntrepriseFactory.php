@@ -24,7 +24,7 @@ class AdresseEntrepriseFactory extends Factory
     {
         return [
             'adresse' => $this->faker->streetAddress,
-            'adresse_complement' => $this->faker->streetName,
+            'adresse_complement' => $this->faker->secondaryAddress,
             'code_postal' => $this->faker->postcode,
             'ville' => $this->faker->city,
             'type' => AdresseEntrepriseTypeEnum::FACTURATION,

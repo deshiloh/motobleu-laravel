@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\Pilote\PiloteForm;
 use App\Models\Pilote;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -9,11 +10,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class PiloteTest extends TestCase
 {
     use RefreshDatabase;
+
 
     /**
      * Indicates whether the default seeder should run before each test.
@@ -22,11 +25,6 @@ class PiloteTest extends TestCase
      */
     protected $seed = true;
 
-    /**
-     * @var Collection|HasFactory|Model|mixed
-     */
-    private mixed $pilote;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,8 +32,6 @@ class PiloteTest extends TestCase
         $user = User::find(1);
 
         $this->actingAs($user);
-
-        $this->pilote = Pilote::find(1);
     }
 
     public function testAcessListPilotes()
@@ -50,69 +46,78 @@ class PiloteTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testCanCreatePilote()
+    public function testCreatePiloteWithErrors()
     {
-        $datas = Pilote::factory()->make()->toArray();
-
-        $response = $this->post(route('admin.pilotes.store'), $datas);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('pilotes', $datas);
+        Livewire::test(PiloteForm::class)
+            ->set('pilote.nom', '')
+            ->set('pilote.prenom', '')
+            ->set('pilote.email', '')
+            ->set('pilote.entreprise', '')
+            ->set('pilote.adresse', '')
+            ->set('pilote.adresse_complement', '')
+            ->set('pilote.code_postal', '')
+            ->set('pilote.ville', '')
+            ->set('pilote.telephone', '')
+            ->call('save')
+            ->assertHasErrors([
+                'pilote.nom' => 'required',
+                'pilote.prenom' => 'required',
+                'pilote.telephone' => 'required',
+                'pilote.email' => 'required',
+            ]);
     }
 
-    public function testCreatePiloteWithMissDatas()
+    public function testCreatePiloteOK()
     {
-        $datas = Pilote::factory()->make()->toArray();
-        unset($datas['nom']);
-        unset($datas['prenom']);
-        unset($datas['telephone']);
-        $datas['email'] = 'test';
+        $pilote = Pilote::factory()->make();
 
-        $response = $this->post(route('admin.pilotes.store'), $datas);
+        Livewire::test(PiloteForm::class)
+            ->set('pilote.nom', $pilote->nom)
+            ->set('pilote.prenom', $pilote->prenom)
+            ->set('pilote.telephone', $pilote->telephone)
+            ->set('pilote.email', $pilote->email)
+            ->set('pilote.entreprise', $pilote->enterprise)
+            ->set('pilote.adresse', $pilote->adresse)
+            ->set('pilote.adresse_complement', $pilote->adresse_complement)
+            ->set('pilote.code_postal', $pilote->code_postal)
+            ->set('pilote.ville', $pilote->ville)
+            ->call('save')
+            ->assertHasNoErrors();
 
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(['nom', 'prenom', 'telephone', 'email']);
-        $this->assertDatabaseMissing('pilotes', $datas);
+        $this->assertDatabaseHas('pilotes', [
+            'nom' => $pilote->nom
+        ]);
     }
 
-    public function testCanAcessEditPiloteForm()
+    public function testEditPiloteOK()
     {
-        $response = $this->get(route('admin.pilotes.edit', ['pilote' => $this->pilote->id]));
-        $response->assertStatus(200);
-    }
+        $piloteExist = Pilote::factory()->create();
+        $pilote = Pilote::factory()->make();
 
-    public function testCanEditUser()
-    {
-        $datas = Pilote::factory()->make()->toArray();
+        Livewire::test(PiloteForm::class, ['pilote' => $piloteExist])
+            ->set('pilote.nom', $pilote->nom)
+            ->set('pilote.prenom', $pilote->prenom)
+            ->set('pilote.telephone', $pilote->telephone)
+            ->set('pilote.email', $pilote->email)
+            ->set('pilote.entreprise', $pilote->enterprise)
+            ->set('pilote.adresse', $pilote->adresse)
+            ->set('pilote.adresse_complement', $pilote->adresse_complement)
+            ->set('pilote.code_postal', $pilote->code_postal)
+            ->set('pilote.ville', $pilote->ville)
+            ->call('save')
+            ->assertHasNoErrors();
 
-        $response = $this->put(route('admin.pilotes.update', ['pilote' => $this->pilote->id]), $datas);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('pilotes', $datas);
-    }
-
-    public function testUpdatePiloteWithMissDatas()
-    {
-        $datas = Pilote::factory()->make()->toArray();
-        unset($datas['nom']);
-        unset($datas['prenom']);
-        unset($datas['telephone']);
-        $datas['email'] = 'test';
-
-        $response = $this->put(route('admin.pilotes.update', ['pilote' => $this->pilote->id]), $datas);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(['nom', 'prenom', 'telephone', 'email']);
-        $this->assertDatabaseMissing('pilotes', $datas);
+        $this->assertDatabaseHas('pilotes', [
+            'nom' => $pilote->nom
+        ]);
     }
 
     public function testCanDeletePilote()
     {
-        $response = $this->delete(route('admin.pilotes.destroy', ['pilote' => $this->pilote->id]));
+        $pilote = Pilote::factory()->create();
+        $response = $this->delete(route('admin.pilotes.destroy', ['pilote' => $pilote->id]));
 
         $response->assertStatus(302);
-        $this->assertDatabaseMissing('pilotes', $this->pilote->toArray());
+        $this->assertModelMissing($pilote);
     }
 }

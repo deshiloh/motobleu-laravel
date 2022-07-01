@@ -36,6 +36,9 @@
                         <x-menu.dropdown.item-link href="{{ route('admin.localisations.index') }}">
                             Gestion localisations
                         </x-menu.dropdown.item-link>
+                        <x-menu.dropdown.item-link href="{{ route('admin.adresse-reservation.index') }}">
+                            Gestion des adresses
+                        </x-menu.dropdown.item-link>
                         <x-menu.dropdown.item-link href="{{ route('admin.costcenter.index') }}">
                             Gestion Cost Center
                         </x-menu.dropdown.item-link>
@@ -43,6 +46,7 @@
                             Gestion Type facturation
                         </x-menu.dropdown.item-link>
                     </x-menu.dropdown>
+                    <x-menu.item-link href="{{ route('admin.reservations.index') }}">Réservations</x-menu.item-link>
                     <x-menu.item>
                         <button class="dark-mode inline-flex items-center border-0 py-1 px-2 focus:outline-none rounded text-base mt-4 md:mt-0">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -62,6 +66,8 @@
         </nav>
     @endauth
     {{ $slot }}
+    <wireui:scripts />
+    <script defer src="https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     @livewireScripts()
     @stack('scripts')

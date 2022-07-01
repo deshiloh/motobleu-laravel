@@ -17,10 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
 
-            $table->foreignId('entreprise_id')
-                ->nullable(true)
-                ->constrained('entreprises');
-
             $table->timestamps();
         });
     }

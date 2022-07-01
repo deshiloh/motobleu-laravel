@@ -7,5 +7,5 @@
             Créer une entreprise
         </x-link-button>
     </x-title-section>
-    <livewire:entreprises-data-table />
+    <livewire:entreprise.entreprises-data-table />
 </x-admin-layout>

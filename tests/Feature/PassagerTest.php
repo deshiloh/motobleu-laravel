@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\Passager\PassagerForm;
 use App\Models\Passager;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class PassagerTest extends TestCase
@@ -51,48 +53,50 @@ class PassagerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testCreateNewPassager()
+    public function testCreatePassagerWithErrors()
     {
-        $datas = Passager::factory()->make()->toArray();
-        $user = User::factory()->create();
-        $datas['user_id'] = $user->id;
-
-        $response = $this->post(route('admin.passagers.store'), $datas);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-
-        $this->assertDatabaseHas('passagers', $datas);
+        Livewire::test(PassagerForm::class)
+            ->set('passager.nom', '')
+            ->set('passager.email', '')
+            ->set('passager.telephone', '')
+            ->set('passager.portable', '')
+            ->set('passager.user_id', '')
+            ->set('passager.cost_center_id', '')
+            ->set('passager.type_facturation_id', '')
+            ->call('save')
+            ->assertHasErrors([
+                'passager.nom' => 'required',
+                'passager.email' => 'required',
+                'passager.telephone' => 'required',
+                'passager.portable' => 'required',
+                'passager.user_id' => 'required',
+            ]);
     }
 
-    public function testAcessFormEditPassager()
-    {
-        $response = $this->get(route('admin.passagers.edit', ['passager' => $this->passager->id]));
-
-        $response->assertStatus(200);
-    }
-
-    public function testCanEditPassager()
+    public function testCreatePassagerOK()
     {
         $user = User::factory()->create();
-        $datas = $user->passagers()->get()->first()->toArray();
-        $datas['nom'] = 'test';
-        unset($datas['created_at']);
-        unset($datas['updated_at']);
+        $passager = Passager::factory()->for($user)->create();
 
-        $response = $this->put(route('admin.passagers.update', [
-            'passager' => $datas['id']
-        ]), $datas);
+        Livewire::test(PassagerForm::class)
+            ->set('passager.nom', $passager->nom)
+            ->set('passager.email', $passager->email)
+            ->set('passager.telephone', $passager->telephone)
+            ->set('passager.portable', $passager->portable)
+            ->set('passager.user_id', $passager->user_id)
+            ->set('passager.cost_center_id', '')
+            ->set('passager.type_facturation_id', '')
+            ->call('save')
+            ->assertHasNoErrors();
 
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('passagers', $datas);
+        $this->assertTrue(Passager::where('nom', $passager->nom)->exists());
     }
 
     public function testCanDeletePassager()
     {
         $response = $this->delete(route('admin.passagers.destroy', ['passager' => $this->passager->id]));
+        $this->passager->is_actif = false;
         $response->assertStatus(302);
-        $this->assertDatabaseMissing('passagers', $this->passager->toArray());
+        $this->assertModelExists($this->passager);
     }
 }

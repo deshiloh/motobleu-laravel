@@ -2,10 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\TypeFacturation\TypeFacturationForm;
 use App\Models\Entreprise;
 use App\Models\TypeFacturation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class TypeFacturationTest extends TestCase
@@ -42,68 +44,26 @@ class TypeFacturationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testCanCreateTypeFacturation()
+    public function testCreateTypeFacturationWithErrors()
     {
-        $this->withoutExceptionHandling();
-        $datas = TypeFacturation::factory()->make()->toArray();
-        $entreprise = Entreprise::factory()->create();
-        $datas['entreprise_id'] = $entreprise->id;
-
-        $response = $this->post(route('admin.typefacturation.store'), $datas);
-        $response->assertStatus(302);
-        $response->assertRedirect(route('admin.typefacturation.index'));
-        $this->assertDatabaseHas('type_facturations', $datas);
+        Livewire::test(TypeFacturationForm::class)
+            ->set('typeFacturation.nom', '')
+            ->call('save')
+            ->assertHasErrors(['typeFacturation.nom' => 'required']);
     }
 
-    public function testCanCreateTypeFacturationWithWrongData()
+    public function testCreateTypeFacturationOK()
     {
-        $datas['nom'] = '';
-        $datas['entreprise_id'] = '';
+        $typeFacturation = TypeFacturation::find(1);
 
-        $response = $this->post(route('admin.typefacturation.store'), $datas);
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(['nom', 'entreprise_id']);
-        $this->assertDatabaseMissing('type_facturations', $datas);
-    }
+        Livewire::test(TypeFacturationForm::class, ['typeFacturation' => $typeFacturation])
+            ->set('typeFacturation.nom', 'test')
+            ->call('save')
+            ->assertHasNoErrors();
 
-    public function testAccessTypeFacturationEditForm()
-    {
-        $response = $this->get(route('admin.typefacturation.edit', [
-            'typefacturation' => $this->typeFacturation->id
-        ]));
-        $response->assertStatus(200);
-    }
-
-    public function testEditTypeFacturation()
-    {
-        /** @var Entreprise $entreprise */
-        $entreprise = Entreprise::find(1);
-        $typeFacturation = $entreprise->typeFacturations()->get()->first();
-
-        $datas = $typeFacturation->toArray();
-        unset($datas['created_at']);
-        unset($datas['updated_at']);
-
-        $response = $this->put(route('admin.typefacturation.update', [
-            'typefacturation' => $this->typeFacturation->id
-        ]), $datas);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('type_facturations', $datas);
-    }
-
-    public function testEditTypeFacturationWithWrongDatas()
-    {
-        $response = $this->put(route('admin.typefacturation.update', [
-            'typefacturation' => $this->typeFacturation->id
-        ]), [
-            'nom' => '',
-            'entreprise_id' => ''
+        $this->assertDatabaseHas('type_facturations', [
+            'nom' => 'test'
         ]);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(['nom', 'entreprise_id']);
     }
 
     public function testDeleteTypeFacturation()

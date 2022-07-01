@@ -11,11 +11,7 @@
     <x-admin.content>
         <x-form method="post"
                 route="{{ isset($costcenter) ? route('admin.costcenter.update', ['costcenter' => $costcenter->id]) : route('admin.costcenter.store') }}" :put="isset($costcenter)">
-            <x-form.input type="text" label="Nom" name="nom" required="true"
-                          :value="isset($costcenter) ? $costcenter->nom : ''"></x-form.input>
-            <x-form.toggle value="1" :is-checked="isset($costcenter) ? $costcenter->is_actif : true" name="is_actif">
-                Actif
-            </x-form.toggle>
+
         </x-form>
     </x-admin.content>
 </x-admin-layout>

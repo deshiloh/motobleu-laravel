@@ -2,24 +2,32 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\Auth\ForgotPasswordForm;
 use App\Models\User;
 use Database\Factories\UserFactory;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Password;
+use Livewire\Livewire;
+use Mockery\Mock;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Indicates whether the default seeder should run before each test.
+     *
+     * @var bool
+     */
+    protected $seed = true;
+
     protected function setUp(): void
     {
         parent::setUp();
-
-        User::factory([
-            'email' => 'test@test.com',
-            'password' => Hash::make('test')
-        ])->create();
     }
 
     /**
@@ -29,8 +37,9 @@ class LoginTest extends TestCase
      */
     public function testLogin()
     {
+        $user = User::factory()->create();
         $response = $this->post(route('login'), [
-            'email' => 'test@test.com',
+            'email' => $user->email,
             'password' => 'test'
         ]);
 
@@ -39,14 +48,10 @@ class LoginTest extends TestCase
 
     public function testLoginWithNonActifAccount()
     {
-        User::factory([
-            'email' => 'test1@test.com',
-            'password' => Hash::make('test'),
-            'is_actif' => false
-        ])->create();
+        $user = User::factory()->nonActif()->create();
 
         $response = $this->post(route('login'), [
-            'email' => 'test1@test.com',
+            'email' => $user->email,
             'password' => 'test'
         ]);
 
@@ -66,7 +71,7 @@ class LoginTest extends TestCase
     public function testLoginNotMatchRecord()
     {
         $response = $this->post(route('login'), [
-            'email' => 'test2@test.com',
+            'email' => 'test23@test.com',
             'password' => 'test'
         ]);
 
@@ -85,10 +90,55 @@ class LoginTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testRequestForgotPassword()
+    public function testRequestForgotPasswordWithErrors()
     {
-        $response = $this->post(route('password.email', ['email' => 'test@test.com']));
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
+        Livewire::test(ForgotPasswordForm::class)
+            ->set('email', 'test')
+            ->call('resetAction')
+            ->assertHasErrors([
+                'email' => 'email'
+            ]);
+    }
+
+    public function testRequestForgotPasswordWithErrorsRequired()
+    {
+        Livewire::test(ForgotPasswordForm::class)
+            ->set('email', '')
+            ->call('resetAction')
+            ->assertHasErrors([
+                'email' => 'required'
+            ]);
+    }
+
+    public function testRequestForgotPasswordWithWrongUser()
+    {
+        Notification::fake();
+
+        $user = User::factory([
+            'email' => 'user@local.com'
+        ])->create();
+
+        Livewire::test(ForgotPasswordForm::class)
+            ->set('email', 'toto@test.com')
+            ->call('resetAction')
+            ->assertHasNoErrors();
+
+        Notification::assertNothingSent($user, ResetPassword::class);
+    }
+
+    public function testRequestForgotPasswordOk()
+    {
+        Notification::fake();
+
+        $user = User::factory([
+            'email' => 'toto@test.com'
+        ])->create();
+
+        Livewire::test(ForgotPasswordForm::class)
+            ->set('email', 'toto@test.com')
+            ->call('resetAction')
+            ->assertHasNoErrors();
+
+        Notification::assertSentTo($user, ResetPassword::class);
     }
 }

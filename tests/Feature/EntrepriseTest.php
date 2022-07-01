@@ -2,13 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\Entreprise\EntrepriseForm;
 use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class EntrepriseTest extends TestCase
@@ -49,43 +50,25 @@ class EntrepriseTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testAccessCreateFormEntreprise()
+    public function testCreateEntrepriseWithErrors()
     {
-        $response = $this->get(route('admin.entreprises.create'));
-        $response->assertStatus(200);
+        Livewire::test(EntrepriseForm::class)
+            ->set('entreprise.nom', '')
+            ->call('save')
+            ->assertHasErrors([
+                'entreprise.nom' => 'required'
+            ]);
     }
 
-    public function testStoreEntreprise()
+    public function testCreateEntrepriseOK()
     {
-        $response = $this->post(route('admin.entreprises.store'), [
-            'nom' => 'test'
-        ]);
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('entreprises', [
-            'nom' => 'test'
-        ]);
-    }
+        Livewire::test(EntrepriseForm::class)
+            ->set('entreprise.nom', 'test')
+            ->set('entreprise.is_actif', true)
+            ->call('save')
+            ->assertHasNoErrors();
 
-    public function testAccessEditFormEnteprise()
-    {
-        $response = $this->get(route('admin.entreprises.edit', [
-            'entreprise' => $this->entreprise->id
-        ]));
-        $response->assertStatus(200);
-    }
-
-    public function testUpdateEntreprise()
-    {
-        $response = $this->put(
-            route('admin.entreprises.update', ['entreprise' => $this->entreprise]),
-            [
-                'nom' => 'toto'
-            ]
-        );
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('entreprises', ['nom' => 'toto']);
+        $this->assertTrue(Entreprise::where('nom', 'test')->exists());
     }
 
     public function testDeleteEntreprise()

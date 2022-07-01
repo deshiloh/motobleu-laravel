@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\CostCenter\CostCenterForm;
 use App\Models\CostCenter;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class CostCenterTest extends TestCase
@@ -49,70 +51,36 @@ class CostCenterTest extends TestCase
         $reponse->assertStatus(200);
     }
 
-    public function testCanCreateCostCenter()
+
+    public function testCreateCostCenterWithErrors()
     {
-        $costcenter = CostCenter::factory()->make()->toArray();
-
-        $response = $this->post(route('admin.costcenter.store'), $costcenter);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $response->assertRedirect(route('admin.costcenter.index'));
-        $this->assertDatabaseHas('cost_centers', $costcenter);
+        Livewire::test(CostCenterForm::class)
+            ->set('costCenter.nom', '')
+            ->set('costCenter.is_actif', true)
+            ->call('save')
+            ->assertHasErrors(['costCenter.nom' => 'required']);
     }
 
-    public function testCanCreateNonActifCostCenter()
+    public function testCreateCostCenterOK()
     {
-        $costcenter = CostCenter::factory()->nonActif()->make()->toArray();
-
-        $response = $this->post(route('admin.costcenter.store'), $costcenter);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('cost_centers', $costcenter);
+        $costCenter = CostCenter::factory()->make();
+        Livewire::test(CostCenterForm::class)
+            ->set('costCenter.nom', $costCenter->nom)
+            ->set('costCenter.is_actif', true)
+            ->call('save')
+            ->assertHasNoErrors();
+        $this->assertTrue(CostCenter::where('nom', $costCenter->nom)->exists());
     }
 
-    public function testCreateCostCenterWithWrongData()
+    public function testEditCostCenterOK()
     {
-        $costcenter = CostCenter::factory([
-            'nom' => ''
-        ])->make()->toArray();
-
-        $response = $this->post(route('admin.costcenter.store'), $costcenter);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(['nom']);
-        $this->assertDatabaseMissing('cost_centers', $costcenter);
-    }
-
-    public function testCanAcessEditFormCostCenter()
-    {
-        $reponse = $this->get(route('admin.costcenter.edit', ['costcenter' => $this->costCenter->id]));
-        $reponse->assertStatus(200);
-    }
-
-    public function testCanEditCostCenter()
-    {
-        $costcenter = CostCenter::factory()->make()->toArray();
-
-        $response = $this->put(route('admin.costcenter.update', ['costcenter' => $this->costCenter->id]), $costcenter);
-
-        $response->assertStatus(302);
-        $response->assertRedirect(route('admin.costcenter.edit', ['costcenter' => $this->costCenter->id]));
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('cost_centers', $costcenter);
-    }
-
-    public function testCanEditCostCenterNonActif()
-    {
-        $costcenter = CostCenter::factory()->nonActif()->make()->toArray();
-
-        $response = $this->put(route('admin.costcenter.update', ['costcenter' => $this->costCenter->id]), $costcenter);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $response->assertRedirect(route('admin.costcenter.edit', ['costcenter' => $this->costCenter->id]));
-        $this->assertDatabaseHas('cost_centers', $costcenter);
+        $costCenter = CostCenter::find(1);
+        Livewire::test(CostCenterForm::class, ['costCenter' => $costCenter])
+            ->set('costCenter.nom', 'test')
+            ->set('costCenter.is_actif', true)
+            ->call('save')
+            ->assertHasNoErrors();
+        $this->assertTrue(CostCenter::where('nom', 'test')->exists());
     }
 
     public function testCanDeleteCostCenter()

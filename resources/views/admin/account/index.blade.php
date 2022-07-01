@@ -5,5 +5,5 @@
             Créer un compte
         </x-link-button>
     </x-title-section>
-    <livewire:users-data-table/>
+    <livewire:account.users-data-table />
 </x-admin-layout>

@@ -6,7 +6,7 @@
     </x-title-section>
     <x-admin.content>
         <x-form method="post" route="{{ route('admin.entreprises.update', ['entreprise' => $entreprise]) }}" put="true">
-            <x-form.input type="text" label="Nom" value="{{ $entreprise->nom }}" name="nom"></x-form.input>
+            <x-input label="Nom" name="nom" value="{{ $entreprise->nom }}" required="required" />
         </x-form>
     </x-admin.content>
 </x-admin-layout>

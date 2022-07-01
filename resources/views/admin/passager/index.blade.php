@@ -7,5 +7,5 @@
             Créer un passager
         </x-link-button>
     </x-title-section>
-    <livewire:passagers-data-table />
+    <livewire:passager.passagers-data-table />
 </x-admin-layout>

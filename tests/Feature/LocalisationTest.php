@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\Localisation\LocalisationForm;
 use App\Models\Localisation;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class LocalisationTest extends TestCase
@@ -43,63 +45,75 @@ class LocalisationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testAccessCreateFormLocalisation()
+    public function testCreateLocalisationWithErrors()
     {
-        $response = $this->get(route('admin.localisations.create'));
-        $response->assertStatus(200);
+        Livewire::test(LocalisationForm::class)
+            ->set('localisation.nom', '')
+            ->set('localisation.telephone', '')
+            ->set('localisation.adresse', '')
+            ->set('localisation.adresse_complement', '')
+            ->set('localisation.code_postal', '')
+            ->set('localisation.ville', '')
+            ->set('localisation.is_actif', true)
+            ->call('save')
+            ->assertHasErrors([
+                'localisation.nom' => 'required',
+                'localisation.telephone' => 'required',
+                'localisation.adresse' => 'required',
+                'localisation.code_postal' => 'required',
+                'localisation.ville' => 'required',
+            ]);
     }
 
-    public function testCanCreateLocalisation()
+    public function testCreateLocalisationOK()
     {
-        $localisation = Localisation::factory()->make()->toArray();
+        $localisation = Localisation::factory()->make();
 
-        $response = $this->post(route('admin.localisations.store'), $localisation);
+        Livewire::test(LocalisationForm::class)
+            ->set('localisation.nom', $localisation->nom)
+            ->set('localisation.telephone', $localisation->telephone)
+            ->set('localisation.adresse', $localisation->adresse)
+            ->set('localisation.adresse_complement', $localisation->adresse_complement)
+            ->set('localisation.code_postal', $localisation->code_postal)
+            ->set('localisation.ville', $localisation->ville)
+            ->set('localisation.is_actif', $localisation->is_actif)
+            ->call('save')
+            ->assertHasNoErrors()
+            ->assertStatus(200);
 
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('localisations', $localisation);
+        $this->assertTrue(Localisation::where('nom', $localisation->nom)->exists());
     }
 
-    public function testCreateWithWrongData()
+    public function testEditLocalisationOK()
     {
-        $localisation = Localisation::factory([
-            'nom' => '',
-            'adresse' => ''
-        ])->make()->toArray();
+        $localisation = Localisation::factory()->create();
 
-        $response = $this->post(route('admin.localisations.store'), $localisation);
+        Livewire::test(LocalisationForm::class)
+            ->set('localisation.nom', 'test')
+            ->set('localisation.telephone', $localisation->telephone)
+            ->set('localisation.adresse', $localisation->adresse)
+            ->set('localisation.adresse_complement', $localisation->adresse_complement)
+            ->set('localisation.code_postal', $localisation->code_postal)
+            ->set('localisation.ville', $localisation->ville)
+            ->set('localisation.is_actif', $localisation->is_actif)
+            ->call('save')
+            ->assertHasNoErrors()
+            ->assertStatus(200);
 
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(['nom', 'adresse']);
-        $this->assertDatabaseMissing('localisations', $localisation);
-    }
-
-    public function testCanAccessEditLocalisationForm()
-    {
-        $response = $this->get(route('admin.localisations.edit', [
-            'localisation' => $this->localisation->id
-        ]));
-        $response->assertStatus(200);
-    }
-
-    public function testCanEditLocalisation()
-    {
-        $datas = Localisation::factory()->nonActif()->make()->toArray();
-        $response = $this->put(route('admin.localisations.update', [
-            'localisation' => $this->localisation->id
-        ]), $datas);
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('localisations', $datas);
+        $this->assertTrue(Localisation::where('nom', 'test')->exists());
     }
 
     public function testCanDeleteLocalisation()
     {
+        $localisation = Localisation::factory()->create();
+
         $response = $this->delete(route('admin.localisations.destroy', [
-            'localisation' => $this->localisation->id
+            'localisation' => $localisation->id
         ]));
 
+        $localisation->is_actif = false;
+
         $response->assertStatus(302);
-        $this->assertDatabaseMissing('localisations', $this->localisation->toArray());
+        $this->assertModelExists($localisation);
     }
 }
