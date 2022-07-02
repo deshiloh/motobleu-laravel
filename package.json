@@ -1,4 +1,5 @@
- {
+{
+    "name" : "motobleu-laravel",
     "private": true,
     "scripts": {
         "dev": "npm run development",
