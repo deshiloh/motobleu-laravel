@@ -114,6 +114,11 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'logtail' => [
+            'driver' => 'custom',
+            'via' => App\Logging\LogTailLogger::class,
+        ],
     ],
 
 ];

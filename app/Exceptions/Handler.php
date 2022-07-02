@@ -3,7 +3,10 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Auth;
+use Sentry\State\Scope;
 use Throwable;
+use function Sentry\configureScope;
 
 class Handler extends ExceptionHandler
 {
@@ -46,5 +49,15 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * @param Throwable $exception
+     * @return void
+     * @throws Throwable
+     */
+    public function report(Throwable $exception): void
+    {
+        parent::report($exception);
     }
 }

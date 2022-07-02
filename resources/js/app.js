@@ -1,6 +1,6 @@
 require('./bootstrap');
-
-import 'tw-elements';
+import 'alpinejs';
+import 'flowbite';
 
 checkDarkMode()
 
@@ -26,11 +26,5 @@ function checkDarkMode() {
         document.documentElement.classList.remove('dark')
     }
 }
-
-
-
-
-// Whenever the user explicitly chooses light mode
-
 
 // Whenever the user explicitly chooses dark mode

@@ -2,17 +2,28 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\Account\AccountForm;
+use App\Http\Livewire\Account\EditPasswordForm;
+use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class AccountTest extends TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * Indicates whether the default seeder should run before each test.
+     *
+     * @var bool
+     */
+    protected $seed = true;
 
     /**
      * @var Collection|HasFactory|Model|mixed
@@ -23,11 +34,7 @@ class AccountTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::factory([
-            'nom' => 'test',
-            'email' => 'test@test.com',
-            'password' => Hash::make('test')
-        ])->create();
+        $this->user = User::find(1);
 
         $this->actingAs($this->user);
     }
@@ -45,22 +52,84 @@ class AccountTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testCanAccessEditAccountPage()
+    {
+        $response = $this->get(route('admin.accounts.edit', ['account' => $this->user->id]));
+        $response->assertStatus(200);
+    }
+
+    public function testCreateAccountWithErrors()
+    {
+        Livewire::test(AccountForm::class)
+            ->set('user.nom', '')
+            ->set('user.prenom', '')
+            ->set('user.email', '')
+            ->set('user.telephone', '')
+            ->set('user.adresse', '')
+            ->set('user.adresse_bis', '')
+            ->set('user.code_postal', '')
+            ->set('user.ville', '')
+            ->set('user.entreprise_id', null)
+            ->set('user.is_actif', true)
+            ->set('user.is_admin_ardian', false)
+            ->call('save')
+            ->assertHasErrors([
+                'user.nom' => 'required',
+                'user.prenom' => 'required',
+                'user.email' => 'required',
+                'user.telephone' => 'required',
+                'user.adresse' => 'required',
+                'user.code_postal' => 'required',
+                'user.ville' => 'required',
+                'user.entreprise_id' => 'required',
+            ]);
+    }
+
     public function testAddAccountSuccess()
     {
-        $response = $this->post(route('admin.accounts.store'), [
-            'nom' => 'test',
-            'prenom' => 'test',
-            'email' => 'test@test.com',
-            'telephone' => '0489574841',
-            'adresse' => 'test',
-            'adresse_bis' => 'test',
-            'code_postal' => '34000',
-            'ville' => 'montpellier'
-        ]);
-        $response->assertStatus(302);
-        $this->assertDatabaseHas('users', [
-            'nom' => 'test'
-        ]);
+        $entreprise = Entreprise::factory()->create();
+        $user = User::factory()->make();
+        Livewire::test(AccountForm::class)
+            ->set('user.nom', $user->nom)
+            ->set('user.prenom', $user->prenom)
+            ->set('user.email', $user->email)
+            ->set('user.telephone', $user->telephone)
+            ->set('user.adresse', $user->adresse)
+            ->set('user.adresse_bis', $user->adresse_bis)
+            ->set('user.code_postal', $user->code_postal)
+            ->set('user.ville', $user->ville)
+            ->set('user.entreprise_id', $entreprise->id)
+            ->set('user.is_actif', true)
+            ->set('user.is_admin_ardian', false)
+            ->call('save')
+            ->assertHasNoErrors()
+            ->assertStatus(200);
+
+        $this->assertTrue(User::where('nom', $user->nom)->exists());
+    }
+
+    public function testUpdateAccount()
+    {
+        $userExist = User::find(1);
+        $user = User::factory()->make();
+
+        Livewire::test(AccountForm::class, ['user' => $userExist])
+            ->set('user.nom', 'test')
+            ->set('user.prenom', $user->prenom)
+            ->set('user.email', $user->email)
+            ->set('user.telephone', $user->telephone)
+            ->set('user.adresse', $user->adresse)
+            ->set('user.adresse_bis', $user->adresse_bis)
+            ->set('user.code_postal', $user->code_postal)
+            ->set('user.ville', $user->ville)
+            ->set('user.entreprise_id', $userExist->entreprise_id)
+            ->set('user.is_actif', true)
+            ->set('user.is_admin_ardian', false)
+            ->call('save')
+            ->assertHasNoErrors()
+            ->assertStatus(200);
+
+        $this->assertTrue(User::where('nom', 'test')->exists());
     }
 
     public function testAccessPasswordForm()
@@ -69,13 +138,31 @@ class AccountTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testEditPassword()
+    public function testEditPasswordWithErrors()
     {
-        $response = $this->put(route('admin.accounts.password.update', [
-            'account' => $this->user,
-            'password' => 'test2'
-        ]));
+        Livewire::test(EditPasswordForm::class)
+            ->set('password', '')
+            ->call('editAction')
+            ->assertHasErrors([
+                'password' => 'required'
+            ]);
+    }
+
+    public function testEditPasswordOk()
+    {
+        $user = User::find(1);
+
+        Livewire::test(EditPasswordForm::class, ['user' => $user])
+            ->set('password', 'test')
+            ->call('editAction')
+            ->assertHasNoErrors();
+    }
+
+    public function testDeletedAccount()
+    {
+        $response = $this->delete(route('admin.accounts.destroy', ['account' => $this->user]));
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('users', ['is_actif' => false]);
     }
 }

@@ -13,9 +13,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Sentry\Client;
+use function Sentry\captureMessage;
 
 class LoginController extends Controller
 {
+
     /**
      * @param Request $request
      * @return RedirectResponse
@@ -98,7 +101,7 @@ class LoginController extends Controller
      * Display Reset password form
      * @return Application|Factory|View
      */
-    public function resetPasswordEdit(Request $request, $token)
+    public function resetPasswordEdit(Request $request, string $token)
     {
         return view('auth.reset-password', [
             'token' => $token,
