@@ -19,7 +19,7 @@ jobs:
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
       - name: Execute tests (Unit and Feature tests) via PestPHP
-        run: vendor/bin/pest
+        run: vendor/bin/phpunit
 
   release:
     name: Release
