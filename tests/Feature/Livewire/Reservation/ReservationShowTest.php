@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Livewire;
+namespace Tests\Feature\Livewire\Reservation;
 
 use App\Http\Livewire\Reservation\ReservationShow;
 use App\Models\Pilote;
