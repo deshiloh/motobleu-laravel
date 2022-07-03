@@ -35,7 +35,7 @@ class ReservationFactory extends Factory
             'has_back' => false,
             'pickup_date' => $this->faker->dateTime,
             'localisation_from_id' => Localisation::factory(),
-            'localisation_to_id' => Localisation::factory()
+            'localisation_to_id' => Localisation::factory(),
         ];
     }
 }

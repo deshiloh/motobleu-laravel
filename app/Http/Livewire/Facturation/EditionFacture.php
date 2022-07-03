@@ -3,11 +3,43 @@
 namespace App\Http\Livewire\Facturation;
 
 use App\Models\Entreprise;
+use App\Models\Reservation;
+use Carbon\Carbon;
 use Livewire\Component;
 
 class EditionFacture extends Component
 {
     public $entrepriseId = 0;
+    public int $month;
+    public int $year;
+    public int $perPage = 10;
+
+    public function mount()
+    {
+        $currentDate = Carbon::now();
+        $this->month = $currentDate->month;
+        $this->year = $currentDate->year;
+    }
+
+    public function getReservationsProperty()
+    {
+        $reservations = Reservation::query()
+            ->join('passagers', 'reservations.passager_id', 'passagers.id')
+            ->join('users', 'passagers.user_id', 'users.id')
+            ->join('entreprises', 'users.entreprise_id', 'entreprises.id')
+            ->whereMonth('reservations.pickup_date', $this->month)
+            ->whereYear('reservations.pickup_date', $this->year)
+            ->where('reservations.is_confirmed', true)
+        ;
+
+        if ($this->entreprise) {
+            $reservations->where('entreprises.id', $this->entreprise->id);
+        }
+
+        ray()->showQueries();
+
+        return $reservations->paginate($this->perPage);
+    }
 
     public function getEntrepriseProperty()
     {

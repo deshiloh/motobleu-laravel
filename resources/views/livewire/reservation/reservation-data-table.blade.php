@@ -45,7 +45,7 @@
                     <x-datatable.td>
                         <x-dropdown>
                             <x-slot name="trigger">
-                                <x-button label="Actions" info />
+                                <x-button label="Actions" info sm />
                             </x-slot>
 
                             <x-dropdown.item label="Détails" wire:click="goTo('{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}')" />
