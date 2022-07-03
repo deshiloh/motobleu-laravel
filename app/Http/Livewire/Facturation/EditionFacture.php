@@ -13,6 +13,7 @@ class EditionFacture extends Component
     public int $month;
     public int $year;
     public int $perPage = 10;
+    public array $facturesItem = [];
 
     public function mount()
     {
@@ -49,7 +50,12 @@ class EditionFacture extends Component
     protected function getRules()
     {
         return [
-            'entrepriseId' => 'required'
+            'entrepriseId' => 'required',
+            'facturesItem.*.total' => 'nullable',
+            'facturesItem.*.tarif' => 'nullable',
+            'facturesItem.*.majoration' => 'nullable',
+            'facturesItem.*.complement' => 'nullable',
+            'facturesItem.*.comment' => 'nullable',
         ];
     }
 
@@ -57,5 +63,11 @@ class EditionFacture extends Component
     {
         return view('livewire.facturation.edition-facture')
             ->layout('components.admin-layout');
+    }
+
+    public function validation(int $item)
+    {
+        $total = 10;
+        $this->facturesItem[$item]['total'] = $total;
     }
 }
