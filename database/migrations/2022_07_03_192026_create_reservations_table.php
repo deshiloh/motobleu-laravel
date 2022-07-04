@@ -39,6 +39,7 @@ return new class extends Migration
             $table->boolean('is_cancel_pay')->default(false);
             $table->boolean('calendar_passager_invitation')->default(false);
             $table->boolean('calendar_user_invitation')->default(false);
+            $table->boolean('is_billed')->default(false);
 
             $table->dateTime('pickup_date');
 
