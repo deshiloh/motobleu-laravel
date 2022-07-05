@@ -12,15 +12,7 @@ jobs:
       - run: npx semantic-release --dry-run
 
 workflows:
-  test_and_release:
+  release-workflow:
     # Run the test jobs first, then the release only when all the test jobs are successful
     jobs:
-      - node/test:
-          matrix:
-            parameters:
-              version:
-                - 16.1.0
-                - 14.17.0
-      - release:
-          requires:
-            - node/test
+      - release
