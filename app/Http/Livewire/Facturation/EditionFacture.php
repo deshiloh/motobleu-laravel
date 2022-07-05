@@ -3,12 +3,16 @@
 namespace App\Http\Livewire\Facturation;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
+use App\Events\BillCreated;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Validation\Validator;
 use Livewire\Component;
 
 class EditionFacture extends Component
@@ -58,19 +62,7 @@ class EditionFacture extends Component
      */
     public function getReservationsProperty()
     {
-        $reservations = Reservation::query()
-            ->join('passagers', 'reservations.passager_id', 'passagers.id')
-            ->join('users', 'passagers.user_id', 'users.id')
-            ->join('entreprises', 'users.entreprise_id', 'entreprises.id')
-            ->select('reservations.*')
-            ->whereMonth('reservations.pickup_date', $this->month)
-            ->whereYear('reservations.pickup_date', $this->year)
-            ->where('reservations.is_confirmed', true)
-        ;
-
-        if ($this->entreprise) {
-            $reservations->where('entreprises.id', $this->entreprise->id);
-        }
+        $reservations = $this->generateQuery();
 
         return $reservations->paginate($this->perPage);
     }
@@ -106,8 +98,10 @@ class EditionFacture extends Component
             ];
         }
 
+        $this->facture->is_acquitte = false;
+
         return [
-            'email.adresseTo' => 'required',
+            'email.addressTo' => 'required|email',
             'email.message' => 'required',
             'facture.is_acquitte' => 'bool'
         ];
@@ -137,9 +131,66 @@ class EditionFacture extends Component
         return $total;
     }
 
+    public function openGenerateFactureModalAction()
+    {
+        $this->resetErrorBag();
+        $this->email['addressTo'] = 'test@test.com';
+        $this->email['message'] = 'Message';
+        $this->madeBillModal = true;
+    }
+
     public function generateFacture()
     {
         $this->isGenerateFacture = true;
-        $this->validate();
+
+        $reservations = $this->generateQuery()->get();
+
+        $this->withValidator(function (Validator $validator) use ($reservations) {
+            $validator->after(function ($validator) use ($reservations) {
+                if (!$this->reservationsValidation($reservations)) {
+                    $validator->errors()->add(null, "Toutes les réservations ne sont pas renseignées.");
+                }
+            });
+        })->validate();
+
+
+
+        BillCreated::dispatch($this->facture);
+    }
+
+    /**
+     * Vérifie que les réservations sont renseignées.
+     * @param Collection $reservations
+     * @return bool
+     */
+    private function reservationsValidation(Collection $reservations){
+        foreach ($reservations as $reservation) {
+            if (!$this->calculTotal($reservation) > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @return Builder
+     */
+    private function generateQuery()
+    {
+        $reservations = Reservation::query()
+            ->join('passagers', 'reservations.passager_id', 'passagers.id')
+            ->join('users', 'passagers.user_id', 'users.id')
+            ->join('entreprises', 'users.entreprise_id', 'entreprises.id')
+            ->select('reservations.*')
+            ->whereMonth('reservations.pickup_date', $this->month)
+            ->whereYear('reservations.pickup_date', $this->year)
+            ->where('reservations.is_confirmed', true)
+        ;
+
+        if ($this->entreprise) {
+            $reservations->where('entreprises.id', $this->entreprise->id);
+        }
+
+        return $reservations;
     }
 }

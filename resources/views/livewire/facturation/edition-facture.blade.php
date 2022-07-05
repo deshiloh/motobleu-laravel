@@ -41,7 +41,7 @@
         @endif
 
         @if($this->entreprise && $month && $year && $this->adresseFacturationEntreprise && $this->reservations->count() > 0)
-            <x-button label="Finaliser la facturation" positive wire:click="$set('madeBillModal', true)"/>
+            <x-button label="Finaliser la facturation" positive wire:click="openGenerateFactureModalAction"/>
         @endif
     </x-title-section>
     <x-admin.content>
@@ -153,8 +153,8 @@
                     <div>
                         <form id="finalFactureForm" wire:submit.prevent="generateFacture">
                             <div class="space-y-4">
-                                <x-input label="Destinataire" wire:model.defer="email.adresseTo"/>
-                                <x-textarea label="Message" wire:model.defer="email.message" />
+                                <x-input label="Destinataire" wire:model.defer="email.addressTo"/>
+                                <x-textarea label="Message" wire:model="email.message" />
                                 <x-toggle label="Facture acquittée" wire:model.defer="facture.is_acquitte"/>
                                 <x-textarea label="Information" hint="Ce texte apparaitra sur la facture"/>
                             </div>
