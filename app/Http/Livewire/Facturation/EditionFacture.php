@@ -135,7 +135,6 @@ class EditionFacture extends Component
     {
         $this->resetErrorBag();
         $this->email['addressTo'] = 'test@test.com';
-        $this->email['message'] = 'Message';
         $this->madeBillModal = true;
     }
 
