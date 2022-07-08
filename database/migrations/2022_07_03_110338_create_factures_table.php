@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('factures', function (Blueprint $table) {
             $table->id();
             $table->string('reference');
-            $table->float('montant_ht');
-            $table->integer('tva');
-            $table->string('adresse_client');
-            $table->string('adresse_facturation');
-            $table->integer('month');
-            $table->integer('year');
-            $table->boolean('is_acquitte');
+            $table->float('montant_ht')->default(0);
+            $table->integer('tva')->default(10);
+            $table->string('adresse_client')->nullable();
+            $table->string('adresse_facturation')->nullable();
+            $table->integer('month')->nullable();
+            $table->integer('year')->nullable();
+            $table->boolean('is_acquitte')->default(false);
             $table->timestamps();
         });
     }

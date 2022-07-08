@@ -2,53 +2,60 @@
 
 namespace App\Http\Livewire\Facturation;
 
-use App\Enum\AdresseEntrepriseTypeEnum;
-use App\Events\BillCreated;
-use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Reservation;
 use Carbon\Carbon;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class EditionFacture extends Component
 {
-    public $entrepriseId = null;
-    public int $month = 0;
-    public int $year = 0;
-    public int $perPage = 10;
-    public Reservation|null $currentReservation = null;
-    public $email = null;
-    public Facture $facture;
+    public int|null $selectedMonth = null;
+    public int|null $selectedYear = null;
+    public int|null $entrepriseIdSelected = null;
+    public int|null $reservationSelected = null;
 
-    // MODAL
-    public bool $simpleModal = false;
-    public bool $madeBillModal = false;
+    public bool $factureModal = false;
+    public bool $reservationModal = false;
+    public bool $isAcquitte = false;
+    public bool $isFormFacture = false;
 
-    private bool $isGenerateFacture = false;
+    public array $email;
+    public array $months = [];
+    public array $reservationFormData = [];
 
     protected $queryString = [
-        'entrepriseId' => ['except' => 0],
-        'month',
-        'year'
+        'selectedMonth',
+        'selectedYear',
+        'entrepriseIdSelected'
     ];
 
     public function mount()
     {
-        $currentDate = Carbon::now();
-        if ($this->month == 0) {
-            $this->month = $currentDate->month;
-        }
+        $currentDay = Carbon::now();
 
-        if ($this->year == 0) {
-            $this->year = $currentDate->year;
-        }
+        $this->selectedMonth = $this->selectedMonth ?? $currentDay->month;
+        $this->selectedYear = $this->selectedYear ?? $currentDay->year;
 
-        $this->facture = new Facture();
+        $this->months = [
+            1 => 'Janvier',
+            2 => 'Février',
+            3 => 'Mars',
+            4 => 'Avril',
+            5 => 'Mai',
+            6 => 'Juin',
+            7 => 'Juillet',
+            8 => 'Août',
+            9 => 'Septembre',
+            10 => 'Octobre',
+            11 => 'Novembre',
+            12 => 'Décembre',
+        ];
+
+        $this->email['message'] = '';
     }
 
     public function render()
@@ -58,13 +65,41 @@ class EditionFacture extends Component
     }
 
     /**
-     * @return LengthAwarePaginator
+     * @return Builder[]|Collection
+     */
+    public function getEntreprisesProperty()
+    {
+        return Entreprise::query()
+            ->join('users', 'entreprises.id', '=', 'users.entreprise_id')
+            ->join('passagers', 'users.id', '=', 'passagers.user_id')
+            ->join('reservations', 'passagers.id', '=', 'reservations.passager_id')
+            ->select('entreprises.*', DB::raw('COUNT(reservations.id) as nbReservations'))
+            ->whereMonth('reservations.pickup_date', $this->selectedMonth)
+            ->whereYear('reservations.pickup_date', $this->selectedYear)
+            ->where('reservations.is_billed', false)
+            ->groupBy('entreprises.id')
+            ->get();
+    }
+
+    /**
+     * @return Builder[]|Collection|null
      */
     public function getReservationsProperty()
     {
-        $reservations = $this->generateQuery();
+        if (!$this->entrepriseIdSelected) {
+            return null;
+        }
 
-        return $reservations->paginate($this->perPage);
+        return Reservation::query()
+            ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
+            ->join('users', 'passagers.user_id', '=', 'users.id')
+            ->join('entreprises', 'users.entreprise_id', '=', 'entreprises.id')
+            ->select('reservations.*')
+            ->whereMonth('reservations.pickup_date', $this->selectedMonth)
+            ->whereYear('reservations.pickup_date', $this->selectedYear)
+            ->where('entreprises.id', $this->entrepriseIdSelected)
+            ->where('reservations.is_billed', false)
+            ->get();
     }
 
     /**
@@ -72,124 +107,152 @@ class EditionFacture extends Component
      */
     public function getEntrepriseProperty()
     {
-        return !empty($this->entrepriseId) ? Entreprise::find($this->entrepriseId) : null;
-    }
-
-    public function getAdresseFacturationEntrepriseProperty()
-    {
-        if ($this->entreprise === null) {
+        if (!$this->entrepriseIdSelected) {
             return null;
         }
 
-        return AdresseEntreprise::query()
-            ->where('type', AdresseEntrepriseTypeEnum::FACTURATION)
-            ->where('entreprise_id', $this->entrepriseId)
-            ->get()->first();
+        return Entreprise::find($this->entrepriseIdSelected);
     }
 
-    protected function getRules()
+    /**
+     * @return Facture|null
+     */
+    public function getFactureProperty()
     {
-        if (!$this->isGenerateFacture) {
+        if (!$this->entrepriseIdSelected) {
+            return null;
+        }
+
+        return $this->getFactureFor($this->selectedMonth, $this->selectedYear, $this->entrepriseIdSelected);
+    }
+
+    public function getReservationProperty()
+    {
+        if (!$this->reservationSelected) {
+            return null;
+        }
+
+        return Reservation::find($this->reservationSelected);
+    }
+
+    /**
+     * @param int $month
+     * @param int $year
+     * @param int $entreprise
+     * @return bool
+     */
+    public function isFactureExist(int $month, int $year, int $entreprise): bool
+    {
+        $query = Facture::query()
+            ->join('reservations', 'factures.id', '=', 'reservations.facture_id')
+            ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
+            ->join('users', 'users.id', '=', 'passagers.user_id')
+            ->join('entreprises', 'users.entreprise_id', '=', 'entreprises.id')
+            ->where('entreprises.id', $entreprise)
+            ->whereMonth('reservations.pickup_date', $month)
+            ->whereYear('reservations.pickup_date', $year)
+            ->count();
+        return $query > 0;
+    }
+
+    /**
+     * @param int $month
+     * @param int $year
+     * @param int $entreprise
+     * @return Facture
+     */
+    public function getFactureFor(int $month, int $year, int $entreprise)
+    {
+        if ($this->isFactureExist($this->selectedMonth, $this->selectedYear, $this->entrepriseIdSelected)) {
+
+            return Facture::query()
+                ->join('reservations', 'factures.id', '=', 'reservations.facture_id')
+                ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
+                ->join('users', 'users.id', '=', 'passagers.user_id')
+                ->join('entreprises', 'users.entreprise_id', '=', 'entreprises.id')
+                ->select('factures.*')
+                ->where('entreprises.id', $entreprise)
+                ->whereMonth('reservations.pickup_date', $month)
+                ->whereYear('reservations.pickup_date', $year)
+                ->get()
+                ->first();
+        }
+
+        $facture = Facture::create([
+            'month' => $this->selectedMonth,
+            'year' => $this->selectedYear
+        ]);
+
+        if (!empty($this->reservations)) {
+            foreach ($this->reservations as $reservation) {
+                $reservation->updateQuietly([
+                    'facture_id' => $facture->id
+                ]);
+            }
+        }
+
+        return $facture;
+    }
+
+    /**
+     * @param int $entreprise
+     * @return void
+     */
+    public function goToEditPage(int $entreprise)
+    {
+        $this->entrepriseIdSelected = $entreprise;
+    }
+
+    /**
+     * @return void
+     */
+    public function sendFactureModal()
+    {
+        $this->resetErrorBag();
+
+        $this->email['address'] = 'test@test.com';
+        $this->email['message'] = sprintf("Bonjour, <br> <br> Veuillez trouver ci-joint la facture %s et le récapitulatif des courses pour la période de %s %s. <br> <br> Cordialement",
+            $this->facture->reference,
+            $this->months[$this->facture->month],
+            $this->facture->year
+        );
+
+        $this->factureModal = true;
+    }
+
+    public function getRules()
+    {
+        if ($this->factureModal) {
             return [
-                'currentReservation.tarif' => 'required',
-                'currentReservation.majoration' => 'nullable',
-                'currentReservation.complement' => 'nullable',
-                'currentReservation.comment_pilote' => 'nullable',
+                'email.address' => 'required|email',
+                'email.message' => 'required',
+                'isAcquitte' => 'bool'
             ];
         }
 
-        $this->facture->is_acquitte = false;
-
         return [
-            'email.addressTo' => 'required|email',
-            'email.message' => 'required',
-            'facture.is_acquitte' => 'bool'
+            'reservationFormData.tarif' => 'required',
+            'reservationFormData.majoration' => 'nullable',
+            'reservationFormData.complement' => 'nullable',
+            'reservationFormData.comment_pilote' => 'nullable'
         ];
     }
 
-    public function editItem(Reservation $item)
-    {
-        $this->currentReservation = $item;
-        $this->simpleModal = true;
-    }
-
-    public function saveItem()
-    {
-        $this->isGenerateFacture = false;
-        $this->validate();
-
-        $this->currentReservation->saveQuietly();
-        $this->simpleModal = false;
-    }
-
-    public function calculTotal(Reservation $reservation)
-    {
-        $total = floatval($reservation->tarif);
-        $montantMajoration = $total * (floatval($reservation->majoration) / 100);
-        $total = $total + $montantMajoration + floatval($reservation->complement);
-
-        return $total;
-    }
-
-    public function openGenerateFactureModalAction()
+    public function reservationModal(int $reservationId)
     {
         $this->resetErrorBag();
-        $this->email['addressTo'] = 'test@test.com';
-        $this->madeBillModal = true;
+
+        $this->reservationSelected = $reservationId;
+        $this->reservationModal = true;
     }
 
-    public function generateFacture()
+    public function sendFactureAction()
     {
-        $this->isGenerateFacture = true;
-
-        $reservations = $this->generateQuery()->get();
-
-        $this->withValidator(function (Validator $validator) use ($reservations) {
-            $validator->after(function ($validator) use ($reservations) {
-                if (!$this->reservationsValidation($reservations)) {
-                    $validator->errors()->add(null, "Toutes les réservations ne sont pas renseignées.");
-                }
-            });
-        })->validate();
-
-
-
-        BillCreated::dispatch($this->facture);
+        $this->validate();
     }
 
-    /**
-     * Vérifie que les réservations sont renseignées.
-     * @param Collection $reservations
-     * @return bool
-     */
-    private function reservationsValidation(Collection $reservations){
-        foreach ($reservations as $reservation) {
-            if (!$this->calculTotal($reservation) > 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @return Builder
-     */
-    private function generateQuery()
+    public function saveReservationAction()
     {
-        $reservations = Reservation::query()
-            ->join('passagers', 'reservations.passager_id', 'passagers.id')
-            ->join('users', 'passagers.user_id', 'users.id')
-            ->join('entreprises', 'users.entreprise_id', 'entreprises.id')
-            ->select('reservations.*')
-            ->whereMonth('reservations.pickup_date', $this->month)
-            ->whereYear('reservations.pickup_date', $this->year)
-            ->where('reservations.is_confirmed', true)
-        ;
-
-        if ($this->entreprise) {
-            $reservations->where('entreprises.id', $this->entreprise->id);
-        }
-
-        return $reservations;
+        $this->validate();
     }
 }
