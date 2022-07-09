@@ -20,6 +20,8 @@ use App\Http\Livewire\Auth\ForgotPasswordForm;
 use App\Http\Livewire\CostCenter\CostCenterForm;
 use App\Http\Livewire\Entreprise\AdresseEntrepriseForm;
 use App\Http\Livewire\Entreprise\EntrepriseForm;
+use App\Http\Livewire\Facturation\EditionFacture;
+use App\Http\Livewire\Facturation\FacturationDataTable;
 use App\Http\Livewire\Localisation\LocalisationForm;
 use App\Http\Livewire\Passager\PassagerForm;
 use App\Http\Livewire\Pilote\PiloteForm;
@@ -159,6 +161,12 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
         ->name('reservations.edit');
     Route::resource('reservations', ReservationController::class)
         ->except(['show', 'update', 'destroy', 'edit', 'create', 'store']);
+
+    // FACTURATIONS
+    Route::get('facturations', FacturationDataTable::class)
+        ->name('facturations.index');
+    Route::get('facturations/edition', EditionFacture::class)
+        ->name('facturations.edition');
 });
 
 Route::prefix('/admin/select')->group(function () {

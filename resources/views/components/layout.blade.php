@@ -6,7 +6,7 @@
     <title>Motobleu</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/select2.css') }}">
+    <script src="{{ asset('js/tinymce/tinymce.min.js') }}"></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @livewireStyles()
 </head>
@@ -47,6 +47,14 @@
                         </x-menu.dropdown.item-link>
                     </x-menu.dropdown>
                     <x-menu.item-link href="{{ route('admin.reservations.index') }}">Réservations</x-menu.item-link>
+                    <x-menu.dropdown title="Facturation">
+                        <x-menu.dropdown.item-link href="{{ route('admin.facturations.index') }}">
+                            Liste des facturations
+                        </x-menu.dropdown.item-link>
+                        <x-menu.dropdown.item-link href="{{ route('admin.facturations.edition') }}">
+                            Edition des factures
+                        </x-menu.dropdown.item-link>
+                    </x-menu.dropdown>
                     <x-menu.item>
                         <button class="dark-mode inline-flex items-center border-0 py-1 px-2 focus:outline-none rounded text-base mt-4 md:mt-0">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

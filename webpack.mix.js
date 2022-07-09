@@ -16,4 +16,4 @@ mix
     .postCss("resources/css/app.css", "public/css", [
         require("tailwindcss"),
     ]);
-mix.copy('node_modules/select2/dist/css/select2.min.css', 'public/css/select2.css');
+mix.copy('node_modules/tinymce', 'public/js/tinymce');

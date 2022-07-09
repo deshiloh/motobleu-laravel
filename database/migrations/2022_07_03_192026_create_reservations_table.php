@@ -21,16 +21,25 @@ return new class extends Migration
             $table->string('pickup_origin')->nullable();
             $table->string('drop_off_origin')->nullable();
             $table->string('event_id')->nullable();
+            $table->longText('comment')->nullable();
 
-            $table->text('comment')->nullable();
+            $table->float('tarif')->nullable();
+            $table->float('majoration')->nullable();
+            $table->float('encaisse')->nullable();
+            $table->float('encompte')->nullable();
+            $table->float('complement')->nullable();
+            $table->longText('comment_facture')->nullable();
+            $table->longText('comment_pilote')->nullable();
 
             $table->boolean('send_to_passager')->default(false);
             $table->boolean('send_to_user')->default(false);
             $table->boolean('is_confirmed')->default(false);
             $table->boolean('is_cancel')->default(false);
             $table->boolean('has_back')->default(false);
+            $table->boolean('is_cancel_pay')->default(false);
             $table->boolean('calendar_passager_invitation')->default(false);
             $table->boolean('calendar_user_invitation')->default(false);
+            $table->boolean('is_billed')->default(false);
 
             $table->dateTime('pickup_date');
 
@@ -61,6 +70,10 @@ return new class extends Migration
             $table->foreignId('reservation_id')
                 ->nullable(true)
                 ->constrained('reservations');
+
+            $table->foreignId('facture_id')
+                ->nullable(true)
+                ->constrained('factures');
 
             $table->timestamps();
         });

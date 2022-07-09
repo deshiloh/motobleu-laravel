@@ -45,6 +45,9 @@ class DatabaseSeeder extends Seeder
                 if (App::environment(['testing'])) {
                     Reservation::factory()->for($passager)->create();
                 }
+                Reservation::factory([
+                    'is_confirmed' => true
+                ])->for($passager)->create();
             }
         }
 

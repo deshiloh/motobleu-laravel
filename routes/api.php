@@ -90,8 +90,8 @@ Route::get('/type-facturation', function (Request $request){
         ->orderBy('nom')
         ->when(
             $search, function (Builder $query, $search) {
-            $query->where('nom', 'like', "%{$search}%");
-        }
+                $query->where('nom', 'like', "%{$search}%");
+            }
         )
         ->when(
             $selected,
@@ -114,9 +114,9 @@ Route::get('/pilotes', function (Request $request) {
         ->orderBy('nom')
         ->when(
             $search, function (Builder $query, $search) {
-            $query->where('nom', 'like', "%{$search}%");
-            $query->orWhere('prenom', 'like', "%{$search}%");
-        }
+                $query->where('nom', 'like', "%{$search}%");
+                $query->orWhere('prenom', 'like', "%{$search}%");
+            }
         )
         ->when(
             $selected,
@@ -139,8 +139,8 @@ Route::get('/entreprises', function (Request $request) {
         ->orderBy('nom')
         ->when(
             $search, function (Builder $query, $search) {
-            $query->where('nom', 'like', "%{$search}%");
-        }
+                $query->where('nom', 'like', "%{$search}%");
+            }
         )
         ->when(
             $selected,
@@ -153,3 +153,37 @@ Route::get('/entreprises', function (Request $request) {
         )
         ->get();
 })->name('api.entreprises');
+
+Route::get('/entreprises_to_bille/', function (Request $request) {
+    $search = $request->input('search');
+    $selected = $request->input('selected');
+    $year = $request->input('year');
+    $month = $request->input('month');
+
+    return Entreprise::query()
+        ->join('users', 'entreprises.id', '=', 'users.entreprise_id')
+        ->join('passagers', 'users.id', '=', 'passagers.user_id')
+        ->join('reservations', 'passagers.id', '=', 'reservations.passager_id')
+        ->select('entreprises.id', 'entreprises.nom')
+        ->where('reservations.is_billed', '=', 0)
+        ->whereYear('pickup_date', $year)
+        ->whereMonth('pickup_date', $month)
+        ->orderBy('nom')
+        ->when(
+            $search, function (Builder $query, $search) {
+                    $query->where('entreprises.nom', 'like', "%{$search}%");
+            }
+        )
+        ->when(
+            $selected,
+            function (Builder $query, $selected) {
+                $query->whereIn('entreprises.id', $selected);
+            },
+            function (Builder $query) {
+                $query->limit(10);
+            }
+        )
+        ->groupBy('entreprises.id')
+        ->get();
+
+})->name('api.entreprises.bill');

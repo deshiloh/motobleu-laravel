@@ -8,5 +8,3 @@
 ])>
     {{ $success ? 'Oui' : 'Non' }}
 </span>
-
-
