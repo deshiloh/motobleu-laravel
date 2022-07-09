@@ -2,6 +2,9 @@
 
 namespace App\Http\Livewire\Facturation;
 
+use App\Enum\AdresseEntrepriseTypeEnum;
+use App\Events\BillCreated;
+use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Reservation;
@@ -10,13 +13,18 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class EditionFacture extends Component
 {
+    use Actions;
+
     public int|null $selectedMonth = null;
     public int|null $selectedYear = null;
     public int|null $entrepriseIdSelected = null;
     public int|null $reservationSelected = null;
+
+    public float $montant_ttc = 0;
 
     public bool $factureModal = false;
     public bool $reservationModal = false;
@@ -67,7 +75,7 @@ class EditionFacture extends Component
     /**
      * @return Builder[]|Collection
      */
-    public function getEntreprisesProperty()
+    public function getEntreprisesProperty(): Collection|array
     {
         return Entreprise::query()
             ->join('users', 'entreprises.id', '=', 'users.entreprise_id')
@@ -84,7 +92,7 @@ class EditionFacture extends Component
     /**
      * @return Builder[]|Collection|null
      */
-    public function getReservationsProperty()
+    public function getReservationsProperty(): Collection|array|null
     {
         if (!$this->entrepriseIdSelected) {
             return null;
@@ -105,7 +113,7 @@ class EditionFacture extends Component
     /**
      * @return Entreprise|null
      */
-    public function getEntrepriseProperty()
+    public function getEntrepriseProperty(): ?Entreprise
     {
         if (!$this->entrepriseIdSelected) {
             return null;
@@ -117,7 +125,7 @@ class EditionFacture extends Component
     /**
      * @return Facture|null
      */
-    public function getFactureProperty()
+    public function getFactureProperty(): ?Facture
     {
         if (!$this->entrepriseIdSelected) {
             return null;
@@ -133,6 +141,21 @@ class EditionFacture extends Component
         }
 
         return Reservation::find($this->reservationSelected);
+    }
+
+    /**
+     * @return AdresseEntreprise|null
+     */
+    public function getAdresseFacturationEntrepriseProperty(): ?AdresseEntreprise
+    {
+        if ($this->entreprise === null) {
+            return null;
+        }
+
+        return AdresseEntreprise::query()
+            ->where('type', AdresseEntrepriseTypeEnum::FACTURATION)
+            ->where('entreprise_id', $this->entreprise->id)
+            ->get()->first();
     }
 
     /**
@@ -161,11 +184,10 @@ class EditionFacture extends Component
      * @param int $entreprise
      * @return Facture
      */
-    public function getFactureFor(int $month, int $year, int $entreprise)
+    public function getFactureFor(int $month, int $year, int $entreprise): Facture
     {
         if ($this->isFactureExist($this->selectedMonth, $this->selectedYear, $this->entrepriseIdSelected)) {
-
-            return Facture::query()
+            $facture = Facture::query()
                 ->join('reservations', 'factures.id', '=', 'reservations.facture_id')
                 ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
                 ->join('users', 'users.id', '=', 'passagers.user_id')
@@ -176,18 +198,20 @@ class EditionFacture extends Component
                 ->whereYear('reservations.pickup_date', $year)
                 ->get()
                 ->first();
+        } else {
+            $facture = Facture::create([
+                'month' => $this->selectedMonth,
+                'year' => $this->selectedYear
+            ]);
         }
-
-        $facture = Facture::create([
-            'month' => $this->selectedMonth,
-            'year' => $this->selectedYear
-        ]);
 
         if (!empty($this->reservations)) {
             foreach ($this->reservations as $reservation) {
-                $reservation->updateQuietly([
-                    'facture_id' => $facture->id
-                ]);
+                if (!$reservation->facture_id) {
+                    $reservation->updateQuietly([
+                        'facture_id' => $facture->id
+                    ]);
+                }
             }
         }
 
@@ -198,7 +222,7 @@ class EditionFacture extends Component
      * @param int $entreprise
      * @return void
      */
-    public function goToEditPage(int $entreprise)
+    public function goToEditPage(int $entreprise): void
     {
         $this->entrepriseIdSelected = $entreprise;
     }
@@ -206,7 +230,7 @@ class EditionFacture extends Component
     /**
      * @return void
      */
-    public function sendFactureModal()
+    public function sendFactureModal(): void
     {
         $this->resetErrorBag();
 
@@ -220,7 +244,10 @@ class EditionFacture extends Component
         $this->factureModal = true;
     }
 
-    public function getRules()
+    /**
+     * @return string[]
+     */
+    public function getRules(): array
     {
         if ($this->factureModal) {
             return [
@@ -238,21 +265,68 @@ class EditionFacture extends Component
         ];
     }
 
-    public function reservationModal(int $reservationId)
+    /**
+     * @param int $reservationId
+     * @return void
+     */
+    public function reservationModal(int $reservationId): void
     {
         $this->resetErrorBag();
 
         $this->reservationSelected = $reservationId;
+
+        $this->reservationFormData['tarif'] = $this->reservation->tarif;
+        $this->reservationFormData['majoration'] = $this->reservation->majoration;
+        $this->reservationFormData['complement'] = $this->reservation->complement;
+        $this->reservationFormData['comment_pilote'] = $this->reservation->comment_pilote;
+
         $this->reservationModal = true;
     }
 
-    public function sendFactureAction()
+    /**
+     * @return void
+     */
+    public function sendFactureAction(): void
     {
         $this->validate();
+        $this->factureModal = false;
+        BillCreated::dispatch($this->facture);
+
+        foreach ($this->reservations as $reservation) {
+            $reservation->updateQuietly([
+                'is_billed' => true
+            ]);
+        }
+
+        $this->notification()->success(
+            'Facture envoyée avec succés.'
+        );
     }
 
-    public function saveReservationAction()
+    /**
+     * @return void
+     */
+    public function saveReservationAction(): void
     {
         $this->validate();
+        $this->reservation->updateQuietly($this->reservationFormData);
+        $this->reservationModal = false;
+        $this->notification()->success(
+            'Opération réussite',
+            'La valeur de la réservation a bien été sauvegardée.'
+        );
+    }
+
+    /**
+     * @param Reservation $reservation
+     * @return float|int
+     */
+    public function calculTotal(Reservation $reservation): float|int
+    {
+        $total = floatval($reservation->tarif);
+        $montantMajoration = $total * (floatval($reservation->majoration) / 100);
+        $total = $total + $montantMajoration + floatval($reservation->complement);
+
+        return $total;
     }
 }

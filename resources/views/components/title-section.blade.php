@@ -6,7 +6,7 @@
         <div class="content">
             {{ $title }}
         </div>
-        <div class="slot ml-auto">
+        <div class="slot ml-auto flex items-center space-x-4">
             {{ $slot }}
         </div>
     </div>

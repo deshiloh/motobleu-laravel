@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('tva')->default(10);
             $table->string('adresse_client')->nullable();
             $table->string('adresse_facturation')->nullable();
+            $table->text('information')->nullable();
             $table->integer('month')->nullable();
             $table->integer('year')->nullable();
             $table->boolean('is_acquitte')->default(false);

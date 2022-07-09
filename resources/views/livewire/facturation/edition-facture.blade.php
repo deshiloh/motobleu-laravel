@@ -18,7 +18,12 @@
                 '$selectedYear' => $selectedYear]
             ) }}"/>
         @endif
-        @if($this->facture)
+        @if(!$this->adresseFacturationEntreprise && $entrepriseIdSelected)
+            <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">
+                <span class="font-medium">Attention</span> L'entreprise n'as pas d'adresse de facturation
+            </div>
+        @endif
+        @if($this->facture && $this->adresseFacturationEntreprise)
             <x-button label="Finaliser la facturation" sm green wire:click="sendFactureModal"/>
         @endif
     </x-title-section>
@@ -95,13 +100,18 @@
                 </x-slot:headers>
                 <x-slot:body>
                     @foreach($this->reservations as $reservation)
-                        <x-datatable.tr>
+                        @php
+                            $currentAmount = 0;
+                            $currentAmount = $this->calculTotal($reservation);
+                            $montant_ttc += $currentAmount;
+                        @endphp
+                        <x-datatable.tr :success="$currentAmount > 0">
                             <x-datatable.td>{{ $reservation->reference }}</x-datatable.td>
                             <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
                             <x-datatable.td>{{ $reservation->passager->nom }}</x-datatable.td>
                             <x-datatable.td>{{ $reservation->display_from }}</x-datatable.td>
                             <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
-                            <x-datatable.td> 0 € </x-datatable.td>
+                            <x-datatable.td> {{ number_format($currentAmount, 2) }} € </x-datatable.td>
                             <x-datatable.td>
                                 <x-button label="Éditer" info sm wire:click="reservationModal('{{ $reservation->id }}')" />
                             </x-datatable.td>
@@ -111,14 +121,18 @@
             </x-datatable>
             <div class="flex justify-end py-4">
                 <div class="flex flex-col space-y-3 text-right">
+                    @php
+                        $prixHT = $montant_ttc / 1.10;
+                        $prixTVA = $prixHT * 0.10;
+                    @endphp
                     <div>
-                        <strong>Montant H.T :</strong>  00.00 €
+                        <strong>Montant H.T :</strong> {{ number_format($prixHT, 2) }} €
                     </div>
                     <div>
-                        <strong>TVA 10% :</strong> 00.00 €
+                        <strong>TVA 10% :</strong> {{ number_format($prixTVA, 2) }} €
                     </div>
                     <div>
-                        <strong>Montant TTC :</strong> 00.00 €
+                        <strong>Montant TTC :</strong> {{ number_format($montant_ttc, 2) }} €
                     </div>
                 </div>
             </div>
@@ -143,7 +157,7 @@
                 </div>
                 <x-slot name="footer">
                     <div class="flex justify-end gap-x-4">
-                        <x-button flat label="Cancel" x-on:click="close"/>
+                        <x-button flat label="Annuler" x-on:click="close"/>
                         <x-button info label="Finaliser et envoyer" type="submit" form="factureForm"/>
                     </div>
                 </x-slot>
@@ -151,18 +165,18 @@
         </x-modal>
     @endif
     @if($this->reservation)
-        <x-modal wire:model.defer="reservationModal">
+        <x-modal wire:model.defer="reservationModal" blur>
             <x-card title="Valeur de la réservation {{ $this->reservation->reference }}">
                 <x-errors class="mb-4"/>
                 <form id="reservationForm" class="space-y-4" wire:submit.prevent="saveReservationAction">
-                    <x-input label="Prix" wire:model.defer="reservationFormData.tarif"/>
-                    <x-input label="Majoration" wire:model.defer="reservationFormData.majoration"/>
-                    <x-input label="Complément" wire:model.defer="reservationFormData.complement"/>
+                    <x-input label="Prix" wire:model.defer="reservationFormData.tarif" type="number" step="0.01"/>
+                    <x-input label="Majoration" wire:model.defer="reservationFormData.majoration" type="number" step="0.01"/>
+                    <x-input label="Complément" wire:model.defer="reservationFormData.complement" type="number" step="0.01"/>
                     <x-textarea label="Message pour le pilote" wire:model.defer="reservationFormData.comment_pilote"/>
                 </form>
                 <x-slot name="footer">
                     <div class="flex justify-end gap-x-4">
-                        <x-button flat label="Cancel" x-on:click="close"/>
+                        <x-button flat label="Annuler" x-on:click="close"/>
                         <x-button info label="Valider" type="submit" form="reservationForm"/>
                     </div>
                 </x-slot>
