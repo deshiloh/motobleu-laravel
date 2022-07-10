@@ -8,9 +8,8 @@
         <form wire:submit.prevent="editAction" wire:loading.class="opacity-25">
             <div class="space-y-4">
                 <x-input label="Mot de passe" type="password" wire:model="password" />
-                <x-button label="Enregistrer" type="submit" sm info />
+                <button type="submit" class="btn btn-primary btn-sm">Enregistrer</button>
             </div>
-
         </form>
     </x-admin.content>
 </div>

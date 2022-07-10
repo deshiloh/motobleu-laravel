@@ -5,13 +5,11 @@
         </x-slot:title>
     </x-title-section>
     <x-admin.content>
-        <form wire:submit.prevent="save">
-            <div class="form-group">
-                <x-input label="Nom" wire:model.defer="typeFacturation.nom" />
-            </div>
-            <div class="form-group">
-                <x-button label="Enregistrer" type="submit" info spinner="save"/>
-            </div>
+        <form wire:submit.prevent="save" class="space-y-3">
+            <x-input label="Nom" wire:model.defer="typeFacturation.nom" />
+            <button type="submit" class="btn btn-primary btn-sm">
+                Enregistrer
+            </button>
         </form>
     </x-admin.content>
 </div>

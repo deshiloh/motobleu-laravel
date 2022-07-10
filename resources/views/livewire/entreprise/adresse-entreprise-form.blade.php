@@ -5,38 +5,22 @@
         </x-slot:title>
     </x-title-section>
     <x-admin.content>
-        <form wire:submit.prevent="save">
-            <div class="form-group">
-                <x-input label="Nom de l'adresse" wire:model.defer="adresseEntreprise.nom" />
-            </div>
-            <div class="form-group">
-                <x-input label="Adresse email de contact" wire:model.defer="adresseEntreprise.email" type="email" hint="En cas de type facturation, elle sera utilisée pour l'envoi de la facture"/>
-            </div>
-            <div class="form-group">
-                <x-input label="Adresse" wire:model.defer="adresseEntreprise.adresse" />
-            </div>
-            <div class="form-group">
-                <x-input label="Adresse complémentaire" wire:model.defer="adresseEntreprise.adresse_complement" />
-            </div>
-            <div class="form-group">
-                <x-input label="Code postal" wire:model.defer="adresseEntreprise.code_postal" />
-            </div>
-            <div class="form-group">
-                <x-input label="Ville" wire:model.defer="adresseEntreprise.ville" />
-            </div>
-            <div class="form-group">
-                <x-input label="TVA" wire:model.defer="adresseEntreprise.tva" />
-            </div>
-            <div class="form-group">
-                <x-native-select label="Type de l'adresse" wire:model="adresseEntreprise.type">
-                    @foreach(\App\Enum\AdresseEntrepriseTypeEnum::cases() as $type)
-                        <option value="{{ $type->value }}">{{ $type->name }}</option>
-                    @endforeach
-                </x-native-select>
-            </div>
-            <div class="form-group">
-                <x-button label="Enregistrer" info type="submit" />
-            </div>
+        <form wire:submit.prevent="save" class="space-y-3">
+            <x-input label="Nom de l'adresse" wire:model.defer="adresseEntreprise.nom" />
+            <x-input label="Adresse email de contact" wire:model.defer="adresseEntreprise.email" type="email" hint="En cas de type facturation, elle sera utilisée pour l'envoi de la facture"/>
+            <x-input label="Adresse" wire:model.defer="adresseEntreprise.adresse" />
+            <x-input label="Adresse complémentaire" wire:model.defer="adresseEntreprise.adresse_complement" />
+            <x-input label="Code postal" wire:model.defer="adresseEntreprise.code_postal" />
+            <x-input label="Ville" wire:model.defer="adresseEntreprise.ville" />
+            <x-input label="TVA" wire:model.defer="adresseEntreprise.tva" />
+            <x-native-select label="Type de l'adresse" wire:model="adresseEntreprise.type">
+                @foreach(\App\Enum\AdresseEntrepriseTypeEnum::cases() as $type)
+                    <option value="{{ $type->value }}">{{ $type->name }}</option>
+                @endforeach
+            </x-native-select>
+            <button type="submit" class="btn btn-primary btn-sm">
+                Enregistrer
+            </button>
         </form>
     </x-admin.content>
 </div>

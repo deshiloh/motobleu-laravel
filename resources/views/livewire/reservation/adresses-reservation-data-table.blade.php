@@ -1,8 +1,6 @@
 <div>
     <x-admin.content>
-        <div class="flex justify-between">
-            <x-datatable.search wire:model="search" />
-        </div>
+        <x-datatable.search wire:model="search" />
         <x-datatable>
             <x-slot name="headers">
                 <tr>
@@ -32,11 +30,13 @@
                     </tr>
                 @endforelse
             </x-slot>
-            <x-slot name="tfoot">
-            </x-slot>
+            <x-slot:footer>
+                <x-datatable.tr>
+                    <x-datatable.th colspan="4">
+                        {{ $adresses->links('components.datatable.pagination') }}
+                    </x-datatable.th>
+                </x-datatable.tr>
+            </x-slot:footer>
         </x-datatable>
-        <div class="mt-4 px-1">
-            {{ $adresses->links('components.datatable.pagination') }}
-        </div>
     </x-admin.content>
 </div>

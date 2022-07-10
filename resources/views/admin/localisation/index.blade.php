@@ -1,7 +1,9 @@
 <x-admin-layout>
     <x-title-section>
         <x-slot:title>Liste des localisations</x-slot:title>
-        <x-link-button href="{{ route('admin.localisations.create') }}">Créer une localisation</x-link-button>
+        <a href="{{ route('admin.localisations.create') }}" class="btn btn-primary btn-sm">
+            Créer une localisation
+        </a>
     </x-title-section>
     <livewire:localisation.localisation-data-table />
 </x-admin-layout>

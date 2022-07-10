@@ -5,17 +5,13 @@
         </x-slot>
         <div class="flex space-x-2">
             @if($entreprise->adresseEntreprises()->count() < 2)
-                <x-button
-                    href="{{ route('admin.entreprises.adresses.create', ['entreprise' => $entreprise]) }}"
-                    label="Ajouter une adresse"
-                    info
-                />
+                <a class="btn btn-primary btn-sm" href="{{ route('admin.entreprises.adresses.create', ['entreprise' => $entreprise]) }}">
+                    Ajouter une entreprise
+                </a>
             @endif
-                <x-button
-                    href="{{ route('admin.entreprises.edit', ['entreprise' => $entreprise]) }}"
-                    label="Modifier l'entreprise"
-                    info
-                />
+                <a class="btn btn-primary btn-sm" href="{{ route('admin.entreprises.edit', ['entreprise' => $entreprise]) }}">
+                    Modifier l'entreprise
+                </a>
         </div>
     </x-title-section>
     <x-admin.content>

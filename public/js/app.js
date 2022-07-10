@@ -5083,22 +5083,14 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 checkDarkMode();
-var darkMode = document.querySelector('.dark-mode');
-darkMode.addEventListener('click', function () {
-  if (document.documentElement.classList.contains('dark')) {
-    localStorage.theme = 'light';
-    document.documentElement.classList.remove('dark');
-  } else {
-    localStorage.theme = 'dark';
-    document.documentElement.classList.add('dark');
-  }
-});
 
 function checkDarkMode() {
-  if (localStorage.theme === 'dark' || !('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.classList.add('dark');
+  if (localStorage.theme === 'business' || !('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.querySelector('.darkmode').removeAttribute('checked');
+    document.querySelector('html').setAttribute('data-theme', 'business');
   } else {
-    document.documentElement.classList.remove('dark');
+    document.querySelector('.darkmode').setAttribute('checked', 'checked');
+    document.querySelector('html').setAttribute('data-theme', 'corporate');
   }
 } // Whenever the user explicitly chooses dark mode
 

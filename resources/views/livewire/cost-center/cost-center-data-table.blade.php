@@ -32,11 +32,13 @@
                     </x-datatable.tr>
                 @endforelse
             </x-slot>
-            <x-slot name="tfoot">
-            </x-slot>
+            <x-slot:footer>
+                <x-datatable.tr>
+                    <x-datatable.th colspan="3">
+                        {{ $costcenters->links('components.datatable.pagination') }}
+                    </x-datatable.th>
+                </x-datatable.tr>
+            </x-slot:footer>
         </x-datatable>
-        <div class="mt-4 px-1">
-            {{ $costcenters->links('components.datatable.pagination') }}
-        </div>
     </x-admin.content>
 </div>

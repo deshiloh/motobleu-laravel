@@ -10,9 +10,40 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @livewireStyles()
 </head>
-<body class="antialiased bg-gray-200 dark:bg-gray-800">
+<body class="antialiased min-h-screen bg-base-200">
     @auth()
-        <nav class="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
+        <div class="navbar bg-base-100 container mx-auto rounded-bl-lg rounded-br-lg">
+            <div class="navbar-start">
+                <div class="dropdown">
+                    <label tabindex="0" class="btn btn-ghost xl:hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
+                    </label>
+                    <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+                        <x-menu.motobleu />
+                    </ul>
+                </div>
+                <a href="/" class="btn btn-ghost normal-case text-xl">Motobleu Application</a>
+            </div>
+            <div class="navbar-end hidden xl:flex">
+                <ul class="menu menu-horizontal p-0">
+                    <x-menu.motobleu />
+                    <li>
+                        <x-darkmode :size="5"/>
+                    </li>
+                    @auth()
+                        <li>
+                            <a class="inline-flex items-center border-0 py-1 px-2 focus:outline-none rounded text-base mt-4 md:mt-0" href="{{ route('logout') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                            </a>
+                        </li>
+                    @endauth
+                </ul>
+            </div>
+        </div>
+
+        {{--<nav class="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
             <div class="container flex flex-wrap justify-between items-center mx-auto">
                 <a href="/" class="flex items-center space-x-3 dark:text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -61,22 +92,17 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                             </svg>
                         </button>
-                        @auth()
-                            <a class="inline-flex items-center border-0 py-1 px-2 focus:outline-none rounded text-base mt-4 md:mt-0" href="{{ route('logout') }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                </svg>
-                            </a>
-                        @endauth
+
                     </x-menu.item>
                 </x-menu.index>
             </div>
-        </nav>
+        </nav>--}}
     @endauth
     {{ $slot }}
     <wireui:scripts />
+    <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js"></script>
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}" defer></script>
     @livewireScripts()
     @stack('scripts')
 </body>

@@ -3,7 +3,9 @@
         <x-slot name="title">
             Liste des pilotes
         </x-slot>
-        <x-link-button href="{{ route('admin.pilotes.create') }}">Créer un pilote</x-link-button>
+        <a href="{{ route('admin.pilotes.create') }}" class="btn btn-sm btn-primary">
+            Créer un pilote
+        </a>
     </x-title-section>
     <livewire:pilote.pilote-data-table />
 </x-admin-layout>

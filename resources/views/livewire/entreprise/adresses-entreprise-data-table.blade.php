@@ -1,5 +1,5 @@
 <div>
-    <div class="text-xl border-b border-gray-500 py-2">Liste des adresses</div>
+    <div class="text-xl py-2">Liste des adresses</div>
     <x-datatable>
         <x-slot name="headers">
             <tr>

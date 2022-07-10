@@ -5,9 +5,12 @@
             <x-slot name="headers">
                 <tr>
                     <x-datatable.th sortable wire:click="sortBy('nom')" :direction="$sortDirection">Nom</x-datatable.th>
-                    <x-datatable.th sortable wire:click="sortBy('prenom')" :direction="$sortDirection">Prénom</x-datatable.th>
-                    <x-datatable.th sortable wire:click="sortBy('email')" :direction="$sortDirection">Email</x-datatable.th>
-                    <x-datatable.th sortable wire:click="sortBy('entreprise')" :direction="$sortDirection">Entreprise</x-datatable.th>
+                    <x-datatable.th sortable wire:click="sortBy('prenom')" :direction="$sortDirection">Prénom
+                    </x-datatable.th>
+                    <x-datatable.th sortable wire:click="sortBy('email')" :direction="$sortDirection">Email
+                    </x-datatable.th>
+                    <x-datatable.th sortable wire:click="sortBy('entreprise')" :direction="$sortDirection">Entreprise
+                    </x-datatable.th>
                     <x-datatable.th sortable wire:click="sortBy('is_actif')">Actif</x-datatable.th>
                     <x-datatable.th>Actions</x-datatable.th>
                 </tr>
@@ -25,8 +28,10 @@
                         <x-datatable.td>
                             <div class="flex space-x-2">
                                 <x-actions.edit href="{{ route('admin.accounts.edit', ['account' => $user->id]) }}"/>
-                                <x-actions.key href="{{ route('admin.accounts.password.edit', ['account' => $user->id]) }}"/>
-                                <x-actions.trash route="{{ route('admin.accounts.destroy', ['account' => $user->id]) }}"/>
+                                <x-actions.key
+                                    href="{{ route('admin.accounts.password.edit', ['account' => $user->id]) }}"/>
+                                <x-actions.trash
+                                    route="{{ route('admin.accounts.destroy', ['account' => $user->id]) }}"/>
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>
@@ -36,11 +41,15 @@
                     </x-datatable.tr>
                 @endforelse
             </x-slot>
-            <x-slot name="tfoot">
-            </x-slot>
+            <x-slot:footer>
+                <x-datatable.tr>
+                    <x-datatable.th colspan="6">
+                        <div class="px-1">
+                            {{ $users->links('components.datatable.pagination') }}
+                        </div>
+                    </x-datatable.th>
+                </x-datatable.tr>
+            </x-slot:footer>
         </x-datatable>
-        <div class="mt-4 px-1">
-            {{ $users->links('components.datatable.pagination') }}
-        </div>
     </x-admin.content>
 </div>

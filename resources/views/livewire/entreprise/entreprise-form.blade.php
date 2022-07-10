@@ -5,16 +5,16 @@
         </x-slot:title>
     </x-title-section>
     <x-admin.content>
-        <form wire:submit.prevent="save">
-            <div class="form-group">
+        <form wire:submit.prevent="save" class="space-y-2">
+            <div class="form-control">
                 <x-input label="Nom" wire:model.defer="entreprise.nom"/>
             </div>
-            <div class="form-group">
-                <x-toggle label="Actif" wire:model.defer="entreprise.is_actif" lg />
-            </div>
-            <div class="mt-6">
-                <x-button label="Enregistrer" type="submit" info />
-            </div>
+            <x-form.toggle wire:model.defer="entreprise.is_actif">
+                Actif
+            </x-form.toggle>
+            <button type="submit" class="btn btn-primary btn-sm">
+                Enregistrer
+            </button>
         </form>
     </x-admin.content>
 </div>

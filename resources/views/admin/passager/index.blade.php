@@ -3,9 +3,9 @@
         <x-slot name="title">
             Liste des passagers
         </x-slot>
-        <x-link-button href="{{ route('admin.passagers.create') }}">
+        <a href="{{ route('admin.passagers.create') }}" class="btn btn-primary btn-sm">
             Créer un passager
-        </x-link-button>
+        </a>
     </x-title-section>
     <livewire:passager.passagers-data-table />
 </x-admin-layout>

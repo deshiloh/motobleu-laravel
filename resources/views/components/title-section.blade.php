@@ -1,7 +1,7 @@
 @props([
     'content' => ''
 ])
-<h2 class="text-2xl bg-white dark:bg-gray-900 p-4 rounded-lg shadow-sm">
+<h2 class="text-2xl bg-base-100 p-4 rounded-lg shadow-sm">
     <div class="flex items-center">
         <div class="content">
             {{ $title }}

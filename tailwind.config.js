@@ -1,6 +1,7 @@
 module.exports = {
     darkMode: 'class',
     content: [
+        "./app/Components/**/*.php",
         "./resources/**/*.blade.php",
         "./resources/**/*.js",
         "./resources/**/*.vue",
@@ -13,9 +14,18 @@ module.exports = {
         extend: {},
     },
     plugins: [
-        require('flowbite/plugin')
+        require("daisyui")
     ],
     presets: [
         require('./vendor/wireui/wireui/tailwind.config.js')
     ],
+    daisyui: {
+        styled: true,
+        themes: ['corporate', 'business'],
+        base: true,
+        utils: true,
+        logs: true,
+        rtl: false,
+        darkTheme: "business",
+    },
 }

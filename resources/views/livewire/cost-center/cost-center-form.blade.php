@@ -5,16 +5,14 @@
         </x-slot:title>
     </x-title-section>
     <x-admin.content>
-        <form wire:submit.prevent="save">
-            <div class="form-group">
-                <x-input label="Nom" wire:model.defer="costCenter.nom" />
-            </div>
-            <div class="form-group">
-                <x-toggle lg label="Actif" wire:model.defer="costCenter.is_actif"/>
-            </div>
-            <div class="form-group">
-                <x-button label="Enregistrer" info type="submit" />
-            </div>
+        <form wire:submit.prevent="save" class="space-y-3">
+            <x-input label="Nom" wire:model.defer="costCenter.nom" />
+            <x-form.toggle wire:model.defer="costCenter.is_actif">
+                Actif
+            </x-form.toggle>
+            <button type="submit" class="btn btn-primary btn-sm">
+                Enregistrer
+            </button>
         </form>
     </x-admin.content>
 </div>

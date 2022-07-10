@@ -3,9 +3,9 @@
         <x-slot name="title">
             Liste des entreprises
         </x-slot>
-        <x-link-button href="{{ route('admin.entreprises.create') }}">
+        <a class="btn btn-primary btn-sm" href="{{ route('admin.entreprises.create') }}">
             Créer une entreprise
-        </x-link-button>
+        </a>
     </x-title-section>
     <livewire:entreprise.entreprises-data-table />
 </x-admin-layout>

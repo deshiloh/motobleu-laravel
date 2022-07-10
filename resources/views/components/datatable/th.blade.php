@@ -2,12 +2,12 @@
     'sortable' => null,
     'direction' => null
 ])
-<th {{ $attributes->merge(['class' => 'px-6 py-3']) }}>
+<th {{ $attributes }}>
     @unless($sortable)
-        <div>{{ $slot }}</div>
+        {{ $slot }}
         @else
-        <button class="flex space-x-2 group">
-            <div class="uppercase text-xs font-bold">{{ $slot }}</div>
+        <button class="flex space-x-2 group uppercase">
+            <span>{{ $slot }}</span>
             <span class="text-gray-600 opacity-0 group-hover:opacity-100 transition duration-300">
                 @if($direction === 'asc')
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

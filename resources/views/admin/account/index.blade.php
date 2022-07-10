@@ -1,9 +1,9 @@
 <x-admin-layout>
     <x-title-section>
         <x-slot name="title">Liste des utilisateurs</x-slot>
-        <x-link-button href="{{ route('admin.accounts.create') }}">
+        <a class="btn btn-primary btn-sm" href="{{ route('admin.accounts.create') }}">
             Créer un compte
-        </x-link-button>
+        </a>
     </x-title-section>
     <livewire:account.users-data-table />
 </x-admin-layout>
