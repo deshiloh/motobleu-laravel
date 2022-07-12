@@ -29,7 +29,7 @@ class ReservationDataTable extends Component
 
         if ($this->querySort == 'not_confirmed') {
             $reservations
-                ->where('is_confirmed', false )
+                ->where('is_confirmed', false)
                 ->where('is_cancel', false)
             ;
         }
@@ -38,10 +38,5 @@ class ReservationDataTable extends Component
             'reservations' => $reservations->paginate($this->perPage),
             'countReservationToConfirmed' => Reservation::toConfirmed()->count()
         ]);
-    }
-
-    public function goTo(string $url)
-    {
-        redirect()->to($url);
     }
 }
