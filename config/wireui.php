@@ -61,7 +61,7 @@ return [
             'alias' => 'input',
         ],
         'textarea' => [
-            'class' => Components\Textarea::class,
+            'class' => \App\Components\Textarea::class,
             'alias' => 'textarea',
         ],
         'label' => [
@@ -121,7 +121,7 @@ return [
             'alias' => 'time-picker',
         ],
         'card' => [
-            'class' => Components\Card::class,
+            'class' => \App\Components\Card::class,
             'alias' => 'card',
         ],
         'native-select' => [

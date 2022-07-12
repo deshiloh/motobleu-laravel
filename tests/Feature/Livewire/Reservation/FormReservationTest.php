@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Livewire;
+namespace Tests\Feature\Livewire\Reservation;
 
 use App\Http\Livewire\Reservation\ReservationForm;
 use App\Models\AdresseReservation;
@@ -8,13 +8,10 @@ use App\Models\Localisation;
 use App\Models\Passager;
 use App\Models\Reservation;
 use App\Models\User;
-use App\Observers\ReservationObserver;
 use App\Services\ReservationService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
-use Mockery\MockInterface;
 use Tests\TestCase;
 
 class FormReservationTest extends TestCase

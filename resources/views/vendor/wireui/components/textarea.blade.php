@@ -47,7 +47,7 @@
         @endif
 
         <textarea {{ $attributes->class([
-            $getInputClasses($hasError),
+            'textarea textarea-bordered w-full',
         ])->merge([
             'autocomplete' => 'off',
             'rows'         => 4

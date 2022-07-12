@@ -258,7 +258,7 @@ class EditionFacture extends Component
         }
 
         return [
-            'reservationFormData.tarif' => 'required',
+            'reservationFormData.tarif' => 'required|numeric',
             'reservationFormData.majoration' => 'nullable',
             'reservationFormData.complement' => 'nullable',
             'reservationFormData.comment_pilote' => 'nullable'
@@ -290,13 +290,14 @@ class EditionFacture extends Component
     {
         $this->validate();
         $this->factureModal = false;
-        BillCreated::dispatch($this->facture);
 
         foreach ($this->reservations as $reservation) {
             $reservation->updateQuietly([
                 'is_billed' => true
             ]);
         }
+
+        BillCreated::dispatch($this->facture);
 
         $this->notification()->success(
             'Facture envoyée avec succés.'

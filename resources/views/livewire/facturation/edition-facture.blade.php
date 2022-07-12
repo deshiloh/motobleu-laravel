@@ -12,11 +12,12 @@
             @endif
         </x-slot:title>
         @if($entrepriseIdSelected)
-            <x-button sm outline primary label="Retourner à la liste"
-                      href="{{ route('admin.facturations.edition', [
+            <a href="{{ route('admin.facturations.edition', [
                 'selectedMonth' => $selectedMonth,
                 '$selectedYear' => $selectedYear]
-            ) }}"/>
+            ) }}" class="btn btn-sm">
+                Retourner à la liste
+            </a>
         @endif
         @if(!$this->adresseFacturationEntreprise && $entrepriseIdSelected)
             <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">
@@ -24,7 +25,9 @@
             </div>
         @endif
         @if($this->facture && $this->adresseFacturationEntreprise)
-            <x-button label="Finaliser la facturation" sm green wire:click="sendFactureModal"/>
+            <button class="btn btn-success btn-sm" wire:click="sendFactureModal">
+                Finaliser la facturation
+            </button>
         @endif
     </x-title-section>
     @if(!$entrepriseIdSelected)
@@ -68,8 +71,9 @@
                             <x-datatable.td>{{ $entreprise->nom }}</x-datatable.td>
                             <x-datatable.td>{{ $entreprise->nbReservations }}</x-datatable.td>
                             <x-datatable.td>
-                                <x-button label="Éditer la facturation" info sm
-                                          wire:click="goToEditPage('{{ $entreprise->id }}')"/>
+                                <button href="" class="btn btn-primary btn-sm" wire:click="goToEditPage('{{ $entreprise->id }}')">
+                                    Éditer la facturation
+                                </button>
                             </x-datatable.td>
                         </x-datatable.tr>
                     @empty
@@ -113,7 +117,9 @@
                             <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
                             <x-datatable.td> {{ number_format($currentAmount, 2) }} € </x-datatable.td>
                             <x-datatable.td>
-                                <x-button label="Éditer" info sm wire:click="reservationModal('{{ $reservation->id }}')" />
+                                <button class="btn btn-primary btn-sm" wire:click="reservationModal('{{ $reservation->id }}')">
+                                    Éditer
+                                </button>
                             </x-datatable.td>
                         </x-datatable.tr>
                     @endforeach
@@ -138,8 +144,8 @@
             </div>
         </x-admin.content>
     @endif
-    @if($this->facture)
-        <x-modal wire:model.defer="factureModal">
+    <x-modal wire:model.defer="factureModal">
+        @if($this->facture)
             <x-card title="Envoi de la facture">
                 <x-errors class="mb-4"/>
                 <div class="grid grid-cols-2 gap-6">
@@ -150,22 +156,28 @@
                         <form wire:submit.prevent="sendFactureAction" id="factureForm" class="space-y-4">
                             <x-input label="Email" wire:model.defer="email.address"/>
                             <x-tinymce wire:model="email.message"/>
-                            <x-toggle label="Facture acquittée" lg wire:model.defer="isAcquitte"/>
+                            <x-form.toggle wire:model.defer="isAcquitte">
+                                Facture acquittée
+                            </x-form.toggle>
                             <x-textarea label="Texte information" hint="Ce texte apparaitra sur la facture"/>
                         </form>
                     </div>
                 </div>
                 <x-slot name="footer">
                     <div class="flex justify-end gap-x-4">
-                        <x-button flat label="Annuler" x-on:click="close"/>
-                        <x-button info label="Finaliser et envoyer" type="submit" form="factureForm"/>
+                        <button x-on:click="close" class="btn btn-sm">
+                            Annuler
+                        </button>
+                        <button type="submit" form="factureForm" class="btn btn-primary btn-sm">
+                            Finaliser et envoyer
+                        </button>
                     </div>
                 </x-slot>
             </x-card>
-        </x-modal>
-    @endif
-    @if($this->reservation)
-        <x-modal wire:model.defer="reservationModal" blur>
+        @endif
+    </x-modal>
+    <x-modal wire:model.defer="reservationModal" blur>
+        @if($this->reservation)
             <x-card title="Valeur de la réservation {{ $this->reservation->reference }}">
                 <x-errors class="mb-4"/>
                 <form id="reservationForm" class="space-y-4" wire:submit.prevent="saveReservationAction">
@@ -176,11 +188,16 @@
                 </form>
                 <x-slot name="footer">
                     <div class="flex justify-end gap-x-4">
-                        <x-button flat label="Annuler" x-on:click="close"/>
-                        <x-button info label="Valider" type="submit" form="reservationForm"/>
+                        <button class="btn btn-sm" x-on:click="close">
+                            Annuler
+                        </button>
+                        <button type="submit" form="reservationForm" class="btn btn-primary btn-sm">
+                            Valider
+                        </button>
                     </div>
                 </x-slot>
             </x-card>
-        </x-modal>
-    @endif
+        @endif
+    </x-modal>
+
 </div>

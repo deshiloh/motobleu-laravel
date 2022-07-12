@@ -3,8 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\BillCreated;
+use App\Mail\BillCreated as MailBillCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
 class BillCreatedListener
 {
@@ -26,7 +28,7 @@ class BillCreatedListener
      */
     public function handle(BillCreated $event)
     {
-        // TODO Send Email
-        ray($event->facture);
+        Mail::to('toto@test.com')
+            ->send(new MailBillCreated($event->facture));
     }
 }
