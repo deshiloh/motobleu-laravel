@@ -66,21 +66,40 @@
             </div>
         </div>
         <div class="container mx-auto">
-            <div class="text-xl mb-4">Réservations à confirmer</div>
-            <x-datatable>
-                <x-slot:headers>
-                    <x-datatable.tr>
-                        <x-datatable.th>Référence</x-datatable.th>
-                    </x-datatable.tr>
-                </x-slot:headers>
-                <x-slot:body>
-                    @foreach($reservations_to_confirm->get() as $reservation)
-                        <x-datatable.tr>
-                            <x-datatable.td>{{ $reservation->reference }}</x-datatable.td>
-                        </x-datatable.tr>
-                    @endforeach
-                </x-slot:body>
-            </x-datatable>
+            <x-admin.content>
+                <div class="container mx-auto">
+                    <div class="text-xl mb-4">Réservations à confirmer</div>
+                    <x-datatable>
+                        <x-slot:headers>
+                            <x-datatable.tr>
+                                <x-datatable.th>Référence</x-datatable.th>
+                                <x-datatable.th>Date</x-datatable.th>
+                                <x-datatable.th>Départ</x-datatable.th>
+                                <x-datatable.th>Arrivée</x-datatable.th>
+                                <x-datatable.th>Entreprise</x-datatable.th>
+                                <x-datatable.th>Actions</x-datatable.th>
+                            </x-datatable.tr>
+                        </x-slot:headers>
+                        <x-slot:body>
+                            @foreach($reservations_to_confirm->get() as $reservation)
+                                <x-datatable.tr>
+                                    <x-datatable.td>{{ $reservation->reference }}</x-datatable.td>
+                                    <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
+                                    <x-datatable.td>{{ $reservation->display_from }}</x-datatable.td>
+                                    <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
+                                    <x-datatable.td>{{ $reservation->passager->user->entreprise->nom }}</x-datatable.td>
+                                    <x-datatable.td>
+                                        <a href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" class="btn btn-primary btn-sm">
+                                            Détails
+                                        </a>
+                                    </x-datatable.td>
+                                </x-datatable.tr>
+                            @endforeach
+                        </x-slot:body>
+                    </x-datatable>
+                </div>
+            </x-admin.content>
         </div>
+
     @endguest
 </x-layout>
