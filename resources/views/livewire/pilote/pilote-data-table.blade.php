@@ -24,20 +24,14 @@
                         <x-datatable.td>{{ $pilote->telephone }}</x-datatable.td>
                         <x-datatable.td>{{ $pilote->adresse }}</x-datatable.td>
                         <x-datatable.td>
-                            <x-dropdown>
-                                <x-slot name="trigger">
-                                    <x-button label="Actions" info sm/>
-                                </x-slot>
-
-                                <x-dropdown.item label="Éditer"
-                                                 href="{{ route('admin.pilotes.edit', ['pilote' => $pilote->id]) }}"/>
-                                <x-dropdown.item label="Récap. des courses"
-                                                 href="{{ route('admin.pilotes.recap-reservation', ['pilote' => $pilote->id]) }}"/>
-                                <x-dropdown.item separator
-                                                 href="{{ route('admin.pilotes.destroy', ['pilote' => $pilote->id]) }}">
-                                    <div class="text-red-500">Supprimer</div>
-                                </x-dropdown.item>
-                            </x-dropdown>
+                            <div class="dropdown dropdown-end">
+                                <label tabindex="0" class="btn m-1 btn-sm btn-primary">Actions</label>
+                                <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                                    <li><a href="{{ route('admin.pilotes.edit', ['pilote' => $pilote->id]) }}">Éditer</a></li>
+                                    <li><a href="{{ route('admin.pilotes.recap-reservation', ['pilote' => $pilote->id]) }}">Récap. des courses</a></li>
+                                    <li><a class="text-error" href="{{ route('admin.pilotes.destroy', ['pilote' => $pilote->id]) }}">Supprimer</a></li>
+                                </ul>
+                            </div>
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty
@@ -46,11 +40,13 @@
                     </x-datatable.tr>
                 @endforelse
             </x-slot>
-            <x-slot name="tfoot">
-            </x-slot>
+            <x-slot:footer>
+                <x-datatable.tr>
+                    <x-datatable.th colspan="6">
+                        {{ $pilotes->links('components.datatable.pagination') }}
+                    </x-datatable.th>
+                </x-datatable.tr>
+            </x-slot:footer>
         </x-datatable>
-        <div class="mt-4 px-1">
-            {{ $pilotes->links('components.datatable.pagination') }}
-        </div>
     </x-admin.content>
 </div>

@@ -3,9 +3,9 @@
         <x-slot:title>
             Liste des réservations
         </x-slot:title>
-        <x-link-button href="{{ route('admin.reservations.create') }}">
+        <a href="{{ route('admin.reservations.create') }}" class="btn btn-primary btn-sm">
             Créer une réservation
-        </x-link-button>
+        </a>
     </x-title-section>
     <x-admin.content>
         <livewire:reservation.reservation-data-table />

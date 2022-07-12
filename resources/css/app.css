@@ -2,14 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-.table {
-    border-spacing: 0 15px;
+.btn {
+    @apply rounded;
 }
-
-.form-group {
-    @apply my-2;
-}
-
 
 fieldset {
     @apply border-t border-b dark:border-gray-400 py-3 border-gray-300 mb-3;

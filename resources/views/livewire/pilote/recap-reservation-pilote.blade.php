@@ -6,25 +6,28 @@
     </x-title-section>
     <x-admin.content>
         <div class="text-2xl">Liste des réservations</div>
-        <div class="py-3 border-b border-gray-400 flex justify-between items-end">
-            <div class="space-x-4 flex">
-                <x-datetime-picker
-                    without-time
-                    without-timezone
-                    label="Date de début"
-                    placeholder="Date de début"
-                    wire:model="dateDebut"
-                />
-                <x-datetime-picker
-                    without-time
-                    without-timezone
-                    label="Date de fin"
-                    placeholder="Date de fin"
-                    wire:model="dateFin"
-                />
-            </div>
-            <div>
-                <x-button label="Exporter"/>
+        <div class="py-3 grid grid-cols-3 gap-6">
+            <x-datetime-picker
+                without-time
+                without-timezone
+                label="Date de début"
+                placeholder="Date de début"
+                wire:model="dateDebut"
+            />
+            <x-datetime-picker
+                without-time
+                without-timezone
+                label="Date de fin"
+                placeholder="Date de fin"
+                wire:model="dateFin"
+            />
+            <div class="flex items-end">
+                <button class="btn btn-primary gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Exporter
+                </button>
             </div>
         </div>
         <x-datatable>
@@ -94,7 +97,7 @@
                     </x-datatable.tr>
                 @empty
                     <x-datatable.tr>
-                        <x-datatable.td class="text-center" colspan="6">Aucune réservation</x-datatable.td>
+                        <x-datatable.td class="text-center" colspan="10">Aucune réservation</x-datatable.td>
                     </x-datatable.tr>
                 @endforelse
             </x-slot>

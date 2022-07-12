@@ -51,8 +51,10 @@
                     wire:model.defer="passager.type_facturation_id"
                 />
             </div>
-            <div class="form-group">
-                <x-button type="submit" info label="Enregistrer" />
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    Enregistrer
+                </button>
             </div>
         </form>
     </x-admin.content>

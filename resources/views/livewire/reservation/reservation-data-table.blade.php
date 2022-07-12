@@ -1,11 +1,19 @@
 <div>
+    @if($countReservationToConfirmed > 0)
+        <a href="{{ route('admin.reservations.index', ['querySort' => 'not_confirmed']) }}" class="alert alert-warning shadow-lg mb-4">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <div>
+                    <span class="font-bold">{{ $countReservationToConfirmed }}</span> réservation(s) à confirmer
+                </div>
+            </div>
+        </a>
+    @endif
+
+    <x-datatable.search wire:model="search" />
     <div class="flex justify-between">
-        <x-datatable.search wire:model="search" />
-        @if($countReservationToConfirmed > 0)
-            <a href="{{ route('admin.reservations.index', ['querySort' => 'not_confirmed']) }}" class="bg-yellow-400 inline-block p-4 mb-5 rounded-lg hover:bg-yellow-500 transition-all duration-200">
-                {{ $countReservationToConfirmed }} réservation(s) à confirmer
-            </a>
-        @endif
+
+
     </div>
     <x-datatable>
         <x-slot name="headers">
@@ -43,14 +51,13 @@
                         @endif
                     </x-datatable.td>
                     <x-datatable.td>
-                        <x-dropdown>
-                            <x-slot name="trigger">
-                                <x-button label="Actions" info sm />
-                            </x-slot>
-
-                            <x-dropdown.item label="Détails" wire:click="goTo('{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}')" />
-                            <x-dropdown.item label="Éditer" wire:click="goTo('{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}')" />
-                        </x-dropdown>
+                        <div class="dropdown dropdown-end">
+                            <label tabindex="0" class="btn m-1 btn-primary btn-sm">Actions</label>
+                            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                                <li><a href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}">Détails</a></li>
+                                <li><a href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}">Éditer</a></li>
+                            </ul>
+                        </div>
                     </x-datatable.td>
                 </x-datatable.tr>
             @empty
@@ -59,10 +66,12 @@
                 </x-datatable.tr>
             @endforelse
         </x-slot>
-        <x-slot name="tfoot">
-        </x-slot>
+        <x-slot:footer>
+            <x-datatable.tr>
+                <x-datatable.th colspan="8">
+                    {{ $reservations->links('components.datatable.pagination') }}
+                </x-datatable.th>
+            </x-datatable.tr>
+        </x-slot:footer>
     </x-datatable>
-    <div class="mt-4 px-1">
-        {{ $reservations->links('components.datatable.pagination') }}
-    </div>
 </div>

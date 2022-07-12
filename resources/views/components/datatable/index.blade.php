@@ -1,10 +1,18 @@
-<div class="relative shadow-md sm:rounded-lg">
-    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            {{ $headers }}
-        </thead>
-        <tbody wire:loading.class.delay="opacity-50">
-            {{ $body }}
-        </tbody>
-    </table>
-</div>
+@props([
+    'headers' => false,
+    'footer' => false
+])
+<table class="table w-full table-auto">
+    <!-- head -->
+    <thead>
+        {{ $headers }}
+    </thead>
+    <tbody>
+        {{ $body }}
+    </tbody>
+    @if($footer)
+    <tfoot>
+        {{ $footer }}
+    </tfoot>
+    @endif
+</table>

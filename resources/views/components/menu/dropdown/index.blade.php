@@ -1,7 +1,7 @@
 @props([
     'title' => ''
 ])
-<li>
+{{--<li>
     <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar{{ \Illuminate\Support\Str::slug($title) }}"
             class="flex items-center justify-between w-full py-2 pl-3 pr-4 font-medium text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-gray-400 dark:hover:text-white dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
         {{ $title }}
@@ -18,4 +18,14 @@
             {{ $slot }}
         </ul>
     </div>
+</li>--}}
+
+<li tabindex="0">
+    <a>
+        {{ $title }}
+        <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/></svg>
+    </a>
+    <ul class="p-2 bg-base-100 z-50">
+        {{ $slot }}
+    </ul>
 </li>

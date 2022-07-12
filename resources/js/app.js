@@ -2,28 +2,18 @@ require('./bootstrap');
 import 'alpinejs';
 import 'flowbite';
 
-checkDarkMode()
-
-let darkMode = document.querySelector('.dark-mode');
-
-darkMode.addEventListener('click', function () {
-    if (document.documentElement.classList.contains('dark')) {
-        localStorage.theme = 'light'
-        document.documentElement.classList.remove('dark')
-    } else {
-        localStorage.theme = 'dark'
-        document.documentElement.classList.add('dark')
-    }
-})
+checkDarkMode();
 
 function checkDarkMode() {
     if (
-        localStorage.theme === 'dark' ||
+        localStorage.theme === 'business' ||
         (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
     ) {
-        document.documentElement.classList.add('dark')
+        document.querySelector('.darkmode').removeAttribute('checked')
+        document.querySelector('html').setAttribute('data-theme', 'business')
     } else {
-        document.documentElement.classList.remove('dark')
+        document.querySelector('.darkmode').setAttribute('checked', 'checked')
+        document.querySelector('html').setAttribute('data-theme', 'corporate')
     }
 }
 

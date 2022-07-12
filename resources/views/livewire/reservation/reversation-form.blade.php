@@ -9,10 +9,12 @@
         <form wire:submit.prevent="saveReservation" wire:loading.class="opacity-25" wire:key="form_reservation">
             <x-input label="Numéro de commande" class="mb-3" wire:model.defer="reservation.commande"/>
             <div class="flex flex-col space-y-2 my-3">
-                <x-toggle lg wire:model="reservation.send_to_passager"
-                          label="Envoyer par mail une invitation d’agenda au passager"/>
-                <x-toggle lg wire:model="reservation.send_to_user"
-                          label="Envoyer par mail une invitation d’agenda à l’assistante"/>
+                <x-form.toggle wire:model="reservation.send_to_passager">
+                    Envoyer par mail une invitation d’agenda au passager
+                </x-form.toggle>
+                <x-form.toggle wire:model="reservation.send_to_user">
+                    Envoyer par mail une invitation d’agenda à l’assistante
+                </x-form.toggle>
             </div>
             <div class="mb-3">
                 <x-select
@@ -29,10 +31,14 @@
                 <legend>Passager :</legend>
 
                 <div class="flex mb-3 space-x-3">
-                    <x-radio label="Passager existant" id="passenger" wire:model="passagerMode"
-                             value="{{ \App\Services\ReservationService::EXIST_PASSAGER }}"/>
-                    <x-radio label="Créer un nouveau passager" id="new_passenger" wire:model="passagerMode"
-                             value="{{ \App\Services\ReservationService::NEW_PASSAGER }}"/>
+                    <x-form.radio wire:model="passagerMode"
+                                  value="{{ \App\Services\ReservationService::EXIST_PASSAGER }}">
+                        Passager existant
+                    </x-form.radio>
+                    <x-form.radio wire:model="passagerMode"
+                                  value="{{ \App\Services\ReservationService::NEW_PASSAGER }}">
+                        Créer un nouveau passager
+                    </x-form.radio>
                 </div>
 
                 @if($passagerMode == \App\Services\ReservationService::EXIST_PASSAGER)
@@ -104,12 +110,18 @@
                 <legend>Départ :</legend>
 
                 <div class="flex mb-3 space-x-3">
-                    <x-radio label="Lieu" id="pickup_place" wire:model="pickupMode"
-                             value="{{ \App\Services\ReservationService::WITH_PLACE }}"/>
-                    <x-radio label="Adresse" id="pickup_adresse" wire:model="pickupMode"
-                             value="{{ \App\Services\ReservationService::WITH_ADRESSE }}"/>
-                    <x-radio label="Créer une nouvelle adresse" id="pickup_new_adresse" wire:model="pickupMode"
-                             value="{{ \App\Services\ReservationService::WITH_NEW_ADRESSE }}"/>
+                    <x-form.radio wire:model="pickupMode"
+                                  value="{{ \App\Services\ReservationService::WITH_PLACE }}">
+                        Lieu
+                    </x-form.radio>
+                    <x-form.radio wire:model="pickupMode"
+                                  value="{{ \App\Services\ReservationService::WITH_ADRESSE }}">
+                        Adresse
+                    </x-form.radio>
+                    <x-form.radio wire:model="pickupMode"
+                                  value="{{ \App\Services\ReservationService::WITH_NEW_ADRESSE }}">
+                        Créer une nouvelle adresse
+                    </x-form.radio>
                 </div>
 
                 @if($pickupMode == \App\Services\ReservationService::WITH_PLACE)
@@ -155,12 +167,18 @@
                 <legend>Arrivée :</legend>
 
                 <div class="flex mb-3 space-x-3">
-                    <x-radio label="Lieu" id="drop_place" wire:model="dropMode"
-                             value="{{ \App\Services\ReservationService::WITH_PLACE }}"/>
-                    <x-radio label="Adresse" id="drop_adresse" wire:model="dropMode"
-                             value="{{ \App\Services\ReservationService::WITH_ADRESSE }}"/>
-                    <x-radio label="Créer une nouvelle adresse" id="drop_new_adresse" wire:model="dropMode"
-                             value="{{ \App\Services\ReservationService::WITH_NEW_ADRESSE }}"/>
+                    <x-form.radio wire:model="dropMode"
+                                  value="{{ \App\Services\ReservationService::WITH_PLACE }}">
+                        Lieu
+                    </x-form.radio>
+                    <x-form.radio wire:model="dropMode"
+                                  value="{{ \App\Services\ReservationService::WITH_ADRESSE }}">
+                        Adresse
+                    </x-form.radio>
+                    <x-form.radio wire:model="dropMode"
+                                  value="{{ \App\Services\ReservationService::WITH_NEW_ADRESSE }}">
+                        Créer une nouvelle adresse
+                    </x-form.radio>
                 </div>
 
                 @if($dropMode == \App\Services\ReservationService::WITH_PLACE)
@@ -203,10 +221,17 @@
                 @endif
             </fieldset>
             <div class="form-group">
-                <x-textarea label="Commentaire" placeholder="Votre commentaire..." wire:model.defer="reservation.comment"/>
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Commentaire</span>
+                    </label>
+                    <textarea class="textarea textarea-bordered h-24" placeholder="Votre commentaire..." wire:model.defer="reservation.comment"></textarea>
+                </div>
             </div>
             <div class="flex my-3">
-                <x-toggle lg wire:model="hasBack" label="Réserver le retour"/>
+                <x-form.toggle wire:model="hasBack">
+                    Réserver le retour
+                </x-form.toggle>
             </div>
             @if($hasBack)
                 <x-datetime-picker
