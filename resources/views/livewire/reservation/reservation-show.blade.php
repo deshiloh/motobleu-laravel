@@ -1,12 +1,16 @@
 <div class="pb-6">
     @if(!$reservation->is_confirmed && !$reservation->is_cancel)
-        <div id="alert-additional-content-2" class="p-4 my-4 bg-red-100 rounded-lg dark:bg-red-200" role="alert">
-            <div class="flex items-center">
-                <svg class="mr-2 w-5 h-5 text-red-700 dark:text-red-800" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-                <h3 class="text-lg font-medium text-red-700 dark:text-red-800">Cette réservation n'a pas été confirmée</h3>
-            </div>
-            <div class="mt-2 text-sm text-red-700 dark:text-red-800">
-                Afin de la confirmer vous devez remplir le formulaire ci-dessous
+        <div class="alert alert-error my-4">
+            <div>
+                <div class="flex flex-col">
+                    <div class="flex items-center space-x-2">
+                        <x-carbon-warning-alt class="h-6 w-6"/>
+                        <span class="font-bold">Cette réservation n'as pas été confirmée</span>
+                    </div>
+                    <div class="mt-3">
+                        Afin de la confirmer vous devez remplir le formulaire ci-dessous
+                    </div>
+                </div>
             </div>
         </div>
     @endif
@@ -31,15 +35,17 @@
             Réservation : <span class="text-blue-500">{{ $reservation->reference }}</span>
         </x-slot:title>
         @if(!is_null($reservation->event_id))
-            <x-button
-                href="{{ $reservation->getEvent()->getHtmlLink() }}"
-                target="_blank"
-                label="Google Agenda"
-                primary
-                icon="calendar"
-            />
+            <a href="{{ $reservation->getEvent()->getHtmlLink() }}" class="btn btn-sm gap-2 btn-secondary" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Google Agenda
+            </a>
         @endif
-        <a href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}" class="btn btn-primary btn-sm">
+        <a href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}" class="btn btn-primary btn-sm gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
             Éditer
         </a>
         @if(!$reservation->is_cancel)
@@ -60,46 +66,46 @@
 
     @if(!$reservation->is_confirmed && !$reservation->is_cancel)
         <x-admin.content>
-        <form wire:submit.prevent="confirmedAction" action="post" wire:loading.class="opacity-25">
+        <form wire:submit.prevent="confirmedAction" action="post" wire:loading.class="opacity-25" class="space-y-4">
             @csrf
-            <span class="block mb-2 text-xl">Formulaire de confirmation</span>
-            <div class="form-group">
-                <x-select
-                    label="Pilote"
-                    placeholder="Sélectionner un pilote"
-                    :async-data="route('api.pilotes')"
-                    option-label="full_name"
-                    option-value="id"
-                    option-description="email"
-                    wire:model.defer="reservation.pilote_id"
-                />
-            </div>
-            <div class="form-group">
-                <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
-            </div>
+            <div class="block text-xl">Formulaire de confirmation</div>
+            <x-select
+                label="Pilote"
+                placeholder="Sélectionner un pilote"
+                :async-data="route('api.pilotes')"
+                option-label="full_name"
+                option-value="id"
+                option-description="email"
+                wire:model.defer="reservation.pilote_id"
+            />
+            <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     Emails de confirmation
-                    <div class="form-group">
-                        <x-toggle lg wire:model="reservation.send_to_user" label="Secrétaire : {{ $reservation->passager->user->full_name }}" />
-                    </div>
-                    <div class="form-group">
-                        <x-toggle lg wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" />
+                    <div class="space-y-3 pl-3">
+                        <x-form.toggle wire:model="reservation.send_to_user">
+                            Secrétaire : {{ $reservation->passager->user->full_name }}
+                        </x-form.toggle>
+                        <x-form.toggle wire:model="reservation.send_to_passager">
+                            Passager : {{ $reservation->passager->nom }}
+                        </x-form.toggle>
                     </div>
                 </div>
                 <div>
                     Invitation Google Calendar
-                    <div class="form-group">
-                        <x-toggle lg wire:model.defer="reservation.calendar_user_invitation" label="Secrétaire : {{ $reservation->passager->user->full_name }}" />
-                    </div>
-                    <div class="form-group">
-                        <x-toggle lg wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" />
+                    <div class="space-y-3 pl-3">
+                        <x-form.toggle wire:model.defer="reservation.calendar_user_invitation">
+                            Secrétaire : {{ $reservation->passager->user->full_name }}
+                        </x-form.toggle>
+                        <x-form.toggle wire:model.defer="reservation.calendar_passager_invitation">
+                            Passager : {{ $reservation->passager->nom }}
+                        </x-form.toggle>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <x-button info label="Valider et envoyer le message" type="submit"/>
-            </div>
+            <button type="submit" class="btn btn-primary btn-sm">
+                Valider et envoyer le message
+            </button>
         </form>
         </x-admin.content>
     @endif
