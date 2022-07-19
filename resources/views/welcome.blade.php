@@ -14,7 +14,7 @@
                                     @csrf
                                     <div class="space-y-4">
                                         <x-input label="Adresse email" icon="mail" name="email"/>
-                                        <x-input label="Mot de passe" icon="key" name="password"/>
+                                        <x-input label="Mot de passe" icon="key" name="password" type="password"/>
                                     </div>
                                     <div class="mt-8">
                                         <button class="btn btn-primary w-full" type="submit">Connexion</button>

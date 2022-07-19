@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Facturation;
 
 use App\Models\Entreprise;
+use App\Models\Facture;
 use Livewire\Component;
 
 class FacturationDataTable extends Component
@@ -12,7 +13,7 @@ class FacturationDataTable extends Component
 
     public function mount()
     {
-        
+
     }
 
     protected $queryString = [
@@ -21,7 +22,9 @@ class FacturationDataTable extends Component
 
     public function render()
     {
-        return view('livewire.facturation.facturation-data-table')
+        return view('livewire.facturation.facturation-data-table', [
+            'facturations' => Facture::paginate(10)
+        ])
             ->layout('components.admin-layout');
     }
 }

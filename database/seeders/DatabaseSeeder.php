@@ -30,7 +30,8 @@ class DatabaseSeeder extends Seeder
     {
         $entreprises = Entreprise::factory()
             ->count(10)
-            ->has(AdresseEntreprise::factory())
+            ->has(AdresseEntreprise::factory()->facturation())
+            ->has(AdresseEntreprise::factory()->physique())
             ->create();
 
         foreach ($entreprises as $entreprise) {

@@ -27,10 +27,27 @@ class AdresseEntrepriseFactory extends Factory
             'adresse_complement' => $this->faker->secondaryAddress,
             'code_postal' => $this->faker->postcode,
             'ville' => $this->faker->city,
-            'type' => AdresseEntrepriseTypeEnum::FACTURATION,
             'email' => $this->faker->email,
             'nom' => 'Facturation',
             'tva' => Str::random(10)
         ];
+    }
+
+    public function facturation()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type' => AdresseEntrepriseTypeEnum::FACTURATION,
+            ];
+        });
+    }
+
+    public function physique()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type' => AdresseEntrepriseTypeEnum::PHYSIQUE,
+            ];
+        });
     }
 }

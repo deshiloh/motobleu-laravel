@@ -115,7 +115,7 @@
                             <x-datatable.td>{{ $reservation->passager->nom }}</x-datatable.td>
                             <x-datatable.td>{{ $reservation->display_from }}</x-datatable.td>
                             <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
-                            <x-datatable.td> {{ number_format($currentAmount, 2) }} € </x-datatable.td>
+                            <x-datatable.td> {{ number_format($currentAmount, 2, ',', ' ') }} € </x-datatable.td>
                             <x-datatable.td>
                                 <button class="btn btn-primary btn-sm" wire:click="reservationModal('{{ $reservation->id }}')">
                                     Éditer
@@ -132,13 +132,13 @@
                         $prixTVA = $prixHT * 0.10;
                     @endphp
                     <div>
-                        <strong>Montant H.T :</strong> {{ number_format($prixHT, 2) }} €
+                        <strong>Montant H.T :</strong> {{ number_format($prixHT, 2, ',', ' ') }} €
                     </div>
                     <div>
-                        <strong>TVA 10% :</strong> {{ number_format($prixTVA, 2) }} €
+                        <strong>TVA 10% :</strong> {{ number_format($prixTVA, 2, ',', ' ') }} €
                     </div>
                     <div>
-                        <strong>Montant TTC :</strong> {{ number_format($montant_ttc, 2) }} €
+                        <strong>Montant TTC :</strong> {{ number_format($montant_ttc, 2, ',', ' ') }} €
                     </div>
                 </div>
             </div>
@@ -150,16 +150,17 @@
                 <x-errors class="mb-4"/>
                 <div class="grid grid-cols-2 gap-6">
                     <div>
-                        PDF
+                        <iframe src="/admin/facturations/1/show?uniq={{ $uniqID }}#view=FitH&toolbar=1" class="w-full h-full"></iframe>
                     </div>
                     <div>
                         <form wire:submit.prevent="sendFactureAction" id="factureForm" class="space-y-4">
                             <x-input label="Email" wire:model.defer="email.address"/>
                             <x-tinymce wire:model="email.message"/>
-                            <x-form.toggle wire:model.defer="isAcquitte">
+                            <x-form.toggle wire:model.defer="isAcquitte" wire:change="editFactureAction">
                                 Facture acquittée
                             </x-form.toggle>
-                            <x-textarea label="Texte information" hint="Ce texte apparaitra sur la facture"/>
+                            <x-textarea label="Texte information" hint="Ce texte apparaitra sur la facture" wire:model.defer="email.complement" wire:change.debounce="editFactureAction"/>
+                            <button wire:click="sendEmailTestAction" class="btn btn-primary btn-sm" type="button">Envoi d'un email de test</button>
                         </form>
                     </div>
                 </div>

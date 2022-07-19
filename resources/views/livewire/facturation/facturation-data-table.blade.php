@@ -34,26 +34,33 @@
                 </x-datatable.tr>
             </x-slot:headers>
             <x-slot:body>
-                <x-datatable.tr>
-                    <x-datatable.td>FA2022-10-04</x-datatable.td>
-                    <x-datatable.td>{{ \Carbon\Carbon::now()->format('d/m/Y') }}</x-datatable.td>
-                    <x-datatable.td>
-                        <x-badges.success>
-                            Oui
-                        </x-badges.success>
-                    </x-datatable.td>
-                    <x-datatable.td>My Entreprise</x-datatable.td>
-                    <x-datatable.td>
-                        <x-dropdown>
-                            <x-slot name="trigger">
-                                <x-button label="Actions" info sm />
-                            </x-slot>
-
-                            <x-dropdown.item label="Voir" />
-                            <x-dropdown.item separator label="Liste des courses" />
-                        </x-dropdown>
-                    </x-datatable.td>
-                </x-datatable.tr>
+                @foreach($facturations as $facture)
+                    <x-datatable.tr>
+                        <x-datatable.td>{{ $facture->reference }}</x-datatable.td>
+                        <x-datatable.td>{{ \Carbon\Carbon::now()->format('d/m/Y') }}</x-datatable.td>
+                        <x-datatable.td>
+                            @if($facture->is_acquitte)
+                                <span class="badge badge-success">
+                                    Oui
+                                </span>
+                                @else
+                                <span class="badge badge-error">
+                                    Non
+                                </span>
+                            @endif
+                        </x-datatable.td>
+                        <x-datatable.td>My Entreprise</x-datatable.td>
+                        <x-datatable.td>
+                            <div class="dropdown">
+                                <label tabindex="0" class="btn m-1 btn-primary btn-sm">Actions</label>
+                                <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                                    <li><a href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}">Voir</a></li>
+                                    <li><a href="#">Liste des courses</a></li>
+                                </ul>
+                            </div>
+                        </x-datatable.td>
+                    </x-datatable.tr>
+                @endforeach
             </x-slot:body>
         </x-datatable>
     </x-admin.content>

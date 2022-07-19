@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('adresse_entreprises', function (Blueprint $table) {
             $table->id();
             $table->string('adresse');
-            $table->string('adresse_complement');
+            $table->string('adresse_complement')->nullable();
             $table->string('code_postal');
             $table->string('ville');
             $table->integer('type');
