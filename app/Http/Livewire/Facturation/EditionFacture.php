@@ -268,6 +268,7 @@ class EditionFacture extends Component
             $this->months[$this->facture->month],
             $this->facture->year
         );
+        $this->email['complement'] = '';
 
         $this->factureModal = true;
     }

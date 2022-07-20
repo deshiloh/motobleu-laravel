@@ -28,7 +28,7 @@ class BillCreatedListener
      */
     public function handle(BillCreated $event)
     {
-        Mail::to('toto@test.com')
-            ->send(new MailBillCreated($event->facture));
+        Mail::to($event->emailData['address'])
+            ->send(new MailBillCreated($event->facture, $event->emailData['message']));
     }
 }
