@@ -12,6 +12,7 @@
         hasSlot:     @boolean($slot->isNotEmpty()),
         multiselect: @boolean($multiselect),
         searchable:  @boolean($searchable),
+        clearable:   @boolean($clearable),
         readonly:    @boolean($readonly || $disabled),
         placeholder: @js($placeholder),
         template:    @js($template),
@@ -27,7 +28,7 @@
                 :label="$label"
                 :has-error="$name && $errors->has($name)"
                 :disabled="$disabled"
-                x-on:click="togglePopover"
+                x-on:click="toggle"
                 wire:key="select.label"
             />
         @endif
@@ -36,24 +37,40 @@
             :component="WireUi::component('input')"
             class="cursor-pointer overflow-hidden !text-transparent !dark:text-transparent"
             x-ref="input"
-            x-on:click="togglePopover"
-            x-on:keydown.enter.stop.prevent="togglePopover"
-            x-on:keydown.space.stop.prevent="togglePopover"
+            x-on:click="toggle"
+            x-on:keydown.enter.stop.prevent="toggle"
+            x-on:keydown.space.stop.prevent="toggle"
             x-on:keydown.arrow-down.prevent="$event.shiftKey || getNextFocusable().focus()"
             x-on:keydown.arrow-up.prevent="getPrevFocusable().focus()"
             x-bind:placeholder="getPlaceholder"
             x-bind:value="getSelectedValue"
             readonly
             :name="$name"
-            :icon="$icon"
-            {{ $attributes->except(['class'])->whereDoesntStartWith(['wire:model', 'type', 'wire:key']) }}>
+            {{ $attributes
+                ->except(['class'])
+                ->class(['pl-8' => $icon])
+                ->whereDoesntStartWith(['wire:model', 'type', 'wire:key'])
+            }}>
             <x-slot name="prepend">
                 <div :class="{
                     'pointer-events-none': config.readonly,
                     'cursor-pointer': !config.readonly,
                 }">
                     <template x-if="!config.multiselect">
-                        <div class="absolute left-0 inset-y-0 pl-3.5 w-[calc(100%-3.5rem)] flex items-center" x-on:click="togglePopover">
+                        <div @class([
+                                'absolute left-0 inset-y-0 w-[calc(100%-3.5rem)] flex items-center',
+                                'pl-2.5' =>  $icon,
+                                'pl-3.5' => !$icon,
+                            ])
+                            x-on:click="toggle">
+                            @if ($icon)
+                                <x-dynamic-component
+                                    :component="WireUi::component('icon')"
+                                    :name="$icon"
+                                    class="h-5 w-5 mr-1 text-gray-400 dark:text-gray-600"
+                                />
+                            @endif
+
                             <span
                                 class="truncate text-secondary-700 dark:text-secondary-400 text-sm"
                                 x-show="!isEmpty()"
@@ -63,8 +80,16 @@
                     </template>
 
                     <template x-if="config.multiselect">
-                        <div class="absolute left-0 inset-y-0 pl-3 pr-14 w-full flex items-center overflow-hidden" x-on:click="togglePopover">
+                        <div class="absolute left-0 inset-y-0 pl-3 pr-14 w-full flex items-center overflow-hidden" x-on:click="toggle">
                             <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar">
+                                @if ($icon)
+                                    <x-dynamic-component
+                                        :component="WireUi::component('icon')"
+                                        :name="$icon"
+                                        class="h-5 w-5 text-gray-400 dark:text-gray-600"
+                                    />
+                                @endif
+
                                 @if (!$withoutItemsCount)
                                     <span
                                         class="inline-flex text-secondary-700 dark:text-secondary-400 text-sm"
@@ -117,7 +142,7 @@
                         </button>
                     @endif
 
-                    <button tabindex="-1" x-on:click="togglePopover" type="button">
+                    <button tabindex="-1" x-on:click="toggle" type="button">
                         <x-dynamic-component
                             :component="WireUi::component('icon')"
                             class="w-5 h-5
@@ -137,21 +162,14 @@
                 {{ $hint }}
             </label>
         @endif
-
     </div>
 
-    <div class="
-            absolute w-full mt-1 rounded-lg overflow-hidden shadow-md bg-base-100 z-10 border border-base-200"
-        x-show="popover"
-        x-transition
-        x-cloak
-        x-on:click.outside="closePopover"
-        x-on:keydown.escape.window="closePopover">
+    <x-wireui::parts.popover :margin="(bool) $label" root-class="sm:w-full">
         <template x-if="asyncData.api || (config.searchable && options.length > 10)">
             <div class="px-2 my-2" wire:key="search.options">
                 <x-dynamic-component
                     :component="WireUi::component('input')"
-                    class="bg-base-100"
+                    class="bg-base-300"
                     x-ref="search"
                     x-model.debounce.{{ $asyncData ? 750 : 0 }}ms="search"
                     x-on:keydown.arrow-down.prevent="$event.shiftKey || getNextFocusable().focus()"
@@ -163,42 +181,47 @@
             </div>
         </template>
 
-        <template x-if="popover">
-            <ul class="max-h-60 overflow-y-auto overscroll-contain soft-scrollbar select-none"
-                tabindex="-1"
-                x-ref="optionsContainer"
-                name="wireui.select.options.{{ $name }}"
-                x-on:keydown.tab.prevent="$event.shiftKey || getNextFocusable().focus()"
-                x-on:keydown.arrow-down.prevent="$event.shiftKey || getNextFocusable().focus()"
-                x-on:keydown.shift.tab.prevent="getPrevFocusable().focus()"
-                x-on:keydown.arrow-up.prevent="getPrevFocusable().focus()">
-                <div class="w-full h-0.5 rounded-full relative overflow-hidden"
-                    :class="{
-                        'bg-gray-200 dark:bg-gray-700': asyncData.fetching
-                    }">
-                    <div class="bg-primary-500 h-0.5 rounded-full absolute animate-linear-progress"
-                        style="width: 30%"
-                        x-show="asyncData.fetching">
-                    </div>
+        <ul class="max-h-64 sm:max-h-60 overflow-y-auto overscroll-contain soft-scrollbar select-none"
+            tabindex="-1"
+            x-ref="optionsContainer"
+            name="wireui.select.options.{{ $name }}"
+            x-on:keydown.tab.prevent="$event.shiftKey || getNextFocusable().focus()"
+            x-on:keydown.arrow-down.prevent="$event.shiftKey || getNextFocusable().focus()"
+            x-on:keydown.shift.tab.prevent="getPrevFocusable().focus()"
+            x-on:keydown.arrow-up.prevent="getPrevFocusable().focus()">
+            <div class="w-full h-0.5 rounded-full relative overflow-hidden"
+                :class="{
+                    'bg-gray-200 dark:bg-gray-700': asyncData.fetching
+                }">
+                <div class="bg-primary-500 h-0.5 rounded-full absolute animate-linear-progress"
+                    style="width: 30%"
+                    x-show="asyncData.fetching">
                 </div>
+            </div>
 
-                @isset ($beforeOptions)
+            @isset ($beforeOptions)
+                <li {{ $beforeOptions->attributes }}>
                     {{ $beforeOptions }}
-                @endisset
+                </li>
+            @endisset
 
-                <template x-for="(option, index) in displayOptions" :key="`${index}.${option.value}`">
-                    <div x-transition x-html="renderOption(option)"></div>
-                </template>
+            <template x-for="(option, index) in displayOptions" :key="`${index}.${option.value}`">
+                <div x-transition x-html="renderOption(option)"></div>
+            </template>
 
+            @unless ($hideEmptyMessage)
                 <li class="py-2 px-3 text-secondary-500 cursor-pointer"
                     x-show="displayOptions.length === 0"
-                    x-on:click="closePopover">
+                    x-on:click="close">
                     {{ $emptyMessage ?? __('wireui::messages.empty_options') }}
                 </li>
-                @isset ($afterOptions)
+            @endunless
+
+            @isset ($afterOptions)
+                <div {{ $afterOptions->attributes }}>
                     {{ $afterOptions }}
-                @endisset
-            </ul>
-        </template>
-    </div>
+                </div>
+            @endisset
+        </ul>
+    </x-wireui::parts.popover>
 </div>

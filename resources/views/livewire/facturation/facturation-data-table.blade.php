@@ -34,10 +34,10 @@
                 </x-datatable.tr>
             </x-slot:headers>
             <x-slot:body>
-                @foreach($facturations as $facture)
+                @forelse($facturations as $facture)
                     <x-datatable.tr>
                         <x-datatable.td>{{ $facture->reference }}</x-datatable.td>
-                        <x-datatable.td>{{ \Carbon\Carbon::now()->format('d/m/Y') }}</x-datatable.td>
+                        <x-datatable.td>{{ $facture->created_at->format('d/m/Y') }}</x-datatable.td>
                         <x-datatable.td>
                             @if($facture->is_acquitte)
                                 <span class="badge badge-success">
@@ -49,18 +49,24 @@
                                 </span>
                             @endif
                         </x-datatable.td>
-                        <x-datatable.td>My Entreprise</x-datatable.td>
+                        <x-datatable.td>
+                            {{ $this->getEntreprise($facture)->nom }}
+                        </x-datatable.td>
                         <x-datatable.td>
                             <div class="dropdown">
                                 <label tabindex="0" class="btn m-1 btn-primary btn-sm">Actions</label>
                                 <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li><a href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}">Voir</a></li>
+                                    <li><a href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank">Voir</a></li>
                                     <li><a href="#">Liste des courses</a></li>
                                 </ul>
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>
-                @endforeach
+                @empty
+                    <x-datatable.tr>
+                        <x-datatable.td colspan="5" class="text-center">Aucune facture</x-datatable.td>
+                    </x-datatable.tr>
+                @endforelse
             </x-slot:body>
         </x-datatable>
     </x-admin.content>

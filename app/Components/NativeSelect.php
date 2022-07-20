@@ -25,6 +25,8 @@ class NativeSelect extends FormComponent
         public ?string $optionValue = null,
         public ?string $optionLabel = null,
         public ?string $optionDescription = null,
+        public ?string $emptyMessage = null,
+        public bool $hideEmptyMessage = false,
         public bool $flipOptions = false,
         public bool $optionKeyValue = false,
         Collection|array|null $options = null,
@@ -59,7 +61,7 @@ class NativeSelect extends FormComponent
         ) {
             throw new Exception(
                 'Inform the {option-value} and {option-label} to use array, model, or object option.'
-                . ' <x-select [...] option-value="id" option-label="name" />'
+                    . ' <x-select [...] option-value="id" option-label="name" />'
             );
         }
 
@@ -70,7 +72,7 @@ class NativeSelect extends FormComponent
         ) {
             throw new Exception(
                 'The {option-value} and {option-label} attributes cannot be used with primitive options values: '
-                . implode(', ', self::PRIMITIVE_VALUES)
+                    . implode(', ', self::PRIMITIVE_VALUES)
             );
         }
     }
@@ -87,7 +89,7 @@ class NativeSelect extends FormComponent
 
     public function colorClasses(): string
     {
-        return 'border-secondary-300 focus:ring-primary-500 focus:border-primary-500';
+        return 'rouge';
     }
 
     public function errorClasses(): string
