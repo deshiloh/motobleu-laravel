@@ -314,12 +314,11 @@ class EditionFacture extends Component
     }
 
     /**
-     * @return \Illuminate\Http\RedirectResponse
+     * @return void
      */
     public function sendFactureAction()
     {
         $this->validate();
-        $this->factureModal = false;
 
         foreach ($this->reservations as $reservation) {
             $reservation->is_billed = true;
@@ -336,6 +335,8 @@ class EditionFacture extends Component
                 'method' => 'redirectEvent',
             ],
         ]);
+
+        $this->factureModal = false;
     }
 
     public function redirectEvent()

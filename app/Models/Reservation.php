@@ -41,6 +41,11 @@ class Reservation extends Model
         });
     }
 
+    public function facture()
+    {
+        return $this->belongsTo(Facture::class);
+    }
+
     public function passager()
     {
         return $this->belongsTo(Passager::class);

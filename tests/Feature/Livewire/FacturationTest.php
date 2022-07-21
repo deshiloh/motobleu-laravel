@@ -3,9 +3,12 @@
 namespace Tests\Feature\Livewire;
 
 use App\Http\Livewire\Facturation\EditionFacture;
+use App\Mail\BillCreated;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -49,12 +52,64 @@ class FacturationTest extends TestCase
         Livewire::test(EditionFacture::class)
             ->set('selectedMonth', Carbon::now()->month)
             ->set('selectedYear', Carbon::now()->year)
+            ->set('entrepriseIdSelected', 1)
             ->set('reservationSelected', 1)
             ->set('reservationFormData.tarif', 300)
             ->call('saveReservationAction')
+            ->emit('reservationUpdated')
             ->assertHasNoErrors()
             ->assertStatus(200);
 
         $this->assertTrue(Reservation::where('tarif', 300)->exists());
+    }
+
+    public function testOpenFactureModal()
+    {
+        Livewire::test(EditionFacture::class)
+            ->set('selectedMonth', Carbon::now()->month)
+            ->set('selectedYear', Carbon::now()->year)
+            ->set('entrepriseIdSelected', 1)
+            ->call('sendFactureModal')
+            ->assertSet('factureModal', true)
+            ->assertHasNoErrors()
+            ->assertStatus(200)
+        ;
+    }
+
+    public function testSendFacture()
+    {
+        Event::fake();
+
+        Livewire::test(EditionFacture::class)
+            ->set('selectedMonth', Carbon::now()->month)
+            ->set('selectedYear', Carbon::now()->year)
+            ->set('entrepriseIdSelected', 1)
+            ->set('factureModal', true)
+            ->set('email.address', 'test@test.com')
+            ->set('email.message', 'Je suis un test')
+            ->call('sendFactureAction')
+            ->assertSet('factureModal', false)
+            ->assertHasNoErrors()
+            ->assertStatus(200)
+        ;
+
+        Event::assertDispatched(\App\Events\BillCreated::class);
+    }
+
+    public function testSendEmailTest()
+    {
+        Mail::fake();
+
+        Livewire::test(EditionFacture::class)
+            ->set('selectedMonth', Carbon::now()->month)
+            ->set('selectedYear', Carbon::now()->year)
+            ->set('entrepriseIdSelected', 1)
+            ->set('factureModal', true)
+            ->call('sendEmailTestAction')
+            ->assertHasNoErrors()
+            ->assertStatus(200)
+        ;
+
+        Mail::assertSent(BillCreated::class);
     }
 }
