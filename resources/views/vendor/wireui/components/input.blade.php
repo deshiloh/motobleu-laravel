@@ -2,25 +2,27 @@
     $hasError = !$errorless && $name && $errors->has($name);
 @endphp
 
-<div class="form-control w-full @if($disabled) opacity-60 @endif">
+<div class="@if($disabled) opacity-60 @endif">
     @if ($label || $cornerHint)
-        @if ($label)
-            <x-dynamic-component
-                :component="WireUi::component('label')"
-                :label="$label"
-                :has-error="$hasError"
-                :for="$id"
-            />
-        @endif
+        <div class="flex {{ !$label && $cornerHint ? 'justify-end' : 'justify-between' }} mb-1">
+            @if ($label)
+                <x-dynamic-component
+                    :component="WireUi::component('label')"
+                    :label="$label"
+                    :has-error="$hasError"
+                    :for="$id"
+                />
+            @endif
 
-        @if ($cornerHint)
-            <x-dynamic-component
-                :component="WireUi::component('label')"
-                :label="$cornerHint"
-                :has-error="$hasError"
-                :for="$id"
-            />
-        @endif
+            @if ($cornerHint)
+                <x-dynamic-component
+                    :component="WireUi::component('label')"
+                    :label="$cornerHint"
+                    :has-error="$hasError"
+                    :for="$id"
+                />
+            @endif
+        </div>
     @endif
 
     <div class="relative rounded-md @unless($shadowless) shadow-sm @endunless">
@@ -44,9 +46,7 @@
         @endif
 
         <input {{ $attributes->class([
-                'input w-full input-bordered',
-                'border-red-600' => $hasError,
-                'pl-9' => $icon
+                $getInputClasses($hasError),
             ])->merge([
                 'type'         => 'text',
                 'autocomplete' => 'off',
@@ -79,8 +79,8 @@
     </div>
 
     @if (!$hasError && $hint)
-        <label @if ($id) for="{{ $id }}" @endif>
-            <span class="label-text-alt">{{ $hint }}</span>
+        <label @if ($id) for="{{ $id }}" @endif class="mt-2 text-sm text-secondary-500 dark:text-secondary-400">
+            {{ $hint }}
         </label>
     @endif
 

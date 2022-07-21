@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('factures', function (Blueprint $table) {
             $table->id();
-            $table->string('reference');
+            $table->string('reference')->nullable();
             $table->float('montant_ht')->default(0);
             $table->integer('tva')->default(10);
             $table->string('adresse_client')->nullable();

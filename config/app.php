@@ -209,6 +209,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'Invoice' => LaravelDaily\Invoices\Facades\Invoice::class
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 

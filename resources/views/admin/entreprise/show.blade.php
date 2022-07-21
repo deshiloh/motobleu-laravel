@@ -6,7 +6,7 @@
         <div class="flex space-x-2">
             @if($entreprise->adresseEntreprises()->count() < 2)
                 <a class="btn btn-primary btn-sm" href="{{ route('admin.entreprises.adresses.create', ['entreprise' => $entreprise]) }}">
-                    Ajouter une entreprise
+                    Ajouter une adresse entreprise
                 </a>
             @endif
                 <a class="btn btn-primary btn-sm" href="{{ route('admin.entreprises.edit', ['entreprise' => $entreprise]) }}">

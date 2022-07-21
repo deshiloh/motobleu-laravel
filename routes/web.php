@@ -178,6 +178,8 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
         ->name('facturations.index');
     Route::get('facturations/edition', EditionFacture::class)
         ->name('facturations.edition');
+    Route::get('facturations/{facture}/show', [\App\Http\Controllers\Admin\FacturationsController::class, 'show'])
+        ->name('facturations.show');
 });
 
 Route::prefix('/admin/select')->group(function () {

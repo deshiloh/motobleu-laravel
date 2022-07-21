@@ -249,12 +249,18 @@
                 <fieldset class="mt-3">
                     <legend>Départ :</legend>
                     <div class="flex mb-3 space-x-3">
-                        <x-radio label="Lieu" id="back_pickup_place" wire:model="backPickupMode"
-                                 value="{{ \App\Services\ReservationService::WITH_PLACE }}"/>
-                        <x-radio label="Adresse" id="back_pickup_adresse" wire:model="backPickupMode"
-                                 value="{{ \App\Services\ReservationService::WITH_ADRESSE }}"/>
-                        <x-radio label="Créer une nouvelle adresse" id="back_pickup_new_adresse" wire:model="backPickupMode"
-                                 value="{{ \App\Services\ReservationService::WITH_NEW_ADRESSE }}"/>
+                        <x-form.radio wire:model="backPickupMode"
+                                      value="{{ \App\Services\ReservationService::WITH_PLACE }}">
+                            Lieu
+                        </x-form.radio>
+                        <x-form.radio wire:model="backPickupMode"
+                                      value="{{ \App\Services\ReservationService::WITH_ADRESSE }}">
+                            Adresse
+                        </x-form.radio>
+                        <x-form.radio wire:model="backPickupMode"
+                                      value="{{ \App\Services\ReservationService::WITH_NEW_ADRESSE }}">
+                            Créer une nouvelle adresse
+                        </x-form.radio>
                     </div>
                     @if($backPickupMode == \App\Services\ReservationService::WITH_PLACE)
                         <x-select
@@ -294,12 +300,18 @@
                 <fieldset class="mt-3">
                     <legend>Arrivée :</legend>
                     <div class="flex mb-3 space-x-3">
-                        <x-radio label="Lieu" id="back_drop_place" wire:model="backDropMode"
-                                 value="{{ \App\Services\ReservationService::WITH_PLACE }}"/>
-                        <x-radio label="Adresse" id="back_drop_adresse" wire:model="backDropMode"
-                                 value="{{ \App\Services\ReservationService::WITH_ADRESSE }}"/>
-                        <x-radio label="Créer une nouvelle adresse" id="back_drop_new_adresse" wire:model="backDropMode"
-                                 value="{{ \App\Services\ReservationService::WITH_NEW_ADRESSE }}"/>
+                        <x-form.radio wire:model="backDropMode"
+                                      value="{{ \App\Services\ReservationService::WITH_PLACE }}">
+                            Lieu
+                        </x-form.radio>
+                        <x-form.radio wire:model="backDropMode"
+                                      value="{{ \App\Services\ReservationService::WITH_ADRESSE }}">
+                            Adresse
+                        </x-form.radio>
+                        <x-form.radio wire:model="backDropMode"
+                                      value="{{ \App\Services\ReservationService::WITH_NEW_ADRESSE }}">
+                            Créer une nouvelle adresse
+                        </x-form.radio>
                     </div>
                     @if($backDropMode == \App\Services\ReservationService::WITH_PLACE)
                         <x-select

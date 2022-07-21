@@ -11,7 +11,9 @@ use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -23,6 +25,7 @@ class EditionFacture extends Component
     public int|null $selectedYear = null;
     public int|null $entrepriseIdSelected = null;
     public int|null $reservationSelected = null;
+    public string $uniqID;
 
     public float $montant_ttc = 0;
 
@@ -40,6 +43,8 @@ class EditionFacture extends Component
         'selectedYear',
         'entrepriseIdSelected'
     ];
+
+    protected $listeners = ['reservationUpdated'];
 
     public function mount()
     {
@@ -64,6 +69,8 @@ class EditionFacture extends Component
         ];
 
         $this->email['message'] = '';
+
+        $this->uniqID = uniqid('facture_');
     }
 
     public function render()
@@ -146,7 +153,7 @@ class EditionFacture extends Component
     /**
      * @return AdresseEntreprise|null
      */
-    public function getAdresseFacturationEntrepriseProperty(): ?AdresseEntreprise
+    public function getAdresseFacturationEntrepriseProperty(): Model|null
     {
         if ($this->entreprise === null) {
             return null;
@@ -155,7 +162,22 @@ class EditionFacture extends Component
         return AdresseEntreprise::query()
             ->where('type', AdresseEntrepriseTypeEnum::FACTURATION)
             ->where('entreprise_id', $this->entreprise->id)
-            ->get()->first();
+            ->first();
+    }
+
+    /**
+     * @return Builder|Model|null
+     */
+    public function getAdresseEntrepriseProperty(): Builder|Model|null
+    {
+        if ($this->entreprise === null) {
+            return null;
+        }
+
+        return AdresseEntreprise::query()
+            ->where('type', AdresseEntrepriseTypeEnum::PHYSIQUE)
+            ->where('entreprise_id', $this->entreprise->id)
+            ->first();
     }
 
     /**
@@ -199,9 +221,15 @@ class EditionFacture extends Component
                 ->get()
                 ->first();
         } else {
+            $addressFacturation = (is_null($this->adresseFacturationEntreprise)) ?
+                $this->adresseEntreprise->adresse_full :
+                $this->adresseFacturationEntreprise->adresse_full;
+
             $facture = Facture::create([
                 'month' => $this->selectedMonth,
-                'year' => $this->selectedYear
+                'year' => $this->selectedYear,
+                'adresse_client' => $this->adresseEntreprise->adresse_full,
+                'adresse_facturation' => $addressFacturation
             ]);
         }
 
@@ -240,6 +268,7 @@ class EditionFacture extends Component
             $this->months[$this->facture->month],
             $this->facture->year
         );
+        $this->email['complement'] = '';
 
         $this->factureModal = true;
     }
@@ -253,6 +282,7 @@ class EditionFacture extends Component
             return [
                 'email.address' => 'required|email',
                 'email.message' => 'required',
+                'email.complement' => 'nullable',
                 'isAcquitte' => 'bool'
             ];
         }
@@ -286,22 +316,35 @@ class EditionFacture extends Component
     /**
      * @return void
      */
-    public function sendFactureAction(): void
+    public function sendFactureAction()
     {
         $this->validate();
-        $this->factureModal = false;
 
         foreach ($this->reservations as $reservation) {
-            $reservation->updateQuietly([
-                'is_billed' => true
-            ]);
+            $reservation->is_billed = true;
+            $reservation->updateQuietly();
         }
 
-        BillCreated::dispatch($this->facture);
+        BillCreated::dispatch($this->facture, $this->email);
 
-        $this->notification()->success(
-            'Facture envoyée avec succés.'
-        );
+        $this->notification([
+            'title' => 'Facture envoyée avec succés.',
+            'description' => 'Vous allez être redirigé vers la page de listing entreprises',
+            'icon' => 'success',
+            'onTimeout' => [
+                'method' => 'redirectEvent',
+            ],
+        ]);
+
+        $this->factureModal = false;
+    }
+
+    public function redirectEvent()
+    {
+        return redirect()->to(route('admin.facturations.edition', [
+                'selectedMonth' => $this->selectedMonth,
+                '$selectedYear' => $this->selectedYear]
+        ));
     }
 
     /**
@@ -312,10 +355,17 @@ class EditionFacture extends Component
         $this->validate();
         $this->reservation->updateQuietly($this->reservationFormData);
         $this->reservationModal = false;
+        $this->emit('reservationUpdated');
         $this->notification()->success(
             'Opération réussite',
             'La valeur de la réservation a bien été sauvegardée.'
         );
+    }
+
+    public function sendEmailTestAction()
+    {
+        Mail::to(config('mail.admin.address'))
+            ->send(new \App\Mail\BillCreated($this->facture, $this->email['message']));
     }
 
     /**
@@ -329,5 +379,34 @@ class EditionFacture extends Component
         $total = $total + $montantMajoration + floatval($reservation->complement);
 
         return $total;
+    }
+
+    public function reservationUpdated()
+    {
+        $total_ttc = 0;
+
+        foreach ($this->reservations as $reservation) {
+            $currentTotalTTC = $this->calculTotal($reservation);
+
+            if ($currentTotalTTC > 0) {
+                $total_ttc = $total_ttc + $currentTotalTTC;
+            }
+        }
+
+        $total_ht = $total_ttc / 1.10;
+
+        $this->facture->updateQuietly([
+            'montant_ht' => $total_ht
+        ]);
+
+        $this->uniqID = uniqid('facture_');
+    }
+
+    public function editFactureAction()
+    {
+        $this->facture->updateQuietly([
+            'is_acquitte' => $this->isAcquitte,
+            'information' => $this->email['complement']
+        ]);
     }
 }

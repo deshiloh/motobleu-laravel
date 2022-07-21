@@ -85,26 +85,28 @@ class Input extends FormComponent
 
     protected function getErrorClasses(): string
     {
-        return Str::of('text-negative-900 placeholder-negative-300')
+        return Str::of('text-negative-900 dark:text-negative-600 placeholder-negative-300 dark:placeholder-negative-500')
             ->unless($this->borderless, function (Stringable $stringable) {
                 return $stringable
-                    ->append(' border border-negative-300 focus:ring-negative-500 focus:border-negative-500');
+                    ->append(' border border-negative-300 focus:ring-negative-500 focus:border-negative-500')
+                    ->append(' dark:bg-secondary-800 dark:border-negative-600');
             });
     }
 
     protected function getDefaultColorClasses(): string
     {
-        return Str::of('placeholder-secondary-400')
+        return Str::of('input input-bordered')
             ->append(' dark:placeholder-secondary-500')
             ->unless($this->borderless, function (Stringable $stringable) {
                 return $stringable
-                    ->append(' border border-secondary-300 focus:ring-primary-500 focus:border-primary-500');
+                    ->append(' border border-secondary-300 focus:ring-primary-500 focus:border-primary-500')
+                    ->append(' dark:border-secondary-600');
             });
     }
 
     protected function getDefaultClasses(): string
     {
-        return Str::of('input input-bordered')
+        return Str::of('form-input block w-full sm:text-sm rounded-md transition ease-in-out duration-100 focus:outline-none')
             ->unless($this->shadowless, fn (Stringable $stringable) => $stringable->append(' shadow-sm'))
             ->when($this->borderless, function (Stringable $stringable) {
                 return $stringable->append(' border-transparent focus:border-transparent focus:ring-transparent');

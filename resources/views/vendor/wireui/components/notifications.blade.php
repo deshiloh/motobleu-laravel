@@ -6,8 +6,9 @@
      wire:ignore>
     <div class="max-w-sm w-full space-y-2 pointer-events-auto flex flex-col-reverse">
         <template x-for="notification in notifications" :key="`notification-${notification.id}`">
-            <div class="max-w-sm w-full bg-base-100 shadow-lg rounded-lg ring-1 ring-black
-                        ring-opacity-5 relative overflow-hidden pointer-events-auto"
+            <div class="max-w-sm w-full bg-white shadow-lg rounded-lg ring-1 ring-black
+                        ring-opacity-5 relative overflow-hidden pointer-events-auto
+                        dark:bg-secondary-800 dark:border dark:border-secondary-700"
                  :class="{ 'flex': notification.rightButtons }"
                  :id="`notification.${notification.id}`"
                  x-transition:enter="transform ease-out duration-300 transition"
@@ -15,7 +16,7 @@
                  x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
                  x-on:mouseenter="pauseNotification(notification)"
                  x-on:mouseleave="resumeNotification(notification)">
-                <div class="bg-secondary rounded-full transition-all duration-150 ease-linear absolute top-0 left-0"
+                <div class="bg-secondary-300 dark:bg-secondary-600 rounded-full transition-all duration-150 ease-linear absolute top-0 left-0"
                      style="height: 2px; width: 100%;"
                      :id="`timeout.bar.${notification.id}`"
                      x-show="Boolean(notification.timer) && notification.progressbar !== false">
@@ -48,11 +49,11 @@
                         <div class="w-0 flex-1 pt-0.5" :class="{
                                 'ml-3': Boolean(notification.icon || notification.img)
                             }">
-                            <p class="text-sm font-medium text-secondary"
+                            <p class="text-sm font-medium text-secondary-900 dark:text-secondary-400"
                                x-show="notification.title"
                                x-html="notification.title">
                             </p>
-                            <p class="mt-1 text-sm text-secondary"
+                            <p class="mt-1 text-sm text-secondary-500"
                                x-show="notification.description"
                                x-html="notification.description">
                             </p>

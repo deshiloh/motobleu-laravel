@@ -5,12 +5,14 @@ namespace Database\Seeders;
 use App\Models\AdresseEntreprise;
 use App\Models\AdresseReservation;
 use App\Models\Entreprise;
+use App\Models\Facture;
 use App\Models\Localisation;
 use App\Models\Passager;
 use App\Models\Pilote;
 use App\Models\Reservation;
 use App\Models\User;
 use App\Observers\ReservationObserver;
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
@@ -30,7 +32,8 @@ class DatabaseSeeder extends Seeder
     {
         $entreprises = Entreprise::factory()
             ->count(10)
-            ->has(AdresseEntreprise::factory())
+            ->has(AdresseEntreprise::factory()->facturation())
+            ->has(AdresseEntreprise::factory()->physique())
             ->create();
 
         foreach ($entreprises as $entreprise) {
@@ -43,7 +46,13 @@ class DatabaseSeeder extends Seeder
             foreach ($users as $user) {
                 $passager = Passager::factory()->for($user)->create();
                 if (App::environment(['testing'])) {
-                    Reservation::factory()->for($passager)->create();
+                    $facture = Facture::factory()->create();
+                    Reservation::factory([
+                        'pickup_date' => Carbon::now()
+                    ])
+                        ->for($passager)
+                        //->for($facture)
+                        ->create();
                 }
                 Reservation::factory([
                     'is_confirmed' => true

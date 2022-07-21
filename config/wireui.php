@@ -57,7 +57,7 @@ return [
             'alias' => 'color-picker',
         ],
         'input' => [
-            'class' => Components\Input::class,
+            'class' => \App\Components\Input::class,
             'alias' => 'input',
         ],
         'textarea' => [

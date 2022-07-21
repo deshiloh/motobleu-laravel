@@ -16,15 +16,17 @@ class BillCreated
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Facture $facture;
+    public array $emailData;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Facture $facture)
+    public function __construct(Facture $facture, array $emailData)
     {
         $this->facture = $facture;
+        $this->emailData = $emailData;
     }
 
     /**
