@@ -59,7 +59,7 @@ class AccountForm extends Component
     public function render()
     {
         return view('livewire.account.account-form')
-            ->layout('components.admin-layout')
+            ->layout('components.layout')
         ;
     }
 

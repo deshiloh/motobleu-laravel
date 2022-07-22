@@ -98,9 +98,7 @@
     <main>
         <div class="container mx-auto py-6 sm:px-6 lg:px-8">
             <!-- Replace with your content -->
-            <div class="px-4 py-4 rounded-lg bg-white shadow dark:bg-slate-800">
-                {{ $slot }}
-            </div>
+            {{ $slot }}
             <!-- /End replace -->
         </div>
     </main>

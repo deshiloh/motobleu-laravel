@@ -19,7 +19,7 @@ class EditPasswordForm extends Component
     public function render()
     {
         return view('livewire.account.edit-password-form')
-            ->layout('components.admin-layout');
+            ->layout('components.layout');
     }
 
     protected function getRules()
