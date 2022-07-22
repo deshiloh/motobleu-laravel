@@ -1,3 +1,3 @@
-<td {{ $attributes }} class="bg-transparent whitespace-normal">
+<td {{ $attributes->merge(['class' => 'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-100 sm:pl-6']) }}>
     {{ $slot }}
 </td>
