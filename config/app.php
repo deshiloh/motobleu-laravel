@@ -185,6 +185,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -209,8 +210,8 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        'Invoice' => LaravelDaily\Invoices\Facades\Invoice::class
-        // 'ExampleClass' => App\Example\ExampleClass::class,
+        'Invoice' => LaravelDaily\Invoices\Facades\Invoice::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ])->toArray(),
 
 ];
