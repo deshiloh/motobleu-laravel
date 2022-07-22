@@ -68,6 +68,7 @@
         <div class="container mx-auto">
             <x-admin.content>
                 <div class="container mx-auto">
+                    <a href="{{ route('admin.reservations.export') }}" class="btn btn-primary">Export test</a>
                     <div class="text-xl mb-4">Réservations à confirmer</div>
                     <x-datatable>
                         <x-slot:headers>

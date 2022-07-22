@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReservationsExport;
 use App\Models\Reservation;
 use App\Services\SentryService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReservationController extends Controller
 {
@@ -26,5 +28,10 @@ class ReservationController extends Controller
     public function create()
     {
         return view('admin.reservation.create');
+    }
+
+    public function export()
+    {
+        return Excel::download(new ReservationsExport(), 'reservations.xlsx');
     }
 }

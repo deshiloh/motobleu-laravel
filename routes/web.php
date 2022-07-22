@@ -52,15 +52,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-
-    $test = Reservation::query()
-        ->select(\Illuminate\Support\Facades\DB::raw('MONTH(pickup_date) as month, count(*) as nb'))
-        ->whereYear('pickup_date', 2007)
-        ->groupBy('month')
-        ->get()
-    ;
-
-    ray($test);
     return view('welcome', [
         'reservations_to_confirm' => Reservation::toConfirmed(),
         'reservations' => Reservation::count(),
@@ -172,6 +163,7 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
         ->name('reservations.edit');
     Route::resource('reservations', ReservationController::class)
         ->except(['show', 'update', 'destroy', 'edit', 'create', 'store']);
+    Route::get('reservations/export', [ReservationController::class, 'export'])->name('reservations.export');
 
     // FACTURATIONS
     Route::get('facturations', FacturationDataTable::class)
