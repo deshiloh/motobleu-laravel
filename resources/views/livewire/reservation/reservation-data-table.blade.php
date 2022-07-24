@@ -51,13 +51,14 @@
                         @endif
                     </x-datatable.td>
                     <x-datatable.td>
-                        <div class="dropdown dropdown-end">
-                            <label tabindex="0" class="btn m-1 btn-primary btn-sm">Actions</label>
-                            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                                <li><a href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}">Détails</a></li>
-                                <li><a href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}">Éditer</a></li>
-                            </ul>
-                        </div>
+                        <x-dropdown>
+                            <x-slot name="trigger">
+                                <x-button label="Actions" primary sm />
+                            </x-slot>
+
+                            <x-dropdown.item label="Détails" href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" />
+                            <x-dropdown.item separator label="Éditer" href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}" />
+                        </x-dropdown>
                     </x-datatable.td>
                 </x-datatable.tr>
             @empty
@@ -66,12 +67,8 @@
                 </x-datatable.tr>
             @endforelse
         </x-slot>
-        <x-slot:footer>
-            <x-datatable.tr>
-                <x-datatable.th colspan="8">
-                    {{ $reservations->links('components.datatable.pagination') }}
-                </x-datatable.th>
-            </x-datatable.tr>
-        </x-slot:footer>
     </x-datatable>
+    <div class="px-3 py-4">
+        {{ $reservations->links('components.datatable.pagination') }}
+    </div>
 </div>

@@ -76,7 +76,7 @@ class EditionFacture extends Component
     public function render()
     {
         return view('livewire.facturation.edition-facture')
-            ->layout('components.admin-layout');
+            ->layout('components.layout');
     }
 
     /**

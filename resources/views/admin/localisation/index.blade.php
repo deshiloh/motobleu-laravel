@@ -1,9 +1,11 @@
-<x-admin-layout>
-    <x-title-section>
-        <x-slot:title>Liste des localisations</x-slot:title>
-        <a href="{{ route('admin.localisations.create') }}" class="btn btn-primary btn-sm">
-            Créer une localisation
-        </a>
-    </x-title-section>
-    <livewire:localisation.localisation-data-table />
-</x-admin-layout>
+<x-layout>
+    <x-header>
+        Liste des localisations
+        <x-slot:right>
+            <x-button href="{{ route('admin.localisations.create') }}" primary sm label="Créer une localisation" />
+        </x-slot:right>
+    </x-header>
+    <x-bloc-content>
+        <livewire:localisation.localisation-data-table />
+    </x-bloc-content>
+</x-layout>

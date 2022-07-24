@@ -1,11 +1,11 @@
-<x-admin-layout>
-    <x-title-section>
-        <x-slot name="title">
-            Liste des passagers
-        </x-slot>
-        <a href="{{ route('admin.passagers.create') }}" class="btn btn-primary btn-sm">
-            Créer un passager
-        </a>
-    </x-title-section>
-    <livewire:passager.passagers-data-table />
-</x-admin-layout>
+<x-layout>
+    <x-header>
+        Liste des passagers
+        <x-slot:right>
+            <x-button href="{{ route('admin.passagers.create') }}" primary sm label="Créer un passager" />
+        </x-slot:right>
+    </x-header>
+    <x-bloc-content>
+        <livewire:passager.passagers-data-table />
+    </x-bloc-content>
+</x-layout>

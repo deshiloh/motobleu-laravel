@@ -21,7 +21,7 @@ class PiloteForm extends Component
     public function render()
     {
         return view('livewire.pilote.pilote-form')
-            ->layout('components.admin-layout');
+            ->layout('components.layout');
     }
 
     protected function getRules()

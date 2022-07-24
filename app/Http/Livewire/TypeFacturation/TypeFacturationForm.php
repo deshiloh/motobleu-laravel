@@ -21,7 +21,7 @@ class TypeFacturationForm extends Component
     public function render()
     {
         return view('livewire.type-facturation.type-facturation-form')
-            ->layout('components.admin-layout');
+            ->layout('components.layout');
     }
 
     protected function getRules()

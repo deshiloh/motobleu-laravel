@@ -3,36 +3,38 @@
     $endYear = \Carbon\Carbon::now()->addYears(4)->year;
 @endphp
 <div>
-    <x-title-section>
-        <x-slot:title>
-            @if($this->entreprise)
-                Édition de la facturation <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
-            @else
-                Édition de la facturation
-            @endif
-        </x-slot:title>
-        @if($entrepriseIdSelected)
-            <a href="{{ route('admin.facturations.edition', [
+    <x-header wire:key="header">
+        @if($this->entreprise)
+            Édition de la facturation <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
+        @else
+            Édition de la facturation
+        @endif
+        <x-slot:right>
+            <div>
+                @if($entrepriseIdSelected)
+                    <a href="{{ route('admin.facturations.edition', [
                 'selectedMonth' => $selectedMonth,
                 '$selectedYear' => $selectedYear]
             ) }}" class="btn btn-sm">
-                Retourner à la liste
-            </a>
-        @endif
-        @if(!$this->adresseFacturationEntreprise && $entrepriseIdSelected)
-            <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">
-                <span class="font-medium">Attention</span> L'entreprise n'as pas d'adresse de facturation
+                        Retourner à la liste
+                    </a>
+                @endif
+                @if(!$this->adresseFacturationEntreprise && $entrepriseIdSelected)
+                    <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">
+                        <span class="font-medium">Attention</span> L'entreprise n'as pas d'adresse de facturation
+                    </div>
+                @endif
+                @if($this->facture && $this->adresseFacturationEntreprise)
+                    <button class="btn btn-success btn-sm" wire:click="sendFactureModal">
+                        Finaliser la facturation
+                    </button>
+                @endif
             </div>
-        @endif
-        @if($this->facture && $this->adresseFacturationEntreprise)
-            <button class="btn btn-success btn-sm" wire:click="sendFactureModal">
-                Finaliser la facturation
-            </button>
-        @endif
-    </x-title-section>
+        </x-slot:right>
+    </x-header>
     @if(!$entrepriseIdSelected)
-        <x-admin.content wire:key="entrepriseDataTable">
-            <div class="border-b border-gray-400 pb-3 mb-4">
+        <x-bloc-content wire:key="entrepriseDataTable">
+            <div class="border-b border-gray-200 pb-3 mb-4">
                 <div class="grid grid-cols-4 gap-6">
                     <x-native-select
                         label="Mois"
@@ -54,7 +56,7 @@
                     </x-native-select>
                 </div>
             </div>
-            <div class="text-2xl">
+            <div class="text-2xl mb-4">
                 Liste des entreprises à facturer
             </div>
             <x-datatable>
@@ -71,9 +73,7 @@
                             <x-datatable.td>{{ $entreprise->nom }}</x-datatable.td>
                             <x-datatable.td>{{ $entreprise->nbReservations }}</x-datatable.td>
                             <x-datatable.td>
-                                <button href="" class="btn btn-primary btn-sm" wire:click="goToEditPage('{{ $entreprise->id }}')">
-                                    Éditer la facturation
-                                </button>
+                                <x-button primary sm wire:click="goToEditPage('{{ $entreprise->id }}')" label="Éditer la facturation" />
                             </x-datatable.td>
                         </x-datatable.tr>
                     @empty
@@ -85,11 +85,11 @@
                     @endforelse
                 </x-slot:body>
             </x-datatable>
-        </x-admin.content>
+        </x-bloc-content>
     @endif
     @if($this->reservations)
         <x-admin.content>
-            <div class="text-2xl mb-3   ">Liste des réservations</div>
+            <div class="text-2xl mb-3">Liste des réservations</div>
             <x-datatable>
                 <x-slot:headers>
                     <x-datatable.tr>

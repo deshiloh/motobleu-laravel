@@ -1,11 +1,9 @@
 <div>
-    <x-title-section>
-        <x-slot:title>
-            Liste des factures
-        </x-slot:title>
-    </x-title-section>
-    <x-admin.content>
-        <div class="my-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+    <x-header>
+        Liste des factures
+    </x-header>
+    <x-bloc-content>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div>
                 <x-input label="Rechercher" icon="search" wire:model="search"/>
             </div>
@@ -43,7 +41,7 @@
                                 <span class="badge badge-success">
                                     Oui
                                 </span>
-                                @else
+                            @else
                                 <span class="badge badge-error">
                                     Non
                                 </span>
@@ -53,13 +51,14 @@
                             {{ $this->getEntreprise($facture)->nom }}
                         </x-datatable.td>
                         <x-datatable.td>
-                            <div class="dropdown">
-                                <label tabindex="0" class="btn m-1 btn-primary btn-sm">Actions</label>
-                                <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li><a href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank">Voir</a></li>
-                                    <li><a href="#">Liste des courses</a></li>
-                                </ul>
-                            </div>
+                            <x-dropdown>
+                                <x-slot name="trigger">
+                                    <x-button label="Actions" primary sm />
+                                </x-slot>
+
+                                <x-dropdown.item label="Voir" href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank" />
+                                <x-dropdown.item separator label="Liste des courses" />
+                            </x-dropdown>
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty
@@ -69,5 +68,5 @@
                 @endforelse
             </x-slot:body>
         </x-datatable>
-    </x-admin.content>
+    </x-bloc-content>
 </div>

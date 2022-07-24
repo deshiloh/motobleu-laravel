@@ -25,7 +25,7 @@ Cordialement.";
     public function render()
     {
         return view('livewire.reservation.reservation-show')
-            ->layout('components.admin-layout');
+            ->layout('components.layout');
     }
 
     protected function getRules()

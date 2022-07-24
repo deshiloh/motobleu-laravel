@@ -51,33 +51,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-
-    $test = Reservation::query()
-        ->select(\Illuminate\Support\Facades\DB::raw('MONTH(pickup_date) as month, count(*) as nb'))
-        ->whereYear('pickup_date', 2007)
-        ->groupBy('month')
-        ->get()
-    ;
-
-    ray($test);
-    return view('welcome', [
-        'reservations_to_confirm' => Reservation::toConfirmed(),
-        'reservations' => Reservation::count(),
-        'users' => User::count()
-    ]);
-})->name('homepage');
-
-Route::get('/login', function () {
-    return view('welcome');
-})->name('login.form');
-
-Route::post('/login', [LoginController::class, 'authenticate'])
-    ->name('login');
-Route::get('/logout', [LoginController::class, 'logout'])
-    ->name('logout');
+Route::middleware('auth')->group(function () {
+    Route::get('/', function () {
+        return view('welcome', [
+            'reservations_to_confirm' => Reservation::toConfirmed(),
+            'reservations' => Reservation::count(),
+            'users' => User::count()
+        ]);
+    })->name('homepage');
+});
 
 Route::middleware('guest')->group(function () {
+    Route::get('/login', function () {
+        return view('login');
+    })->name('login.form');
+
+    Route::post('/login', [LoginController::class, 'authenticate'])
+        ->name('login');
+    Route::get('/logout', [LoginController::class, 'logout'])
+        ->name('logout');
+
     Route::get('/forgot-password', ForgotPasswordForm::class)
         ->name('password.request');
 

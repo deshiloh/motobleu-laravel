@@ -16,7 +16,7 @@ class CostCenterForm extends Component
     public function render()
     {
         return view('livewire.cost-center.cost-center-form')
-            ->layout('components.admin-layout');
+            ->layout('components.layout');
     }
 
     public function mount(CostCenter $costCenter)

@@ -20,7 +20,7 @@ class FacturationDataTable extends Component
         return view('livewire.facturation.facturation-data-table', [
             'facturations' => $this->buildQuery()
         ])
-            ->layout('components.admin-layout');
+            ->layout('components.layout');
     }
 
     public function getEntreprise(Facture $facture)

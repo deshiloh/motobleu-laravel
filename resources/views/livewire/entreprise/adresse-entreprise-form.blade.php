@@ -1,10 +1,8 @@
 <div>
-    <x-title-section>
-        <x-slot:title>
-            {!! $adresseEntreprise->exists ? "Modification de l'adresse de <span class='text-blue-500'>". $adresseEntreprise->type->name."</span> de <span class='text-blue-500'>". $entreprise->nom."</span>" : "Création d'une adresse pour <span class='text-blue-500'>".$entreprise->nom."</span>"!!}
-        </x-slot:title>
-    </x-title-section>
-    <x-admin.content>
+    <x-header>
+        {!! $adresseEntreprise->exists ? "Modification de l'adresse de <span class='text-blue-500'>". $adresseEntreprise->type->name."</span> de <span class='text-blue-500'>". $entreprise->nom."</span>" : "Création d'une adresse pour <span class='text-blue-500'>".$entreprise->nom."</span>"!!}
+    </x-header>
+    <x-bloc-content>
         <form wire:submit.prevent="save" class="space-y-3">
             <x-input label="Nom de l'adresse" wire:model.defer="adresseEntreprise.nom" />
             <x-input label="Adresse email de contact" wire:model.defer="adresseEntreprise.email" type="email" hint="En cas de type facturation, elle sera utilisée pour l'envoi de la facture"/>
@@ -18,9 +16,7 @@
                     <option value="{{ $type->value }}">{{ $type->name }}</option>
                 @endforeach
             </x-native-select>
-            <button type="submit" class="btn btn-primary btn-sm">
-                Enregistrer
-            </button>
+            <x-button type="submit" sm primary label="Enregistrer" />
         </form>
-    </x-admin.content>
+    </x-bloc-content>
 </div>

@@ -1,11 +1,14 @@
 <div>
-    <x-title-section>
-        <x-slot:title>
-            Liste des courses du pilote <span class="text-blue-500">{{ $pilote->full_name }}</span>
-        </x-slot:title>
-    </x-title-section>
-    <x-admin.content>
-        <div class="text-2xl">Liste des réservations</div>
+    <x-header>
+        Liste des courses du pilote <span class="text-blue-500">{{ $pilote->full_name }}</span>
+    </x-header>
+    <x-bloc-content>
+        <div class="pb-3 border-b border-gray-200 dark:border-gray-600 sm:flex sm:items-center sm:justify-between">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Liste des réservations</h3>
+            <div class="mt-3 sm:mt-0 sm:ml-4">
+                <x-button label="Exporter" icon="download" sm primary/>
+            </div>
+        </div>
         <div class="py-3 grid grid-cols-3 gap-6">
             <x-datetime-picker
                 without-time
@@ -21,14 +24,6 @@
                 placeholder="Date de fin"
                 wire:model="dateFin"
             />
-            <div class="flex items-end">
-                <button class="btn btn-primary gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Exporter
-                </button>
-            </div>
         </div>
         <x-datatable>
             <x-slot name="headers">
@@ -107,5 +102,5 @@
         <div class="mt-4 px-1">
             {{ $reservations->links('components.datatable.pagination') }}
         </div>
-    </x-admin.content>
+    </x-bloc-content>
 </div>

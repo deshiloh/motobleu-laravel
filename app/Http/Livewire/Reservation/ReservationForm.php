@@ -139,7 +139,7 @@ class ReservationForm extends Component
     public function render()
     {
         return view('livewire.reservation.reversation-form')
-            ->layout('components.admin-layout');
+            ->layout('components.layout');
     }
 
     public function saveReservation()
