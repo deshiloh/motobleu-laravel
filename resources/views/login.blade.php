@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name') }}</title>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    @livewireStyles()
-</head>
-<body class="antialiased min-h-screen bg-gray-100 dark:bg-gray-900">
+<x-guess-layout>
     <div class="min-h-screen">
         <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -28,7 +17,7 @@
 
                         <div>
                             <div class="mt-1">
-                                <x-input label="Mot de passe" icon="key" name="password" type="password"/>
+                                <x-input label="Mot de passe" icon="key" name="password" type="password" placeholder="Votre mot de passe..."/>
                             </div>
                         </div>
 
@@ -39,7 +28,7 @@
                             </div>--}}
 
                             <div class="text-sm">
-                                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> Mot de passe oublié ? </a>
+                                <a href="{{ route('password.request') }}" class="font-medium text-indigo-600 hover:text-indigo-500"> Mot de passe oublié ? </a>
                             </div>
                         </div>
 
@@ -51,12 +40,4 @@
             </div>
         </div>
     </div>
-    <wireui:scripts/>
-    <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js"></script>
-    <script src="{{ asset('js/app.js') }}" defer></script>
-    @livewireScripts()
-    @stack('scripts')
-</body>
-</html>
-
+</x-guess-layout>

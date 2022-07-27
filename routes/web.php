@@ -61,6 +61,9 @@ Route::middleware('auth')->group(function () {
     })->name('homepage');
 });
 
+Route::get('/logout', [LoginController::class, 'logout'])
+    ->name('logout');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', function () {
         return view('login');
@@ -68,8 +71,6 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/login', [LoginController::class, 'authenticate'])
         ->name('login');
-    Route::get('/logout', [LoginController::class, 'logout'])
-        ->name('logout');
 
     Route::get('/forgot-password', ForgotPasswordForm::class)
         ->name('password.request');
