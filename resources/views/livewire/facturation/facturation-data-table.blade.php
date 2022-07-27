@@ -51,14 +51,8 @@
                             {{ $this->getEntreprise($facture)->nom }}
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-dropdown>
-                                <x-slot name="trigger">
-                                    <x-button label="Actions" primary sm />
-                                </x-slot>
-
-                                <x-dropdown.item label="Voir" href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank" />
-                                <x-dropdown.item separator label="Liste des courses" />
-                            </x-dropdown>
+                            <x-button label="Voir" href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank" icon="eye" info sm/>
+                            <x-button label="Liste des courses" icon="view-list" primary     sm/>
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty

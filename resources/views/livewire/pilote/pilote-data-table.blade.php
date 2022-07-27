@@ -23,15 +23,9 @@
                     <x-datatable.td>{{ $pilote->telephone }}</x-datatable.td>
                     <x-datatable.td>{{ $pilote->adresse }}</x-datatable.td>
                     <x-datatable.td>
-                        <x-dropdown>
-                            <x-slot name="trigger">
-                                <x-button label="Actions" primary sm />
-                            </x-slot>
-
-                            <x-dropdown.item href="{{ route('admin.pilotes.edit', ['pilote' => $pilote->id]) }}" label="Éditer" />
-                            <x-dropdown.item href="{{ route('admin.pilotes.recap-reservation', ['pilote' => $pilote->id]) }}" separator label="Récap. des courses" />
-                            <x-dropdown.item href="{{ route('admin.pilotes.destroy', ['pilote' => $pilote->id]) }}" separator label="Supprimer" />
-                        </x-dropdown>
+                        <x-button label="Éditer" href="{{ route('admin.pilotes.edit', ['pilote' => $pilote->id]) }}" primary sm icon="pencil" />
+                        <x-button label="Récap. des courses" href="{{ route('admin.pilotes.recap-reservation', ['pilote' => $pilote->id]) }}" info sm icon="view-list" />
+                        <x-button label="Supprimer" href="{{ route('admin.pilotes.destroy', ['pilote' => $pilote->id]) }}" red sm icon="trash" />
                     </x-datatable.td>
                 </x-datatable.tr>
             @empty

@@ -4,33 +4,7 @@
 @endphp
 <div>
     <x-header wire:key="header">
-        @if($this->entreprise)
-            Édition de la facturation <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
-        @else
-            Édition de la facturation
-        @endif
-        <x-slot:right>
-            <div>
-                @if($entrepriseIdSelected)
-                    <a href="{{ route('admin.facturations.edition', [
-                'selectedMonth' => $selectedMonth,
-                '$selectedYear' => $selectedYear]
-            ) }}" class="btn btn-sm">
-                        Retourner à la liste
-                    </a>
-                @endif
-                @if(!$this->adresseFacturationEntreprise && $entrepriseIdSelected)
-                    <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">
-                        <span class="font-medium">Attention</span> L'entreprise n'as pas d'adresse de facturation
-                    </div>
-                @endif
-                @if($this->facture && $this->adresseFacturationEntreprise)
-                    <button class="btn btn-success btn-sm" wire:click="sendFactureModal">
-                        Finaliser la facturation
-                    </button>
-                @endif
-            </div>
-        </x-slot:right>
+        Édition de la facturation
     </x-header>
     @if(!$entrepriseIdSelected)
         <x-bloc-content wire:key="entrepriseDataTable">
@@ -88,7 +62,32 @@
         </x-bloc-content>
     @endif
     @if($this->reservations)
-        <x-admin.content>
+        <x-bloc-content>
+            <div class="flex items-center">
+                <div class="text-xl">
+                    @if($this->entreprise)
+                        Édition de la facturation <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
+                    @endif
+                </div>
+                <div class="ml-auto">
+                    @if($entrepriseIdSelected)
+                        <x-button href="{{ route('admin.facturations.edition', [
+                            'selectedMonth' => $selectedMonth,
+                            '$selectedYear' => $selectedYear]
+                        ) }}" label="Retourner à la liste" sm />
+                    @endif
+                    @if(!$this->adresseFacturationEntreprise && $entrepriseIdSelected)
+                        <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">
+                            <span class="font-medium">Attention</span> L'entreprise n'as pas d'adresse de facturation
+                        </div>
+                    @endif
+                    @if($this->facture && $this->adresseFacturationEntreprise)
+                        <x-button wire:click="sendFactureModal" label="Finaliser la facturation" positive sm/>
+                    @endif
+                </div>
+            </div>
+        </x-bloc-content>
+        <x-bloc-content>
             <div class="text-2xl mb-3">Liste des réservations</div>
             <x-datatable>
                 <x-slot:headers>
@@ -117,9 +116,7 @@
                             <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
                             <x-datatable.td> {{ number_format($currentAmount, 2, ',', ' ') }} € </x-datatable.td>
                             <x-datatable.td>
-                                <button class="btn btn-primary btn-sm" wire:click="reservationModal('{{ $reservation->id }}')">
-                                    Éditer
-                                </button>
+                                <x-button primary sm wire:click="reservationModal('{{ $reservation->id }}')" label="Éditer" />
                             </x-datatable.td>
                         </x-datatable.tr>
                     @endforeach
@@ -142,7 +139,7 @@
                     </div>
                 </div>
             </div>
-        </x-admin.content>
+        </x-bloc-content>
     @endif
     <x-modal wire:model.defer="factureModal">
         @if($this->facture)
@@ -156,22 +153,20 @@
                         <form wire:submit.prevent="sendFactureAction" id="factureForm" class="space-y-4">
                             <x-input label="Email" wire:model.defer="email.address"/>
                             <x-tinymce wire:model="email.message"/>
-                            <x-form.toggle wire:model.defer="isAcquitte" wire:change="editFactureAction">
-                                Facture acquittée
-                            </x-form.toggle>
+                            <x-toggle wire:model.defer="isAcquitte" wire:change="editFactureAction" label="Facture acquittée" md />
                             <x-textarea label="Texte information" hint="Ce texte apparaitra sur la facture" wire:model.defer="email.complement" wire:change.debounce="editFactureAction"/>
-                            <button wire:click="sendEmailTestAction" class="btn btn-primary btn-sm" type="button">Envoi d'un email de test</button>
+                            <x-button wire:click="sendEmailTestAction" primary sm type="button">Envoi d'un email de test</x-button>
                         </form>
                     </div>
                 </div>
                 <x-slot name="footer">
                     <div class="flex justify-end gap-x-4">
-                        <button x-on:click="close" class="btn btn-sm">
+                        <x-button x-on:click="close" sm >
                             Annuler
-                        </button>
-                        <button type="submit" form="factureForm" class="btn btn-primary btn-sm">
+                        </x-button>
+                        <x-button type="submit" form="factureForm" primary sm >
                             Finaliser et envoyer
-                        </button>
+                        </x-button>
                     </div>
                 </x-slot>
             </x-card>
@@ -189,12 +184,12 @@
                 </form>
                 <x-slot name="footer">
                     <div class="flex justify-end gap-x-4">
-                        <button class="btn btn-sm" x-on:click="close">
+                        <x-button sm x-on:click="close">
                             Annuler
-                        </button>
-                        <button type="submit" form="reservationForm" class="btn btn-primary btn-sm">
+                        </x-button>
+                        <x-button type="submit" form="reservationForm" primary sm >
                             Valider
-                        </button>
+                        </x-button>
                     </div>
                 </x-slot>
             </x-card>

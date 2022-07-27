@@ -51,14 +51,10 @@
                         @endif
                     </x-datatable.td>
                     <x-datatable.td>
-                        <x-dropdown>
-                            <x-slot name="trigger">
-                                <x-button label="Actions" primary sm />
-                            </x-slot>
-
-                            <x-dropdown.item label="Détails" href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" />
-                            <x-dropdown.item separator label="Éditer" href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}" />
-                        </x-dropdown>
+                        <div class="flex space-x-2">
+                            <x-button.circle icon="eye" primary sm href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" />
+                            <x-button.circle icon="pencil" info sm href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}" />
+                        </div>
                     </x-datatable.td>
                 </x-datatable.tr>
             @empty
