@@ -62,7 +62,7 @@
         </x-bloc-content>
     @endif
     @if($this->reservations)
-        <x-bloc-content>
+        <x-bloc-content wire:key="headerbis">
             <div class="flex items-center">
                 <div class="text-xl">
                     @if($this->entreprise)
@@ -82,7 +82,7 @@
                         </div>
                     @endif
                     @if($this->facture && $this->adresseFacturationEntreprise)
-                        <x-button wire:click="sendFactureModal" label="Finaliser la facturation" positive sm/>
+                        <x-button wire:click="sendFactureModal" label="Finaliser la facturation" positive sm />
                     @endif
                 </div>
             </div>
@@ -143,7 +143,7 @@
     @endif
     <x-modal wire:model.defer="factureModal">
         @if($this->facture)
-            <x-card title="Envoi de la facture">
+            <x-card title="Envoi de la facture" wire:key="facture">
                 <x-errors class="mb-4"/>
                 <div class="grid grid-cols-2 gap-6">
                     <div>
@@ -172,7 +172,7 @@
             </x-card>
         @endif
     </x-modal>
-    <x-modal wire:model.defer="reservationModal" blur>
+    <x-modal wire:model.defer="reservationModal" blur wire:key="reservation">
         @if($this->reservation)
             <x-card title="Valeur de la réservation {{ $this->reservation->reference }}">
                 <x-errors class="mb-4"/>
@@ -195,5 +195,4 @@
             </x-card>
         @endif
     </x-modal>
-
 </div>
