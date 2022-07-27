@@ -15,8 +15,8 @@
                     <x-datatable.td>{{ $passager->user->full_name }}</x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-actions.edit href="{{ route('admin.passagers.edit', ['passager' => $passager->id]) }}" />
-                            <x-actions.trash route="{{ route('admin.passagers.destroy', ['passager' => $passager->id]) }}" />
+                            <x-button.circle icon="pencil" info href="{{ route('admin.passagers.edit', ['passager' => $passager->id]) }}" />
+                            <x-button.circle icon="trash" red route="{{ route('admin.passagers.destroy', ['passager' => $passager->id]) }}" />
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>

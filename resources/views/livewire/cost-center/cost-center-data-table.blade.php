@@ -18,11 +18,9 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-actions.edit
-                                href="{{ route('admin.costcenter.edit', ['costCenter' => $costcenter->id]) }}"/>
-                            <x-actions.trash
-                                route="{{ route('admin.costcenter.destroy', ['costcenter' => $costcenter->id]) }}"/>
-                        </div>
+                            <x-button.circle icon="pencil" info href="{{ route('admin.costcenter.edit', ['costCenter' => $costcenter->id]) }}" />
+                            <x-button.circle icon="trash" red route="{{ route('admin.costcenter.destroy', ['costcenter' => $costcenter->id]) }}" />
+                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>
             @empty

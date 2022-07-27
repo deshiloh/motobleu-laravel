@@ -30,11 +30,9 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-actions.edit href="{{ route('admin.accounts.edit', ['account' => $user->id]) }}"/>
-                            <x-actions.key
-                                href="{{ route('admin.accounts.password.edit', ['account' => $user->id]) }}"/>
-                            <x-actions.trash
-                                route="{{ route('admin.accounts.destroy', ['account' => $user->id]) }}"/>
+                            <x-button.circle icon="pencil" primary href="{{ route('admin.accounts.edit', ['account' => $user->id]) }}" />
+                            <x-button.circle icon="key" info href="{{ route('admin.accounts.password.edit', ['account' => $user->id]) }}" />
+                            <x-button.circle icon="trash" red route="{{ route('admin.accounts.destroy', ['account' => $user->id]) }}" />
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>

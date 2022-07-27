@@ -21,9 +21,9 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-actions.see href="{{ route('admin.entreprises.show', ['entreprise' => $entreprise->id]) }}" />
-                            <x-actions.edit href="{{ route('admin.entreprises.edit', ['entreprise' => $entreprise->id]) }}"/>
-                            <x-actions.trash route="{{ route('admin.entreprises.destroy', ['entreprise' => $entreprise->id]) }}"/>
+                            <x-button.circle icon="eye" info href="{{ route('admin.entreprises.show', ['entreprise' => $entreprise->id]) }}" />
+                            <x-button.circle icon="pencil" primary href="{{ route('admin.entreprises.edit', ['entreprise' => $entreprise->id]) }}" />
+                            <x-button.circle icon="trash" red route="{{ route('admin.entreprises.destroy', ['entreprise' => $entreprise->id]) }}" />
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>

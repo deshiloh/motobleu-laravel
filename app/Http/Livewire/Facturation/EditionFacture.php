@@ -301,6 +301,7 @@ class EditionFacture extends Component
      */
     public function reservationModal(int $reservationId): void
     {
+
         $this->resetErrorBag();
 
         $this->factureModal = false;

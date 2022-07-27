@@ -13,10 +13,8 @@
                     <x-datatable.td>{{ $typefacturation->nom }}</x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-actions.edit
-                                href="{{ route('admin.typefacturation.edit',['typefacturation' => $typefacturation]) }}"/>
-                            <x-actions.trash
-                                route="{{ route('admin.typefacturation.destroy', ['typefacturation' => $typefacturation->id]) }}"/>
+                            <x-button.circle icon="pencil" info href="{{ route('admin.typefacturation.edit',['typefacturation' => $typefacturation]) }}" />
+                            <x-button.circle icon="trash" red route="{{ route('admin.typefacturation.destroy', ['typefacturation' => $typefacturation->id]) }}" />
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>

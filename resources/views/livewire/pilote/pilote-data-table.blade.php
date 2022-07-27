@@ -23,9 +23,9 @@
                     <x-datatable.td>{{ $pilote->telephone }}</x-datatable.td>
                     <x-datatable.td>{{ $pilote->adresse }}</x-datatable.td>
                     <x-datatable.td>
-                        <x-button label="Éditer" href="{{ route('admin.pilotes.edit', ['pilote' => $pilote->id]) }}" primary sm icon="pencil" />
-                        <x-button label="Récap. des courses" href="{{ route('admin.pilotes.recap-reservation', ['pilote' => $pilote->id]) }}" info sm icon="view-list" />
-                        <x-button label="Supprimer" href="{{ route('admin.pilotes.destroy', ['pilote' => $pilote->id]) }}" red sm icon="trash" />
+                        <x-button.circle href="{{ route('admin.pilotes.edit', ['pilote' => $pilote->id]) }}" info sm icon="pencil" />
+                        <x-button.circle href="{{ route('admin.pilotes.recap-reservation', ['pilote' => $pilote->id]) }}" primary sm icon="view-list" />
+                        <x-button.circle href="{{ route('admin.pilotes.destroy', ['pilote' => $pilote->id]) }}" red sm icon="trash" />
                     </x-datatable.td>
                 </x-datatable.tr>
             @empty

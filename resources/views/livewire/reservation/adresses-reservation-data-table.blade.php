@@ -16,9 +16,7 @@
                     <x-datatable.td>{{ $adresse->code_postal }}</x-datatable.td>
                     <x-datatable.td>{{ $adresse->ville }}</x-datatable.td>
                     <x-datatable.td>
-                        <div class="flex space-x-2">
-                            <x-actions.edit href="{{ route('admin.adresse-reservation.edit', ['adresseReservation' => $adresse->id]) }}" />
-                        </div>
+                        <x-button.circle info icon="pencil" href="{{ route('admin.adresse-reservation.edit', ['adresseReservation' => $adresse->id]) }}" />
                     </x-datatable.td>
                 </x-datatable.tr>
             @empty

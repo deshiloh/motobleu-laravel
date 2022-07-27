@@ -21,12 +21,8 @@
                     <x-datatable.td>{{ $adresse->email }}</x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-actions.edit
-                                href="{{ route('admin.entreprises.adresses.edit', ['adress' => $adresse->id, 'entreprise' => $entreprise]) }}"
-                            />
-                            <x-actions.trash
-                                route="{{ route('admin.entreprises.adresses.destroy', ['adress' => $adresse->id, 'entreprise' => $entreprise]) }}"
-                            />
+                            <x-button.circle icon="pencil" primary href="{{ route('admin.entreprises.adresses.edit', ['adress' => $adresse->id, 'entreprise' => $entreprise]) }}" />
+                            <x-button.circle icon="trash" red route="{{ route('admin.entreprises.adresses.destroy', ['adress' => $adresse->id, 'entreprise' => $entreprise]) }}" />
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>
