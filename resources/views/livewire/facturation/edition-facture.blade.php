@@ -141,8 +141,8 @@
             </div>
         </x-bloc-content>
     @endif
-    <x-modal wire:model.defer="factureModal">
-        @if($this->facture)
+    @if($this->facture)
+        <x-modal wire:model.defer="factureModal">
             <x-card title="Envoi de la facture" wire:key="facture">
                 <x-errors class="mb-4"/>
                 <div class="grid grid-cols-2 gap-6">
@@ -170,10 +170,10 @@
                     </div>
                 </x-slot>
             </x-card>
-        @endif
-    </x-modal>
-    <x-modal wire:model.defer="reservationModal" blur wire:key="reservation">
-        @if($this->reservation)
+        </x-modal>
+    @endif
+    @if($this->reservation)
+        <x-modal wire:model.defer="reservationModal" blur wire:key="reservation">
             <x-card title="Valeur de la réservation {{ $this->reservation->reference }}">
                 <x-errors class="mb-4"/>
                 <form id="reservationForm" class="space-y-4" wire:submit.prevent="saveReservationAction">
@@ -193,6 +193,6 @@
                     </div>
                 </x-slot>
             </x-card>
-        @endif
-    </x-modal>
+        </x-modal>
+    @endif
 </div>
