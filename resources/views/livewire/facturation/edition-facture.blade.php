@@ -30,16 +30,16 @@
                     </x-native-select>
                 </div>
             </div>
-            <div class="text-2xl mb-4">
+            <div class="text-2xl mb-4 text-black dark:text-gray-200">
                 Liste des entreprises à facturer
             </div>
             <x-datatable>
                 <x-slot:headers>
-                    <x-datatable.tr>
+                    <tr>
                         <x-datatable.th>Entreprise</x-datatable.th>
                         <x-datatable.th>Réservations</x-datatable.th>
                         <x-datatable.th>Actions</x-datatable.th>
-                    </x-datatable.tr>
+                    </tr>
                 </x-slot:headers>
                 <x-slot:body>
                     @forelse($this->entreprises as $entreprise)
@@ -91,7 +91,7 @@
             <div class="text-2xl mb-3">Liste des réservations</div>
             <x-datatable>
                 <x-slot:headers>
-                    <x-datatable.tr>
+                    <tr>
                         <x-datatable.th>Référence</x-datatable.th>
                         <x-datatable.th>Date</x-datatable.th>
                         <x-datatable.th>Passager</x-datatable.th>
@@ -99,7 +99,7 @@
                         <x-datatable.th>Arrivée</x-datatable.th>
                         <x-datatable.th>Montant total</x-datatable.th>
                         <x-datatable.th>Actions</x-datatable.th>
-                    </x-datatable.tr>
+                    </tr>
                 </x-slot:headers>
                 <x-slot:body>
                     @foreach($this->reservations as $reservation)

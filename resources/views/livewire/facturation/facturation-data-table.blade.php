@@ -5,7 +5,7 @@
     <x-bloc-content>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div>
-                <x-input label="Rechercher" icon="search" wire:model="search"/>
+                <x-input label="Rechercher" icon="search" wire:model="search" />
             </div>
             <div>
                 <x-select
@@ -17,19 +17,16 @@
                     option-value="id"
                 />
             </div>
-            <div>
-
-            </div>
         </div>
         <x-datatable>
             <x-slot:headers>
-                <x-datatable.tr>
+                <tr>
                     <x-datatable.th>Référence</x-datatable.th>
                     <x-datatable.th>Date</x-datatable.th>
                     <x-datatable.th>Acquittée</x-datatable.th>
                     <x-datatable.th>Entreprise</x-datatable.th>
                     <x-datatable.th>Actions</x-datatable.th>
-                </x-datatable.tr>
+                </tr>
             </x-slot:headers>
             <x-slot:body>
                 @forelse($facturations as $facture)

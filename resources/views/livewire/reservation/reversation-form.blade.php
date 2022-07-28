@@ -103,20 +103,20 @@
                 </div>
 
                 @if($pickupMode == \App\Services\ReservationService::WITH_PLACE)
-                    <x-select
-                        wire:key="from_place"
-                        label="Lieu"
-                        placeholder="Sélectionner un lieu existant"
-                        :async-data="route('admin.api.pickupplace')"
-                        option-label="nom"
-                        option-value="id"
-                        wire:model="reservation.localisation_from_id"
-                    />
-                    @if($reservation->localisation_from_id)
-                        <div class="form-group">
-                            <x-input label="Provenance / N°" wire:model="reservation.pickup_origin"/>
-                        </div>
-                    @endif
+                    <div class="space-y-4">
+                        <x-select
+                            wire:key="from_place"
+                            label="Lieu"
+                            placeholder="Sélectionner un lieu existant"
+                            :async-data="route('admin.api.pickupplace')"
+                            option-label="nom"
+                            option-value="id"
+                            wire:model="reservation.localisation_from_id"
+                        />
+                        @if($reservation->localisation_from_id)
+                            <x-input label="Provenance / N°" wire:model="reservation.pickup_origin" />
+                        @endif
+                    </div>
                 @endif
 
                 @if($pickupMode == \App\Services\ReservationService::WITH_ADRESSE)
@@ -155,20 +155,22 @@
                 </div>
 
                 @if($dropMode == \App\Services\ReservationService::WITH_PLACE)
-                    <x-select
-                        wire:key="to_place"
-                        label="Lieu"
-                        placeholder="Sélectionner un lieu existant"
-                        :async-data="route('admin.api.pickupplace')"
-                        option-label="nom"
-                        option-value="id"
-                        wire:model="reservation.localisation_to_id"
-                    />
-                    @if($reservation->localisation_to_id)
-                        <div class="form-group">
-                            <x-input label="Provenance / N°" wire:model="reservation.drop_off_origin"/>
-                        </div>
-                    @endif
+                    <div class="space-y-4">
+                        <x-select
+                            wire:key="to_place"
+                            label="Lieu"
+                            placeholder="Sélectionner un lieu existant"
+                            :async-data="route('admin.api.pickupplace')"
+                            option-label="nom"
+                            option-value="id"
+                            wire:model="reservation.localisation_to_id"
+                        />
+                        @if($reservation->localisation_to_id)
+                            <div class="form-group">
+                                <x-input label="Provenance / N°" wire:model="reservation.drop_off_origin"/>
+                            </div>
+                        @endif
+                    </div>
                 @endif
 
                 @if($dropMode == \App\Services\ReservationService::WITH_ADRESSE)
@@ -311,7 +313,7 @@
                                 wire:model="reservation_back.comment"/>
                 </div>
             @endif
-            <x-button type="submit" blue label="Enregistrer" wire:loading.attr="disabled"/>
+            <x-button type="submit" primary label="Enregistrer" wire:loading.attr="disabled"/>
         </form>
     </x-bloc-content>
 </div>
