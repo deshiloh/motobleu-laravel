@@ -62,7 +62,7 @@ Cordialement.";
         ReservationConfirmed::dispatch($this->reservation);
     }
 
-    public function cancel()
+    public function cancelAction()
     {
         $this->reservation->is_cancel = true;
         $this->reservation->is_confirmed = false;

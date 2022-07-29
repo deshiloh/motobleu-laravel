@@ -72,18 +72,8 @@
             </div>
         </nav>
     @endauth
-
-    @yield('header')
-
-    <x-notifications />
-    <x-alerts></x-alerts>
-    <main>
-        <div class="container mx-auto py-6 sm:px-6 lg:px-8">
-            <!-- Replace with your content -->
-            {{ $slot }}
-            <!-- /End replace -->
-        </div>
-    </main>
+    {{ $slot }}
+        <x-notifications />
 </div>
 <wireui:scripts/>
 <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>

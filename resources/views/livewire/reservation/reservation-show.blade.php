@@ -1,70 +1,72 @@
 <div class="pb-6">
-    @if(!$reservation->is_confirmed && !$reservation->is_cancel)
-        <div class="rounded-md bg-yellow-50 p-4 mb-4">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <!-- Heroicon name: solid/exclamation -->
-                    <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <h3 class="text-sm font-medium text-yellow-800">Cette réservation n'as pas été confirmée</h3>
-                    <div class="mt-2 text-sm text-yellow-700">
-                        <p>Afin de la confirmer vous devez remplir le formulaire ci-dessous</p>
+    <x-header>
+        Réservation : <span class="text-blue-500">{{ $reservation->reference }}</span>
+        <x-slot:right>
+            <div class="flex items-center justify-center space-x-2">
+                @if(!is_null($reservation->event_id))
+                    <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info />
+                @endif
+                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" />
+                @if(!$reservation->is_cancel)
+                    <x-button warning label="Annuler mais facturer" icon="credit-card"/>
+                    <x-button wire:click="cancelAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction"/>
+                @endif
+            </div>
+        </x-slot:right>
+    </x-header>
+    <x-center-bloc class="mb-4">
+        @if(!$reservation->is_confirmed && !$reservation->is_cancel)
+            <div class="rounded-md bg-yellow-50 p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <!-- Heroicon name: solid/exclamation -->
+                        <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-yellow-800">Cette réservation n'as pas été confirmée</h3>
+                        <div class="mt-2 text-sm text-yellow-700">
+                            <p>Afin de la confirmer vous devez remplir le formulaire ci-dessous</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    @endif
-    @if($reservation->is_confirmed && !$reservation->is_cancel)
+        @endif
+        @if($reservation->is_confirmed && !$reservation->is_cancel)
             <div class="rounded-md bg-green-50 dark:bg-green-200 p-4 mb-4 shadow dark:shadow-none">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-green-400 dark:text-green-900" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <p class="text-sm font-medium text-green-800 dark:text-green-800">Cette réservation est confirmée</p>
-                </div>
-            </div>
-        </div>
-    @endif
-    @if($reservation->is_cancel)
-        <div class="rounded-md bg-red-100 p-4 mb-4">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <p class="text-sm font-medium text-red-800">Cette réservation est annulée</p>
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-green-400 dark:text-green-900" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-green-800 dark:text-green-800">Cette réservation est confirmée</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    @endif
-        <x-header>
-            Réservation : <span class="text-blue-500">{{ $reservation->reference }}</span>
-            <x-slot:right>
-                <div class="flex items-center justify-center space-x-2">
-                    @if(!is_null($reservation->event_id))
-                        <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" />
-                    @endif
-                    <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" />
-                    @if(!$reservation->is_cancel)
-                        <x-button warning label="Annuler mais facturer" icon="credit-card"/>
-                        <x-button wire:click="cancel" negative label="Annuler" icon="x-circle"/>
-                    @endif
+        @endif
+        @if($reservation->is_cancel)
+            <div class="rounded-md bg-red-100 p-4 mb-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-red-800">Cette réservation est annulée</p>
+                    </div>
                 </div>
-            </x-slot:right>
-        </x-header>
+            </div>
+        @endif
+    </x-center-bloc>
     @if(!$reservation->is_confirmed && !$reservation->is_cancel)
         <x-bloc-content>
             <form wire:submit.prevent="confirmedAction" action="post" wire:loading.class="opacity-25" class="space-y-4">
-                @csrf
                 <div class="block text-xl">Formulaire de confirmation</div>
+                @csrf
                 <x-select
                     label="Pilote"
                     placeholder="Sélectionner un pilote"
@@ -78,34 +80,25 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         Emails de confirmation
-                        <div class="space-y-3 pl-3">
-                            <x-form.toggle wire:model="reservation.send_to_user">
-                                Secrétaire : {{ $reservation->passager->user->full_name }}
-                            </x-form.toggle>
-                            <x-form.toggle wire:model="reservation.send_to_passager">
-                                Passager : {{ $reservation->passager->nom }}
-                            </x-form.toggle>
+                        <div class="space-y-3 mt-3">
+                            <x-toggle wire:model="reservation.send_to_user" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
+                            <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
                         </div>
                     </div>
                     <div>
                         Invitation Google Calendar
-                        <div class="space-y-3 pl-3">
-                            <x-form.toggle wire:model.defer="reservation.calendar_user_invitation">
-                                Secrétaire : {{ $reservation->passager->user->full_name }}
-                            </x-form.toggle>
-                            <x-form.toggle wire:model.defer="reservation.calendar_passager_invitation">
-                                Passager : {{ $reservation->passager->nom }}
-                            </x-form.toggle>
+                        <div class="space-y-3 mt-3">
+                            <x-toggle wire:model.defer="reservation.calendar_user_invitation" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
+                            <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-sm">
-                    Valider et envoyer le message
-                </button>
+                <x-button type="submit" label="Valider et envoyer le message" primary sm />
             </form>
         </x-bloc-content>
     @endif
-        <div class="space-y-8">
+    <div class="space-y-4">
+        <x-center-bloc>
             <x-simple-card title="Détails de la réservation" description="Créer le {{ $reservation->created_at->format('d/m/Y H:i') }}">
                 <x-simple-card.item title="Date de la réservation">
                     {{ $reservation->pickup_date->format('d/m/Y à H:i') }}
@@ -117,7 +110,9 @@
                     {{ $reservation->display_to }}
                 </x-simple-card.item>
             </x-simple-card>
+        </x-center-bloc>
 
+        <x-center-bloc>
             <x-simple-card title="Client" description="Informations sur le client.">
                 <x-simple-card.item title="Nom / Prénom">
                     {{ $reservation->passager->user->full_name }}
@@ -166,7 +161,9 @@
                     </ul>
                 </x-simple-card.item>
             </x-simple-card>
+        </x-center-bloc>
 
+        <x-center-bloc>
             <x-simple-card title="Passager" description="Informations sur le passager">
                 <x-simple-card.item title="Nom">
                     {{ $reservation->passager->nom }}
@@ -184,35 +181,25 @@
                     {{ $reservation->passager->portable ?? 'Non renseigné.'}}
                 </x-simple-card.item>
             </x-simple-card>
-        </div>
-    @if($reservation->pilote()->exists())
-        <x-admin.content wire:key="pilote_details">
-            <div class="overflow-hidden sm:rounded-lg">
-                <div class="px-4 py-5 sm:px-6">
-                    <h3 class="text-lg leading-6 font-medium dark:text-gray-100 text-gray-900">Pilote</h3>
-                    <p class="mt-1 max-w-2xl text-sm text-gray-500">Informations sur le pilote</p>
-                </div>
-                <div class="border-t border-gray-200 dark:border-gray-600">
-                    <dl>
-                        <div class="bg-gray-50 dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">Nom</dt>
-                            <dd class="mt-1 text-sm dark:text-gray-200 text-gray-900 sm:mt-0 sm:col-span-2">{{ $reservation->pilote->full_name }}</dd>
-                        </div>
-                        <div class="bg-white dark:bg-gray-900 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">Adresse email</dt>
-                            <dd class="mt-1 text-sm dark:text-gray-200 text-gray-900 sm:mt-0 sm:col-span-2">{{ $reservation->pilote->email }}</dd>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">Téléphone</dt>
-                            <dd class="mt-1 text-sm dark:text-gray-200 text-gray-900 sm:mt-0 sm:col-span-2">{{ $reservation->pilote->telephone }}</dd>
-                        </div>
-                        <div class="bg-white dark:bg-gray-900 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">Entreprise</dt>
-                            <dd class="mt-1 text-sm dark:text-gray-200 text-gray-900 sm:mt-0 sm:col-span-2">{{ $reservation->pilote->entreprise }}</dd>
-                        </div>
-                    </dl>
-                </div>
-            </div>
-        </x-admin.content>
-    @endif
+        </x-center-bloc>
+
+        @if($reservation->pilote()->exists())
+            <x-center-bloc wire:key="pilote_details">
+                <x-simple-card title="Pilote" description="Informations sur le pilote">
+                    <x-simple-card.item title="Nom">
+                        {{ $reservation->pilote->full_name }}
+                    </x-simple-card.item>
+                    <x-simple-card.item title="Adresse email">
+                        {{ $reservation->pilote->email }}
+                    </x-simple-card.item>
+                    <x-simple-card.item title="Téléphone">
+                        {{ $reservation->pilote->telephone }}
+                    </x-simple-card.item>
+                    <x-simple-card.item title="Entreprise">
+                        {{ $reservation->pilote->entreprise }}
+                    </x-simple-card.item>
+                </x-simple-card>
+            </x-center-bloc>
+        @endif
+    </div>
 </div>

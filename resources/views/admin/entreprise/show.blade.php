@@ -10,10 +10,12 @@
             </div>
         </x-slot:right>
     </x-header>
-    <x-bloc-content>
-        <livewire:entreprise.adresses-entreprise-data-table :entreprise="$entreprise"/>
-    </x-bloc-content>
-    <x-bloc-content>
-        <livewire:entreprise.recap-reservation-entreprise :entreprise="$entreprise" />
-    </x-bloc-content>
+    <div class="space-y-10">
+        <x-bloc-content>
+            <livewire:entreprise.adresses-entreprise-data-table :entreprise="$entreprise"/>
+        </x-bloc-content>
+        <x-bloc-content>
+            <livewire:entreprise.recap-reservation-entreprise :entreprise="$entreprise" />
+        </x-bloc-content>
+    </div>
 </x-layout>

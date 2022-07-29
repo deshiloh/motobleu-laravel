@@ -16,6 +16,8 @@ class EntrepriseForm extends Component
     public function mount(Entreprise $entreprise)
     {
         $this->entreprise = $entreprise;
+
+        $this->entreprise->is_actif = false;
     }
 
     public function render()

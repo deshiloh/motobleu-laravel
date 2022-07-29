@@ -4,7 +4,29 @@
 @endphp
 <div>
     <x-header wire:key="header">
-        Édition de la facturation
+        @if($this->entreprise)
+            Édition de la facturation <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
+            <x-slot:right>
+                <div>
+                    @if($entrepriseIdSelected)
+                        <x-button href="{{ route('admin.facturations.edition', [
+                            'selectedMonth' => $selectedMonth,
+                            '$selectedYear' => $selectedYear]
+                        ) }}" label="Retourner à la liste" sm />
+                    @endif
+                    @if(!$this->adresseFacturationEntreprise && $entrepriseIdSelected)
+                        <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">
+                            <span class="font-medium">Attention</span> L'entreprise n'as pas d'adresse de facturation
+                        </div>
+                    @endif
+                    @if($this->facture && $this->adresseFacturationEntreprise)
+                        <x-button wire:click="sendFactureModal" label="Finaliser la facturation" positive sm />
+                    @endif
+                </div>
+            </x-slot:right>
+        @else
+            Édition de la facturation
+        @endif
     </x-header>
     @if(!$entrepriseIdSelected)
         <x-bloc-content wire:key="entrepriseDataTable">
@@ -62,31 +84,6 @@
         </x-bloc-content>
     @endif
     @if($this->reservations)
-        <x-bloc-content wire:key="headerbis">
-            <div class="flex items-center">
-                <div class="text-xl">
-                    @if($this->entreprise)
-                        Édition de la facturation <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
-                    @endif
-                </div>
-                <div class="ml-auto">
-                    @if($entrepriseIdSelected)
-                        <x-button href="{{ route('admin.facturations.edition', [
-                            'selectedMonth' => $selectedMonth,
-                            '$selectedYear' => $selectedYear]
-                        ) }}" label="Retourner à la liste" sm />
-                    @endif
-                    @if(!$this->adresseFacturationEntreprise && $entrepriseIdSelected)
-                        <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">
-                            <span class="font-medium">Attention</span> L'entreprise n'as pas d'adresse de facturation
-                        </div>
-                    @endif
-                    @if($this->facture && $this->adresseFacturationEntreprise)
-                        <x-button wire:click="sendFactureModal" label="Finaliser la facturation" positive sm />
-                    @endif
-                </div>
-            </div>
-        </x-bloc-content>
         <x-bloc-content>
             <div class="text-2xl mb-3">Liste des réservations</div>
             <x-datatable>
@@ -141,58 +138,61 @@
             </div>
         </x-bloc-content>
     @endif
-    @if($this->facture)
-        <x-modal wire:model.defer="factureModal">
-            <x-card title="Envoi de la facture" wire:key="facture">
-                <x-errors class="mb-4"/>
-                <div class="grid grid-cols-2 gap-6">
-                    <div>
-                        <iframe src="/admin/facturations/1/show?uniq={{ $uniqID }}#view=FitH&toolbar=1" class="w-full h-full"></iframe>
-                    </div>
-                    <div>
-                        <form wire:submit.prevent="sendFactureAction" id="factureForm" class="space-y-4">
-                            <x-input label="Email" wire:model.defer="email.address"/>
-                            <x-tinymce wire:model="email.message"/>
-                            <x-toggle wire:model.defer="isAcquitte" wire:change="editFactureAction" label="Facture acquittée" md />
-                            <x-textarea label="Texte information" hint="Ce texte apparaitra sur la facture" wire:model.defer="email.complement" wire:change.debounce="editFactureAction"/>
-                            <x-button wire:click="sendEmailTestAction" primary sm type="button">Envoi d'un email de test</x-button>
-                        </form>
-                    </div>
+
+    <x-modal wire:model.defer="factureModal">
+        @if($this->facture)
+        <x-card title="Envoi de la facture" wire:key="facture">
+            <x-errors class="mb-4"/>
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <iframe src="/admin/facturations/1/show?uniq={{ $uniqID }}#view=FitH&toolbar=1" class="w-full h-full"></iframe>
                 </div>
-                <x-slot name="footer">
-                    <div class="flex justify-end gap-x-4">
-                        <x-button x-on:click="close" sm >
-                            Annuler
-                        </x-button>
-                        <x-button type="submit" form="factureForm" primary sm >
-                            Finaliser et envoyer
-                        </x-button>
-                    </div>
-                </x-slot>
-            </x-card>
-        </x-modal>
-    @endif
-    @if($this->reservation)
-        <x-modal wire:model.defer="reservationModal" blur wire:key="reservation">
-            <x-card title="Valeur de la réservation {{ $this->reservation->reference }}">
-                <x-errors class="mb-4"/>
-                <form id="reservationForm" class="space-y-4" wire:submit.prevent="saveReservationAction">
-                    <x-input label="Prix" wire:model.defer="reservationFormData.tarif" type="number" step="0.01"/>
-                    <x-input label="Majoration" wire:model.defer="reservationFormData.majoration" type="number" step="0.01"/>
-                    <x-input label="Complément" wire:model.defer="reservationFormData.complement" type="number" step="0.01"/>
-                    <x-textarea label="Message pour le pilote" wire:model.defer="reservationFormData.comment_pilote"/>
-                </form>
-                <x-slot name="footer">
-                    <div class="flex justify-end gap-x-4">
-                        <x-button sm x-on:click="close">
-                            Annuler
-                        </x-button>
-                        <x-button type="submit" form="reservationForm" primary sm >
-                            Valider
-                        </x-button>
-                    </div>
-                </x-slot>
-            </x-card>
-        </x-modal>
-    @endif
+                <div>
+                    <form wire:submit.prevent="sendFactureAction" id="factureForm" class="space-y-4">
+                        <x-input label="Email" wire:model.defer="email.address"/>
+                        <x-tinymce wire:model="email.message"/>
+                        <x-toggle wire:model.defer="isAcquitte" wire:change="editFactureAction" label="Facture acquittée" md />
+                        <x-textarea label="Texte information" hint="Ce texte apparaitra sur la facture" wire:model.defer="email.complement" wire:change.debounce="editFactureAction"/>
+                        <x-button wire:click="sendEmailTestAction" primary sm type="button">Envoi d'un email de test</x-button>
+                    </form>
+                </div>
+            </div>
+            <x-slot name="footer">
+                <div class="flex justify-end gap-x-4">
+                    <x-button x-on:click="close" sm >
+                        Annuler
+                    </x-button>
+                    <x-button type="submit" form="factureForm" primary sm >
+                        Finaliser et envoyer
+                    </x-button>
+                </div>
+            </x-slot>
+        </x-card>
+        @endif
+    </x-modal>
+
+    <x-modal wire:model.defer="reservationModal" blur wire:key="reservation">
+        @if($this->reservation)
+        <x-card title="Valeur de la réservation {{ $this->reservation->reference }}">
+            <x-errors class="mb-4"/>
+            <form id="reservationForm" class="space-y-4" wire:submit.prevent="saveReservationAction">
+                <x-input label="Prix" wire:model.defer="reservationFormData.tarif" type="number" step="0.01"/>
+                <x-input label="Majoration" wire:model.defer="reservationFormData.majoration" type="number" step="0.01"/>
+                <x-input label="Complément" wire:model.defer="reservationFormData.complement" type="number" step="0.01"/>
+                <x-textarea label="Message pour le pilote" wire:model.defer="reservationFormData.comment_pilote"/>
+            </form>
+            <x-slot name="footer">
+                <div class="flex justify-end gap-x-4">
+                    <x-button sm x-on:click="close">
+                        Annuler
+                    </x-button>
+                    <x-button type="submit" form="reservationForm" primary sm >
+                        Valider
+                    </x-button>
+                </div>
+            </x-slot>
+        </x-card>
+        @endif
+    </x-modal>
+
 </div>
