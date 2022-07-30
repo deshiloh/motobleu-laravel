@@ -41,6 +41,6 @@ class RecapReservationPilote extends Component
 
         return view('livewire.pilote.recap-reservation-pilote', [
             'reservations' => $reservations->paginate($this->perPage)
-        ])->layout('components.admin-layout');
+        ])->layout('components.layout');
     }
 }

@@ -76,7 +76,7 @@ class EditionFacture extends Component
     public function render()
     {
         return view('livewire.facturation.edition-facture')
-            ->layout('components.admin-layout');
+            ->layout('components.layout');
     }
 
     /**
@@ -262,7 +262,7 @@ class EditionFacture extends Component
     {
         $this->resetErrorBag();
 
-        $this->email['address'] = 'test@test.com';
+        $this->email['address'] = $this->adresse_facturation_entreprise->email;
         $this->email['message'] = sprintf("Bonjour, <br> <br> Veuillez trouver ci-joint la facture %s et le récapitulatif des courses pour la période de %s %s. <br> <br> Cordialement",
             $this->facture->reference,
             $this->months[$this->facture->month],

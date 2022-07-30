@@ -15,7 +15,7 @@ class ForgotPasswordForm extends Component
     public function render()
     {
         return view('livewire.auth.forgot-password-form')
-            ->layout('components.layout');
+            ->layout('components.guess-layout');
     }
 
     protected function getRules()

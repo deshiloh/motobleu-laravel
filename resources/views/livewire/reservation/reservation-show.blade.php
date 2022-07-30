@@ -1,245 +1,205 @@
 <div class="pb-6">
-    @if(!$reservation->is_confirmed && !$reservation->is_cancel)
-        <div class="alert alert-error my-4">
-            <div>
-                <div class="flex flex-col">
-                    <div class="flex items-center space-x-2">
-                        <x-carbon-warning-alt class="h-6 w-6"/>
-                        <span class="font-bold">Cette réservation n'as pas été confirmée</span>
+    <x-header>
+        Réservation : <span class="text-blue-500">{{ $reservation->reference }}</span>
+        <x-slot:right>
+            <div class="flex items-center justify-center space-x-2">
+                @if(!is_null($reservation->event_id))
+                    <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info />
+                @endif
+                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" />
+                @if(!$reservation->is_cancel)
+                    <x-button warning label="Annuler mais facturer" icon="credit-card"/>
+                    <x-button wire:click="cancelAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction"/>
+                @endif
+            </div>
+        </x-slot:right>
+    </x-header>
+    <x-center-bloc class="mb-4">
+        @if(!$reservation->is_confirmed && !$reservation->is_cancel)
+            <div class="rounded-md bg-yellow-50 p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <!-- Heroicon name: solid/exclamation -->
+                        <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
                     </div>
-                    <div class="mt-3">
-                        Afin de la confirmer vous devez remplir le formulaire ci-dessous
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-yellow-800">Cette réservation n'as pas été confirmée</h3>
+                        <div class="mt-2 text-sm text-yellow-700">
+                            <p>Afin de la confirmer vous devez remplir le formulaire ci-dessous</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    @endif
-    @if($reservation->is_confirmed && !$reservation->is_cancel)
-        <div class="alert alert-success my-4">
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <span>Cette réservation est confirmée</span>
-            </div>
-        </div>
-    @endif
-    @if($reservation->is_cancel)
-        <div id="alert-additional-content-2" class="p-4 my-4 bg-red-100 rounded-lg dark:bg-red-200" role="alert">
-            <div class="flex items-center">
-                <svg class="mr-2 w-5 h-5 text-red-700 dark:text-red-800" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-                <h3 class="text-lg font-medium text-red-700 dark:text-red-800">Cette réservation a été annulée</h3>
-            </div>
-        </div>
-    @endif
-    <x-title-section>
-        <x-slot:title>
-            Réservation : <span class="text-blue-500">{{ $reservation->reference }}</span>
-        </x-slot:title>
-        @if(!is_null($reservation->event_id))
-            <a href="{{ $reservation->getEvent()->getHtmlLink() }}" class="btn btn-sm gap-2 btn-secondary" target="_blank">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                Google Agenda
-            </a>
         @endif
-        <a href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}" class="btn btn-primary btn-sm gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-            Éditer
-        </a>
-        @if(!$reservation->is_cancel)
-            <button class="btn gap-2 btn-warning btn-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                </svg>
-                Annuler mais facturer
-            </button>
-            <button class="btn gap-2 btn-error btn-sm" wire:click="cancel">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                Annuler
-            </button>
-        @endif
-    </x-title-section>
-
-    @if(!$reservation->is_confirmed && !$reservation->is_cancel)
-        <x-admin.content>
-        <form wire:submit.prevent="confirmedAction" action="post" wire:loading.class="opacity-25" class="space-y-4">
-            @csrf
-            <div class="block text-xl">Formulaire de confirmation</div>
-            <x-select
-                label="Pilote"
-                placeholder="Sélectionner un pilote"
-                :async-data="route('api.pilotes')"
-                option-label="full_name"
-                option-value="id"
-                option-description="email"
-                wire:model.defer="reservation.pilote_id"
-            />
-            <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    Emails de confirmation
-                    <div class="space-y-3 pl-3">
-                        <x-form.toggle wire:model="reservation.send_to_user">
-                            Secrétaire : {{ $reservation->passager->user->full_name }}
-                        </x-form.toggle>
-                        <x-form.toggle wire:model="reservation.send_to_passager">
-                            Passager : {{ $reservation->passager->nom }}
-                        </x-form.toggle>
+        @if($reservation->is_confirmed && !$reservation->is_cancel)
+            <div class="rounded-md bg-green-50 dark:bg-green-200 p-4 mb-4 shadow dark:shadow-none">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-green-400 dark:text-green-900" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
                     </div>
-                </div>
-                <div>
-                    Invitation Google Calendar
-                    <div class="space-y-3 pl-3">
-                        <x-form.toggle wire:model.defer="reservation.calendar_user_invitation">
-                            Secrétaire : {{ $reservation->passager->user->full_name }}
-                        </x-form.toggle>
-                        <x-form.toggle wire:model.defer="reservation.calendar_passager_invitation">
-                            Passager : {{ $reservation->passager->nom }}
-                        </x-form.toggle>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-green-800 dark:text-green-800">Cette réservation est confirmée</p>
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary btn-sm">
-                Valider et envoyer le message
-            </button>
-        </form>
-        </x-admin.content>
+        @endif
+        @if($reservation->is_cancel)
+            <div class="rounded-md bg-red-100 p-4 mb-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-red-800">Cette réservation est annulée</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+    </x-center-bloc>
+    @if(!$reservation->is_confirmed && !$reservation->is_cancel)
+        <x-bloc-content>
+            <form wire:submit.prevent="confirmedAction" action="post" wire:loading.class="opacity-25" class="space-y-4">
+                <div class="block text-xl">Formulaire de confirmation</div>
+                @csrf
+                <x-select
+                    label="Pilote"
+                    placeholder="Sélectionner un pilote"
+                    :async-data="route('api.pilotes')"
+                    option-label="full_name"
+                    option-value="id"
+                    option-description="email"
+                    wire:model.defer="reservation.pilote_id"
+                />
+                <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        Emails de confirmation
+                        <div class="space-y-3 mt-3">
+                            <x-toggle wire:model="reservation.send_to_user" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
+                            <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
+                        </div>
+                    </div>
+                    <div>
+                        Invitation Google Calendar
+                        <div class="space-y-3 mt-3">
+                            <x-toggle wire:model.defer="reservation.calendar_user_invitation" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
+                            <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
+                        </div>
+                    </div>
+                </div>
+                <x-button type="submit" label="Valider et envoyer le message" primary sm />
+            </form>
+        </x-bloc-content>
     @endif
-
-    <x-admin.content>
-        <div class="text-xl">Détails de la course</div>
-        <span class="text-sm">Créer le {{ $reservation->created_at->format('d/m/Y H:i') }}</span>
-        <div class="bg-base-200 text-center p-3 rounded-lg mt-2">
-            <div class="text-4xl">{{ $reservation->pickup_date->format('d/m/Y à H:i') }}</div>
-            <div class="text-xl">Date de la réservation</div>
-        </div>
-        <div class="grid grid-cols-2 gap-4 mt-4">
-            <div class="bg-base-200 rounded-lg p-3">
-                <div class="text-xl">Départ</div>
-                <div class="text-2xl">
+    <div class="space-y-4">
+        <x-center-bloc>
+            <x-simple-card title="Détails de la réservation" description="Créer le {{ $reservation->created_at->format('d/m/Y H:i') }}">
+                <x-simple-card.item title="Date de la réservation">
+                    {{ $reservation->pickup_date->format('d/m/Y à H:i') }}
+                </x-simple-card.item>
+                <x-simple-card.item title="Départ">
                     {{ $reservation->display_from }}
-                </div>
-            </div>
-            <div class="bg-base-200 rounded-lg p-3">
-                <div class="text-xl">Arrivée</div>
-                <div class="text-2xl">
+                </x-simple-card.item>
+                <x-simple-card.item title="Arrivée">
                     {{ $reservation->display_to }}
-                </div>
-            </div>
-        </div>
-    </x-admin.content>
-    <x-admin.content>
-        <div class="overflow-hidden sm:rounded-lg">
-            <div class="px-4 py-5 sm:px-6">
-                <h3 class="text-lg leading-6 font-medium text-base-content">Client</h3>
-                <p class="mt-1 max-w-2xl text-sm text-gray-500">Informations sur le client</p>
-            </div>
-            <div class="border-t border-secondary/40 dark:border-gray-600">
-                <dl>
-                    <div class="bg-base-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Nom - Prénom</dt>
-                        <dd class="mt-1 text-sm text-base-content sm:mt-0 sm:col-span-2">{{ $reservation->passager->user->full_name }}</dd>
-                    </div>
-                    <div class="bg-base-200 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Entreprise</dt>
-                        <dd class="mt-1 text-sm text-base-content sm:mt-0 sm:col-span-2">{{ $reservation->passager->user->entreprise->nom }}</dd>
-                    </div>
-                    <div class="bg-base-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Adresse email</dt>
-                        <dd class="mt-1 text-sm text-base-content sm:mt-0 sm:col-span-2">{{ $reservation->passager->user->email }}</dd>
-                    </div>
-                    <div class="bg-base-200 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Téléphone</dt>
-                        <dd class="mt-1 text-sm text-base-content sm:mt-0 sm:col-span-2">{{ $reservation->passager->user->telephone }}</dd>
-                    </div>
-                    <div class="bg-base-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Portable</dt>
-                        <dd class="mt-1 text-sm text-base-content sm:mt-0 sm:col-span-2">{{ $reservation->passager->user->portable }}</dd>
-                    </div>
-                    <div class="bg-base-200 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Adresses</dt>
-                        <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
-                            <ul role="list" class="rounded-md divide-y divide-gray-200">
-                                @foreach($reservation->passager->user->entreprise->adresseEntreprises()->get() as $adresse)
-                                    <div class="card w-96 bg-base-100">
-                                        <div class="card-body">
-                                            <h2 class="card-title">{{ $adresse->type->name }}</h2>
-                                            <p>
-                                                {{ $adresse->email }}
-                                            </p>
-                                            <p>
-                                            {{ $adresse->adresse_full }}
-                                            </p>
+                </x-simple-card.item>
+            </x-simple-card>
+        </x-center-bloc>
+
+        <x-center-bloc>
+            <x-simple-card title="Client" description="Informations sur le client.">
+                <x-simple-card.item title="Nom / Prénom">
+                    {{ $reservation->passager->user->full_name }}
+                </x-simple-card.item>
+
+                <x-simple-card.item title="Entreprise">
+                    {{ $reservation->passager->user->entreprise->nom }}
+                </x-simple-card.item>
+
+                <x-simple-card.item title="Adresse email">
+                    {{ $reservation->passager->user->email }}
+                </x-simple-card.item>
+
+                <x-simple-card.item title="Téléphone">
+                    {{ $reservation->passager->user->telephone }}
+                </x-simple-card.item>
+
+                <x-simple-card.item title="Portable">
+                    {{ $reservation->passager->user->portable ?? 'Non renseigné' }}
+                </x-simple-card.item>
+
+                <x-simple-card.item title="Adresses">
+                    <ul role="list" class="border border-gray-200 rounded-md divide-y divide-gray-200">
+                        @foreach($reservation->passager->user->entreprise->adresseEntreprises()->get() as $adresse)
+                            <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+                                <div class="w-0 flex-1 flex items-center">
+                                    @if($adresse->type->value === 0)
+                                        <div class="flex space-x-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                            </svg>
+                                            <span>Physique : </span>
                                         </div>
-                                    </div>
-                                @endforeach
-                            </ul>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </div>
-    </x-admin.content>
-    <x-admin.content>
-        <div class="overflow-hidden sm:rounded-lg">
-            <div class="px-4 py-5 sm:px-6">
-                <h3 class="text-lg leading-6 font-medium text-base-content">Passager</h3>
-                <p class="mt-1 max-w-2xl text-sm text-gray-500">Informations sur le passager</p>
-            </div>
-            <div class="border-t border-gray-200 dark:border-gray-600">
-                <dl>
-                    <div class="bg-base-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Nom</dt>
-                        <dd class="mt-1 text-sm text-base-content sm:mt-0 sm:col-span-2">{{ $reservation->passager->nom }}</dd>
-                    </div>
-                    <div class="bg-base-200 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Adresse email</dt>
-                        <dd class="mt-1 text-sm text-base-content sm:mt-0 sm:col-span-2">{{ $reservation->passager->email }}</dd>
-                    </div>
-                    <div class="bg-base-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Téléphone</dt>
-                        <dd class="mt-1 text-sm text-base-content sm:mt-0 sm:col-span-2">{{ $reservation->passager->telephone }}</dd>
-                    </div>
-                    <div class="bg-base-200 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Portable</dt>
-                        <dd class="mt-1 text-sm text-base-content sm:mt-0 sm:col-span-2">{{ $reservation->passager->portable }}</dd>
-                    </div>
-                </dl>
-            </div>
-        </div>
-    </x-admin.content>
-    @if($reservation->pilote()->exists())
-        <x-admin.content wire:key="pilote_details">
-            <div class="overflow-hidden sm:rounded-lg">
-                <div class="px-4 py-5 sm:px-6">
-                    <h3 class="text-lg leading-6 font-medium dark:text-gray-100 text-gray-900">Pilote</h3>
-                    <p class="mt-1 max-w-2xl text-sm text-gray-500">Informations sur le pilote</p>
-                </div>
-                <div class="border-t border-gray-200 dark:border-gray-600">
-                    <dl>
-                        <div class="bg-gray-50 dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">Nom</dt>
-                            <dd class="mt-1 text-sm dark:text-gray-200 text-gray-900 sm:mt-0 sm:col-span-2">{{ $reservation->pilote->full_name }}</dd>
-                        </div>
-                        <div class="bg-white dark:bg-gray-900 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">Adresse email</dt>
-                            <dd class="mt-1 text-sm dark:text-gray-200 text-gray-900 sm:mt-0 sm:col-span-2">{{ $reservation->pilote->email }}</dd>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">Téléphone</dt>
-                            <dd class="mt-1 text-sm dark:text-gray-200 text-gray-900 sm:mt-0 sm:col-span-2">{{ $reservation->pilote->telephone }}</dd>
-                        </div>
-                        <div class="bg-white dark:bg-gray-900 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">Entreprise</dt>
-                            <dd class="mt-1 text-sm dark:text-gray-200 text-gray-900 sm:mt-0 sm:col-span-2">{{ $reservation->pilote->entreprise }}</dd>
-                        </div>
-                    </dl>
-                </div>
-            </div>
-        </x-admin.content>
-    @endif
+                                    @else
+                                        <div class="flex space-x-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            <span>Facturation : </span>
+                                        </div>
+                                    @endif
+                                    <span class="ml-2 flex-1 w-0 truncate">{{ $adresse->adresse_full }}</span>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                </x-simple-card.item>
+            </x-simple-card>
+        </x-center-bloc>
+
+        <x-center-bloc>
+            <x-simple-card title="Passager" description="Informations sur le passager">
+                <x-simple-card.item title="Nom">
+                    {{ $reservation->passager->nom }}
+                </x-simple-card.item>
+
+                <x-simple-card.item title="Adresse email">
+                    {{ $reservation->passager->email }}
+                </x-simple-card.item>
+
+                <x-simple-card.item title="Téléphone">
+                    {{ $reservation->passager->telephone }}
+                </x-simple-card.item>
+
+                <x-simple-card.item title="Portable">
+                    {{ $reservation->passager->portable ?? 'Non renseigné.'}}
+                </x-simple-card.item>
+            </x-simple-card>
+        </x-center-bloc>
+
+        @if($reservation->pilote()->exists())
+            <x-center-bloc wire:key="pilote_details">
+                <x-simple-card title="Pilote" description="Informations sur le pilote">
+                    <x-simple-card.item title="Nom">
+                        {{ $reservation->pilote->full_name }}
+                    </x-simple-card.item>
+                    <x-simple-card.item title="Adresse email">
+                        {{ $reservation->pilote->email }}
+                    </x-simple-card.item>
+                    <x-simple-card.item title="Téléphone">
+                        {{ $reservation->pilote->telephone }}
+                    </x-simple-card.item>
+                    <x-simple-card.item title="Entreprise">
+                        {{ $reservation->pilote->entreprise }}
+                    </x-simple-card.item>
+                </x-simple-card>
+            </x-center-bloc>
+        @endif
+    </div>
 </div>

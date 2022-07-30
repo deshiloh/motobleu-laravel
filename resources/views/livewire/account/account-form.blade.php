@@ -1,12 +1,9 @@
 <div>
-    <x-title-section>
-        <x-slot:title>
-            {!! $user->exists ? "Modification du compte <span class='text-blue-500'>".$user->full_name."</span>" : "Création d'un compte" !!}
-        </x-slot:title>
-    </x-title-section>
-
-    <x-admin.content>
-        <form wire:submit.prevent="save" wire:loading.class="opacity-25" class="space-y-2">
+    <x-header>
+        {!! $user->exists ? "Modification du compte <span class='text-blue-500'>".$user->full_name."</span>" : "Création d'un compte" !!}
+    </x-header>
+    <x-bloc-content>
+        <form wire:submit.prevent="save" wire:loading.class="opacity-25" class="space-y-3">
             <x-input label="Nom" wire:model.defer="user.nom"/>
             <x-input label="Prénom" wire:model.defer="user.prenom" />
             <x-input type="email" label="Adresse email" wire:model.defer="user.email" />
@@ -23,13 +20,10 @@
                 option-value="id"
                 wire:model.defer="user.entreprise_id"
             />
-            <x-form.toggle wire:model.defer="user.is_admin_ardian" >
-                Compte admin Ardian
-            </x-form.toggle>
-            <x-form.toggle wire:model.defer="user.is_actif" >
-                Compte actif
-            </x-form.toggle>
-            <button type="submit" class="btn btn-sm btn-primary" wire:loading.class="disabled">Enregistrer</button>
+            <x-toggle md label="Compte admin Ardian" wire:model.defer="user.is_admin_ardian" />
+            <x-toggle md label="Compte actif" wire:model.defer="user.is_actif" />
+
+            <x-button type="submit" label="Enregistrer" wire:loading.class="disabled" primary sm />
         </form>
-    </x-admin.content>
+    </x-bloc-content>
 </div>

@@ -21,7 +21,7 @@ class LocalisationForm extends Component
     public function render()
     {
         return view('livewire.localisation.localisation-form')
-            ->layout('components.admin-layout');
+            ->layout('components.layout');
     }
 
     protected function getRules()

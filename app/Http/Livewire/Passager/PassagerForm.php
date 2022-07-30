@@ -20,7 +20,8 @@ class PassagerForm extends Component
 
     public function render()
     {
-        return view('livewire.passager.passager-form')->layout('components.admin-layout');
+        return view('livewire.passager.passager-form')
+            ->layout('components.layout');
     }
 
     protected function getRules()

@@ -1,8 +1,7 @@
 require('./bootstrap');
 import 'alpinejs';
-import 'flowbite';
 
-checkDarkMode();
+// checkDarkMode();
 
 function checkDarkMode() {
     if (
@@ -10,11 +9,9 @@ function checkDarkMode() {
         (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
     ) {
         document.querySelector('.darkmode').removeAttribute('checked')
-        document.querySelector('html').setAttribute('data-theme', 'business')
+        document.querySelector('html').setAttribute('data-theme', 'light')
     } else {
         document.querySelector('.darkmode').setAttribute('checked', 'checked')
-        document.querySelector('html').setAttribute('data-theme', 'corporate')
+        document.querySelector('html').setAttribute('data-theme', 'dark')
     }
 }
-
-// Whenever the user explicitly chooses dark mode

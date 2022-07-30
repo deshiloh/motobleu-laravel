@@ -1,12 +1,11 @@
-<div class="bg-base-200 min-h-screen flex items-center justify-center">
+<div class="flex items-center justify-center min-h-screen">
     <x-notifications />
-    <div class="card bg-base-100 text-neutral-content w-full max-w-xl">
+    <div class="card text-neutral-content w-full max-w-xl bg-white dark:bg-slate-800 p-6 rounded-lg">
         <div class="card-body items-center">
-
             <div class="flex flex-col w-full border-opacity-50">
                 <div class="">
-                    <div class="text-center text-2xl mb-3">Mot de passe oublié</div>
-                    <div class="text-sm text-gray-400 mb-2">Renseignez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe </div>
+                    <div class="text-center text-2xl mb-3 dark:text-gray-100">Mot de passe oublié</div>
+                    <div class="text-sm text-gray-400 mb-2 text-center">Renseignez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe </div>
                     <form wire:submit.prevent="resetAction" class="w-full">
                         <x-input
                             label="Adresse email"
@@ -20,7 +19,7 @@
                                     <x-button
                                         class="h-full rounded-r-md"
                                         icon="arrow-right"
-                                        ghost
+                                        flat
                                         type="submit"
                                     />
                                 </div>
@@ -28,13 +27,21 @@
                         </x-input>
                     </form>
                 </div>
-                <div class="divider">OU</div>
+                <div class="relative py-4">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200"> Ou </span>
+                    </div>
+                </div>
                 <div>
-                    <x-button label="Retour à l'accueil" class="w-full" href="{{ route('homepage') }}" />
+                    <x-button primary label="Retour à l'accueil" class="w-full" href="{{ route('homepage') }}" />
                 </div>
             </div>
         </div>
     </div>
+
 
     {{--<div class="flex flex-col items-center justify-center h-screen w-screen">
         <div class="container max-w-lg mx-auto rounded-lg p-5 shadow-sm dark:text-gray-100">

@@ -1,105 +1,84 @@
 <x-layout>
-    @guest()
-        <div class="hero min-h-screen bg-base-200">
-            <div class="hero-content w-full max-w-lg">
-                <div class="card w-full shadow-2xl bg-base-100">
-                    <div class="card-body">
-                        <div class="flex justify-end">
-                            <x-darkmode :size="6"/>
-                        </div>
-                        <div class="text-2xl text-center border-b border-gray-500 pb-4">Motobleu Connexion</div>
-                        <div class="flex flex-col w-full border-opacity-50">
-                            <div>
-                                <form action="{{ route('login') }}" method="post">
-                                    @csrf
-                                    <div class="space-y-4">
-                                        <x-input label="Adresse email" icon="mail" name="email"/>
-                                        <x-input label="Mot de passe" icon="key" name="password" type="password"/>
-                                    </div>
-                                    <div class="mt-8">
-                                        <button class="btn btn-primary w-full" type="submit">Connexion</button>
-                                    </div>
-                                </form>
-                                <div class="flex justify-center py-3">
-                                    <a class="text-sm" href="{{ route('password.request') }}">Mot de passe oublié ?</a>
-                                </div>
-                            </div>
-                            <div class="divider">OU</div>
-                            <div class="flex justify-center flex-col">
-                                <a href="#" class="btn w-full">Demande de compte</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @else
-        <div class="container mx-auto my-4">
-            <div class="stats shadow">
-
-                <div class="stat place-items-center">
-                    <div class="stat-title">Réservation au total</div>
-                    <div class="stat-value">{{ $reservations }}</div>
-                </div>
-
-                <div @class([
-                    'stat place-items-center',
-                    'bg-warning text-warning-content' => $reservations_to_confirm->count() > 0
-                ])>
-                    <div class="stat-title">Réservations à confirmer</div>
-                    <div class="stat-value">{{ $reservations_to_confirm->count() }}</div>
-                    @if($reservations_to_confirm->count() > 0)
-                        <a class="btn btn-xs btn-ghost gap-2" href="{{ route('admin.reservations.index', ['querySort' => 'not_confirmed']) }}">
-                            Voir les réservations
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    <x-center-bloc>
+        <!-- This example requires Tailwind CSS v2.0+ -->
+        <div class="my-4">
+            <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
+                <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+                    <dt>
+                        <div class="absolute bg-indigo-500 rounded-md p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                             </svg>
-                        </a>
-                    @endif
+                        </div>
+                        <p class="ml-16 text-sm font-medium text-gray-500 truncate">Total des réservations</p>
+                    </dt>
+                    <dd class="ml-16 pb-6 flex items-baseline sm:pb-7">
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-200">
+                            {{ \App\Models\Reservation::count() }}
+                        </p>
+                        <div class="absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-slate-700 px-4 py-4 sm:px-6">
+                            <div class="text-sm">
+                                <a href="#" class="font-medium text-indigo-600 dark:text-indigo-500 hover:text-indigo-500"> Voir <span class="sr-only"> Total Subscribers stats</span></a>
+                            </div>
+                        </div>
+                    </dd>
                 </div>
 
-                <div class="stat place-items-center">
-                    <div class="stat-title">Utilisateurs</div>
-                    <div class="stat-value">{{ $users }}</div>
+                <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+                    <dt>
+                        <div class="absolute bg-indigo-500 rounded-md p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                        </div>
+                        <p class="ml-16 text-sm font-medium text-gray-500 truncate">Entreprises</p>
+                    </dt>
+                    <dd class="ml-16 pb-6 flex items-baseline sm:pb-7">
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-200">
+                            {{ \App\Models\Entreprise::count() }}
+                        </p>
+                        <div class="absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-slate-700 px-4 py-4 sm:px-6">
+                            <div class="text-sm">
+                                <a href="{{ route('admin.entreprises.index') }}" class="font-medium text-indigo-600 dark:text-indigo-500 hover:text-indigo-500"> Voir <span class="sr-only"> Avg. Click Rate stats</span></a>
+                            </div>
+                        </div>
+                    </dd>
                 </div>
-
-            </div>
+            </dl>
         </div>
-        <div class="container mx-auto">
-            <x-admin.content>
-                <div class="container mx-auto">
-                    <div class="text-xl mb-4">Réservations à confirmer</div>
-                    <x-datatable>
-                        <x-slot:headers>
-                            <x-datatable.tr>
-                                <x-datatable.th>Référence</x-datatable.th>
-                                <x-datatable.th>Date</x-datatable.th>
-                                <x-datatable.th>Départ</x-datatable.th>
-                                <x-datatable.th>Arrivée</x-datatable.th>
-                                <x-datatable.th>Entreprise</x-datatable.th>
-                                <x-datatable.th>Actions</x-datatable.th>
-                            </x-datatable.tr>
-                        </x-slot:headers>
-                        <x-slot:body>
-                            @foreach($reservations_to_confirm->get() as $reservation)
-                                <x-datatable.tr>
-                                    <x-datatable.td>{{ $reservation->reference }}</x-datatable.td>
-                                    <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
-                                    <x-datatable.td>{{ $reservation->display_from }}</x-datatable.td>
-                                    <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
-                                    <x-datatable.td>{{ $reservation->passager->user->entreprise->nom }}</x-datatable.td>
-                                    <x-datatable.td>
-                                        <a href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" class="btn btn-primary btn-sm">
-                                            Détails
-                                        </a>
-                                    </x-datatable.td>
-                                </x-datatable.tr>
-                            @endforeach
-                        </x-slot:body>
-                    </x-datatable>
-                </div>
-            </x-admin.content>
-        </div>
+    </x-center-bloc>
 
-    @endguest
+    <x-bloc-content>
+        <h3 class="text-xl mb-4 dark:text-gray-100">Réservation à confirmer</h3>
+        <x-datatable>
+            <x-slot:headers>
+                <tr>
+                    <x-datatable.th>Référence</x-datatable.th>
+                    <x-datatable.th>Date</x-datatable.th>
+                    <x-datatable.th>Arrivée</x-datatable.th>
+                    <x-datatable.th>Départ</x-datatable.th>
+                    <x-datatable.th>Entreprise</x-datatable.th>
+                    <x-datatable.th>Actions</x-datatable.th>
+                </tr>
+            </x-slot:headers>
+            <x-slot:body>
+                @forelse(\App\Models\Reservation::where('is_confirmed', false)->where('is_cancel', false)->get() as $reservation)
+                    <x-datatable.tr>
+                        <x-datatable.td>{{ $reservation->reference }}</x-datatable.td>
+                        <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
+                        <x-datatable.td>{{ $reservation->display_from }}</x-datatable.td>
+                        <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
+                        <x-datatable.td>{{ $reservation->passager->user->entreprise->nom }}</x-datatable.td>
+                        <x-datatable.td>
+                            <x-button.circle href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" icon="eye" primary />
+                        </x-datatable.td>
+                    </x-datatable.tr>
+                @empty
+                    <x-datatable.tr>
+                        <x-datatable.td class="text-center" colspan="6">Aucune réservation à confirmer</x-datatable.td>
+                    </x-datatable.tr>
+                @endforelse
+            </x-slot:body>
+        </x-datatable>
+    </x-bloc-content>
 </x-layout>

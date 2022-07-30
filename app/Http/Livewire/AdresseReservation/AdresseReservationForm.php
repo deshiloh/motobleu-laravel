@@ -21,7 +21,7 @@ class AdresseReservationForm extends Component
     public function render()
     {
         return view('livewire.adresse-reservation.adresse-reservation-form')
-            ->layout('components.admin-layout');
+            ->layout('components.layout');
     }
 
     protected function getRules()

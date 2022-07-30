@@ -1,5 +1,5 @@
 module.exports = {
-    darkMode: 'class',
+    darkMode: ['class', '[data-theme="dark"]'],
     content: [
         "./app/Components/**/*.php",
         "./resources/**/*.blade.php",
@@ -14,12 +14,12 @@ module.exports = {
         extend: {},
     },
     plugins: [
-        require("daisyui")
+        //require("daisyui")
     ],
     presets: [
         require('./vendor/wireui/wireui/tailwind.config.js')
     ],
-    daisyui: {
+    /*daisyui: {
         styled: true,
         themes: ['corporate', 'business'],
         base: true,
@@ -27,5 +27,5 @@ module.exports = {
         logs: true,
         rtl: false,
         darkTheme: "business",
-    },
+    },*/
 }

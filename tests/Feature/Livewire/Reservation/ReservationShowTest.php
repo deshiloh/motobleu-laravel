@@ -59,7 +59,7 @@ class ReservationShowTest extends TestCase
     {
         $reservation = Reservation::find(1);
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
-            ->call('cancel')
+            ->call('cancelAction')
             ->assertHasNoErrors()
         ;
         $this->assertTrue(Reservation::where([

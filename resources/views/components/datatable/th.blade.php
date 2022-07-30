@@ -1,8 +1,38 @@
 @props([
     'sortable' => null,
-    'direction' => null
+    'direction' => null,
+    'active' => false
 ])
-<th {{ $attributes }}>
+
+
+<th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6">
+    @unless($sortable)
+        {{ $slot }}
+        @else
+        <a href="#" class="group inline-flex">
+            {{ $slot }}
+            <!-- Active: "bg-gray-200 text-gray-900 group-hover:bg-gray-300", Not Active: "invisible text-gray-400 group-hover:visible group-focus:visible" -->
+            <span
+                @class([
+                    'ml-2 flex-none rounded',
+                    'bg-gray-200 text-gray-900 group-hover:bg-gray-300' => $active,
+                    'invisible text-gray-400 group-hover:visible group-focus:visible' => !$active
+                ])
+            >
+          <!-- Heroicon name: solid/chevron-down -->
+          <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+               aria-hidden="true">
+              <path fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd"/>
+          </svg>
+        </span>
+        </a>
+    @endunless
+</th>
+
+
+{{--<th {{ $attributes }}>
     @unless($sortable)
         {{ $slot }}
         @else
@@ -22,4 +52,4 @@
             </span>
         </button>
     @endunless
-</th>
+</th>--}}

@@ -16,12 +16,14 @@ class EntrepriseForm extends Component
     public function mount(Entreprise $entreprise)
     {
         $this->entreprise = $entreprise;
+
+        $this->entreprise->is_actif = false;
     }
 
     public function render()
     {
         return view('livewire.entreprise.entreprise-form')
-            ->layout('components.admin-layout');
+            ->layout('components.layout');
     }
 
     protected function getRules()
