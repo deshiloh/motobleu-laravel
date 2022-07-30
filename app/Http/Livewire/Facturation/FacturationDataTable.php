@@ -36,8 +36,6 @@ class FacturationDataTable extends Component
 
     public function buildQuery()
     {
-        ray()->showQueries();
-
         $factures = Facture::query()
             ->select('factures.*');
         if ($this->entreprise) {

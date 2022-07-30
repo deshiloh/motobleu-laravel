@@ -3,7 +3,7 @@
         <!-- This example requires Tailwind CSS v2.0+ -->
         <div class="my-4">
             <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
-                <div class="relative bg-white pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+                <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
                     <dt>
                         <div class="absolute bg-indigo-500 rounded-md p-3">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -13,18 +13,18 @@
                         <p class="ml-16 text-sm font-medium text-gray-500 truncate">Total des réservations</p>
                     </dt>
                     <dd class="ml-16 pb-6 flex items-baseline sm:pb-7">
-                        <p class="text-2xl font-semibold text-gray-900">
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-200">
                             {{ \App\Models\Reservation::count() }}
                         </p>
-                        <div class="absolute bottom-0 inset-x-0 bg-gray-50 px-4 py-4 sm:px-6">
+                        <div class="absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-slate-700 px-4 py-4 sm:px-6">
                             <div class="text-sm">
-                                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> Voir <span class="sr-only"> Total Subscribers stats</span></a>
+                                <a href="#" class="font-medium text-indigo-600 dark:text-indigo-500 hover:text-indigo-500"> Voir <span class="sr-only"> Total Subscribers stats</span></a>
                             </div>
                         </div>
                     </dd>
                 </div>
 
-                <div class="relative bg-white pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+                <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
                     <dt>
                         <div class="absolute bg-indigo-500 rounded-md p-3">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -34,12 +34,12 @@
                         <p class="ml-16 text-sm font-medium text-gray-500 truncate">Entreprises</p>
                     </dt>
                     <dd class="ml-16 pb-6 flex items-baseline sm:pb-7">
-                        <p class="text-2xl font-semibold text-gray-900">
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-200">
                             {{ \App\Models\Entreprise::count() }}
                         </p>
-                        <div class="absolute bottom-0 inset-x-0 bg-gray-50 px-4 py-4 sm:px-6">
+                        <div class="absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-slate-700 px-4 py-4 sm:px-6">
                             <div class="text-sm">
-                                <a href="{{ route('admin.entreprises.index') }}" class="font-medium text-indigo-600 hover:text-indigo-500"> Voir <span class="sr-only"> Avg. Click Rate stats</span></a>
+                                <a href="{{ route('admin.entreprises.index') }}" class="font-medium text-indigo-600 dark:text-indigo-500 hover:text-indigo-500"> Voir <span class="sr-only"> Avg. Click Rate stats</span></a>
                             </div>
                         </div>
                     </dd>
@@ -49,7 +49,7 @@
     </x-center-bloc>
 
     <x-bloc-content>
-        <h3 class="text-xl mb-4 dark:text-gray-100">Réservaton à confirmer</h3>
+        <h3 class="text-xl mb-4 dark:text-gray-100">Réservation à confirmer</h3>
         <x-datatable>
             <x-slot:headers>
                 <tr>

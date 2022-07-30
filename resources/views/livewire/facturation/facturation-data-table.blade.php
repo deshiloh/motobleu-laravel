@@ -5,7 +5,7 @@
     <x-bloc-content>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div>
-                <x-input label="Rechercher" icon="search" wire:model="search" />
+                <x-input label="Rechercher" icon="search" wire:model="search"/>
             </div>
             <div>
                 <x-select
@@ -35,21 +35,27 @@
                         <x-datatable.td>{{ $facture->created_at->format('d/m/Y') }}</x-datatable.td>
                         <x-datatable.td>
                             @if($facture->is_acquitte)
-                                <span class="badge badge-success">
+                                <x-badge success>
                                     Oui
-                                </span>
+                                </x-badge>
                             @else
-                                <span class="badge badge-error">
+                                <x-badge error>
                                     Non
-                                </span>
+                                </x-badge>
                             @endif
                         </x-datatable.td>
                         <x-datatable.td>
                             {{ $this->getEntreprise($facture)->nom }}
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-button label="Voir" href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank" icon="eye" info sm/>
-                            <x-button label="Liste des courses" icon="view-list" primary     sm/>
+                            <x-button label="Voir"
+                                      href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}"
+                                      target="_blank" icon="eye" info sm/>
+                            <x-button label="Liste des courses" icon="view-list" primary sm href="{{ route('admin.facturations.edition', [
+                            'selectedMonth' => $selectedMonth,
+                            'selectedYear' => $selectedYear,
+                            ]
+                        ) }}"/>
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty
