@@ -63,7 +63,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         $styles[$this->indexDepart] = [
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['argb' => 'FF09158D'],
+                'startColor' => ['argb' => config('motobleu.export.backgroundColor')],
             ],
             'font' => [
                 'color' => ['argb' => Color::COLOR_WHITE]
@@ -89,7 +89,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             $styles[$index] = [
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
-                    'startColor' => ['argb' => 'FF09158D'],
+                    'startColor' => ['argb' => config('motobleu.export.backgroundColor')],
                 ],
             ];
         }
@@ -184,7 +184,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
     {
         $drawing = new Drawing();
         $drawing->setName('Logo');
-        $drawing->setDescription('This is my logo');
+        $drawing->setDescription('Logo motobleu');
         $drawing->setPath(public_path('storage/Motobleu.png'));
         $drawing->setHeight(90);
         $drawing->setCoordinates('A2');
