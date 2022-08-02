@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\AdresseEntrepriseTypeEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -37,5 +38,10 @@ class Entreprise extends Model
     public function typeFacturations(): HasMany
     {
         return $this->hasMany(TypeFacturation::class);
+    }
+
+    public function getAdresse(AdresseEntrepriseTypeEnum $adresseEntrepriseTypeEnum)
+    {
+        return $this->adresseEntreprises()->where('type', $adresseEntrepriseTypeEnum->value)->first();
     }
 }

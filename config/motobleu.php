@@ -2,8 +2,11 @@
 
 return [
     'export' => [
-        'entreprise' => [
+        'entreprisesFacturation' => [
             'test'
+        ],
+        'entreprisesCode' => [
+            'toto'
         ],
         'backgroundColor' => 'FF2A376E'
     ]

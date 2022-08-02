@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Facturation;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
 use App\Events\BillCreated;
+use App\Exports\ReservationsExport;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use App\Models\Facture;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 use WireUi\Traits\Actions;
 
 class EditionFacture extends Component
@@ -408,5 +410,10 @@ class EditionFacture extends Component
             'is_acquitte' => $this->isAcquitte,
             'information' => $this->email['complement']
         ]);
+    }
+
+    public function exportAction()
+    {
+        return Excel::download(new ReservationsExport($this->selectedYear, $this->selectedMonth, $this->entreprise), 'reservations.xlsx');
     }
 }

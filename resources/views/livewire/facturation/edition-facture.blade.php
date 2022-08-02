@@ -153,7 +153,8 @@
                         <x-tinymce wire:model="email.message"/>
                         <x-toggle wire:model.defer="isAcquitte" wire:change="editFactureAction" label="Facture acquittée" md />
                         <x-textarea label="Texte information" hint="Ce texte apparaitra sur la facture" wire:model.defer="email.complement" wire:change.debounce="editFactureAction"/>
-                        <x-button wire:click="sendEmailTestAction" primary sm type="button">Envoi d'un email de test</x-button>
+                        <x-button wire:click="sendEmailTestAction" primary sm type="button" icon="mail">Envoi d'un email de test</x-button>
+                        <x-button wire:click="exportAction" info sm type="button" icon="download">Récap. des courses</x-button>
                     </form>
                 </div>
             </div>

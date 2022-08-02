@@ -2,11 +2,11 @@
 
 namespace App\Exports;
 
+use App\Enum\AdresseEntrepriseTypeEnum;
+use App\Models\Entreprise;
 use App\Models\Reservation;
-use Illuminate\Support\Collection;
-use Illuminate\View\View;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
@@ -22,23 +22,73 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Style;
-use PhpOffice\PhpSpreadsheet\Worksheet\BaseDrawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 
 class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyles, WithCustomStartCell, WithHeadings, WithEvents, FromCollection, WithDrawings, WithMapping, WithColumnFormatting
 {
     private \Illuminate\Database\Eloquent\Collection $reservations;
-    private $indexDepart = 23;
-    private $columnEnd = 'I';
-    private $entrepriseName;
+    private string $entrepriseName;
 
-    public function __construct()
+    private int $indexDepart = 23;
+    private string $lastColumn;
+    private string $priceColumn;
+    private string $coordinatePrices;
+    private string $htTextCoordinate;
+    private string $htValueCoordinate;
+    private string $tvaTextCoordinate;
+    private string $tvaValueCoordinate;
+    private string $ttcTextCoordinate;
+    private string $ttcValueCoordinate;
+    private int $year;
+    private int $month;
+    private Entreprise $entreprise;
+    private $datePeriod;
+
+    public function __construct(int $year, int $month, Entreprise $entreprise)
     {
-        $this->entrepriseName = 'toto';
+        $htTextColumn = 'H';
+        $tvaTextColumn = 'H';
+        $ttcTextColumn = 'H';
+
+        $this->entrepriseName = $entreprise->nom;
         $this->reservations = $this->getReservations();
-        $this->calculEndColumn();
+
+        $this->priceColumn = 'I';
+        $this->lastColumn = 'I';
+
+        if (in_array($this->entrepriseName, config('motobleu.export.entreprisesCode'))) {
+            $this->priceColumn = 'J';
+            $this->lastColumn = 'J';
+
+            $htTextColumn = 'I';
+            $tvaTextColumn = 'I';
+            $ttcTextColumn = 'I';
+        }
+
+        if (in_array($this->entrepriseName, config('motobleu.export.entreprisesFacturation'))) {
+            $this->lastColumn = 'K';
+        }
+
+        $this->coordinatePrices = sprintf(
+            '%s%s:%s%s',
+            $this->priceColumn,
+            $this->indexDepart + 1,
+            $this->priceColumn,
+            $this->getReservations()->count() - 1
+        );
+
+        $this->generateHtCoordinates($htTextColumn);
+        $this->generateTvaCoordinates($tvaTextColumn);
+        $this->generateTtcCoordinates($ttcTextColumn);
+
+        $this->year = $year;
+        $this->month = $month;
+        $this->entreprise = $entreprise;
+
+        $this->datePeriod = Carbon::create($year, $month, '1');
     }
 
     public function collection()
@@ -83,7 +133,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         for ($i = 1; $i <= 7; $i++) {
             $index = sprintf('A%s:%s%s',
                 $i,
-                $this->columnEnd,
+                $this->lastColumn,
                 $i
             );
             $styles[$index] = [
@@ -101,6 +151,12 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
                         'fillType' => Fill::FILL_SOLID,
                         'startColor' => ['argb' => 'FFE0E0E0'],
                     ],
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['argb' => Color::COLOR_BLACK]
+                        ]
+                    ]
                 ];
             }
         }
@@ -131,7 +187,13 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             'Prix TTC (en €)',
         ];
 
-        if (in_array($this->entrepriseName, config('motobleu.export.entreprise'))){
+        if (in_array($this->entrepriseName, config('motobleu.export.entreprisesCode'))) {
+            array_splice($headers, 1, 0, [
+                'Code'
+            ]);
+        }
+
+        if (in_array($this->entrepriseName, config('motobleu.export.entreprisesFacturation'))) {
             array_push($headers, 'Facturation', 'COST CENTER');
         }
 
@@ -142,38 +204,79 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
     {
         return [
             AfterSheet::class => function (AfterSheet $sheet) {
+                // Settings
+                $sheet->getDelegate()->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
+                $sheet->getSheet()->getProtection()->setSheet(true);
+                $sheet->getDelegate()->getRowDimension(20)->setRowHeight(30);
 
-                $sheet->getSheet()->getCell('A14')->setValue('test');
+                // Header
+                $sheet->getSheet()->getCell($this->lastColumn . 9)->setValue(sprintf(
+                    'Levallois, le %s',
+                    Carbon::now()->format('d/m/Y')
+                ))->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+                $sheet->getSheet()->getCell($this->lastColumn . 10)->setValue(
+                    $this->entreprise->nom
+                )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+                $sheet->getSheet()->getCell($this->lastColumn . 11)->setValue(
+                    $this->entreprise->getAdresse(AdresseEntrepriseTypeEnum::PHYSIQUE)->adresse_full
+                )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+                $sheet->getSheet()->getCell('A14')->setValue(
+                    'Période :'
+                )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+                $sheet->getSheet()->getCell('B14')->setValue(
+                    $this->datePeriod->monthName . ' ' . $this->datePeriod->year
+                )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+                $sheet->getSheet()->getCell('A15')->setValue(
+                    'Compte client :'
+                )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+                $sheet->getSheet()->getCell('B15')->setValue(
+                    $this->entreprise->nom
+                )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+                $sheet->getSheet()->getCell('A16')->setValue(
+                    'Contact facturation:'
+                )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+                $sheet->getSheet()->getCell('B16')->setValue(
+                    $this->entreprise->getAdresse(AdresseEntrepriseTypeEnum::FACTURATION)->email
+                )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+                $title = $sheet->getSheet()->getCell('G20')->setValue(
+                    'RELEVE DE COURSES / PERIODE ' .$this->datePeriod->monthName . ' ' . $this->datePeriod->year
+                );
+
+                $title->getStyle()->getFont()->setBold(true);
+                $title->getStyle()->getFont()->setSize(20);
 
                 // Affichage du total
-                $indexHT = $this->reservations->count() + $this->indexDepart + 1;
-                $indexTTC = $this->reservations->count() + $this->indexDepart + 3;
-                $countStart = $this->indexDepart + 1;
-                $countStop = $countStart + $this->reservations->count() - 1;
-
-                $sheet->getSheet()->getCell('H' . $indexHT)->setValue(
+                $sheet->getSheet()->getCell($this->htTextCoordinate)->setValue(
                     'Montant HT (en €)'
                 );
-                $sheet->getSheet()->getCell('I' . $indexHT)->setValue(
+                $sheet->getSheet()->getCell($this->htValueCoordinate)->setValue(
                     sprintf(
-                        '=I%s/1.10',
-                        $indexTTC
+                        '=%s/1.10',
+                        $this->ttcValueCoordinate
                     )
                 );
-                $sheet->getSheet()->getCell('H' . $indexHT + 1)->setValue(
+                $sheet->getSheet()->getCell($this->tvaTextCoordinate)->setValue(
                     'Montant de la TVA '
                 );
-                $sheet->getSheet()->getCell('I' . $indexHT + 1)->setValue(
-                    sprintf('=I%s*0.10', $indexHT)
+                $sheet->getSheet()->getCell($this->tvaValueCoordinate)->setValue(
+                    sprintf('=%s*0.10', $this->htValueCoordinate)
                 );
-                $sheet->getSheet()->getCell('H' . $indexTTC)->setValue(
+                $sheet->getSheet()->getCell($this->ttcTextCoordinate)->setValue(
                     'Montant TTC (en €)'
                 );
-                $sheet->getSheet()->getCell('I' . $indexTTC)->setValue(
+                $sheet->getSheet()->getCell($this->ttcValueCoordinate)->setValue(
                     sprintf(
-                        '=SUM(I%s:I%s)',
-                        $countStart,
-                        $countStop
+                        '=SUM(%s)',
+                        $this->coordinatePrices
                     )
                 );
             }
@@ -211,7 +314,13 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             $row->tarif,
         ];
 
-        if (in_array($this->entrepriseName, config('motobleu.export.entreprise'))) {
+        if (in_array($this->entrepriseName, config('motobleu.export.entreprisesCode'))) {
+            array_splice($datas, 1, 0, [
+                'CODE'
+            ]);
+        }
+
+        if (in_array($this->entrepriseName, config('motobleu.export.entreprisesFacturation'))) {
             array_push($datas, 'test', 'trest');
         }
 
@@ -221,17 +330,70 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
     public function columnFormats(): array
     {
         return [
-            'I24:I64' => NumberFormat::FORMAT_CURRENCY_EUR_SIMPLE
+            $this->coordinatePrices => NumberFormat::FORMAT_CURRENCY_EUR_SIMPLE
         ];
     }
 
     /**
+     * @param $textColumn
      * @return void
      */
-    private function calculEndColumn(): void
+    private function generateHtCoordinates($textColumn): void
     {
-        if (in_array($this->entrepriseName, config('motobleu.export.entreprise'))) {
-            $this->columnEnd = 'K';
-        }
+        $position = $this->indexDepart + $this->getReservations()->count() + 2;
+
+        $this->htTextCoordinate = sprintf(
+            '%s%s',
+            $textColumn,
+            $position,
+        );
+
+        $this->htValueCoordinate = sprintf(
+            '%s%s',
+            $this->priceColumn,
+            $position,
+        );
+    }
+
+    /**
+     * @param $textColumn
+     * @return void
+     */
+    private function generateTvaCoordinates($textColumn): void
+    {
+        $position = $this->indexDepart + $this->getReservations()->count() + 3;
+
+        $this->tvaTextCoordinate = sprintf(
+            '%s%s',
+            $textColumn,
+            $position,
+        );
+
+        $this->tvaValueCoordinate = sprintf(
+            '%s%s',
+            $this->priceColumn,
+            $position,
+        );
+    }
+
+    /**
+     * @param $textColumn
+     * @return void
+     */
+    private function generateTtcCoordinates($textColumn): void
+    {
+        $position = $this->indexDepart + $this->getReservations()->count() + 4;
+
+        $this->ttcTextCoordinate = sprintf(
+            '%s%s',
+            $textColumn,
+            $position,
+        );
+
+        $this->ttcValueCoordinate = sprintf(
+            '%s%s',
+            $this->priceColumn,
+            $position,
+        );
     }
 }
