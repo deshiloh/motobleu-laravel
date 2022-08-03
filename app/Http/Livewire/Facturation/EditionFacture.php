@@ -9,6 +9,7 @@ use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Reservation;
+use App\Services\ExportService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -412,8 +413,14 @@ class EditionFacture extends Component
         ]);
     }
 
-    public function exportAction()
+    public function exportAction(ExportService $exportService)
     {
-        return Excel::download(new ReservationsExport($this->selectedYear, $this->selectedMonth, $this->entreprise), 'reservations.xlsx');
+        return response()->streamDownload(function () use ($exportService) {
+            echo $exportService->exportReservations(
+                $this->selectedYear,
+                $this->selectedMonth,
+                $this->entreprise
+            );
+        });
     }
 }

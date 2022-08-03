@@ -279,6 +279,12 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
                         $this->coordinatePrices
                     )
                 );
+
+                // Footer
+                $startFooter = $this->indexDepart + $this->reservations->count() + 7;
+                $sheet->getSheet()->getCell('A' . $startFooter)->setValue(
+                    'FOOTER'
+                );
             }
         ];
     }
@@ -293,7 +299,15 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         $drawing->setOffsetX(20);
         $drawing->setCoordinates('A2');
 
-        return $drawing;
+        $footer = new Drawing();
+        $footer->setName('Footer');
+        $footer->setDescription('Footer motobleu');
+        $footer->setPath(public_path('storage/xls_footer.png'));
+        $footer->setHeight(90);
+        $footer->setOffsetX(20);
+        $footer->setCoordinates('A30');
+
+        return [$drawing, $footer];
     }
 
     /**

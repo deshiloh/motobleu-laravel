@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ReservationsExport;
+use App\Models\Entreprise;
 use App\Models\Reservation;
+use App\Services\ExportService;
 use App\Services\SentryService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -30,8 +32,8 @@ class ReservationController extends Controller
         return view('admin.reservation.create');
     }
 
-    public function export()
+    public function export(ExportService $exportService)
     {
-        return Excel::download(new ReservationsExport(), 'reservations.xlsx');
+        return $exportService->exportReservations(2022, 8, Entreprise::find(1));
     }
 }

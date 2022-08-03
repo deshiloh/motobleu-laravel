@@ -2,6 +2,9 @@
 
 return [
     'export' => [
+        'entrepriseEnableForXlsExport' => [
+            'ECarpentier S.A.'
+        ],
         'entreprisesFacturation' => [
             'test'
         ],
