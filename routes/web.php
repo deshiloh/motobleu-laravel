@@ -166,6 +166,7 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
         ->name('reservations.edit');
     Route::resource('reservations', ReservationController::class)
         ->except(['show', 'update', 'destroy', 'edit', 'create', 'store']);
+    Route::get('reservations/export', [ReservationController::class, 'export'])->name('reservations.export');
 
     // FACTURATIONS
     Route::get('facturations', FacturationDataTable::class)

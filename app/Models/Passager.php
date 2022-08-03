@@ -30,6 +30,22 @@ class Passager extends Model
         return $this->hasMany(Reservation::class);
     }
 
+    /**
+     * @return BelongsTo
+     */
+    public function costCenter(): BelongsTo
+    {
+        return $this->belongsTo(CostCenter::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function facturation(): BelongsTo
+    {
+        return $this->belongsTo(TypeFacturation::class);
+    }
+
     public function toSearchableArray()
     {
         return [

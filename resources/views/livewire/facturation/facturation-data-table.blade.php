@@ -5,7 +5,7 @@
     <x-bloc-content>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div>
-                <x-input label="Rechercher" icon="search" wire:model="search"/>
+                <x-input label="Rechercher" icon="search" wire:model="search" />
             </div>
             <div>
                 <x-select
@@ -48,14 +48,15 @@
                             {{ $this->getEntreprise($facture)->nom }}
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-button label="Voir"
-                                      href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}"
-                                      target="_blank" icon="eye" info sm/>
+                            <x-button label="Voir" href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank" icon="eye" info sm />
+
                             <x-button label="Liste des courses" icon="view-list" primary sm href="{{ route('admin.facturations.edition', [
-                            'selectedMonth' => $selectedMonth,
-                            'selectedYear' => $selectedYear,
+                                'selectedMonth' => $facture->month,
+                                'selectedYear' => $facture->year,
+                                'entrepriseIdSelected' => $this->getEntreprise($facture)->id
                             ]
                         ) }}"/>
+
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty
