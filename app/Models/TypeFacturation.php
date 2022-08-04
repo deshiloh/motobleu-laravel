@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Scout\Searchable;
 
+/**
+ * @mixin IdeHelperTypeFacturation
+ */
 class TypeFacturation extends Model
 {
     use HasFactory, Searchable;

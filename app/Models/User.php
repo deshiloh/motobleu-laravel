@@ -19,6 +19,7 @@ use Laravel\Scout\Searchable;
 
 /**
  * @property boolean $is_actif
+ * @mixin IdeHelperUser
  */
 class User extends Authenticatable
 {

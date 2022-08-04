@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
 
+/**
+ * @mixin IdeHelperPassager
+ */
 class Passager extends Model
 {
     use HasFactory, Searchable;
