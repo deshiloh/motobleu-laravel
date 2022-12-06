@@ -41,7 +41,7 @@ return new class extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::dropIfExists('adresses_entreprises');
+        Schema::dropIfExists('adresse_entreprises');
 
         Schema::enableForeignKeyConstraints();
     }

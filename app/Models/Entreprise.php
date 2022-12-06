@@ -40,7 +40,11 @@ class Entreprise extends Model
         return $this->hasMany(TypeFacturation::class);
     }
 
-    public function getAdresse(AdresseEntrepriseTypeEnum $adresseEntrepriseTypeEnum)
+    /**
+     * @param AdresseEntrepriseTypeEnum $adresseEntrepriseTypeEnum
+     * @return Model|HasMany|null
+     */
+    public function getAdresse(AdresseEntrepriseTypeEnum $adresseEntrepriseTypeEnum): Model|HasMany|null
     {
         return $this->adresseEntreprises()->where('type', $adresseEntrepriseTypeEnum->value)->first();
     }
