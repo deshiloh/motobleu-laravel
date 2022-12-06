@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -86,23 +87,31 @@ class User extends Authenticatable
         return $this->hasMany(AdresseReservation::class);
     }
 
-    public function reservations()
+    /**
+     * @return HasManyThrough
+     */
+    public function reservations(): HasManyThrough
     {
         return $this->hasManyThrough(Reservation::class, Passager::class);
     }
 
-    public function getFullNameAttribute()
+    /**
+     * @return string
+     */
+    public function getFullNameAttribute(): string
     {
         return implode(' ', [$this->nom, $this->prenom]);
     }
 
-    public function toSearchableArray()
+    /**
+     * @return array
+     */
+    public function toSearchableArray(): array
     {
         return [
             'id' => $this->id,
             'nom' => $this->full_name,
             'email' => $this->email,
-            'entreprise' => $this->entreprise()->first()->nom,
             'is_actif' => $this->is_actif
         ];
     }
