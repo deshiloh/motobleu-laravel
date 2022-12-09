@@ -11,25 +11,28 @@ class EditPasswordForm extends Component
     public User $user;
     public string $password = '';
 
-    public function mount(User $account)
+    public function mount(User $account): void
     {
         $this->user = $account;
     }
 
-    public function render()
+    /**
+     * @return mixed
+     */
+    public function render(): mixed
     {
         return view('livewire.account.edit-password-form')
             ->layout('components.layout');
     }
 
-    protected function getRules()
+    protected function getRules(): array
     {
         return [
             'password' => 'required|current_password:web'
         ];
     }
 
-    protected function getValidationAttributes()
+    protected function getValidationAttributes(): array
     {
         return [
             'password' => 'mot de passe'

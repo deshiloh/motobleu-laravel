@@ -21,7 +21,7 @@ class EntrepriseTest extends TestCase
      *
      * @var bool
      */
-    protected $seed = true;
+    protected bool $seed = true;
 
     /**
      * @var Collection|HasFactory|Model|mixed
@@ -38,32 +38,37 @@ class EntrepriseTest extends TestCase
         $this->entreprise = Entreprise::find(1);
     }
 
-    public function testAcessListEntreprises()
+    public function testAcessListEntreprises(): void
     {
         $response = $this->get(route('admin.entreprises.index'));
+
         $response->assertStatus(200);
     }
 
-    public function testCanAccessShowPageEntreprise()
+    public function testCanAccessShowPageEntreprise(): void
     {
         $response = $this->get(route('admin.entreprises.show', ['entreprise' => $this->entreprise->id]));
+
         $response->assertStatus(200);
     }
 
-    public function testCreateEntrepriseWithErrors()
+    public function testCreateEntrepriseWithErrors(): void
     {
         Livewire::test(EntrepriseForm::class)
             ->set('entreprise.nom', '')
+            ->set('entreprise.responsable_name', '')
             ->call('save')
             ->assertHasErrors([
-                'entreprise.nom' => 'required'
+                'entreprise.nom' => 'required',
+                'entreprise.responsable_name' => 'required'
             ]);
     }
 
-    public function testCreateEntrepriseOK()
+    public function testCreateEntrepriseOK(): void
     {
         Livewire::test(EntrepriseForm::class)
             ->set('entreprise.nom', 'test')
+            ->set('entreprise.responsable_name', 'responsable')
             ->set('entreprise.is_actif', true)
             ->call('save')
             ->assertHasNoErrors();
@@ -71,11 +76,12 @@ class EntrepriseTest extends TestCase
         $this->assertTrue(Entreprise::where('nom', 'test')->exists());
     }
 
-    public function testDeleteEntreprise()
+    public function testDeleteEntreprise(): void
     {
         $response = $this->delete(route('admin.entreprises.destroy', ['entreprise' => $this->entreprise]));
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
+
         $this->assertDatabaseMissing('entreprises', $this->entreprise->toArray());
     }
 }

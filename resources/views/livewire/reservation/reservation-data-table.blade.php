@@ -44,9 +44,9 @@
                 <x-datatable.tr>
                     <x-datatable.td>{{ $reservation->reference }}</x-datatable.td>
                     <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
-                    <x-datatable.td>{{ $reservation->passager->user->entreprise->nom }}</x-datatable.td>
+                    <x-datatable.td>{{ $reservation->entreprise?->nom }}</x-datatable.td>
                     <x-datatable.td>{{ $reservation->passager->nom }}</x-datatable.td>
-                    <x-datatable.td>{{ $reservation->display_from }}</x-datatable.td>
+                    <x-datatable.td>{{ $reservation->localdisplay_from }}</x-datatable.td>
                     <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
                     <x-datatable.td>
                         @if($reservation->is_cancel && !$reservation->is_confirmed)

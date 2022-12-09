@@ -24,7 +24,7 @@ class ReservationForm extends Component
     public int $backDropMode = ReservationService::WITH_PLACE;
     public bool $hasBack = false;
 
-    public $userId = '';
+    public ?string $userId = '';
 
     public Reservation $reservation;
     public Reservation $reservation_back;
@@ -58,6 +58,7 @@ class ReservationForm extends Component
     protected $validationAttributes = [
         'reservation.passager_id' => 'passager',
         'reservation.pickup_date' => 'date de départ',
+        'reservation.entreprise_id' => 'entreprise',
 
         'reservation.localisation_from_id' => 'lieu de départ',
         'reservation.pickup_origin' => 'provenance de départ',
@@ -135,14 +136,19 @@ class ReservationForm extends Component
     }
 
 
-
-    public function render()
+    /**
+     * @return mixed
+     */
+    public function render(): mixed
     {
         return view('livewire.reservation.reversation-form')
             ->layout('components.layout');
     }
 
-    public function saveReservation()
+    /**
+     * @return void
+     */
+    public function saveReservation(): void
     {
         $this->withValidator(function (Validator $validator) {
             $validator->after(function ($validator) {

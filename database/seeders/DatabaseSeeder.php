@@ -31,6 +31,41 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $entreprises = Entreprise::factory()
+            ->count(2)
+            ->has(AdresseEntreprise::factory()->facturation())
+            ->has(AdresseEntreprise::factory()->physique())
+        ;
+
+        $users = User::factory()
+            ->has($entreprises)
+            ->has(AdresseReservation::factory()->count(5))
+            ->count(10)
+            ->create();
+
+        foreach ($users as $user) {
+            $passager = Passager::factory()->for($user)->create();
+
+            Reservation::factory([
+                'pickup_date' => Carbon::now(),
+                'is_confirmed' => true,
+                'entreprise_id' => 1,
+            ])
+                ->for($passager)
+                ->create()
+            ;
+        }
+
+        Localisation::factory()->count(30)->create();
+
+        Pilote::factory()->count(20)->create();
+
+        if (App::environment(['local', 'prod'])) {
+            Artisan::call('meilisearch:import');
+            Artisan::call('scout:sync-index-settings');
+        }
+
+        /*
+        $entreprises = Entreprise::factory()
             ->count(10)
             ->has(AdresseEntreprise::factory()->facturation())
             ->has(AdresseEntreprise::factory()->physique())
@@ -40,10 +75,11 @@ class DatabaseSeeder extends Seeder
             $users = User::factory()
                 ->count(4)
                 ->has(AdresseReservation::factory())
-                ->for($entreprise)
                 ->create();
 
             foreach ($users as $user) {
+                $entreprise->has($user);
+
                 $passager = Passager::factory()->for($user)->create();
                 if (App::environment(['testing'])) {
                     $facture = Facture::factory()->create();
@@ -69,5 +105,6 @@ class DatabaseSeeder extends Seeder
         if (App::environment(['local', 'prod'])) {
             Artisan::call('melisearch:setting');
         }
+        */
     }
 }

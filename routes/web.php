@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\AdresseEntrepriseController;
 use App\Http\Controllers\Admin\CostCenterController;
 use App\Http\Controllers\Admin\EntrepriseController;
+use App\Http\Controllers\Admin\FacturationsController;
 use App\Http\Controllers\Admin\LocalisationController;
 use App\Http\Controllers\Admin\PassagerController;
 use App\Http\Controllers\Admin\PasswordController;
@@ -32,6 +33,7 @@ use App\Http\Livewire\Reservation\ReservationShow;
 use App\Http\Livewire\TypeFacturation\TypeFacturationForm;
 use App\Mail\AdminReservationConfirmed;
 use App\Models\AdresseReservation;
+use App\Models\Entreprise;
 use App\Models\Localisation;
 use App\Models\Passager;
 use App\Models\Reservation;
@@ -173,7 +175,7 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
         ->name('facturations.index');
     Route::get('facturations/edition', EditionFacture::class)
         ->name('facturations.edition');
-    Route::get('facturations/{facture}/show', [\App\Http\Controllers\Admin\FacturationsController::class, 'show'])
+    Route::get('facturations/{facture}/show', [FacturationsController::class, 'show'])
         ->name('facturations.show');
 });
 
@@ -243,6 +245,26 @@ Route::prefix('/admin/select')->group(function () {
             )
             ->get();
     })->name('admin.api.adresses');
+
+    // API USER ENTREPRISE
+    Route::get('/user-entreprise', function (Request $request) {
+        $search = $request->input('search');
+        $selected = $request->input('selected');
+
+        return User::query()
+            ->select('users.*')
+            ->orderBy('users.nom')
+            ->when($search, function (Builder $query, $search) {
+                $query->where('users.nom', 'like', "%{$search}%");
+            })
+            ->when(
+                $selected,
+                function (Builder $query, $selected) {
+                    $query->whereIn('id', $selected);
+                }
+            )
+            ->get();
+    })->name('admin.api.user_in_entreprise');
 });
 
 Route::get('/mailable', function () {

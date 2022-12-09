@@ -13,18 +13,24 @@ class PassagerForm extends Component
 
     public Passager $passager;
 
-    public function mount(Passager $passager)
+    public function mount(Passager $passager): void
     {
         $this->passager = $passager;
     }
 
-    public function render()
+    /**
+     * @return mixed
+     */
+    public function render(): mixed
     {
         return view('livewire.passager.passager-form')
             ->layout('components.layout');
     }
 
-    protected function getRules()
+    /**
+     * @return string[]
+     */
+    protected function getRules(): array
     {
         $rules = [
             'passager.nom' => 'required',
@@ -39,7 +45,10 @@ class PassagerForm extends Component
         return $rules;
     }
 
-    public function save()
+    /**
+     * @return void
+     */
+    public function save(): void
     {
         $this->validate();
         try {

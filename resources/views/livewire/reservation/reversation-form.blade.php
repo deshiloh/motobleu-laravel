@@ -12,15 +12,23 @@
                 <x-toggle wire:model="reservation.send_to_user" md
                           label="Envoyer par mail une invitation d’agenda à l’assistante"/>
             </div>
-            <div class="mb-3">
+            <div class="mb-3 space-y-3">
                 <x-select
-                    label="Secrétaire"
+                    label="Secrétaire *"
                     placeholder="Sélectionner une secrétaire"
                     :async-data="route('api.users')"
                     option-label="full_name"
                     option-value="id"
                     option-description="entreprise.nom"
                     wire:model="userId"
+                />
+                <x-select
+                    label="Entreprise rattachée *"
+                    placeholder="Sélectionner une entreprise"
+                    :async-data="route('api.entreprises_users', ['userId' => $userId])"
+                    option-label="nom"
+                    option-value="id"
+                    wire:model="reservation.entreprise_id"
                 />
             </div>
             <fieldset>
@@ -53,7 +61,7 @@
                         <x-input label="Téléphone de bureau" wire:model="newPassager.telephone"/>
                         <x-input label="Téléphone portable" wire:model="newPassager.portable"/>
                         <x-input type="email" label="Adresse email" wire:model="newPassager.email"/>
-                        @if(\Illuminate\Support\Facades\Auth::user()->entreprise->id == 1)
+                        @if($reservation->entreprise()->exists() && $reservation->entreprise->id == 1)
                             <x-select
                                 wire:key="cost_center"
                                 label="Cost Center"

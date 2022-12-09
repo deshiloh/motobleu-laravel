@@ -15,14 +15,14 @@ use Illuminate\Console\Command;
 use MeiliSearch\Client;
 use Mockery\Generator\StringManipulation\Pass\Pass;
 
-class MeliSearch extends Command
+class MeiliSearch extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'melisearch:setting';
+    protected $signature = 'meilisearch:import';
 
     /**
      * The console command description.
@@ -100,12 +100,6 @@ class MeliSearch extends Command
 
         User::removeAllFromSearch();
         User::makeAllSearchable();
-        $client->index('users')->updateSortableAttributes([
-            'nom',
-            'email',
-            'entreprise',
-            'is_actif'
-        ]);
 
         AdresseReservation::removeAllFromSearch();
         AdresseReservation::makeAllSearchable();

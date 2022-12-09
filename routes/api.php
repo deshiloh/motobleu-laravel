@@ -31,8 +31,7 @@ Route::get('/users', function (Request $request){
     $selected = $request->input('selected');
 
     return User::query()
-        ->select('id', 'nom', 'email', 'prenom', 'entreprise_id')
-        ->with('entreprise')
+        ->select('id', 'nom', 'email', 'prenom')
         ->orderBy('nom')
         ->when(
             $search, function (Builder $query, $search) {
@@ -40,9 +39,7 @@ Route::get('/users', function (Request $request){
                 ->where('nom', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%")
                 ->orWhere('prenom', 'like', "%{$search}%")
-                ->orWhereHas('entreprise', function ($query) use ($search) {
-                    $query->where('nom', 'like', "%{$search}%");
-                });
+            ;
             }
         )
         ->when(
@@ -153,6 +150,33 @@ Route::get('/entreprises', function (Request $request) {
         )
         ->get();
 })->name('api.entreprises');
+
+Route::get('/entreprises_users', function (Request $request) {
+    $search = $request->input('search');
+    $selected = $request->input('selected');
+    $userId = $request->input('userId');
+
+    return Entreprise::query()
+        ->select('entreprises.id', 'entreprises.nom')
+        ->join('entreprise_user', 'entreprise_id', '=', 'entreprises.id')
+        ->where('entreprise_user.user_id', $userId)
+        ->orderBy('entreprises.nom')
+        ->when(
+            $search, function (Builder $query, $search) {
+            $query->where('entreprises.nom', 'like', "%{$search}%");
+        }
+        )
+        ->when(
+            $selected,
+            function (Builder $query, $selected) {
+                $query->whereIn('entreprises.id', $selected);
+            },
+            function (Builder $query) {
+                $query->limit(10);
+            }
+        )
+        ->get();
+})->name('api.entreprises_users');
 
 Route::get('/entreprises_to_bille/', function (Request $request) {
     $search = $request->input('search');

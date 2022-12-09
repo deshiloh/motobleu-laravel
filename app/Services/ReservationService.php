@@ -18,7 +18,8 @@ class ReservationService
     public static function generateDefaultRules(array &$rules): void
     {
         $rules =  [
-            'userId' => 'nullable',
+            'userId' => 'required',
+            'reservation.entreprise_id' => 'required',
             'reservation.pickup_date' => 'required',
             'reservation.commande' => 'nullable',
             'reservation.send_to_passager' => 'bool',

@@ -7,6 +7,7 @@ use Google_Service_Calendar_Event;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Scout\Searchable;
 use Spatie\GoogleCalendar\Event;
 
@@ -39,6 +40,14 @@ class Reservation extends Model
                 $reservation->reference = $currentDate->format('Yd').Reservation::count() + 1;
             }
         });
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function entreprise(): BelongsTo
+    {
+        return $this->belongsTo(Entreprise::class);
     }
 
     public function facture()
@@ -101,44 +110,17 @@ class Reservation extends Model
         return $event;
     }
 
-    public function getDisplayFromAttribute(): string
-    {
-        $text = '';
-
-        if ($this->localisation_from_id) {
-            $text = $this->localisationFrom->full_adresse;
-        }
-
-        if ($this->adresse_reservation_from_id) {
-            $text = $this->adresseReservationFrom->full_adresse;
-        }
-
-        return $text;
-    }
-
-    public function getDisplayToAttribute()
-    {
-        $text = '';
-
-        if ($this->localisation_to_id) {
-            $text = $this->localisationTo->full_adresse;
-        }
-
-        if ($this->adresse_reservation_to_id) {
-            $text = $this->adresseReservationTo->full_adresse;
-        }
-
-        return $text;
-    }
-
-    public function toSearchableArray()
+    /**
+     * @return array
+     */
+    public function toSearchableArray(): array
     {
         return [
             'id' => $this->id,
             'reference' => $this->reference,
             'pickup_date' => $this->pickup_date,
             'user' => $this->passager->user()->first()->full_name,
-            'entreprise' => $this->passager->user()->first()->entreprise->nom,
+            'entreprise' => $this->entreprise()->first()->nom,
             'passager' => $this->passager()->first()->nom,
             'localisation_from' => $this->display_from,
             'localisation_to' => $this->display_to,

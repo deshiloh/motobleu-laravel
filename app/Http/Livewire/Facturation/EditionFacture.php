@@ -41,12 +41,18 @@ class EditionFacture extends Component
     public array $months = [];
     public array $reservationFormData = [];
 
+    /**
+     * @var string[]
+     */
     protected $queryString = [
         'selectedMonth',
         'selectedYear',
         'entrepriseIdSelected'
     ];
 
+    /**
+     * @var string[]
+     */
     protected $listeners = ['reservationUpdated'];
 
     public function mount()
@@ -76,7 +82,10 @@ class EditionFacture extends Component
         $this->uniqID = uniqid('facture_');
     }
 
-    public function render()
+    /**
+     * @return mixed
+     */
+    public function render(): mixed
     {
         return view('livewire.facturation.edition-facture')
             ->layout('components.layout');
@@ -88,7 +97,8 @@ class EditionFacture extends Component
     public function getEntreprisesProperty(): Collection|array
     {
         return Entreprise::query()
-            ->join('users', 'entreprises.id', '=', 'users.entreprise_id')
+            ->join('entreprise_user', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
+            ->join('users', 'entreprise_user.user_id', '=', 'users.id')
             ->join('passagers', 'users.id', '=', 'passagers.user_id')
             ->join('reservations', 'passagers.id', '=', 'reservations.passager_id')
             ->select('entreprises.*', DB::raw('COUNT(reservations.id) as nbReservations'))
@@ -111,7 +121,8 @@ class EditionFacture extends Component
         return Reservation::query()
             ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
             ->join('users', 'passagers.user_id', '=', 'users.id')
-            ->join('entreprises', 'users.entreprise_id', '=', 'entreprises.id')
+            ->join('entreprise_user', 'entreprise_user.user_id', '=', 'users.id')
+            ->join('entreprises', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
             ->select('reservations.*')
             ->whereMonth('reservations.pickup_date', $this->selectedMonth)
             ->whereYear('reservations.pickup_date', $this->selectedYear)
@@ -195,7 +206,8 @@ class EditionFacture extends Component
             ->join('reservations', 'factures.id', '=', 'reservations.facture_id')
             ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
             ->join('users', 'users.id', '=', 'passagers.user_id')
-            ->join('entreprises', 'users.entreprise_id', '=', 'entreprises.id')
+            ->join('entreprise_user', 'entreprise_user.user_id', '=', 'users.id')
+            ->join('entreprises', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
             ->where('entreprises.id', $entreprise)
             ->whereMonth('reservations.pickup_date', $month)
             ->whereYear('reservations.pickup_date', $year)
@@ -216,7 +228,8 @@ class EditionFacture extends Component
                 ->join('reservations', 'factures.id', '=', 'reservations.facture_id')
                 ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
                 ->join('users', 'users.id', '=', 'passagers.user_id')
-                ->join('entreprises', 'users.entreprise_id', '=', 'entreprises.id')
+                ->join('entreprise_user', 'entreprise_user.user_id', '=', 'users.id')
+                ->join('entreprises', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
                 ->select('factures.*')
                 ->where('entreprises.id', $entreprise)
                 ->whereMonth('reservations.pickup_date', $month)
