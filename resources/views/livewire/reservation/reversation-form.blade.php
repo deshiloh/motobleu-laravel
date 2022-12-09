@@ -2,17 +2,23 @@
     <x-header>
         Formulaire de réservation
     </x-header>
-    <x-errors class="mb-3"/>
-    <x-bloc-content>
-        <form wire:submit.prevent="saveReservation" wire:loading.class="opacity-25" wire:key="form_reservation">
-            <x-input label="Numéro de commande" class="mb-3" wire:model.defer="reservation.commande"/>
-            <div class="flex flex-col space-y-2 my-3">
-                <x-toggle wire:model="reservation.send_to_passager" md
-                          label="Envoyer par mail une invitation d’agenda au passager"/>
-                <x-toggle wire:model="reservation.send_to_user" md
-                          label="Envoyer par mail une invitation d’agenda à l’assistante"/>
+    <div class="container mx-auto sm:px-6 lg:px-8">
+        <x-errors class="mb-3"/>
+    </div>
+    <form wire:submit.prevent="saveReservation" wire:loading.class="opacity-25" wire:key="form_reservation">
+        <x-bloc-content>
+            <div class="flex flex-col space-y-3">
+                <div class="dark:text-white block">
+                    Réservation avec retour :
+                </div>
+                <div>
+                    <x-toggle wire:model="hasBack" left-label="Non" label="Oui" md/>
+                </div>
             </div>
-            <div class="mb-3 space-y-3">
+        </x-bloc-content>
+        <x-bloc-content>
+            <x-input label="Numéro de commande" class="mb-3" wire:model.defer="reservation.commande"/>
+            <div class="space-y-3">
                 <x-select
                     label="Secrétaire *"
                     placeholder="Sélectionner une secrétaire"
@@ -31,10 +37,14 @@
                     wire:model="reservation.entreprise_id"
                 />
             </div>
-            <fieldset>
-                <legend>Passager :</legend>
+        </x-bloc-content>
+        <x-bloc-content>
+            <div class="space-y-3">
+                <div class="dark:text-white text-xl">
+                    Passager :
+                </div>
 
-                <div class="flex mb-3 space-x-3">
+                <div class="flex space-x-3">
                     <x-radio wire:model="passagerMode"
                              value="{{ \App\Services\ReservationService::EXIST_PASSAGER }}" label="Passager existant"/>
                     <x-radio wire:model="passagerMode"
@@ -83,8 +93,9 @@
                         @endif
                     </div>
                 @endif
-            </fieldset>
-
+            </div>
+        </x-bloc-content>
+        <x-bloc-content>
             <x-datetime-picker
                 wire:key="pickup_date"
                 label="Date de prise en charge"
@@ -96,9 +107,11 @@
                 :without-timezone="true"
                 min="{{ \Carbon\Carbon::now() }}"
             />
+        </x-bloc-content>
 
-            <fieldset class="mt-3">
-                <legend>Départ :</legend>
+        <x-bloc-content>
+            <div class="space-y-3">
+                <div class="dark:text-white text-xl">Départ :</div>
 
                 <div class="flex mb-3 space-x-3">
                     <x-radio wire:model="pickupMode"
@@ -148,9 +161,11 @@
                         <x-input label="Ville" wire:model.defer="newAdresseReservationFrom.ville"/>
                     </div>
                 @endif
-            </fieldset>
-            <fieldset class="mt-3">
-                <legend>Arrivée :</legend>
+            </div>
+        </x-bloc-content>
+        <x-bloc-content>
+            <div class="space-y-3">
+                <div class="dark:text-white text-xl">Arrivée :</div>
 
                 <div class="flex mb-3 space-x-3">
                     <x-radio wire:model="dropMode"
@@ -202,12 +217,15 @@
                         <x-input label="Ville" wire:model.defer="newAdresseReservationTo.ville"/>
                     </div>
                 @endif
-            </fieldset>
-            <x-textarea placeholder="Votre commentaire..." wire:model.defer="reservation.comment" label="Commentaire"/>
-            <div class="flex my-3">
-                <x-toggle wire:model="hasBack" label="Réserver le retour" md/>
             </div>
-            @if($hasBack)
+        </x-bloc-content>
+
+        <x-bloc-content>
+            <x-textarea placeholder="Votre commentaire..." wire:model.defer="reservation.comment" label="Commentaire"/>
+        </x-bloc-content>
+
+        @if($hasBack)
+            <x-bloc-content>
                 <x-datetime-picker
                     wire:key="back_date_picker"
                     label="Date de retour"
@@ -219,9 +237,11 @@
                     :without-timezone="true"
                     min="{{ \Carbon\Carbon::now() }}"
                 />
+            </x-bloc-content>
 
-                <fieldset class="mt-3">
-                    <legend>Départ :</legend>
+            <x-bloc-content>
+                <div class="space-y-3">
+                    <div class="dark:text-white text-xl">Départ du retour :</div>
                     <div class="flex mb-3 space-x-3">
                         <x-radio wire:model="backPickupMode"
                                  value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Lieu"/>
@@ -267,9 +287,12 @@
                             <x-input wire:model.defer="newAdresseReservationFromBack.ville" label="Ville"/>
                         </div>
                     @endif
-                </fieldset>
-                <fieldset class="mt-3">
-                    <legend>Arrivée :</legend>
+                </div>
+            </x-bloc-content>
+
+            <x-bloc-content>
+                <div class="space-y-3">
+                    <div class="dark:text-white text-xl">Arrivée du retour :</div>
                     <div class="flex mb-3 space-x-3">
                         <x-radio wire:model="backDropMode"
                                  value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Lieu"/>
@@ -315,13 +338,26 @@
                             <x-input label="Ville" wire:model.defer="newAdresseReservationToBack.ville"/>
                         </div>
                     @endif
-                </fieldset>
+                </div>
+            </x-bloc-content>
+
+            <x-bloc-content>
                 <div class="mb-4">
-                    <x-textarea label="Commentaire" placeholder="Votre commentaire..."
+                    <x-textarea label="Commentaire du retour" placeholder="Votre commentaire..."
                                 wire:model="reservation_back.comment"/>
                 </div>
-            @endif
+            </x-bloc-content>
+        @endif
+        <x-bloc-content>
+            <div class="flex flex-col space-y-2 my-3">
+                <x-toggle wire:model="reservation.send_to_passager" md
+                          label="Envoyer par mail une invitation d’agenda au passager"/>
+                <x-toggle wire:model="reservation.send_to_user" md
+                          label="Envoyer par mail une invitation d’agenda à l’assistante"/>
+            </div>
+        </x-bloc-content>
+        <x-bloc-content>
             <x-button type="submit" primary label="Enregistrer" wire:loading.attr="disabled"/>
-        </form>
-    </x-bloc-content>
+        </x-bloc-content>
+    </form>
 </div>
