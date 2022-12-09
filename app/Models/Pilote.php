@@ -29,8 +29,17 @@ class Pilote extends Model
         'ville',
     ];
 
-    public function getFullNameAttribute()
+    public function getFullNameAttribute(): string
     {
         return implode(' ', [$this->nom, $this->prenom]);
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'nom' => $this->nom,
+            'prenom' => $this->prenom,
+            'email' => $this->email,
+        ];
     }
 }

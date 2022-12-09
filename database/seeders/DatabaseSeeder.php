@@ -59,11 +59,6 @@ class DatabaseSeeder extends Seeder
 
         Pilote::factory()->count(20)->create();
 
-        if (App::environment(['local', 'prod'])) {
-            Artisan::call('meilisearch:import');
-            Artisan::call('scout:sync-index-settings');
-        }
-
         /*
         $entreprises = Entreprise::factory()
             ->count(10)

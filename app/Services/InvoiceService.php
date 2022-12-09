@@ -42,11 +42,11 @@ class InvoiceService
             ->addItem(
                 (new InvoiceItem())
                     ->title('Transports pour la période de ' . $invoiceDate->monthName . ' ' . $invoiceDate->year)
-                    ->description($facture->information)
+                    ->description($facture->information ?? '')
                     ->pricePerUnit($facture->montant_ht)
             )
             ->taxRate(10)
-            ->logo(public_path('storage/logo-pdf.png'))
+            //->logo(public_path('storage/logo-pdf.png'))
         ;
 
         if ($facture->is_acquitte) {
@@ -63,7 +63,8 @@ class InvoiceService
     {
         return Entreprise::query()
             ->select('entreprises.*')
-            ->join('users', 'users.entreprise_id', '=', 'entreprises.id')
+            ->join('entreprise_user', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
+            ->join('users', 'entreprise_user.user_id', '=', 'users.id')
             ->join('passagers', 'users.id', '=', 'passagers.user_id')
             ->join('reservations', 'reservations.passager_id', '=', 'passagers.id')
             ->join('factures', 'reservations.facture_id', '=', 'factures.id')

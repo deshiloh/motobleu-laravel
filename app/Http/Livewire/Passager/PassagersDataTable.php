@@ -24,9 +24,9 @@ class PassagersDataTable extends Component
     public function render(): View|Factory|Application
     {
         return view('livewire.passager.passagers-data-table', [
-            'passagers' => Passager::search($this->search) // @phpstan-ignore-line
-                ->orderBy($this->sortField, $this->sortDirection)
-                ->paginate($this->perPage)
+            'passagers' => Passager::search($this->search)->query(function ($q) {
+                $q->orderBy($this->sortField, $this->sortDirection);
+            })->paginate($this->perPage)
         ]);
     }
 }

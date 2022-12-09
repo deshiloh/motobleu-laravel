@@ -21,8 +21,16 @@ class AdresseReservation extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getFullAdresseAttribute()
+    public function getFullAdresseAttribute(): string
     {
         return $this->adresse . ' ' . $this->adresse_complement . ' ' . $this->code_postal . ' ' . $this->ville;
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'adresse' => $this->adresse,
+            'ville' => $this->ville
+        ];
     }
 }

@@ -20,4 +20,11 @@ class TypeFacturation extends Model
     {
         return $this->belongsTo(Entreprise::class);
     }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'nom' => $this->nom
+        ];
+    }
 }

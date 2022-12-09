@@ -46,11 +46,10 @@ class Passager extends Model
         return $this->belongsTo(TypeFacturation::class);
     }
 
-    public function toSearchableArray()
+    public function toSearchableArray(): array
     {
         return [
-            'nom',
-            'secretaire' => $this->user()->first()->full_name
+            'nom'
         ];
     }
 }

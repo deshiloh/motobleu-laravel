@@ -24,9 +24,9 @@ class TypeFacturationDataTable extends Component
     public function render(): View|Factory|Application
     {
         return view('livewire.type-facturation.type-facturation-data-table', [
-            'typefacturations' => TypeFacturation::search($this->search) // @phpstan-ignore-line
-                ->orderBy($this->sortField, $this->sortDirection)
-                ->paginate($this->perPage)
+            'typefacturations' => TypeFacturation::search($this->search)->query(function ($q) {
+                $q->orderBy($this->sortField, $this->sortDirection);
+            })->paginate($this->perPage)
         ]);
     }
 }

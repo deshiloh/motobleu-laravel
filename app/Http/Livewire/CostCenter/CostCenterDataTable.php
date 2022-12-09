@@ -24,9 +24,9 @@ class CostCenterDataTable extends Component
     public function render(): View|Factory|Application
     {
         return view('livewire.cost-center.cost-center-data-table', [
-            'costcenters' => CostCenter::search($this->search) // @phpstan-ignore-line
-                ->orderBy($this->sortField, $this->sortDirection)
-                ->paginate($this->perPage)
+            'costcenters' => CostCenter::search($this->search)->query(function ($q) {
+                $q->orderBy($this->sortField, $this->sortDirection);
+            })->paginate($this->perPage)
         ]);
     }
 }

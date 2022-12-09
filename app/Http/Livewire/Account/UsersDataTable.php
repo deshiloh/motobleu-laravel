@@ -9,7 +9,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
-use MeiliSearch\Endpoints\Indexes;
 
 class UsersDataTable extends Component
 {
@@ -25,12 +24,9 @@ class UsersDataTable extends Component
     public function render(): View|Factory|Application
     {
         return view('livewire.account.users-data-table', [
-            'users' => User::search($this->search, function (Indexes $melisearch, string $query, array $options) {
-                $sort = [$this->sortField.':'.$this->sortDirection];
-                $options['sort'] = $sort;
-                return $melisearch->search($query, $options);
+            'users' => User::search($this->search)->query(function ($q) {
+                $q->orderBy($this->sortField, $this->sortDirection);
             })
-                ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate($this->perPage)
         ]);
     }

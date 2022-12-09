@@ -111,9 +111,9 @@ class User extends Authenticatable
     {
         return [
             'id' => $this->id,
-            'nom' => $this->full_name,
-            'email' => $this->email,
-            'is_actif' => $this->is_actif
+            'nom' => $this->nom,
+            'prenom' => $this->prenom,
+            'email' => $this->email
         ];
     }
 
