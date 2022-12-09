@@ -11,4 +11,11 @@ class CostCenter extends Model
     use HasFactory, Searchable;
 
     protected $guarded = [];
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'nom' => $this->nom
+        ];
+    }
 }

@@ -24,8 +24,9 @@ class EntreprisesDataTable extends Component
     public function render(): View|Factory|Application
     {
         return view('livewire.entreprise.entreprises-data-table', [
-            'entreprises' => Entreprise::search($this->search) // @phpstan-ignore-line
-                ->orderBy($this->sortField, $this->sortDirection)
+            'entreprises' => Entreprise::search($this->search)->query(function ($q) {
+                $q->orderBy($this->sortField, $this->sortDirection);
+            })
                 ->paginate($this->perPage)
         ]);
     }

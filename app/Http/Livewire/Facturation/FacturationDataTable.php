@@ -27,7 +27,8 @@ class FacturationDataTable extends Component
     {
         return Entreprise::query()
             ->select('entreprises.*')
-            ->join('users', 'entreprises.id', '=', 'users.entreprise_id')
+            ->join('entreprise_user', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
+            ->join('users', 'entreprise_user.user_id', '=', 'entreprise_user.user_id')
             ->join('passagers', 'passagers.user_id', '=', 'users.id')
             ->join('reservations', 'reservations.passager_id', '=', 'passagers.id')
             ->where('reservations.facture_id', $facture->id)
@@ -36,14 +37,16 @@ class FacturationDataTable extends Component
 
     public function buildQuery()
     {
+
+        ray()->showQueries();
         $factures = Facture::query()
             ->select('factures.*');
         if ($this->entreprise) {
             $factures = $factures->join('reservations', 'factures.id', '=', 'reservations.facture_id')
                 ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
                 ->join('users', 'users.id', '=', 'passagers.user_id')
-                ->join('entreprises', 'users.entreprise_id', '=', 'entreprises.id')
-                ->where('entreprises.id', $this->entreprise)
+                ->join('entreprise_user', 'entreprise_user.user_id', '=', 'users.id')
+                ->where('entreprise_user.entreprise_id', $this->entreprise)
                 ->groupBy('factures.id');
         }
 

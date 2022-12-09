@@ -368,7 +368,6 @@
                         <td class="text-right pl-0">{{ __('invoices::invoice.total_amount') }}</td>
                         <td class="text-right pr-0 total-amount">
                             {{ $invoice->formatCurrency($invoice->total_amount) }}
-                            {{ $invoice->table_columns }}
                         </td>
                     </tr>
             </tbody>

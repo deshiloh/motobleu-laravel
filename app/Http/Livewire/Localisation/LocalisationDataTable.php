@@ -24,9 +24,9 @@ class LocalisationDataTable extends Component
     public function render(): View|Factory|Application
     {
         return view('livewire.localisation.localisation-data-table', [
-            'localisations' => Localisation::search($this->search) // @phpstan-ignore-line
-                ->orderBy($this->sortField, $this->sortDirection)
-                ->paginate($this->perPage)
+            'localisations' => Localisation::search($this->search)->query(function ($q) {
+                $q->orderBy($this->sortField, $this->sortDirection);
+            })->paginate($this->perPage)
         ]);
     }
 }

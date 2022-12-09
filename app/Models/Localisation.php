@@ -12,8 +12,21 @@ class Localisation extends Model
 
     protected $guarded = [];
 
-    public function getFullAdresseAttribute()
+    /**
+     * @return string
+     */
+    public function getFullAdresseAttribute(): string
     {
         return $this->adresse . ' '. $this->adresse_complement. ' '. $this->code_postal.' '.$this->ville;
+    }
+
+    /**
+     * @return array
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'nom' => $this->nom
+        ];
     }
 }

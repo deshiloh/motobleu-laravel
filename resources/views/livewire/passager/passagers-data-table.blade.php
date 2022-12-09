@@ -4,7 +4,7 @@
         <x-slot name="headers">
             <tr>
                 <x-datatable.th sortable wire:click="sortBy('nom')" :direction="$sortDirection">Nom</x-datatable.th>
-                <x-datatable.th sortable wire:click="sortBy('secretaire')" :direction="$sortDirection">Secrétaire</x-datatable.th>
+                <x-datatable.th>Secrétaire</x-datatable.th>
                 <x-datatable.th>Actions</x-datatable.th>
             </tr>
         </x-slot>

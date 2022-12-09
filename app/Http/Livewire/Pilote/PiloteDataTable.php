@@ -24,9 +24,9 @@ class PiloteDataTable extends Component
     public function render(): View|Factory|Application
     {
         return view('livewire.pilote.pilote-data-table', [
-            'pilotes' => Pilote::search($this->search) // @phpstan-ignore-line
-                ->orderBy($this->sortField, $this->sortDirection)
-                ->paginate($this->perPage)
+            'pilotes' => Pilote::search($this->search)->query(function ($q) {
+                $q->orderBy($this->sortField, $this->sortDirection);
+            })->paginate($this->perPage)
         ]);
     }
 }

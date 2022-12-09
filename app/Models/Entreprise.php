@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Scout\Searchable;
 use Livewire\WithPagination;
 
@@ -48,5 +49,15 @@ class Entreprise extends Model
     public function getAdresse(AdresseEntrepriseTypeEnum $adresseEntrepriseTypeEnum): Model|HasMany|null
     {
         return $this->adresseEntreprises()->where('type', $adresseEntrepriseTypeEnum->value)->first();
+    }
+
+    /**
+     * @return array
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'nom' => $this->nom
+        ];
     }
 }
