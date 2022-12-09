@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Scout\Searchable;
 use Spatie\GoogleCalendar\Event;
 
+/**
+ * @mixin IdeHelperReservation
+ */
 class Reservation extends Model
 {
     use HasFactory, Searchable;

@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 
+/**
+ * @mixin IdeHelperPilote
+ */
 class Pilote extends Model
 {
     use HasFactory, Searchable;

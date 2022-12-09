@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 
+/**
+ * @mixin IdeHelperLocalisation
+ */
 class Localisation extends Model
 {
     use HasFactory, Searchable;

@@ -12,6 +12,9 @@ use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Scout\Searchable;
 use Livewire\WithPagination;
 
+/**
+ * @mixin IdeHelperEntreprise
+ */
 class Entreprise extends Model
 {
     use HasFactory, Searchable;
