@@ -8,8 +8,6 @@
                 </x-datatable.th>
                 <x-datatable.th sortable wire:click="sortBy('email')" :direction="$sortDirection">Email
                 </x-datatable.th>
-                <x-datatable.th sortable wire:click="sortBy('entreprise')" :direction="$sortDirection">Entreprise
-                </x-datatable.th>
                 <x-datatable.th sortable wire:click="sortBy('is_actif')">Actif</x-datatable.th>
                 <x-datatable.th>Actions</x-datatable.th>
             </tr>
@@ -20,7 +18,6 @@
                     <x-datatable.td>{{ $user->nom }}</x-datatable.td>
                     <x-datatable.td>{{ $user->prenom }}</x-datatable.td>
                     <x-datatable.td>{{ $user->email }}</x-datatable.td>
-                    <x-datatable.td>{{ $user->entreprise->nom }}</x-datatable.td>
                     <x-datatable.td>
                         @if($user->is_actif)
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800"> Oui </span>

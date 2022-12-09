@@ -20,10 +20,10 @@ class ReservationShowTest extends TestCase
      *
      * @var bool
      */
-    protected $seed = true;
+    protected bool $seed = true;
 
     /** @test */
-    public function the_component_can_render()
+    public function the_component_can_render(): void
     {
         $reservation = Reservation::find(1);
 
@@ -32,7 +32,7 @@ class ReservationShowTest extends TestCase
         $component->assertStatus(200);
     }
 
-    public function testConfirmedReservation()
+    public function testConfirmedReservation(): void
     {
         $reservation = Reservation::find(1);
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
@@ -44,7 +44,7 @@ class ReservationShowTest extends TestCase
         ;
     }
 
-    public function testReservationConfirmOK()
+    public function testReservationConfirmOK(): void
     {
         $reservation = Reservation::find(1);
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
@@ -55,7 +55,7 @@ class ReservationShowTest extends TestCase
         $this->assertTrue(Reservation::where('is_confirmed', true)->exists());
     }
 
-    public function testReservationCancelOK()
+    public function testReservationCancelOK(): void
     {
         $reservation = Reservation::find(1);
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])

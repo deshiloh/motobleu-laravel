@@ -39,26 +39,26 @@ class AccountTest extends TestCase
         $this->actingAs($this->user);
     }
 
-    public function testAccessAccountPage()
+    public function testAccessAccountPage(): void
     {
         $this->withoutExceptionHandling();
         $response = $this->get(route('admin.accounts.index'));
         $response->assertStatus(200);
     }
 
-    public function testAccessCreatePageAccount()
+    public function testAccessCreatePageAccount(): void
     {
         $response = $this->get(route('admin.accounts.create'));
         $response->assertStatus(200);
     }
 
-    public function testCanAccessEditAccountPage()
+    public function testCanAccessEditAccountPage(): void
     {
         $response = $this->get(route('admin.accounts.edit', ['account' => $this->user->id]));
         $response->assertStatus(200);
     }
 
-    public function testCreateAccountWithErrors()
+    public function testCreateAccountWithErrors(): void
     {
         Livewire::test(AccountForm::class)
             ->set('user.nom', '')
@@ -69,7 +69,6 @@ class AccountTest extends TestCase
             ->set('user.adresse_bis', '')
             ->set('user.code_postal', '')
             ->set('user.ville', '')
-            ->set('user.entreprise_id', null)
             ->set('user.is_actif', true)
             ->set('user.is_admin_ardian', false)
             ->call('save')
@@ -81,11 +80,10 @@ class AccountTest extends TestCase
                 'user.adresse' => 'required',
                 'user.code_postal' => 'required',
                 'user.ville' => 'required',
-                'user.entreprise_id' => 'required',
             ]);
     }
 
-    public function testAddAccountSuccess()
+    public function testAddAccountSuccess(): void
     {
         $entreprise = Entreprise::factory()->create();
         $user = User::factory()->make();
@@ -98,7 +96,6 @@ class AccountTest extends TestCase
             ->set('user.adresse_bis', $user->adresse_bis)
             ->set('user.code_postal', $user->code_postal)
             ->set('user.ville', $user->ville)
-            ->set('user.entreprise_id', $entreprise->id)
             ->set('user.is_actif', true)
             ->set('user.is_admin_ardian', false)
             ->call('save')
@@ -108,7 +105,7 @@ class AccountTest extends TestCase
         $this->assertTrue(User::where('nom', $user->nom)->exists());
     }
 
-    public function testUpdateAccount()
+    public function testUpdateAccount(): void
     {
         $userExist = User::find(1);
         $user = User::factory()->make();
@@ -122,7 +119,6 @@ class AccountTest extends TestCase
             ->set('user.adresse_bis', $user->adresse_bis)
             ->set('user.code_postal', $user->code_postal)
             ->set('user.ville', $user->ville)
-            ->set('user.entreprise_id', $userExist->entreprise_id)
             ->set('user.is_actif', true)
             ->set('user.is_admin_ardian', false)
             ->call('save')
@@ -132,7 +128,7 @@ class AccountTest extends TestCase
         $this->assertTrue(User::where('nom', 'test')->exists());
     }
 
-    public function testAccessPasswordForm()
+    public function testAccessPasswordForm(): void
     {
         $response = $this->get(route('admin.accounts.password.edit', ['account' => $this->user]));
         $response->assertStatus(200);

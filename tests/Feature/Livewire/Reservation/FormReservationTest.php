@@ -74,7 +74,7 @@ class FormReservationTest extends TestCase
         ;
     }
 
-    public function testCreateReservationWithCreatePassager()
+    public function testCreateReservationWithCreatePassagerEmpty()
     {
         Livewire::test(ReservationForm::class)
             ->set('passagerMode', ReservationService::NEW_PASSAGER)
@@ -83,15 +83,15 @@ class FormReservationTest extends TestCase
             ->set('newPassager.email', '')
             ->set('newPassager.cost_center_id', '')
             ->set('newPassager.type_facturation_id', '')
-            ->set('userId', '')
+            ->set('userId', 1)
+            ->set('reservation.entreprise_id', 1)
             ->call('saveReservation')
             ->assertHasErrors([
                 'newPassager.nom' => 'required',
                 'newPassager.telephone' => 'required',
                 'newPassager.email' => 'required',
                 'newPassager.cost_center_id' => 'required',
-                'newPassager.type_facturation_id' => 'required',
-                'userId' => 'required',
+                'newPassager.type_facturation_id' => 'required'
             ])
         ;
     }
@@ -289,6 +289,8 @@ class FormReservationTest extends TestCase
         $pickupDate = Carbon::now();
 
         Livewire::test(ReservationForm::class)
+            ->set('userId', 1)
+            ->set('reservation.entreprise_id', 1)
             ->set('passagerMode', ReservationService::EXIST_PASSAGER)
             ->set('reservation.passager_id', Passager::find(1)->id)
             ->set('reservation.pickup_date', $pickupDate)
@@ -310,6 +312,7 @@ class FormReservationTest extends TestCase
 
         Livewire::test(ReservationForm::class)
             ->set('userId', 1)
+            ->set('reservation.entreprise_id', 1)
             ->set('passagerMode', ReservationService::NEW_PASSAGER)
             ->set('newPassager.nom', 'passager test')
             ->set('newPassager.telephone', '0404')
@@ -334,6 +337,8 @@ class FormReservationTest extends TestCase
     {
         $pickupDate = Carbon::now();
         Livewire::test(ReservationForm::class)
+            ->set('userId', 1)
+            ->set('reservation.entreprise_id', 1)
             ->set('passagerMode', ReservationService::EXIST_PASSAGER)
             ->set('reservation.passager_id', Passager::find(1)->id)
             ->set('reservation.pickup_date', $pickupDate)
@@ -355,6 +360,8 @@ class FormReservationTest extends TestCase
         $pickupDate = Carbon::now();
 
         Livewire::test(ReservationForm::class)
+            ->set('userId', 1)
+            ->set('reservation.entreprise_id', 1)
             ->set('passagerMode', ReservationService::EXIST_PASSAGER)
             ->set('reservation.passager_id', Passager::find(1)->id)
             ->set('reservation.pickup_date', $pickupDate)
@@ -385,6 +392,8 @@ class FormReservationTest extends TestCase
         $backPickUpDate = Carbon::now()->addDay();
 
         Livewire::test(ReservationForm::class)
+            ->set('userId', 1)
+            ->set('reservation.entreprise_id', 1)
             ->set('passagerMode', ReservationService::EXIST_PASSAGER)
             ->set('reservation.passager_id', Passager::find(1)->id)
             ->set('reservation.pickup_date', $pickupDate)
@@ -409,12 +418,14 @@ class FormReservationTest extends TestCase
         $this->assertTrue(Reservation::wherePickupDate($backPickUpDate)->exists());
     }
 
-    public function testCreateBackReservationWithExistedAddressOk()
+    public function testCreateBackReservationWithExistedAddressOk(): void
     {
         $pickupDate = Carbon::now();
         $backPickUpDate = Carbon::now()->addDay();
 
         Livewire::test(ReservationForm::class)
+            ->set('userId', 1)
+            ->set('reservation.entreprise_id', 1)
             ->set('passagerMode', ReservationService::EXIST_PASSAGER)
             ->set('reservation.passager_id', Passager::find(1)->id)
             ->set('reservation.pickup_date', $pickupDate)
@@ -445,6 +456,8 @@ class FormReservationTest extends TestCase
         $backPickUpDate = Carbon::now()->addDay();
 
         Livewire::test(ReservationForm::class)
+            ->set('userId', 1)
+            ->set('reservation.entreprise_id', 1)
             ->set('passagerMode', ReservationService::EXIST_PASSAGER)
             ->set('reservation.passager_id', Passager::find(1)->id)
             ->set('reservation.pickup_date', $pickupDate)

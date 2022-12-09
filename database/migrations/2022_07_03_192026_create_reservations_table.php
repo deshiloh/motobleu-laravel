@@ -75,6 +75,10 @@ return new class extends Migration
                 ->nullable(true)
                 ->constrained('factures');
 
+            $table->foreignId('entreprise_id')
+                ->nullable(true)
+                ->constrained('entreprises');
+
             $table->timestamps();
         });
     }

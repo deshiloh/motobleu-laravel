@@ -13,28 +13,38 @@ class EntrepriseForm extends Component
 
     public Entreprise $entreprise;
 
-    public function mount(Entreprise $entreprise)
+    public function mount(Entreprise $entreprise): void
     {
         $this->entreprise = $entreprise;
 
-        $this->entreprise->is_actif = false;
+        $this->entreprise->is_actif = $entreprise->is_actif;
     }
 
+    /**
+     * @return mixed
+     */
     public function render()
     {
         return view('livewire.entreprise.entreprise-form')
             ->layout('components.layout');
     }
 
-    protected function getRules()
+    /**
+     * @return string[]
+     */
+    protected function getRules(): array
     {
         return [
             'entreprise.nom' => 'required',
+            'entreprise.responsable_name' => 'required',
             'entreprise.is_actif' => 'boolean'
         ];
     }
 
-    public function save()
+    /**
+     * @return void
+     */
+    public function save(): void
     {
         $this->validate();
 

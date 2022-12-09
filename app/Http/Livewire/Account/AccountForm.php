@@ -15,7 +15,7 @@ class AccountForm extends Component
 
     public User $user;
 
-    public function mount(User $account)
+    public function mount(User $account): void
     {
         $this->user = $account;
 
@@ -25,7 +25,7 @@ class AccountForm extends Component
         }
     }
 
-    protected function getRules()
+    protected function getRules(): array
     {
         $rules = [
             'user.nom' => 'required',
@@ -35,7 +35,6 @@ class AccountForm extends Component
             'user.adresse_bis' => 'nullable',
             'user.code_postal' => 'required',
             'user.ville' => 'required',
-            'user.entreprise_id' => 'required',
             'user.is_admin_ardian' => 'boolean',
             'user.is_actif' => 'boolean',
         ];
@@ -49,14 +48,10 @@ class AccountForm extends Component
         return $rules;
     }
 
-    protected function getValidationAttributes()
-    {
-        return [
-            'user.entreprise_id' => 'entreprise'
-        ];
-    }
-
-    public function render()
+    /**
+     * @return mixed
+     */
+    public function render(): mixed
     {
         return view('livewire.account.account-form')
             ->layout('components.layout')

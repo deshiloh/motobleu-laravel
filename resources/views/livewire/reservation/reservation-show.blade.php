@@ -119,7 +119,7 @@
                 </x-simple-card.item>
 
                 <x-simple-card.item title="Entreprise">
-                    {{ $reservation->passager->user->entreprise->nom }}
+                    {{ $reservation->entreprise->nom }}
                 </x-simple-card.item>
 
                 <x-simple-card.item title="Adresse email">
@@ -136,7 +136,7 @@
 
                 <x-simple-card.item title="Adresses">
                     <ul role="list" class="border border-gray-200 rounded-md divide-y divide-gray-200">
-                        @foreach($reservation->passager->user->entreprise->adresseEntreprises()->get() as $adresse)
+                        @foreach($reservation->entreprise->adresseEntreprises()->get() as $adresse)
                             <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
                                 <div class="w-0 flex-1 flex items-center">
                                     @if($adresse->type->value === 0)

@@ -29,7 +29,7 @@ class UsersDataTable extends Component
                 $sort = [$this->sortField.':'.$this->sortDirection];
                 $options['sort'] = $sort;
                 return $melisearch->search($query, $options);
-            }) // @phpstan-ignore-line
+            })
                 ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate($this->perPage)
         ]);

@@ -20,7 +20,7 @@ class AdresseEntrepriseFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'adresse' => $this->faker->streetAddress,
@@ -33,7 +33,7 @@ class AdresseEntrepriseFactory extends Factory
         ];
     }
 
-    public function facturation()
+    public function facturation(): AdresseEntrepriseFactory
     {
         return $this->state(function (array $attributes) {
             return [
@@ -42,7 +42,7 @@ class AdresseEntrepriseFactory extends Factory
         });
     }
 
-    public function physique()
+    public function physique(): AdresseEntrepriseFactory
     {
         return $this->state(function (array $attributes) {
             return [

@@ -17,10 +17,11 @@ class EntrepriseFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'nom' => $this->faker->company,
+            'responsable_name' => $this->faker->name,
         ];
     }
 }

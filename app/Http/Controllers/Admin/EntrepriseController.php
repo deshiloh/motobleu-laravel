@@ -18,7 +18,7 @@ class EntrepriseController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index()
+    public function index(): Factory|View|Application
     {
         return view('admin.entreprise.index', [
             'entreprises' => Entreprise::all()
@@ -31,7 +31,7 @@ class EntrepriseController extends Controller
      * @param Entreprise $entreprise
      * @return Application|Factory|View
      */
-    public function show(Entreprise $entreprise)
+    public function show(Entreprise $entreprise): View|Factory|Application
     {
         return view('admin.entreprise.show', [
             'entreprise' => $entreprise
@@ -44,7 +44,7 @@ class EntrepriseController extends Controller
      * @param Entreprise $entreprise
      * @return RedirectResponse
      */
-    public function destroy(Entreprise $entreprise)
+    public function destroy(Entreprise $entreprise): RedirectResponse
     {
         $entreprise->is_actif = false;
         $entreprise->save();

@@ -19,6 +19,11 @@ class RecapReservationEntreprise extends Component
 
     public function render()
     {
+        return view('livewire.entreprise.recap-reservation-entreprise', [
+            'reservations' => Reservation::paginate($this->perPage)
+        ]);
+
+        /*
         $reservations = Reservation::query()
             ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
             ->join('users', 'passagers.user_id', '=', 'users.id')
@@ -31,6 +36,6 @@ class RecapReservationEntreprise extends Component
 
         return view('livewire.entreprise.recap-reservation-entreprise', [
             'reservations' => $reservations->paginate($this->perPage)
-        ]);
+        ]);*/
     }
 }
