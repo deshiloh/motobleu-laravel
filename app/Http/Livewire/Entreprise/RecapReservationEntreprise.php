@@ -20,7 +20,7 @@ class RecapReservationEntreprise extends Component
     public function render()
     {
         return view('livewire.entreprise.recap-reservation-entreprise', [
-            'reservations' => Reservation::paginate($this->perPage)
+            'reservations' => $this->buildQuery()
         ]);
 
         /*
@@ -37,5 +37,17 @@ class RecapReservationEntreprise extends Component
         return view('livewire.entreprise.recap-reservation-entreprise', [
             'reservations' => $reservations->paginate($this->perPage)
         ]);*/
+    }
+
+    public function buildQuery()
+    {
+        $query = Reservation::where('entreprise_id', $this->entreprise->id);
+
+        if ($this->dateDebut && $this->dateFin) {
+            $query
+                ->whereBetween('pickup_date', [$this->dateDebut, $this->dateFin]);
+        }
+
+        return $query->paginate($this->perPage);
     }
 }

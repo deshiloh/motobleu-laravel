@@ -56,6 +56,10 @@ class UsersEntrepriseDataTable extends Component
                 $this->entreprise->users()->attach($user);
                 $this->users = $this->entreprise->users()->get();
                 $this->userId = '';
+                $this->notification()->success(
+                    $title = 'Opération réussite',
+                    $description = 'Le compte a bien été ajouté a l\'entreprise.'
+                );
             }
 
         } else {
@@ -64,5 +68,26 @@ class UsersEntrepriseDataTable extends Component
                 $description = 'Vous devez sélectionner un compte.'
             );
         }
+    }
+
+    public function detach(User $user)
+    {
+        try {
+            $this->entreprise->users()->detach($user);
+            $this->users = $this->entreprise->users()->get();
+
+            $this->notification()->success(
+                $title = 'Opération réussite',
+                $description = 'Le compte a bien été détaché.'
+            );
+        } catch (\Exception $exception) {
+            $this->notification()->error(
+                $title = 'Erreur',
+                $description = 'Une erreur est survenue.'
+            );
+
+            ray($exception->getMessage());
+        }
+
     }
 }

@@ -37,7 +37,7 @@
                     <x-datatable.td>
                         <div class="flex space-x-2">
                             <x-button.circle icon="pencil" primary href="{{ route('admin.accounts.edit', ['account' => $user->id]) }}" />
-                            <x-button.circle icon="trash" red route="#" />
+                            <x-button.circle icon="trash" red route="#" wire:click="detach({{ $user->id }})"/>
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>
