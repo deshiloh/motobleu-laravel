@@ -9,7 +9,7 @@ use Spatie\GoogleCalendar\Event;
 class GoogleCalendarService
 {
 
-    public function handleEvent(Reservation $reservation)
+    public function handleEvent(Reservation $reservation): bool
     {
 
         // TODO Envoi de l'event secrétaire
@@ -53,6 +53,8 @@ class GoogleCalendarService
                 'event_id' => $savedEvent->id
             ]);
         }
+
+        return true;
     }
 
     public function deleteEvent(Reservation $reservation)
@@ -88,7 +90,7 @@ class GoogleCalendarService
         return sprintf(
             'Course n°%s - %s / %s / %s',
             $reservation->reference,
-            ucfirst($reservation->passager->user->entreprise->nom),
+            ucfirst($reservation->entreprise->nom),
             $reservation->passager->nom,
             'plt: '. $piloteLabel
         );
@@ -125,7 +127,7 @@ class GoogleCalendarService
 
         $description = sprintf(
             $description,
-            $reservation->passager->user->entreprise->nom,
+            $reservation->entreprise->nom,
             $reservation->passager->nom,
             $phones,
             $reservation->passager->email,
