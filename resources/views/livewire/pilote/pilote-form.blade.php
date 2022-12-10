@@ -4,10 +4,10 @@
     </x-header>
     <x-bloc-content>
         <form wire:submit.prevent="save" class="space-y-4">
-            <x-input label="Nom" wire:model.defer="pilote.nom" />
-            <x-input label="Prénom" wire:model.defer="pilote.prenom" />
-            <x-input label="Téléphone" wire:model.defer="pilote.telephone" />
-            <x-input label="Adresse email" wire:model.defer="pilote.email" type="email"/>
+            <x-input label="Nom *" wire:model.defer="pilote.nom" />
+            <x-input label="Prénom *" wire:model.defer="pilote.prenom" />
+            <x-input label="Téléphone *" wire:model.defer="pilote.telephone" />
+            <x-input label="Adresse email *" wire:model.defer="pilote.email" type="email"/>
             <x-input label="Nom de l'entreprise" wire:model.defer="pilote.entreprise" />
             <x-input label="adresse" wire:model.defer="pilote.adresse" />
             <x-input label="Adresse complément" wire:model.defer="pilote.adresse_complement" />
