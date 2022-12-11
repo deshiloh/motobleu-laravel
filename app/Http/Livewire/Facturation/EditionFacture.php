@@ -97,11 +97,9 @@ class EditionFacture extends Component
     public function getEntreprisesProperty(): Collection|array
     {
         return Entreprise::query()
-            ->join('entreprise_user', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
-            ->join('users', 'entreprise_user.user_id', '=', 'users.id')
-            ->join('passagers', 'users.id', '=', 'passagers.user_id')
-            ->join('reservations', 'passagers.id', '=', 'reservations.passager_id')
             ->select('entreprises.*', DB::raw('COUNT(reservations.id) as nbReservations'))
+            ->join('entreprise_user', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
+            ->join('reservations', 'entreprises.id', '=', 'reservations.entreprise_id')
             ->whereMonth('reservations.pickup_date', $this->selectedMonth)
             ->whereYear('reservations.pickup_date', $this->selectedYear)
             ->where('reservations.is_billed', false)
@@ -119,14 +117,10 @@ class EditionFacture extends Component
         }
 
         return Reservation::query()
-            ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
-            ->join('users', 'passagers.user_id', '=', 'users.id')
-            ->join('entreprise_user', 'entreprise_user.user_id', '=', 'users.id')
-            ->join('entreprises', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
             ->select('reservations.*')
             ->whereMonth('reservations.pickup_date', $this->selectedMonth)
             ->whereYear('reservations.pickup_date', $this->selectedYear)
-            ->where('entreprises.id', $this->entrepriseIdSelected)
+            ->where('reservations.entreprise_id', $this->entrepriseIdSelected)
             ->where('reservations.is_billed', false)
             ->get();
     }
@@ -428,12 +422,13 @@ class EditionFacture extends Component
 
     public function exportAction(ExportService $exportService)
     {
-        return response()->streamDownload(function () use ($exportService) {
-            echo $exportService->exportReservations(
-                $this->selectedYear,
-                $this->selectedMonth,
-                $this->entreprise
-            );
-        });
+        if (in_array($this->entreprise->nom, config('motobleu.export.entrepriseEnableForXlsExport'))) {
+            // Export en XLS
+            return Excel::download(new ReservationsExport($this->selectedYear, $this->selectedMonth, $this->entreprise), 'reservations.xlsx');
+        } else {
+            // Export PDF
+            $pdf = Pdf::loadView('pdf.export.reservations');
+            return $pdf->download('reservations.pdf');
+        }
     }
 }

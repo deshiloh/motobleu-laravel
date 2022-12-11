@@ -85,7 +85,7 @@
     @endif
     @if($this->reservations)
         <x-bloc-content>
-            <div class="text-2xl mb-3">Liste des réservations</div>
+            <div class="text-2xl mb-3 dark:text-white">Liste des réservations</div>
             <x-datatable>
                 <x-slot:headers>
                     <tr>
@@ -120,7 +120,7 @@
                 </x-slot:body>
             </x-datatable>
             <div class="flex justify-end py-4">
-                <div class="flex flex-col space-y-3 text-right">
+                <div class="flex flex-col space-y-3 text-right dark:text-white">
                     @php
                         $prixHT = $montant_ttc / 1.10;
                         $prixTVA = $prixHT * 0.10;
@@ -139,7 +139,7 @@
         </x-bloc-content>
     @endif
 
-    <x-modal wire:model.defer="factureModal">
+    <x-modal wire:model.defer="factureModal" max-width="6xl">
         @if($this->facture)
         <x-card title="Envoi de la facture" wire:key="facture">
             <x-errors class="mb-4"/>

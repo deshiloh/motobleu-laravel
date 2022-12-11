@@ -6,6 +6,7 @@ use App\Enum\AdresseEntrepriseTypeEnum;
 use App\Models\Entreprise;
 use App\Models\Reservation;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
@@ -29,10 +30,9 @@ use PhpOffice\PhpSpreadsheet\Style\Color;
 
 class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyles, WithCustomStartCell, WithHeadings, WithEvents, FromCollection, WithDrawings, WithMapping, WithColumnFormatting
 {
-    private \Illuminate\Database\Eloquent\Collection $reservations;
-    private string $entrepriseName;
-
+    private Collection $reservations;
     private int $indexDepart = 23;
+    private int $startFooterIndex = 0;
     private string $lastColumn;
     private string $priceColumn;
     private string $coordinatePrices;
@@ -42,10 +42,8 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
     private string $tvaValueCoordinate;
     private string $ttcTextCoordinate;
     private string $ttcValueCoordinate;
-    private int $year;
-    private int $month;
     private Entreprise $entreprise;
-    private $datePeriod;
+    private Carbon|false $datePeriod;
 
     public function __construct(int $year, int $month, Entreprise $entreprise)
     {
@@ -53,13 +51,12 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         $tvaTextColumn = 'H';
         $ttcTextColumn = 'H';
 
-        $this->entrepriseName = $entreprise->nom;
-        $this->reservations = $this->getReservations();
-
         $this->priceColumn = 'I';
         $this->lastColumn = 'I';
+        $this->entreprise = $entreprise;
+        $this->reservations = $this->getReservations();
 
-        if (in_array($this->entrepriseName, config('motobleu.export.entreprisesCode'))) {
+        if (in_array($this->entreprise->nom, config('motobleu.export.entreprisesCode'))) {
             $this->priceColumn = 'J';
             $this->lastColumn = 'J';
 
@@ -68,7 +65,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             $ttcTextColumn = 'I';
         }
 
-        if (in_array($this->entrepriseName, config('motobleu.export.entreprisesFacturation'))) {
+        if (in_array($this->entreprise->nom, config('motobleu.export.entreprisesFacturation'))) {
             $this->lastColumn = 'K';
         }
 
@@ -77,16 +74,14 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             $this->priceColumn,
             $this->indexDepart + 1,
             $this->priceColumn,
-            $this->getReservations()->count() - 1
+            $this->getReservations()->count() + $this->indexDepart
         );
 
         $this->generateHtCoordinates($htTextColumn);
         $this->generateTvaCoordinates($tvaTextColumn);
         $this->generateTtcCoordinates($ttcTextColumn);
 
-        $this->year = $year;
-        $this->month = $month;
-        $this->entreprise = $entreprise;
+        $this->startFooterIndex = $this->indexDepart + $this->reservations->count() + 7;
 
         $this->datePeriod = Carbon::create($year, $month, '1');
     }
@@ -96,7 +91,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         return $this->reservations;
     }
 
-    public function defaultStyles(Style $defaultStyle)
+    public function defaultStyles(Style $defaultStyle): array
     {
         return [
             'alignment' => [
@@ -106,7 +101,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         ];
     }
 
-    public function styles(Worksheet $sheet)
+    public function styles(Worksheet $sheet): array
     {
         $styles = [];
 
@@ -160,6 +155,29 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
                 ];
             }
         }
+
+        // Footer styles
+        for ($i = $this->startFooterIndex; $i <= $this->startFooterIndex + 5; $i ++) {
+            $index = sprintf('A%s:%s%s',
+                $i,
+                $this->lastColumn,
+                $i
+            );
+            $styles[$index] = [
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['argb' => config('motobleu.export.backgroundColor')],
+                ],
+                'font' => [
+                    'color' => ['argb' => Color::COLOR_WHITE]
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_LEFT,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+            ];
+        }
+
         return $styles;
     }
 
@@ -168,7 +186,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         return 'A' . $this->indexDepart;
     }
 
-    private function getReservations()
+    private function getReservations(): Collection
     {
         return Reservation::all();
     }
@@ -187,13 +205,13 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             'Prix TTC (en €)',
         ];
 
-        if (in_array($this->entrepriseName, config('motobleu.export.entreprisesCode'))) {
+        if (in_array($this->entreprise->nom, config('motobleu.export.entreprisesCode'))) {
             array_splice($headers, 1, 0, [
                 'Code'
             ]);
         }
 
-        if (in_array($this->entrepriseName, config('motobleu.export.entreprisesFacturation'))) {
+        if (in_array($this->entreprise->nom, config('motobleu.export.entreprisesFacturation'))) {
             array_push($headers, 'Facturation', 'COST CENTER');
         }
 
@@ -280,16 +298,24 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
                     )
                 );
 
-                // Footer
-                $startFooter = $this->indexDepart + $this->reservations->count() + 7;
-                $sheet->getSheet()->getCell('A' . $startFooter)->setValue(
-                    'FOOTER'
+                // Footer values
+                $sheet->getSheet()->getCell('A' . $this->startFooterIndex + 1)->setValue(
+                    'MOTOBLEU'
+                );
+                $sheet->getSheet()->getCell('A' . $this->startFooterIndex + 2)->setValue(
+                    '26 - 28 rue Marius AUFAN 92300 LEVALLOIS PERRET'
+                );
+                $sheet->getSheet()->getCell('A' . $this->startFooterIndex + 3)->setValue(
+                    'SIRET : 82472195500014 - TVA intracommunautaire : FR69824721955'
+                );
+                $sheet->getSheet()->getCell('A' . $this->startFooterIndex + 4)->setValue(
+                    'Tél : +33 6 47 93 86 17 - contact@motobleu-paris.com'
                 );
             }
         ];
     }
 
-    public function drawings()
+    public function drawings(): array
     {
         $drawing = new Drawing();
         $drawing->setName('Logo');
@@ -299,15 +325,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         $drawing->setOffsetX(20);
         $drawing->setCoordinates('A2');
 
-        $footer = new Drawing();
-        $footer->setName('Footer');
-        $footer->setDescription('Footer motobleu');
-        $footer->setPath(public_path('storage/xls_footer.png'));
-        $footer->setHeight(90);
-        $footer->setOffsetX(20);
-        $footer->setCoordinates('A30');
-
-        return [$drawing, $footer];
+        return [$drawing];
     }
 
     /**
@@ -328,13 +346,13 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             $row->tarif,
         ];
 
-        if (in_array($this->entrepriseName, config('motobleu.export.entreprisesCode'))) {
+        if (in_array($this->entreprise->nom, config('motobleu.export.entreprisesCode'))) {
             array_splice($datas, 1, 0, [
                 'CODE'
             ]);
         }
 
-        if (in_array($this->entrepriseName, config('motobleu.export.entreprisesFacturation'))) {
+        if (in_array($this->entreprise->nom, config('motobleu.export.entreprisesFacturation'))) {
             array_push($datas, 'test', 'trest');
         }
 
