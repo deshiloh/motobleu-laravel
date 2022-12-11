@@ -242,27 +242,17 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $sheet->getSheet()->getCell('A14')->setValue(
-                    'Période :'
-                )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-
-                $sheet->getSheet()->getCell('B14')->setValue(
-                    $this->datePeriod->monthName . ' ' . $this->datePeriod->year
+                    'Période : ' . $this->datePeriod->monthName . ' ' . $this->datePeriod->year
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $sheet->getSheet()->getCell('A15')->setValue(
-                    'Compte client :'
-                )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-
-                $sheet->getSheet()->getCell('B15')->setValue(
-                    $this->entreprise->nom
+                    'Compte client : ' . $this->entreprise->nom
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $sheet->getSheet()->getCell('A16')->setValue(
-                    'Contact facturation:'
-                )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-
-                $sheet->getSheet()->getCell('B16')->setValue(
-                    $this->entreprise->getAdresse(AdresseEntrepriseTypeEnum::FACTURATION)->email
+                    'Contact facturation : ' . $this->entreprise->getAdresse(
+                        AdresseEntrepriseTypeEnum::FACTURATION
+                    )->email
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $title = $sheet->getSheet()->getCell('G20')->setValue(

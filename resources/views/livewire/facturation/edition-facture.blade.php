@@ -8,11 +8,12 @@
             Édition de la facturation <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
             <x-slot:right>
                 <div>
-                    @if($entrepriseIdSelected)
-                        <x-button href="{{ route('admin.facturations.edition', [
-                            'selectedMonth' => $selectedMonth,
-                            '$selectedYear' => $selectedYear]
-                        ) }}" label="Retourner à la liste" sm />
+                    @if($entrepriseIdSelected && !$this->isBilled == 1)
+                        <x-button href="{!! route('admin.facturations.edition', [
+                                'selectedMonth' => $selectedMonth,
+                                'selectedYear' => $selectedYear,
+                            ]
+                        ) !!}" label="Retourner à la liste" sm />
                     @endif
                     @if(!$this->adresseFacturationEntreprise && $entrepriseIdSelected)
                         <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">

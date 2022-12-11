@@ -14,10 +14,14 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Validator;
 use Livewire\Component;
+use Livewire\Redirector;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Exception;
 use WireUi\Traits\Actions;
 
 class EditionFacture extends Component
@@ -36,6 +40,7 @@ class EditionFacture extends Component
     public bool $reservationModal = false;
     public bool $isAcquitte = false;
     public bool $isFormFacture = false;
+    public int|null $isBilled = null;
 
     public array $email;
     public array $months = [];
@@ -47,7 +52,8 @@ class EditionFacture extends Component
     protected $queryString = [
         'selectedMonth',
         'selectedYear',
-        'entrepriseIdSelected'
+        'entrepriseIdSelected',
+        'isBilled'
     ];
 
     /**
@@ -121,7 +127,7 @@ class EditionFacture extends Component
             ->whereMonth('reservations.pickup_date', $this->selectedMonth)
             ->whereYear('reservations.pickup_date', $this->selectedYear)
             ->where('reservations.entreprise_id', $this->entrepriseIdSelected)
-            ->where('reservations.is_billed', false)
+            ->where('reservations.is_billed', $this->isBilled)
             ->get();
     }
 
@@ -279,6 +285,7 @@ class EditionFacture extends Component
             $this->facture->year
         );
         $this->email['complement'] = '';
+        $this->isAcquitte = (int) $this->facture->is_acquitte;
 
         $this->factureModal = true;
     }
@@ -328,7 +335,16 @@ class EditionFacture extends Component
      */
     public function sendFactureAction()
     {
-        $this->validate();
+        $this->withValidator(function (Validator $validator) {
+            $validator->after(function ($validator) {
+                /** @var Reservation $reservation */
+                foreach ($this->reservations as $reservation) {
+                    if ($reservation->tarif == 0) {
+                        $validator->errors()->add('réservations', 'Vous devez éditer toutes les réservations');
+                    }
+                }
+            });
+        })->validate();
 
         foreach ($this->reservations as $reservation) {
             $reservation->is_billed = true;
@@ -353,7 +369,8 @@ class EditionFacture extends Component
     {
         return redirect()->to(route('admin.facturations.edition', [
                 'selectedMonth' => $this->selectedMonth,
-                '$selectedYear' => $this->selectedYear]
+                '$selectedYear' => $this->selectedYear
+            ]
         ));
     }
 
@@ -420,6 +437,10 @@ class EditionFacture extends Component
         ]);
     }
 
+    /**
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
     public function exportAction(ExportService $exportService)
     {
         if (in_array($this->entreprise->nom, config('motobleu.export.entrepriseEnableForXlsExport'))) {

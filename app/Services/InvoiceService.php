@@ -7,13 +7,20 @@ use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use Carbon\Carbon;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
 use LaravelDaily\Invoices\Classes\Party;
 use LaravelDaily\Invoices\Invoice;
 
 class InvoiceService
 {
-    public static function generateInvoice(Facture $facture)
+    /**
+     * @throws BindingResolutionException
+     * @throws \Exception
+     */
+    public static function generateInvoice(Facture $facture): Invoice
     {
         $entreprise = (new self())->getEntreprise($facture);
 
@@ -59,14 +66,11 @@ class InvoiceService
         return $invoice;
     }
 
-    private function getEntreprise(Facture $facture)
+    private function getEntreprise(Facture $facture): Model|null
     {
         return Entreprise::query()
             ->select('entreprises.*')
-            ->join('entreprise_user', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
-            ->join('users', 'entreprise_user.user_id', '=', 'users.id')
-            ->join('passagers', 'users.id', '=', 'passagers.user_id')
-            ->join('reservations', 'reservations.passager_id', '=', 'passagers.id')
+            ->join('reservations', 'reservations.entreprise_id', '=', 'entreprises.id')
             ->join('factures', 'reservations.facture_id', '=', 'factures.id')
             ->where('factures.id', $facture->id)
             ->first();

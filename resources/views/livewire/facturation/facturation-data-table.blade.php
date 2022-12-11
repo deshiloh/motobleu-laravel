@@ -35,13 +35,9 @@
                         <x-datatable.td>{{ $facture->created_at->format('d/m/Y') }}</x-datatable.td>
                         <x-datatable.td>
                             @if($facture->is_acquitte)
-                                <x-badge success>
-                                    Oui
-                                </x-badge>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800"> Oui </span>
                             @else
-                                <x-badge error>
-                                    Non
-                                </x-badge>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800"> Non </span>
                             @endif
                         </x-datatable.td>
                         <x-datatable.td>
@@ -50,12 +46,13 @@
                         <x-datatable.td>
                             <x-button label="Voir" href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank" icon="eye" info sm />
 
-                            <x-button label="Liste des courses" icon="view-list" primary sm href="{{ route('admin.facturations.edition', [
-                                'selectedMonth' => $facture->month,
-                                'selectedYear' => $facture->year,
-                                'entrepriseIdSelected' => $this->getEntreprise($facture)->id
-                            ]
-                        ) }}"/>
+                            <x-button label="Liste des courses" icon="view-list" primary sm href="{!! route('admin.facturations.edition', [
+                                    'selectedMonth' => $facture->month,
+                                    'selectedYear' => $facture->year,
+                                    'entrepriseIdSelected' => $this->getEntreprise($facture)->id,
+                                    'isBilled' => 1
+                                ]
+                            ) !!}" />
 
                         </x-datatable.td>
                     </x-datatable.tr>

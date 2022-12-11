@@ -4,6 +4,8 @@ namespace App\Http\Livewire\Facturation;
 
 use App\Models\Entreprise;
 use App\Models\Facture;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 
 class FacturationDataTable extends Component
@@ -23,14 +25,12 @@ class FacturationDataTable extends Component
             ->layout('components.layout');
     }
 
-    public function getEntreprise(Facture $facture)
+    public function getEntreprise(Facture $facture): Model|Builder|null
     {
         return Entreprise::query()
             ->select('entreprises.*')
             ->join('entreprise_user', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
-            ->join('users', 'entreprise_user.user_id', '=', 'entreprise_user.user_id')
-            ->join('passagers', 'passagers.user_id', '=', 'users.id')
-            ->join('reservations', 'reservations.passager_id', '=', 'passagers.id')
+            ->join('reservations', 'reservations.entreprise_id', '=', 'entreprise_user.entreprise_id')
             ->where('reservations.facture_id', $facture->id)
             ->first();
     }
