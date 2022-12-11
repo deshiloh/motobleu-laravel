@@ -2,12 +2,16 @@
 
 namespace App\Mail;
 
+use App\Exports\ReservationsExport;
 use App\Models\Facture;
 use App\Services\InvoiceService;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class BillCreated extends Mailable
 {
@@ -32,17 +36,34 @@ class BillCreated extends Mailable
      * Build the message.
      *
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
-    public function build()
+    public function build(): Mailable
     {
         $invoice = InvoiceService::generateInvoice($this->facture);
 
-        return $this->markdown('emails.bill.created', [
+        $mailable = $this->markdown('emails.bill.created', [
             'message' => $this->message
-        ])
-            ->attachData($invoice->stream()->getContent(), $this->facture->reference.'.pdf', [
-                'mime' => 'application/pdf',
-            ]);
+        ])->attachData($invoice->stream()->getContent(), $this->facture->reference.'.pdf', [
+            'mime' => 'application/pdf',
+        ]);
+
+        if (true) {
+            $excel = Excel::raw(new ReservationsExport(
+                $this->facture->year,
+                $this->facture->month,
+                $this->facture->reservations()->get()->first()->entreprise
+            ), \Maatwebsite\Excel\Excel::XLSX);
+
+            $fileName = sprintf('courses_periode_%s_%s',
+                $this->facture->month,
+                $this->facture->year
+            );
+
+            $mailable->attachData($excel, $fileName . '.xlsx');
+        }
+
+        return $mailable;
+
     }
 }

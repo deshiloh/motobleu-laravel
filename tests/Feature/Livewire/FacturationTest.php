@@ -69,6 +69,7 @@ class FacturationTest extends TestCase
             ->set('selectedMonth', Carbon::now()->month)
             ->set('selectedYear', Carbon::now()->year)
             ->set('entrepriseIdSelected', 1)
+            ->set('isAcquitte', false)
             ->call('sendFactureModal')
             ->assertSet('factureModal', true)
             ->assertHasNoErrors()

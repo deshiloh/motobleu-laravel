@@ -14,10 +14,14 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Validator;
 use Livewire\Component;
+use Livewire\Redirector;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Exception;
 use WireUi\Traits\Actions;
 
 class EditionFacture extends Component
@@ -36,6 +40,7 @@ class EditionFacture extends Component
     public bool $reservationModal = false;
     public bool $isAcquitte = false;
     public bool $isFormFacture = false;
+    public int|null $isBilled = null;
 
     public array $email;
     public array $months = [];
@@ -47,7 +52,8 @@ class EditionFacture extends Component
     protected $queryString = [
         'selectedMonth',
         'selectedYear',
-        'entrepriseIdSelected'
+        'entrepriseIdSelected',
+        'isBilled'
     ];
 
     /**
@@ -97,11 +103,9 @@ class EditionFacture extends Component
     public function getEntreprisesProperty(): Collection|array
     {
         return Entreprise::query()
-            ->join('entreprise_user', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
-            ->join('users', 'entreprise_user.user_id', '=', 'users.id')
-            ->join('passagers', 'users.id', '=', 'passagers.user_id')
-            ->join('reservations', 'passagers.id', '=', 'reservations.passager_id')
             ->select('entreprises.*', DB::raw('COUNT(reservations.id) as nbReservations'))
+            ->join('entreprise_user', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
+            ->join('reservations', 'entreprises.id', '=', 'reservations.entreprise_id')
             ->whereMonth('reservations.pickup_date', $this->selectedMonth)
             ->whereYear('reservations.pickup_date', $this->selectedYear)
             ->where('reservations.is_billed', false)
@@ -119,15 +123,11 @@ class EditionFacture extends Component
         }
 
         return Reservation::query()
-            ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
-            ->join('users', 'passagers.user_id', '=', 'users.id')
-            ->join('entreprise_user', 'entreprise_user.user_id', '=', 'users.id')
-            ->join('entreprises', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
             ->select('reservations.*')
             ->whereMonth('reservations.pickup_date', $this->selectedMonth)
             ->whereYear('reservations.pickup_date', $this->selectedYear)
-            ->where('entreprises.id', $this->entrepriseIdSelected)
-            ->where('reservations.is_billed', false)
+            ->where('reservations.entreprise_id', $this->entrepriseIdSelected)
+            ->where('reservations.is_billed', $this->isBilled)
             ->get();
     }
 
@@ -285,6 +285,7 @@ class EditionFacture extends Component
             $this->facture->year
         );
         $this->email['complement'] = '';
+        $this->isAcquitte = (int) $this->facture->is_acquitte;
 
         $this->factureModal = true;
     }
@@ -334,7 +335,16 @@ class EditionFacture extends Component
      */
     public function sendFactureAction()
     {
-        $this->validate();
+        $this->withValidator(function (Validator $validator) {
+            $validator->after(function ($validator) {
+                /** @var Reservation $reservation */
+                foreach ($this->reservations as $reservation) {
+                    if ($reservation->tarif == 0) {
+                        $validator->errors()->add('réservations', 'Vous devez éditer toutes les réservations');
+                    }
+                }
+            });
+        })->validate();
 
         foreach ($this->reservations as $reservation) {
             $reservation->is_billed = true;
@@ -359,7 +369,8 @@ class EditionFacture extends Component
     {
         return redirect()->to(route('admin.facturations.edition', [
                 'selectedMonth' => $this->selectedMonth,
-                '$selectedYear' => $this->selectedYear]
+                '$selectedYear' => $this->selectedYear
+            ]
         ));
     }
 
@@ -426,14 +437,19 @@ class EditionFacture extends Component
         ]);
     }
 
+    /**
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
     public function exportAction(ExportService $exportService)
     {
-        return response()->streamDownload(function () use ($exportService) {
-            echo $exportService->exportReservations(
-                $this->selectedYear,
-                $this->selectedMonth,
-                $this->entreprise
-            );
-        });
+        if (in_array($this->entreprise->nom, config('motobleu.export.entrepriseEnableForXlsExport'))) {
+            // Export en XLS
+            return Excel::download(new ReservationsExport($this->selectedYear, $this->selectedMonth, $this->entreprise), 'reservations.xlsx');
+        } else {
+            // Export PDF
+            $pdf = Pdf::loadView('pdf.export.reservations');
+            return $pdf->download('reservations.pdf');
+        }
     }
 }

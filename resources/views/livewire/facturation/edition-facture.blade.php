@@ -8,11 +8,12 @@
             Édition de la facturation <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
             <x-slot:right>
                 <div>
-                    @if($entrepriseIdSelected)
-                        <x-button href="{{ route('admin.facturations.edition', [
-                            'selectedMonth' => $selectedMonth,
-                            '$selectedYear' => $selectedYear]
-                        ) }}" label="Retourner à la liste" sm />
+                    @if($entrepriseIdSelected && !$this->isBilled == 1)
+                        <x-button href="{!! route('admin.facturations.edition', [
+                                'selectedMonth' => $selectedMonth,
+                                'selectedYear' => $selectedYear,
+                            ]
+                        ) !!}" label="Retourner à la liste" sm />
                     @endif
                     @if(!$this->adresseFacturationEntreprise && $entrepriseIdSelected)
                         <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">
@@ -85,7 +86,7 @@
     @endif
     @if($this->reservations)
         <x-bloc-content>
-            <div class="text-2xl mb-3">Liste des réservations</div>
+            <div class="text-2xl mb-3 dark:text-white">Liste des réservations</div>
             <x-datatable>
                 <x-slot:headers>
                     <tr>
@@ -120,7 +121,7 @@
                 </x-slot:body>
             </x-datatable>
             <div class="flex justify-end py-4">
-                <div class="flex flex-col space-y-3 text-right">
+                <div class="flex flex-col space-y-3 text-right dark:text-white">
                     @php
                         $prixHT = $montant_ttc / 1.10;
                         $prixTVA = $prixHT * 0.10;
@@ -139,7 +140,7 @@
         </x-bloc-content>
     @endif
 
-    <x-modal wire:model.defer="factureModal">
+    <x-modal wire:model.defer="factureModal" max-width="6xl">
         @if($this->facture)
         <x-card title="Envoi de la facture" wire:key="facture">
             <x-errors class="mb-4"/>
