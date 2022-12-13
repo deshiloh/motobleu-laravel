@@ -150,7 +150,7 @@ class Reservation extends Model
         $montantMajoration = $total * (floatval($this->majoration) / 100);
         return $total + $montantMajoration + floatval($this->complement);
     }
-
+    
     /**
      * @return array
      */

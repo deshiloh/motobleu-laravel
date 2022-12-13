@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
+use Livewire\Redirector;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Exception;
 use WireUi\Traits\Actions;
@@ -454,7 +455,6 @@ class EditionFacture extends Component
             return Excel::download(new ReservationsExport($this->selectedYear, $this->selectedMonth, $this->entreprise), 'reservations.xlsx');
         } else {
             // Export PDF
-
             return response()->streamDownload(function () {
                 echo Pdf::loadView('exports.reservations.pdf-facture', [
                     'entreprise' => $this->entreprise,
