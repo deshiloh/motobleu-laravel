@@ -141,6 +141,17 @@ class Reservation extends Model
     }
 
     /**
+     * Retourne le total TTC de la réservation
+     * @return int|float
+     */
+    public function getTotalTtcAttribute(): int|float
+    {
+        $total = floatval($this->tarif);
+        $montantMajoration = $total * (floatval($this->majoration) / 100);
+        return $total + $montantMajoration + floatval($this->complement);
+    }
+
+    /**
      * @return array
      */
     public function toSearchableArray(): array

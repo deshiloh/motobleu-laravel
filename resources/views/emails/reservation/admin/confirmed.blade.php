@@ -8,7 +8,7 @@ La réservation N° {{ $reservation->reference }} a bien été confirmée, vous 
 
 <strong><u>Récapitulatif :</u></strong>
 * Passager
-  * <strong>Société : {{ $reservation->passager->user->entreprise->nom }}</strong>
+  * <strong>Société : {{ $reservation->entreprise->nom }}</strong>
   * <strong>Nom et prénom :</strong> {{ $reservation->passager->nom }}
   * <strong>Email :</strong> {{ $reservation->passager->email }}
   * <strong>Téléphone portable :</strong> {{ $reservation->passager->portable }}

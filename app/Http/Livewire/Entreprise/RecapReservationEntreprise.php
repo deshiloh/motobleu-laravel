@@ -4,12 +4,16 @@ namespace App\Http\Livewire\Entreprise;
 
 use App\Models\Entreprise;
 use App\Models\Reservation;
+use App\Services\ExportService;
+use Google\Service\Vault\Export;
 use Livewire\Component;
 use Livewire\WithPagination;
+use PhpOffice\PhpSpreadsheet\Exception;
+use WireUi\Traits\Actions;
 
 class RecapReservationEntreprise extends Component
 {
-    use WithPagination;
+    use WithPagination, Actions;
 
     public Entreprise $entreprise;
     public $dateDebut;
@@ -49,5 +53,24 @@ class RecapReservationEntreprise extends Component
         }
 
         return $query->paginate($this->perPage);
+    }
+
+    /**
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function exportReservations()
+    {
+        $exportService = \App::make(ExportService::class);
+
+        try {
+            return $exportService->exportReservations(2022, 12, $this->entreprise);
+        } catch (\Exception $exception) {
+            ray()->exception($exception);
+            $this->notification()->error(
+                title: 'Erreur',
+                description: "Une erreur est survenue."
+            );
+        }
     }
 }

@@ -54,6 +54,11 @@ class Entreprise extends Model
         return $this->adresseEntreprises()->where('type', $adresseEntrepriseTypeEnum->value)->first();
     }
 
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
     /**
      * @return array
      */

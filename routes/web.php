@@ -267,8 +267,22 @@ Route::prefix('/admin/select')->group(function () {
     })->name('admin.api.user_in_entreprise');
 });
 
+// TESTS PAGES
+
 Route::get('/mailable', function () {
     return new AdminReservationConfirmed(Reservation::find(1));
+});
+
+Route::get('/pdf', function () {
+    $facture = \App\Models\Facture::find(1);
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.reservations.pdf', [
+        'facture' => $facture,
+        'entreprise' => $facture->reservations()->get()->first()->entreprise
+    ]);
+    $pdf->setPaper('A4', 'landscape');
+
+    return $pdf->download('test.pdf');
 });
 
 

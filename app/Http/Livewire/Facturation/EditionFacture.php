@@ -10,6 +10,7 @@ use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Reservation;
 use App\Services\ExportService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,7 +20,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
-use Livewire\Redirector;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Exception;
 use WireUi\Traits\Actions;
@@ -109,6 +109,9 @@ class EditionFacture extends Component
             ->whereMonth('reservations.pickup_date', $this->selectedMonth)
             ->whereYear('reservations.pickup_date', $this->selectedYear)
             ->where('reservations.is_billed', false)
+            ->where('reservations.is_cancel', false)
+            ->where('reservations.is_confirmed', true)
+            ->orWhere('reservations.is_cancel_pay', true)
             ->groupBy('entreprises.id')
             ->get();
     }
@@ -128,6 +131,9 @@ class EditionFacture extends Component
             ->whereYear('reservations.pickup_date', $this->selectedYear)
             ->where('reservations.entreprise_id', $this->entrepriseIdSelected)
             ->where('reservations.is_billed', $this->isBilled)
+            ->where('reservations.is_confirmed', true)
+            ->where('reservations.is_cancel', false)
+            ->orWhere('reservations.is_cancel_pay', true)
             ->get();
     }
 
@@ -448,8 +454,14 @@ class EditionFacture extends Component
             return Excel::download(new ReservationsExport($this->selectedYear, $this->selectedMonth, $this->entreprise), 'reservations.xlsx');
         } else {
             // Export PDF
-            $pdf = Pdf::loadView('pdf.export.reservations');
-            return $pdf->download('reservations.pdf');
+
+            return response()->streamDownload(function () {
+                echo Pdf::loadView('exports.reservations.pdf-facture', [
+                    'entreprise' => $this->entreprise,
+                    'year' => $this->facture->year,
+                    'month' => $this->facture->month
+                ])->output();
+            }, 'test.pdf');
         }
     }
 }
