@@ -13,6 +13,7 @@ class GoogleCalendarService
     {
 
         // TODO Envoi de l'event secrétaire
+
         if ($reservation->is_cancel) {
             return false;
         }

@@ -1,9 +1,6 @@
 <div>
     <div class="pb-3 border-b border-gray-200 dark:border-gray-600 sm:flex sm:items-center sm:justify-between">
         <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Récapitulatif des courses</h3>
-        <div class="mt-3 sm:mt-0 sm:ml-4">
-            <x-button label="Exporter" icon="download" sm primary/>
-        </div>
     </div>
     <div class="py-3 grid grid-cols-3 gap-5">
         <x-datetime-picker
@@ -43,7 +40,7 @@
                     <x-datatable.td>{{ $reservation->display_from }}</x-datatable.td>
                     <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
                     <x-datatable.td>
-                        {{ $reservation->tarif }}
+                        {{ $reservation->tarif  ?? "NC" }} €
                     </x-datatable.td>
                 </x-datatable.tr>
             @empty

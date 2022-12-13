@@ -68,7 +68,7 @@
                         <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->display_from }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
-                        <x-datatable.td>{{ $reservation->passager->user->entreprise->nom }}</x-datatable.td>
+                        <x-datatable.td>{{ $reservation->entreprise->nom }}</x-datatable.td>
                         <x-datatable.td>
                             <x-button.circle href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" icon="eye" primary />
                         </x-datatable.td>
