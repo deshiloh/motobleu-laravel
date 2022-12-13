@@ -65,7 +65,7 @@
     @if(!$reservation->is_confirmed && !$reservation->is_cancel)
         <x-bloc-content>
             <form wire:submit.prevent="confirmedAction" action="post" wire:loading.class="opacity-25" class="space-y-4">
-                <div class="block text-xl">Formulaire de confirmation</div>
+                <div class="block text-xl dark:text-white">Formulaire de confirmation</div>
                 @csrf
                 <x-select
                     label="Pilote"
@@ -79,14 +79,14 @@
                 <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        Emails de confirmation
+                        <div class="dark:text-white">Emails de confirmation</div>
                         <div class="space-y-3 mt-3">
                             <x-toggle wire:model="reservation.send_to_user" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
                             <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
                         </div>
                     </div>
                     <div>
-                        Invitation Google Calendar
+                        <div class="dark:text-white">Invitation Google Calendar</div>
                         <div class="space-y-3 mt-3">
                             <x-toggle wire:model.defer="reservation.calendar_user_invitation" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
                             <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
