@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('pickup_origin')->nullable();
             $table->string('drop_off_origin')->nullable();
             $table->string('event_id')->nullable();
+            $table->string('event_secretary_id')->nullable();
             $table->longText('comment')->nullable();
 
             $table->float('tarif')->nullable();

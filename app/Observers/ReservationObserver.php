@@ -5,7 +5,6 @@ namespace App\Observers;
 use App\Mail\ReservationCreated;
 use App\Models\Reservation;
 use App\Services\GoogleCalendarService;
-use App\Services\SentryService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +14,7 @@ class ReservationObserver
 {
     private GoogleCalendarService $calendarService;
 
-    public $afterCommit = true;
+    public bool $afterCommit = true;
 
     public function __construct(GoogleCalendarService $calendarService)
     {
@@ -28,7 +27,7 @@ class ReservationObserver
      * @param Reservation $reservation
      * @return void
      */
-    public function created(Reservation $reservation)
+    public function created(Reservation $reservation): void
     {
         try {
             $recipients = [];
@@ -46,7 +45,9 @@ class ReservationObserver
                 Mail::to($recipient)->send(new ReservationCreated($reservation));
             }
 
-            $this->calendarService->handleEvent($reservation);
+            $this->calendarService->createEventForMotobleu($reservation);
+            $this->calendarService->createEventForSecretary($reservation);
+
             Log::channel('logtail')->info("Création d'une réservation", [
                 'utilisateur' => Auth::user(),
                 'reservation' => $reservation,
@@ -68,9 +69,10 @@ class ReservationObserver
      * @param Reservation $reservation
      * @return void
      */
-    public function updated(Reservation $reservation)
+    public function updated(Reservation $reservation): void
     {
-        $this->calendarService->handleEvent($reservation);
+        $this->calendarService->createEventForMotobleu($reservation);
+        $this->calendarService->createEventForSecretary($reservation);
     }
 
     /**

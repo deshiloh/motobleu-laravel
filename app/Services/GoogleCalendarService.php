@@ -8,13 +8,22 @@ use Spatie\GoogleCalendar\Event;
 
 class GoogleCalendarService
 {
+    /**
+     * @var Reservation
+     */
+    private Reservation $reservation;
 
-    public function handleEvent(Reservation $reservation): bool
+    /**
+     * @var bool
+     */
+    private bool $forSecretary = false;
+
+    public function createEventForSecretary(Reservation $reservation): bool
     {
+        $this->reservation = $reservation;
+        $this->forSecretary = true;
 
-        // TODO Envoi de l'event secrétaire
-
-        if ($reservation->is_cancel) {
+        if ($this->reservation->is_cancel) {
             return false;
         }
 
@@ -23,34 +32,50 @@ class GoogleCalendarService
             return false;
         }
 
-        $isNewEvent = empty($reservation->event_id);
+        $isNewEvent = empty($this->reservation->event_secretary_id);
 
-        $event = ($isNewEvent) ? new Event() : Event::find($reservation->event_id);
+        $event = ($isNewEvent) ? new Event() : Event::find($this->reservation->event_secretary_id);
 
-        $event->name = $this->generateTitle($reservation);
-        $event->description = $this->generateEventContent($reservation);
+        $event->name = $this->generateTitle(true);
+        $event->description = $this->generateEventContent();
 
-        $event->startDateTime = $reservation->pickup_date;
-        $event->endDateTime = $reservation->pickup_date->addHour();
-
-        if ($reservation->calendar_user_invitation) {
-            $email = App::environment(['local']) ? 'm.alvarez.iglisias@gmail.com' : $reservation->passager->user->email;
-            $event->addAttendee([
-                'email' => $email
-            ]);
-        }
-
-        if ($reservation->calendar_passager_invitation) {
-            $email = App::environment(['local']) ? 'm.alvarez.iglisias@gmail.com' : $reservation->passager->email;
-            $event->addAttendee([
-                'email' => $email
-            ]);
-        }
+        $event = $this->generateCommunData($event);
 
         $savedEvent = $event->save();
 
         if ($isNewEvent) {
-            $reservation->update([
+            $this->reservation->updateQuietly([
+                'event_secretary_id' => $savedEvent->id
+            ]);
+        }
+    }
+
+    public function createEventForMotobleu(Reservation $reservation): bool
+    {
+        $this->reservation = $reservation;
+
+        if ($this->reservation->is_cancel) {
+            return false;
+        }
+
+        // On évite la création d'évènement lors des tests
+        if (!App::environment('prod', 'local')) {
+            return false;
+        }
+
+        $isNewEvent = empty($this->reservation->event_id);
+
+        $event = ($isNewEvent) ? new Event() : Event::find($this->reservation->event_id);
+
+        $event->name = $this->generateTitle();
+        $event->description = $this->generateEventContent();
+
+        $event = $this->generateCommunData($event);
+
+        $savedEvent = $event->save();
+
+        if ($isNewEvent) {
+            $this->reservation->updateQuietly([
                 'event_id' => $savedEvent->id
             ]);
         }
@@ -58,7 +83,29 @@ class GoogleCalendarService
         return true;
     }
 
-    public function deleteEvent(Reservation $reservation)
+    public function generateCommunData(Event $event): Event
+    {
+        $event->startDateTime = $this->reservation->pickup_date;
+        $event->endDateTime = $this->reservation->pickup_date->addHour();
+
+        if ($this->reservation->calendar_user_invitation) {
+            $email = App::environment(['local']) ? 'm.alvarez.iglisias@gmail.com' : $this->reservation->passager->user->email;
+            $event->addAttendee([
+                'email' => $email
+            ]);
+        }
+
+        if ($this->reservation->calendar_passager_invitation) {
+            $email = App::environment(['local']) ? 'm.alvarez.iglisias@gmail.com' : $this->reservation->passager->email;
+            $event->addAttendee([
+                'email' => $email
+            ]);
+        }
+
+        return $event;
+    }
+
+    public function deleteEvent(Reservation $reservation): void
     {
         try {
             if (App::environment(['local', 'prod'])) {
@@ -81,75 +128,119 @@ class GoogleCalendarService
 
     /**
      * Generate title event
-     * @param Reservation $reservation
      * @return string
      */
-    private function generateTitle(Reservation $reservation)
+    private function generateTitle(): string
     {
-        $piloteLabel = $this->generatePiloteLabel($reservation);
-
-        return sprintf(
-            'Course n°%s - %s / %s / %s',
-            $reservation->reference,
-            ucfirst($reservation->entreprise->nom),
-            $reservation->passager->nom,
-            'plt: '. $piloteLabel
-        );
+        if ($this->forSecretary) {
+            return sprintf(
+                'RESERVATION MOTOBLEU Course n°%s - %s / %s',
+                $this->reservation->reference,
+                ucfirst($this->reservation->entreprise->nom),
+                $this->reservation->passager->nom
+            );
+        } else {
+            $piloteLabel = $this->generatePiloteLabel();
+            return sprintf(
+                'Course n°%s - %s / %s / %s',
+                $this->reservation->reference,
+                ucfirst($this->reservation->entreprise->nom),
+                $this->reservation->passager->nom,
+                'plt: '. $piloteLabel
+            );
+        }
     }
 
     /**
      * Generate content event
-     * @param Reservation $reservation
      * @return string
      */
-    private function generateEventContent(Reservation $reservation)
+    private function generateEventContent(): string
     {
-        $piloteLabel = $this->generatePiloteLabel($reservation);
 
-        $description = "Société: %s\n";
-        $description .= "Passager: %s\n";
-        $description .= "Tel passager: %s\n";
-        $description .= "Email: %s\n\n";
-        $description .= "Assistante: %s\n";
-        $description .= "Tel assistante: %s\n";
-        $description .= "Email assistante: %s\n\n";
-        $description .= "Pilote: %s\n";
-        $description .= "Date de la course: %s\n";
-        $description .= "Adresse de départ: %s\n";
-        $description .= "Provenance / N°: %s\n\n";
-        $description .= "Adresse de destination: %s\n";
-        $description .= "Destination / N°: %s\n\n";
-        $description .= "Commentaires: %s\n\n";
-        $description .= "Tarif : \n\n";
-        $description .= "\nLien: %s\n";
-        $description .= "\n\nMotobleu\n26-28 rue Marius Aufan\n92300 Levallois Perret\nTél: +33647938617\ncontact@motobleu-paris.com\nRCS 824 721 955 NANTERRE"; //company_details
+        if ($this->forSecretary) {
+            $description = "Société: %s\n";
+            $description .= "Passager: %s\n";
+            $description .= "Tel passager: %s\n";
+            $description .= "Email: %s\n\n";
+            $description .= "Assistante: %s\n";
+            $description .= "Tel assistante: %s\n";
+            $description .= "Email assistante: %s\n\n";
+            $description .= "Date de la course: %s\n";
+            $description .= "Adresse de départ: %s\n";
+            $description .= "Provenance / N°: %s\n\n";
+            $description .= "Adresse de destination: %s\n";
+            $description .= "Destination / N°: %s\n\n";
+            $description .= "Commentaires: %s\n\n";
+            $description .= "\nLien: %s\n";
+            $description .= "\n\nMotobleu\n26-28 rue Marius Aufan\n92300 Levallois Perret\nTél: +33647938617\ncontact@motobleu-paris.com\nRCS 824 721 955 NANTERRE"; //company_details
 
-        $phones = implode(' - ', [$reservation->passager->telephone, $reservation->passager->portable]);
+            $phones = implode(' - ', [$this->reservation->passager->telephone, $this->reservation->passager->portable]);
 
-        $description = sprintf(
-            $description,
-            $reservation->entreprise->nom,
-            $reservation->passager->nom,
-            $phones,
-            $reservation->passager->email,
-            $reservation->passager->user->full_name,
-            $reservation->passager->user->telephone,
-            $reservation->passager->user->email,
-            $piloteLabel,
-            $reservation->pickup_date->format('d/m/Y à H\hi'),
-            $reservation->display_from,
-            $reservation->pickup_origin,
-            $reservation->display_to,
-            $reservation->drop_off_origin,
-            $reservation->comment,
-            route('admin.reservations.show', ['reservation' => $reservation->id])
-        );
+            return sprintf(
+                $description,
+                $this->reservation->entreprise->nom,
+                $this->reservation->passager->nom,
+                $phones,
+                $this->reservation->passager->email,
+                $this->reservation->passager->user->full_name,
+                $this->reservation->passager->user->telephone,
+                $this->reservation->passager->user->email,
+                $this->reservation->pickup_date->format('d/m/Y à H\hi'),
+                $this->reservation->display_from,
+                $this->reservation->pickup_origin,
+                $this->reservation->display_to,
+                $this->reservation->drop_off_origin,
+                $this->reservation->comment,
+                route('admin.reservations.show', ['reservation' => $this->reservation->id])
+            );
+        } else {
+            $piloteLabel = $this->generatePiloteLabel();
 
-        return $description;
+            $description = "Société: %s\n";
+            $description .= "Passager: %s\n";
+            $description .= "Tel passager: %s\n";
+            $description .= "Email: %s\n\n";
+            $description .= "Assistante: %s\n";
+            $description .= "Tel assistante: %s\n";
+            $description .= "Email assistante: %s\n\n";
+            $description .= "Pilote: %s\n";
+            $description .= "Date de la course: %s\n";
+            $description .= "Adresse de départ: %s\n";
+            $description .= "Provenance / N°: %s\n\n";
+            $description .= "Adresse de destination: %s\n";
+            $description .= "Destination / N°: %s\n\n";
+            $description .= "Commentaires: %s\n\n";
+            $description .= "Tarif : %s\n\n";
+            $description .= "\nLien: %s\n";
+            $description .= "\n\nMotobleu\n26-28 rue Marius Aufan\n92300 Levallois Perret\nTél: +33647938617\ncontact@motobleu-paris.com\nRCS 824 721 955 NANTERRE"; //company_details
+
+            $phones = implode(' - ', [$this->reservation->passager->telephone, $this->reservation->passager->portable]);
+
+            return sprintf(
+                $description,
+                $this->reservation->entreprise->nom,
+                $this->reservation->passager->nom,
+                $phones,
+                $this->reservation->passager->email,
+                $this->reservation->passager->user->full_name,
+                $this->reservation->passager->user->telephone,
+                $this->reservation->passager->user->email,
+                $piloteLabel,
+                $this->reservation->pickup_date->format('d/m/Y à H\hi'),
+                $this->reservation->display_from,
+                $this->reservation->pickup_origin,
+                $this->reservation->display_to,
+                $this->reservation->drop_off_origin,
+                $this->reservation->comment,
+                $this->reservation->total_ttc . ' €',
+                route('admin.reservations.show', ['reservation' => $this->reservation->id])
+            );
+        }
     }
 
-    private function generatePiloteLabel(Reservation $reservation)
+    private function generatePiloteLabel(): string
     {
-        return ($reservation->pilote()->exists()) ? $reservation->pilote->full_name : 'En attente';
+        return ($this->reservation->pilote()->exists()) ? $this->reservation->pilote->full_name : 'En attente';
     }
 }
