@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Reservation;
-use App\Services\GoogleCalendarService;
+use App\Services\EventCalendar\GoogleCalendarService;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 

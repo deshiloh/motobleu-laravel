@@ -3,10 +3,8 @@
 namespace App\Listeners;
 
 use App\Events\ReservationCanceled;
-use App\Services\GoogleCalendarService;
+use App\Services\EventCalendar\GoogleCalendarService;
 use App\Services\SentryService;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;

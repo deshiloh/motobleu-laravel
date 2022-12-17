@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\EventCalendar;
 
 use App\Models\Reservation;
 use Illuminate\Support\Facades\App;
@@ -8,6 +8,14 @@ use Spatie\GoogleCalendar\Event;
 
 class GoogleCalendarService
 {
+
+    private EventFactory $eventFactory;
+
+    public function __construct(EventFactory $eventFactory)
+    {
+        $this->eventFactory = $eventFactory;
+    }
+
     /**
      * @var Reservation
      */
@@ -27,27 +35,21 @@ class GoogleCalendarService
             return false;
         }
 
-        // On évite la création d'évènement lors des tests
-        if (!App::environment('prod', 'local')) {
-            return false;
-        }
+        $event = $this->eventFactory->getEvent($this->reservation->event_secretary_id);
 
-        $isNewEvent = empty($this->reservation->event_secretary_id);
-
-        $event = ($isNewEvent) ? new Event() : Event::find($this->reservation->event_secretary_id);
-
-        $event->name = $this->generateTitle(true);
+        $event->name = $this->generateTitle();
         $event->description = $this->generateEventContent();
 
         $event = $this->generateCommunData($event);
 
         $savedEvent = $event->save();
 
-        if ($isNewEvent) {
+        if (empty($this->reservation->event_secretary_id)) {
             $this->reservation->updateQuietly([
                 'event_secretary_id' => $savedEvent->id
             ]);
         }
+        return true;
     }
 
     public function createEventForMotobleu(Reservation $reservation): bool
@@ -58,14 +60,7 @@ class GoogleCalendarService
             return false;
         }
 
-        // On évite la création d'évènement lors des tests
-        if (!App::environment('prod', 'local')) {
-            return false;
-        }
-
-        $isNewEvent = empty($this->reservation->event_id);
-
-        $event = ($isNewEvent) ? new Event() : Event::find($this->reservation->event_id);
+        $event = $this->eventFactory->getEvent($this->reservation->event_id);
 
         $event->name = $this->generateTitle();
         $event->description = $this->generateEventContent();
@@ -74,7 +69,7 @@ class GoogleCalendarService
 
         $savedEvent = $event->save();
 
-        if ($isNewEvent) {
+        if (is_null($this->reservation->event_id)) {
             $this->reservation->updateQuietly([
                 'event_id' => $savedEvent->id
             ]);
@@ -89,14 +84,14 @@ class GoogleCalendarService
         $event->endDateTime = $this->reservation->pickup_date->addHour();
 
         if ($this->reservation->calendar_user_invitation) {
-            $email = App::environment(['local']) ? 'm.alvarez.iglisias@gmail.com' : $this->reservation->passager->user->email;
+            $email = App::environment(['local', 'testing']) ? 'm.alvarez.iglisias@gmail.com' : $this->reservation->passager->user->email;
             $event->addAttendee([
                 'email' => $email
             ]);
         }
 
         if ($this->reservation->calendar_passager_invitation) {
-            $email = App::environment(['local']) ? 'm.alvarez.iglisias@gmail.com' : $this->reservation->passager->email;
+            $email = App::environment(['local', 'testing']) ? 'm.alvarez.iglisias@gmail.com' : $this->reservation->passager->email;
             $event->addAttendee([
                 'email' => $email
             ]);

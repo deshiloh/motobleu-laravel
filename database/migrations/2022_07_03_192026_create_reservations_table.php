@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('commande')->nullable();
-            $table->string('reference');
+            $table->string('reference')->nullable();
             $table->string('pickup_origin')->nullable();
             $table->string('drop_off_origin')->nullable();
             $table->string('event_id')->nullable();

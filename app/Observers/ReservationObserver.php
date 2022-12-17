@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Mail\ReservationCreated;
 use App\Models\Reservation;
-use App\Services\GoogleCalendarService;
+use App\Services\EventCalendar\GoogleCalendarService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
