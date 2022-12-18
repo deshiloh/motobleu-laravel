@@ -81,4 +81,8 @@
             </x-slot:body>
         </x-datatable>
     </x-bloc-content>
+
+    <x-bloc-content>
+        <livewire:home.reservations-chart />
+    </x-bloc-content>
 </x-layout>

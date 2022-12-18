@@ -883,6 +883,9 @@ video {
 .h-10 {
   height: 2.5rem;
 }
+.h-32 {
+  height: 8rem;
+}
 .h-3 {
   height: 0.75rem;
 }
@@ -1179,11 +1182,11 @@ video {
 .gap-5 {
   gap: 1.25rem;
 }
-.gap-6 {
-  gap: 1.5rem;
-}
 .gap-4 {
   gap: 1rem;
+}
+.gap-6 {
+  gap: 1.5rem;
 }
 .gap-1 {
   gap: 0.25rem;
@@ -2031,6 +2034,9 @@ video {
 .pr-3 {
   padding-right: 0.75rem;
 }
+.pt-6 {
+  padding-top: 1.5rem;
+}
 .pt-4 {
   padding-top: 1rem;
 }
@@ -2099,15 +2105,6 @@ video {
 }
 .pr-10 {
   padding-right: 2.5rem;
-}
-.pt-3 {
-  padding-top: 0.75rem;
-}
-.pt-12 {
-  padding-top: 3rem;
-}
-.pt-6 {
-  padding-top: 1.5rem;
 }
 .text-left {
   text-align: left;

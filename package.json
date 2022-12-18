@@ -20,6 +20,7 @@
     "dependencies": {
         "@tailwindcss/forms": "^0.5.2",
         "alpinejs": "^3.10.2",
+        "chart.js": "^2.9.4",
         "jquery": "^3.6.0",
         "tinymce": "^6.1.0",
         "tw-elements": "^1.0.0-alpha12"

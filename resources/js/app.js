@@ -1,6 +1,7 @@
 require('./bootstrap');
 import 'alpinejs';
 
+
 // checkDarkMode();
 
 function checkDarkMode() {
