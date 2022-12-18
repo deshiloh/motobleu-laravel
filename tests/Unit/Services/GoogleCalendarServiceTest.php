@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Services;
 
 use App\Models\Reservation;
 use App\Services\EventCalendar\EventFactory;
