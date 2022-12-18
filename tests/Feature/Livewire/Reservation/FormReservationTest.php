@@ -11,12 +11,13 @@ use App\Models\User;
 use App\Services\ReservationService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutEvents;
 use Livewire\Livewire;
 use Tests\TestCase;
 
 class FormReservationTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithoutEvents;
 
     /**
      * Indicates whether the default seeder should run before each test.

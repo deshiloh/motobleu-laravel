@@ -24,6 +24,7 @@ class ReservationFactory extends Factory
     public function definition(): array
     {
         return [
+            'commande' => '345678HFG',
             'reference' => '202207' . self::$ref ++,
             'pickup_origin' => 'vol num 4440',
             'drop_off_origin' => 'vol num 4440',

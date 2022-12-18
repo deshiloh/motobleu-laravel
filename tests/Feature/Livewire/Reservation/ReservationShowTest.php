@@ -8,12 +8,13 @@ use App\Models\Reservation;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\WithoutEvents;
 use Livewire\Livewire;
 use Tests\TestCase;
 
 class ReservationShowTest extends TestCase
 {
-    use RefreshDatabase, WithoutModelEvents;
+    use RefreshDatabase, WithoutEvents;
 
     /**
      * Indicates whether the default seeder should run before each test.

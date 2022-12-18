@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Google_Service_Calendar_Event;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,21 +30,6 @@ class Reservation extends Model
         'majoration' => 'float',
         'complement' => 'float'
     ];
-
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
-    protected static function booted()
-    {
-        static::saving(function ($reservation) {
-            $currentDate = Carbon::now();
-            if (is_null($reservation->reference)) {
-                $reservation->reference = $currentDate->format('Yd').Reservation::count() + 1;
-            }
-        });
-    }
 
     /**
      * @return BelongsTo
@@ -91,6 +77,29 @@ class Reservation extends Model
     public function pilote()
     {
         return $this->belongsTo(Pilote::class);
+    }
+
+    public function reference(): Attribute
+    {
+
+        return Attribute::make(
+            get: function ($value) {
+                if (is_null($value)) {
+                    $currentDate = Carbon::now();
+                    return $currentDate->format('Yd').Reservation::count() + 1;
+                }
+
+                return $value;
+            },
+            set: function ($value) {
+                if (is_null($value)) {
+                    $currentDate = Carbon::now();
+                    return $currentDate->format('Yd').Reservation::count() + 1;
+                }
+
+                return $value;
+            }
+        );
     }
 
     public function scopeToConfirmed(Builder $query)
@@ -150,7 +159,7 @@ class Reservation extends Model
         $montantMajoration = $total * (floatval($this->majoration) / 100);
         return $total + $montantMajoration + floatval($this->complement);
     }
-    
+
     /**
      * @return array
      */

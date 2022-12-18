@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
@@ -32,9 +33,16 @@ class Pilote extends Model
         'ville',
     ];
 
-    public function getFullNameAttribute(): string
+    public function fullName(): Attribute
     {
-        return implode(' ', [$this->nom, $this->prenom]);
+        return Attribute::make(
+            get: function ($value) {
+                return implode(' ', [$this->nom, $this->prenom]);
+            },
+            set: function ($value) {
+                return $value;
+            }
+        );
     }
 
     public function toSearchableArray(): array
