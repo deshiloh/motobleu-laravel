@@ -9,14 +9,12 @@
         @push('scripts')
             <script>
                 const gradient = window['chartjs-plugin-gradient'];
-
                 const myData = @JSON($dataset);
-
                 var delayed;
 
                 Chart.register(gradient);
 
-                const myChart = new Chart(
+                const homeReservationChart = new Chart(
                     document.getElementById('chart').getContext("2d"),
                     {
                         type: 'line',
@@ -37,14 +35,16 @@
                                     fill: true,
                                     data : myData.map(row => row.count),
                                     tension: 0.2,
-                                    borderWidth : 5,
-                                    pointHoverRadius: 10
+                                    borderWidth : 2,
+                                    pointHoverRadius: 10,
+                                    pointRadius: 0
                                 }
                             ]
                         },
                         options: {
                             scales: {
                                 x: {
+                                    alignToPixels: true,
                                     grid: {
                                         display: false
                                     }
@@ -68,7 +68,7 @@
                                     return delay;
                                 },
                             },
-                            hitRadius: 30,
+                            hitRadius: 40,
                             responsive: true,
                             //maintainAspectRatio: false,
                             onClick: (evt) => {
@@ -78,8 +78,6 @@
                                     const firstPoint = points[0];
                                     const label = myChart.data.labels[firstPoint.index];
                                     const value = myChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
-
-                                    console.log(label, value);
                                 }
                             },
                             plugins: {
@@ -93,11 +91,11 @@
                 );
 
                 Livewire.on('updateChart', data => {
-                    myChart.data.labels = data.map(row => row.date);
-                    myChart.data.datasets[0].data = data.map(row => row.count);
-                    myChart.update();
+                    homeReservationChart.data.labels = data.map(row => row.date);
+                    homeReservationChart.data.datasets[0].data = data.map(row => row.count);
+                    homeReservationChart.update();
                 });
             </script>
         @endpush
-        <canvas id="chart" class="mt-4"></canvas>
+        <canvas id="chart"></canvas>
 </div>
