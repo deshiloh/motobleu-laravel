@@ -2,26 +2,60 @@
     @once
         @push('scripts')
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.1.1/chart.umd.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-gradient"></script>
         @endpush
     @endonce
 
         @push('scripts')
             <script>
+                const gradient = window['chartjs-plugin-gradient'];
+
                 const myData = @JSON($dataset);
 
+                var delayed;
+
+                Chart.register(gradient);
+
                 const myChart = new Chart(
-                    document.getElementById('chart'),
+                    document.getElementById('chart').getContext("2d"),
                     {
-                        type: 'bar',
+                        type: 'line',
                         data : {
                             labels : myData.map(row => row.date),
                             datasets: [
                                 {
-                                    data : myData.map(row => row.count)
+                                    gradient: {
+                                        backgroundColor: {
+                                            axis: 'y',
+                                            colors: {
+                                                0: 'rgba(96, 165, 250, .1)',
+                                                100: 'rgba(96, 165, 250, .2)'
+                                            }
+                                        },
+                                    },
+                                    borderColor : 'rgba(37, 99, 235, 1)',
+                                    fill: true,
+                                    data : myData.map(row => row.count),
+                                    tension: 0.2,
+                                    borderWidth : 5,
+                                    pointHoverRadius: 10
                                 }
                             ]
                         },
                         options: {
+                            animation: {
+                                onComplete: () => {
+                                    delayed = true;
+                                },
+                                delay: (context) => {
+                                    let delay = 0;
+                                    if (context.type === 'data' && context.mode === 'default' && !delayed) {
+                                        delay = context.dataIndex * 300 + context.datasetIndex * 100;
+                                    }
+                                    return delay;
+                                },
+                            },
+                            hitRadius: 30,
                             responsive: true,
                             //maintainAspectRatio: false,
                             onClick: (evt) => {
@@ -44,12 +78,13 @@
                                 },
                                 x: {
                                     title : {
-                                        text : "Période",
+                                        text : "Période de 6 mois",
                                         display: true
                                     }
                                 }
                             },
                             plugins: {
+                                gradient,
                                 legend : {
                                     display: false
                                 }
@@ -65,8 +100,7 @@
                 });
             </script>
         @endpush
-        <h3 class="dark:text-white text-xl">Stats</h3>
         <canvas id="chart" class="mt-4"></canvas>
-        <div class="dark:text-white text-xs">Entreprise avec le plus de réservations : REFEEFEF</div>
-        <div class="dark:text-white text-xs">Entreprise avec le moins de réservation : REFEEFEF</div>
+        <div class="dark:text-white text-xs">Entreprise avec le plus de réservations : {{ $firstEntrepriseName }}</div>
+        <div class="dark:text-white text-xs">Entreprise avec le moins de réservation : {{ $lastEntrepriseName }}</div>
 </div>

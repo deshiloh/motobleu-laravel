@@ -22,10 +22,20 @@
     </x-header>
     <div class="space-y-5">
         <x-bloc-content>
-            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+            <div class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                 Responsable / Directeur : {{ $entreprise->responsable_name }}
-            </h3>
+            </div>
         </x-bloc-content>
+        <div class="container mx-auto px-8">
+            <div class="grid grid-cols-2 gap-5">
+                <div class="dark:bg-slate-800 rounded-lg">
+                    TEST
+                </div>
+                <div class="dark:bg-slate-800 rounded-lg p-2">
+                    <livewire:entreprise.reservation-entreprise-chart :entreprise="$entreprise"/>
+                </div>
+            </div>
+        </div>
         <x-bloc-content>
             <livewire:entreprise.users-entreprise-data-table :entreprise="$entreprise" />
         </x-bloc-content>

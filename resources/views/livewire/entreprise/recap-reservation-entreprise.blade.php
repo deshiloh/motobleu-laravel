@@ -45,7 +45,7 @@
                 </x-datatable.tr>
             @empty
                 <tr>
-                    <x-datatable.td class="text-center bg-gray-700" colspan="6">
+                    <x-datatable.td class="text-center dark:bg-gray-700" colspan="6">
                         Aucune réservations
                     </x-datatable.td>
                 </tr>
