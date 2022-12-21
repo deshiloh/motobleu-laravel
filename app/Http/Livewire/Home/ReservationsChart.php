@@ -10,18 +10,19 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
-
 class ReservationsChart extends Component
 {
     public array $dataset = [];
-    public string $firstEntrepriseName;
-    public string $lastEntrepriseName;
+    public EntrepriseModel $firstEntreprise;
+    public EntrepriseModel $lastEntreprise;
+    public int $nbTotalReservation = 0;
 
     public function mount()
     {
         $this->dataset = $this->getDatas();
-        $this->firstEntrepriseName = $this->getCompanyBorderNbReservationOrder(Entreprise::FIRST->value);
-        $this->lastEntrepriseName = $this->getCompanyBorderNbReservationOrder(Entreprise::LAST->value);
+        $this->firstEntreprise = $this->getCompanyBorderNbReservationOrder(Entreprise::FIRST->value);
+        $this->lastEntreprise = $this->getCompanyBorderNbReservationOrder(Entreprise::LAST->value);
+        $this->nbTotalReservation = Reservation::count();
     }
 
     public function render(): Factory|View|Application
@@ -64,20 +65,19 @@ class ReservationsChart extends Component
     /**
      * Récupère le nom de l'entreprise qui a le plus ou le moins de réservations selon le paramètre
      * @param string $order
-     * @return string
+     * @return EntrepriseModel
      */
-    public function getCompanyBorderNbReservationOrder(string $order): string
+    public function getCompanyBorderNbReservationOrder(string $order): EntrepriseModel
     {
-        $entreprise = EntrepriseModel::withCount('reservations')
+        return EntrepriseModel::withCount('reservations')
             ->where('is_actif', 1)
             ->orderBy('reservations_count', $order)
             ->first();
-
-        return $entreprise['nom'];
     }
 
     public function reloadData()
     {
+        $this->nbTotalReservation = Reservation::count();
         $dataset = $this->getDatas();
         $this->emit('updateChart', $dataset);
     }

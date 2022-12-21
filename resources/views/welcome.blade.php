@@ -3,19 +3,8 @@
         <!-- This example requires Tailwind CSS v2.0+ -->
         <div class="my-4">
             <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
-                <div class="relative bg-white dark:bg-slate-800 py-5 px-4 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
-                    <div class="absolute t-0">
-                        <dt>
-                            <p class="text-xl font-medium text-gray-500 truncate">Total des réservations</p>
-                        </dt>
-                        <dd class="flex items-baseline">
-                            <p class="text-4xl font-semibold text-gray-900 dark:text-gray-200">
-                                {{ \App\Models\Reservation::count() }}
-                            </p>
-                        </dd>
-                    </div>
-                    <livewire:home.reservations-chart />
-                </div>
+
+                <livewire:home.reservations-chart />
 
                 <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
                     <dt>
@@ -36,6 +25,7 @@
                             </div>
                         </div>
                     </dd>
+
                 </div>
             </dl>
         </div>
