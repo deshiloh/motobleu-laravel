@@ -43,6 +43,19 @@
                             ]
                         },
                         options: {
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
+                                },
+                                y: {
+                                    display: false,
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            },
                             animation: {
                                 onComplete: () => {
                                     delayed = true;
@@ -69,20 +82,6 @@
                                     console.log(label, value);
                                 }
                             },
-                            scales : {
-                                y : {
-                                    title : {
-                                        text : "Nombre de réservations",
-                                        display: true
-                                    }
-                                },
-                                x: {
-                                    title : {
-                                        text : "Période de 6 mois",
-                                        display: true
-                                    }
-                                }
-                            },
                             plugins: {
                                 gradient,
                                 legend : {
@@ -101,6 +100,4 @@
             </script>
         @endpush
         <canvas id="chart" class="mt-4"></canvas>
-        <div class="dark:text-white text-xs">Entreprise avec le plus de réservations : {{ $firstEntrepriseName }}</div>
-        <div class="dark:text-white text-xs">Entreprise avec le moins de réservation : {{ $lastEntrepriseName }}</div>
 </div>

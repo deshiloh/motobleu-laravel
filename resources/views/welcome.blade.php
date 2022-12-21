@@ -3,25 +3,18 @@
         <!-- This example requires Tailwind CSS v2.0+ -->
         <div class="my-4">
             <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
-                <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
-                    <dt>
-                        <div class="absolute bg-indigo-500 rounded-md p-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                            </svg>
-                        </div>
-                        <p class="ml-16 text-sm font-medium text-gray-500 truncate">Total des réservations</p>
-                    </dt>
-                    <dd class="ml-16 pb-6 flex items-baseline sm:pb-7">
-                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-200">
-                            {{ \App\Models\Reservation::count() }}
-                        </p>
-                        <div class="absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-slate-700 px-4 py-4 sm:px-6">
-                            <div class="text-sm">
-                                <a href="#" class="font-medium text-indigo-600 dark:text-indigo-500 hover:text-indigo-500"> Voir <span class="sr-only"> Total Subscribers stats</span></a>
-                            </div>
-                        </div>
-                    </dd>
+                <div class="relative bg-white dark:bg-slate-800 py-5 px-4 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+                    <div class="absolute t-0">
+                        <dt>
+                            <p class="text-xl font-medium text-gray-500 truncate">Total des réservations</p>
+                        </dt>
+                        <dd class="flex items-baseline">
+                            <p class="text-4xl font-semibold text-gray-900 dark:text-gray-200">
+                                {{ \App\Models\Reservation::count() }}
+                            </p>
+                        </dd>
+                    </div>
+                    <livewire:home.reservations-chart />
                 </div>
 
                 <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
@@ -33,7 +26,7 @@
                         </div>
                         <p class="ml-16 text-sm font-medium text-gray-500 truncate">Entreprises</p>
                     </dt>
-                    <dd class="ml-16 pb-6 flex items-baseline sm:pb-7">
+                    <dd class="pb-6 flex items-baseline sm:pb-7">
                         <p class="text-2xl font-semibold text-gray-900 dark:text-gray-200">
                             {{ \App\Models\Entreprise::count() }}
                         </p>
@@ -80,9 +73,5 @@
                 @endforelse
             </x-slot:body>
         </x-datatable>
-    </x-bloc-content>
-
-    <x-bloc-content>
-        <livewire:home.reservations-chart />
     </x-bloc-content>
 </x-layout>
