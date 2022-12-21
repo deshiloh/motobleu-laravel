@@ -4,7 +4,34 @@
         <div class="my-4">
             <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
 
-                <livewire:home.reservations-chart />
+                <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+                    <div class="absolute">
+                        <div class="flex">
+                            <div class="flex flex-col ml-4">
+                                <p class="text-xl font-medium text-gray-500 truncate">Réservations</p>
+                                <div class="text-6xl font-semibold text-gray-900 dark:text-gray-200" >
+                                    <livewire:components.reservations-count />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <dd class="pb-6 flex items-baseline sm:pb-7">
+                        <div class="absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-slate-700 px-4 py-4 sm:px-6">
+                            <div class="grid grid-cols-2">
+                                <div>
+                                    <livewire:home.company-reservation-stats />
+                                </div>
+                                <div class="flex justify-end">
+                                    <livewire:home.company-reservation-stats :is-last="true"/>
+                                </div>
+                            </div>
+                        </div>
+                    </dd>
+                    <div class="mb-6">
+                        <livewire:home.reservations-chart />
+                    </div>
+                </div>
+
 
                 <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
                     <dt>
