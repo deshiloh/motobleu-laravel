@@ -107,8 +107,12 @@ class GoogleCalendarService
                 $event = Event::find($reservation->event_id);
                 $event->delete();
 
+                $eventSecretary = Event::find($reservation->event_secretary_id);
+                $eventSecretary->delete();
+
                 $reservation->updateQuietly([
-                    'event_id' => null
+                    'event_id' => null,
+                    'event_secretary_id' => null
                 ]);
             }
         }catch (\Exception $exception) {
