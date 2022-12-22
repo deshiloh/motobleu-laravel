@@ -48,8 +48,9 @@ class ReservationShowTest extends TestCase
     public function testReservationConfirmOK(): void
     {
         $reservation = Reservation::find(1);
+        $pilote = Pilote::find(1);
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
-            ->set('reservation.pilote_id', Pilote::find(1)->id)
+            ->set('reservation.pilote_id', $pilote->id)
             ->call('confirmedAction')
             ->assertHasNoErrors()
         ;
