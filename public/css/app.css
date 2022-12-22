@@ -772,17 +772,14 @@ video {
 .ml-2 {
   margin-left: 0.5rem;
 }
-.ml-16 {
-  margin-left: 4rem;
+.ml-4 {
+  margin-left: 1rem;
 }
 .mb-4 {
   margin-bottom: 1rem;
 }
 .ml-10 {
   margin-left: 2.5rem;
-}
-.ml-4 {
-  margin-left: 1rem;
 }
 .-mr-2 {
   margin-right: -0.5rem;
@@ -810,6 +807,15 @@ video {
 }
 .mb-0 {
   margin-bottom: 0px;
+}
+.-ml-1 {
+  margin-left: -0.25rem;
+}
+.mr-0\.5 {
+  margin-right: 0.125rem;
+}
+.mr-0 {
+  margin-right: 0px;
 }
 .mt-2 {
   margin-top: 0.5rem;
@@ -862,14 +868,14 @@ video {
 .h-4 {
   height: 1rem;
 }
-.h-6 {
-  height: 1.5rem;
-}
 .h-screen {
   height: 100vh;
 }
 .h-full {
   height: 100%;
+}
+.h-6 {
+  height: 1.5rem;
 }
 .h-5 {
   height: 1.25rem;
@@ -940,9 +946,6 @@ video {
 .w-full {
   width: 100%;
 }
-.w-6 {
-  width: 1.5rem;
-}
 .w-screen {
   width: 100vw;
 }
@@ -954,6 +957,9 @@ video {
 }
 .w-8 {
   width: 2rem;
+}
+.w-6 {
+  width: 1.5rem;
 }
 .w-10 {
   width: 2.5rem;
@@ -1122,14 +1128,14 @@ video {
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
 }
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-.grid-cols-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .grid-cols-7 {
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -1179,11 +1185,11 @@ video {
 .gap-5 {
   gap: 1.25rem;
 }
-.gap-6 {
-  gap: 1.5rem;
-}
 .gap-4 {
   gap: 1rem;
+}
+.gap-6 {
+  gap: 1.5rem;
 }
 .gap-1 {
   gap: 0.25rem;
@@ -1573,10 +1579,6 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(79 70 229 / var(--tw-bg-opacity));
 }
-.bg-indigo-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(99 102 241 / var(--tw-bg-opacity));
-}
 .bg-gray-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
@@ -1857,6 +1859,10 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(59 130 246 / var(--tw-bg-opacity));
 }
+.bg-indigo-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(99 102 241 / var(--tw-bg-opacity));
+}
 .bg-violet-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(139 92 246 / var(--tw-bg-opacity));
@@ -1899,9 +1905,6 @@ video {
   -o-object-position: center;
      object-position: center;
 }
-.p-3 {
-  padding: 0.75rem;
-}
 .p-5 {
   padding: 1.25rem;
 }
@@ -1919,6 +1922,9 @@ video {
 }
 .p-4 {
   padding: 1rem;
+}
+.p-3 {
+  padding: 0.75rem;
 }
 .p-6 {
   padding: 1.5rem;
@@ -1961,6 +1967,10 @@ video {
 .py-0 {
   padding-top: 0px;
   padding-bottom: 0px;
+}
+.px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 .py-3\.5 {
   padding-top: 0.875rem;
@@ -2031,6 +2041,9 @@ video {
 .pr-3 {
   padding-right: 0.75rem;
 }
+.pt-6 {
+  padding-top: 1.5rem;
+}
 .pt-4 {
   padding-top: 1rem;
 }
@@ -2100,15 +2113,6 @@ video {
 .pr-10 {
   padding-right: 2.5rem;
 }
-.pt-3 {
-  padding-top: 0.75rem;
-}
-.pt-12 {
-  padding-top: 3rem;
-}
-.pt-6 {
-  padding-top: 1.5rem;
-}
 .text-left {
   text-align: left;
 }
@@ -2129,13 +2133,17 @@ video {
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
-}
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+.text-6xl {
+  font-size: 3.75rem;
+  line-height: 1;
+}
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
 }
 .text-lg {
   font-size: 1.125rem;
@@ -2144,6 +2152,10 @@ video {
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
+}
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
 }
 .text-xs {
   font-size: 0.75rem;
@@ -2154,6 +2166,10 @@ video {
 }
 .text-2xs {
   font-size: 0.65rem;
+}
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
 }
 .font-extrabold {
   font-weight: 800;
@@ -4246,11 +4262,6 @@ fieldset legend {
   color: rgb(229 231 235 / var(--tw-text-opacity));
 }
 
-[data-theme="dark"] .dark\:text-indigo-500 {
-  --tw-text-opacity: 1;
-  color: rgb(99 102 241 / var(--tw-text-opacity));
-}
-
 [data-theme="dark"] .dark\:text-gray-100 {
   --tw-text-opacity: 1;
   color: rgb(243 244 246 / var(--tw-text-opacity));
@@ -5309,6 +5320,10 @@ fieldset legend {
     margin-top: 0px;
   }
 
+  .md\:mt-2 {
+    margin-top: 0.5rem;
+  }
+
   .md\:block {
     display: block;
   }
@@ -5372,6 +5387,10 @@ fieldset legend {
   .lg\:-mx-8 {
     margin-left: -2rem;
     margin-right: -2rem;
+  }
+
+  .lg\:mt-0 {
+    margin-top: 0px;
   }
 
   .lg\:grid-cols-2 {

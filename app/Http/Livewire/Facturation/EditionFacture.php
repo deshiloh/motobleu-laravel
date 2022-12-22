@@ -410,9 +410,7 @@ class EditionFacture extends Component
     {
         $total = floatval($reservation->tarif);
         $montantMajoration = $total * (floatval($reservation->majoration) / 100);
-        $total = $total + $montantMajoration + floatval($reservation->complement);
-
-        return $total;
+        return $total + $montantMajoration + floatval($reservation->complement);
     }
 
     public function reservationUpdated()

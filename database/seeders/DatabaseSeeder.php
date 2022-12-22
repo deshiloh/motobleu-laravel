@@ -55,8 +55,8 @@ class DatabaseSeeder extends Seeder
             ;
         }
 
-        Localisation::factory()->count(30)->create();
+        Pilote::factory()->count(30)->create();
 
-        Pilote::factory()->count(20)->create();
+        Localisation::factory()->count(30)->create();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Facture;
 use App\Models\Localisation;
 use App\Models\Passager;
 use App\Models\Reservation;
@@ -37,6 +38,7 @@ class ReservationFactory extends Factory
             'pickup_date' => $this->faker->dateTime,
             'localisation_from_id' => Localisation::factory(),
             'localisation_to_id' => Localisation::factory(),
+            'facture_id' => Facture::factory()
         ];
     }
 }
