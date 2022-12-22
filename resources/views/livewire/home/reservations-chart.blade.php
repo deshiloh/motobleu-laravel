@@ -56,18 +56,6 @@
                                     }
                                 }
                             },
-                            animation: {
-                                onComplete: () => {
-                                    delayed = true;
-                                },
-                                delay: (context) => {
-                                    let delay = 0;
-                                    if (context.type === 'data' && context.mode === 'default' && !delayed) {
-                                        delay = context.dataIndex * 300 + context.datasetIndex * 100;
-                                    }
-                                    return delay;
-                                },
-                            },
                             hitRadius: 40,
                             responsive: true,
                             onClick: (evt) => {
@@ -89,7 +77,7 @@
                     }
                 );
 
-                Livewire.on('updateChart', data => {
+                Livewire.on('updateHomeReservationChart', data => {
                     homeReservationChart.data.labels = data.map(row => row.date);
                     homeReservationChart.data.datasets[0].data = data.map(row => row.count);
                     homeReservationChart.update();

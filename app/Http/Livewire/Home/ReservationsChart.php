@@ -79,6 +79,6 @@ class ReservationsChart extends Component
     {
         $this->nbTotalReservation = Reservation::count();
         $dataset = $this->getDatas();
-        $this->emit('updateChart', $dataset);
+        $this->emit('updateHomeReservationChart', $dataset);
     }
 }
