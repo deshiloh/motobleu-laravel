@@ -14,7 +14,7 @@
             Chart.register(gradientFacturationChart);
 
             const homeFacturationChart = new Chart(
-                document.getElementById('homeChartFacturation'),
+                document.getElementById('entrepriseChartFacturation'),
                 {
                     type: 'line',
                     data : {
@@ -43,12 +43,12 @@
                     options: {
                         scales: {
                             x: {
-                                alignToPixels: true,
                                 grid: {
                                     display: false
                                 }
                             },
                             y: {
+                                beginAtZero: true,
                                 display: false,
                                 grid: {
                                     display: false
@@ -98,5 +98,5 @@
         </script>
     @endpush
 
-    <canvas id="homeChartFacturation"></canvas>
+    <canvas id="entrepriseChartFacturation"></canvas>
 </div>

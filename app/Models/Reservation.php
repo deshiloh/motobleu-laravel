@@ -85,21 +85,25 @@ class Reservation extends Model
         return Attribute::make(
             get: function ($value) {
                 if (is_null($value)) {
-                    $currentDate = Carbon::now();
-                    return $currentDate->format('Yd').Reservation::count() + 1;
+                    return $this->generateReference();
                 }
 
                 return $value;
             },
             set: function ($value) {
                 if (is_null($value)) {
-                    $currentDate = Carbon::now();
-                    return $currentDate->format('Yd').Reservation::count() + 1;
+                    return $this->generateReference();
                 }
 
                 return $value;
             }
         );
+    }
+
+    private function generateReference(): string
+    {
+        $currentDate = Carbon::now();
+        return $currentDate->format('Yd').Reservation::count() + 1;
     }
 
     public function scopeToConfirmed(Builder $query)

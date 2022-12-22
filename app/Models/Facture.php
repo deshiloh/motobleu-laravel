@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,26 +18,49 @@ class Facture extends Model
 
     protected $guarded = [];
 
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
-    protected static function booted()
+    public function reference(): Attribute
     {
-        static::creating(function ($facture) {
-            $currentDate = Carbon::now();
-            if (is_null($facture->reference)) {
+        return Attribute::make(
+            get: function ($value) {
+                if (is_null($value)) {
+                    return $this->generateReference();
+                }
 
-                $reference = sprintf('FA%s-%s-%s',
-                    $currentDate->year,
-                    $currentDate->month,
-                    Facture::where('month', $currentDate->month)->where('year', $currentDate->year)->count() + 1
-                );
+                return $value;
+            },
+            set: function ($value) {
+                if (is_null($value)) {
+                    return $this->generateReference();
+                }
 
-                $facture->reference = $reference;
+                return $value;
             }
-        });
+        );
+    }
+
+    private function generateReference(): string
+    {
+        $currentDate = Carbon::now();
+        return sprintf('FA%s-%s-%s',
+            $currentDate->year,
+            $currentDate->month,
+            Facture::where('month', $currentDate->month)->where('year', $currentDate->year)->count() + 1
+        );
+    }
+
+    public function montantTtc(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                return $this->generateMontantTtc();
+            }
+        );
+    }
+
+    private function generateMontantTtc(): float
+    {
+        $ttc = $this->montant_ht + ($this->montant_ht * 0.1);
+        return number_format($ttc, 2, '.', ' ');
     }
 
     /**

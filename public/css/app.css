@@ -772,17 +772,14 @@ video {
 .ml-2 {
   margin-left: 0.5rem;
 }
-.ml-16 {
-  margin-left: 4rem;
+.ml-4 {
+  margin-left: 1rem;
 }
 .mb-4 {
   margin-bottom: 1rem;
 }
 .ml-10 {
   margin-left: 2.5rem;
-}
-.ml-4 {
-  margin-left: 1rem;
 }
 .-mr-2 {
   margin-right: -0.5rem;
@@ -811,6 +808,15 @@ video {
 .mb-0 {
   margin-bottom: 0px;
 }
+.-ml-1 {
+  margin-left: -0.25rem;
+}
+.mr-0\.5 {
+  margin-right: 0.125rem;
+}
+.mr-0 {
+  margin-right: 0px;
+}
 .mt-2 {
   margin-top: 0.5rem;
 }
@@ -834,18 +840,6 @@ video {
 }
 .mr-1 {
   margin-right: 0.25rem;
-}
-.mt-6 {
-  margin-top: 1.5rem;
-}
-.-ml-1 {
-  margin-left: -0.25rem;
-}
-.mr-0\.5 {
-  margin-right: 0.125rem;
-}
-.mr-0 {
-  margin-right: 0px;
 }
 .block {
   display: block;
@@ -874,14 +868,14 @@ video {
 .h-4 {
   height: 1rem;
 }
-.h-6 {
-  height: 1.5rem;
-}
 .h-screen {
   height: 100vh;
 }
 .h-full {
   height: 100%;
+}
+.h-6 {
+  height: 1.5rem;
 }
 .h-5 {
   height: 1.25rem;
@@ -952,9 +946,6 @@ video {
 .w-full {
   width: 100%;
 }
-.w-6 {
-  width: 1.5rem;
-}
 .w-screen {
   width: 100vw;
 }
@@ -966,6 +957,9 @@ video {
 }
 .w-8 {
   width: 2rem;
+}
+.w-6 {
+  width: 1.5rem;
 }
 .w-10 {
   width: 2.5rem;
@@ -1585,10 +1579,6 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(79 70 229 / var(--tw-bg-opacity));
 }
-.bg-indigo-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(99 102 241 / var(--tw-bg-opacity));
-}
 .bg-gray-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
@@ -1869,6 +1859,10 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(59 130 246 / var(--tw-bg-opacity));
 }
+.bg-indigo-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(99 102 241 / var(--tw-bg-opacity));
+}
 .bg-violet-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(139 92 246 / var(--tw-bg-opacity));
@@ -1911,9 +1905,6 @@ video {
   -o-object-position: center;
      object-position: center;
 }
-.p-3 {
-  padding: 0.75rem;
-}
 .p-5 {
   padding: 1.25rem;
 }
@@ -1931,6 +1922,9 @@ video {
 }
 .p-4 {
   padding: 1rem;
+}
+.p-3 {
+  padding: 0.75rem;
 }
 .p-6 {
   padding: 1.5rem;
@@ -2139,13 +2133,17 @@ video {
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
-}
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+.text-6xl {
+  font-size: 3.75rem;
+  line-height: 1;
+}
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
 }
 .text-lg {
   font-size: 1.125rem;
@@ -2154,6 +2152,10 @@ video {
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
+}
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
 }
 .text-xs {
   font-size: 0.75rem;
@@ -2167,10 +2169,6 @@ video {
 }
 .text-5xl {
   font-size: 3rem;
-  line-height: 1;
-}
-.text-6xl {
-  font-size: 3.75rem;
   line-height: 1;
 }
 .font-extrabold {
@@ -4255,21 +4253,6 @@ fieldset legend {
   background-color: rgb(226 232 240 / var(--tw-bg-opacity));
 }
 
-[data-theme="dark"] .dark\:bg-green-900 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(20 83 45 / var(--tw-bg-opacity));
-}
-
-[data-theme="dark"] .dark\:bg-green-800 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(22 101 52 / var(--tw-bg-opacity));
-}
-
-[data-theme="dark"] .dark\:bg-green-600 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(22 163 74 / var(--tw-bg-opacity));
-}
-
 [data-theme="dark"] .dark\:bg-opacity-60 {
   --tw-bg-opacity: 0.6;
 }
@@ -4277,11 +4260,6 @@ fieldset legend {
 [data-theme="dark"] .dark\:text-gray-200 {
   --tw-text-opacity: 1;
   color: rgb(229 231 235 / var(--tw-text-opacity));
-}
-
-[data-theme="dark"] .dark\:text-indigo-500 {
-  --tw-text-opacity: 1;
-  color: rgb(99 102 241 / var(--tw-text-opacity));
 }
 
 [data-theme="dark"] .dark\:text-gray-100 {
@@ -4387,11 +4365,6 @@ fieldset legend {
 [data-theme="dark"] .dark\:text-negative-500 {
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
-}
-
-[data-theme="dark"] .dark\:text-green-100 {
-  --tw-text-opacity: 1;
-  color: rgb(220 252 231 / var(--tw-text-opacity));
 }
 
 [data-theme="dark"] .dark\:placeholder-negative-500::-moz-placeholder {

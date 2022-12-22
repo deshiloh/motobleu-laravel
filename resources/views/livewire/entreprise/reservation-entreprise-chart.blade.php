@@ -12,8 +12,6 @@
 
             const myData = @JSON($dataset);
 
-            var delayed;
-
             Chart.register(gradient);
 
             const myChart = new Chart(
@@ -37,51 +35,27 @@
                                 fill: true,
                                 data : myData.map(row => row.count),
                                 tension: 0.2,
-                                borderWidth : 5,
-                                pointHoverRadius: 10
+                                borderWidth : 4,
+                                pointHoverRadius: 10,
+                                pointRadius: 0,
                             }
                         ]
                     },
                     options: {
-                        animation: {
-                            onComplete: () => {
-                                delayed = true;
-                            },
-                            delay: (context) => {
-                                let delay = 0;
-                                if (context.type === 'data' && context.mode === 'default' && !delayed) {
-                                    delay = context.dataIndex * 300 + context.datasetIndex * 100;
-                                }
-                                return delay;
-                            },
-                        },
                         hitRadius: 30,
                         responsive: true,
-                        //maintainAspectRatio: false,
-                        onClick: (evt) => {
-                            const points = myChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
-
-                            if (points.length) {
-                                const firstPoint = points[0];
-                                const label = myChart.data.labels[firstPoint.index];
-                                const value = myChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
-
-                                console.log(label, value);
-                            }
-                        },
                         scales : {
                             y : {
+                                display: false,
+                                grid : {
+                                    display: false
+                                },
                                 beginAtZero: true,
-                                title : {
-                                    text : "Nombre de réservations",
-                                    display: true
-                                }
                             },
                             x: {
-                                title : {
-                                    text : "Période de 6 mois",
-                                    display: true,
-                                }
+                                grid : {
+                                    display: false
+                                },
                             }
                         },
                         plugins: {
@@ -101,5 +75,5 @@
             });
         </script>
     @endpush
-    <canvas id="chart" class="mt-4"></canvas>
+    <canvas id="chart"></canvas>
 </div>

@@ -9,7 +9,7 @@
                         <div class="flex">
                             <div class="flex flex-col ml-4">
                                 <p class="text-xl font-medium text-gray-500 truncate">Total réservations</p>
-                                <div class="text-6xl font-semibold text-gray-900 dark:text-gray-200" >
+                                <div class="text-5xl font-semibold text-gray-900 dark:text-gray-200" >
                                     <livewire:components.reservations-count />
                                 </div>
                             </div>
@@ -37,8 +37,12 @@
                         <div class="flex">
                             <div class="flex flex-col ml-4">
                                 <p class="text-xl font-medium text-gray-500 truncate">Total facturé</p>
-                                <div class="text-6xl font-semibold text-gray-900 dark:text-gray-200" >
-                                    8767 €
+                                <div class="text-5xl font-semibold text-gray-900 dark:text-gray-200" >
+                                    @php
+                                        $ht = \App\Models\Facture::all()->sum('montant_ht');
+                                        $ttc = $ht + ($ht * 0.1);
+                                    @endphp
+                                    {{ number_format($ttc, 2, '.', ' ') }} €
                                 </div>
                             </div>
                         </div>
@@ -47,10 +51,10 @@
                         <div class="absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-slate-700 px-4 py-4 sm:px-6">
                             <div class="grid grid-cols-2">
                                 <div>
-                                    test
+                                    Informations
                                 </div>
                                 <div class="flex justify-end">
-                                    test
+                                    Informations
                                 </div>
                             </div>
                         </div>

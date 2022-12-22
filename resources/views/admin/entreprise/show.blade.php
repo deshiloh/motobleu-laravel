@@ -28,11 +28,41 @@
         </x-bloc-content>
         <div class="container mx-auto px-8">
             <div class="grid grid-cols-2 gap-5">
-                <div class="dark:bg-slate-800 rounded-lg">
-                    TEST
-                </div>
-                <div class="dark:bg-slate-800 rounded-lg p-2">
+                <div class="dark:bg-slate-800 rounded-lg p-3 relative">
+                    <div class="absolute flex flex-col">
+                        <div class="text-3xl text-gray-500">
+                            Réservations
+                        </div>
+                        <div class="text-4xl dark:text-white text-gray-900 dark:text-gray-200">
+                            @php
+                                $nbReservationForCompany = \App\Models\Reservation::where(
+                                    'entreprise_id',
+                                    $entreprise->id
+                                    )->count();
+                            @endphp
+                            {{ $nbReservationForCompany }}
+                        </div>
+                    </div>
                     <livewire:entreprise.reservation-entreprise-chart :entreprise="$entreprise"/>
+                </div>
+                <div class="dark:bg-slate-800 rounded-lg p-3 relative">
+                    <div class="absolute flex flex-col">
+                        <div class="text-3xl text-gray-500">
+                            Facturation
+                        </div>
+                        <div class="text-4xl dark:text-white text-gray-900 dark:text-gray-200">
+                            @php
+                                $ht = \App\Models\Facture::whereHas(
+                                    'reservations',
+                                    function (\Illuminate\Database\Eloquent\Builder $builder) use ($entreprise) {
+                                        $builder->where('entreprise_id', $entreprise->id);
+                                    })->sum('montant_ht');
+                                $ttc = $ht + ($ht * 0.1);
+                            @endphp
+                            {{ number_format($ttc, 2, '.', ' ') }} €
+                        </div>
+                    </div>
+                    <livewire:entreprise.facturation-chart :entreprise="$entreprise"/>
                 </div>
             </div>
         </div>
