@@ -32,6 +32,21 @@ class Reservation extends Model
     ];
 
     /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted(): void
+    {
+        static::creating(function ($reservation) {
+            if (is_null($reservation->reference)) {
+                $currentDate = Carbon::now();
+                $reservation->reference = $currentDate->format('Ym').Reservation::count() + 1;
+            }
+        });
+    }
+
+    /**
      * @return BelongsTo
      */
     public function entreprise(): BelongsTo
@@ -77,33 +92,6 @@ class Reservation extends Model
     public function pilote()
     {
         return $this->belongsTo(Pilote::class);
-    }
-
-    public function reference(): Attribute
-    {
-
-        return Attribute::make(
-            get: function ($value) {
-                if (is_null($value)) {
-                    return $this->generateReference();
-                }
-
-                return $value;
-            },
-            set: function ($value) {
-                if (is_null($value)) {
-                    return $this->generateReference();
-                }
-
-                return $value;
-            }
-        );
-    }
-
-    private function generateReference(): string
-    {
-        $currentDate = Carbon::now();
-        return $currentDate->format('Yd').Reservation::count() + 1;
     }
 
     public function scopeToConfirmed(Builder $query)
