@@ -466,7 +466,7 @@ class EditionFacture extends Component
                     'year' => $this->facture->year,
                     'month' => $this->facture->month
                 ])->output();
-            }, 'test.pdf');
+            }, 'reservations.pdf');
         }
     }
 }

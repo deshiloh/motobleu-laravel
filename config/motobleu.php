@@ -3,7 +3,7 @@
 return [
     'export' => [
         'entrepriseEnableForXlsExport' => [
-            'Berger'
+            'test'
         ],
         'entreprisesFacturation' => [
             'test'
