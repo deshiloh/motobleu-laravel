@@ -3,7 +3,7 @@
 return [
     'export' => [
         'entrepriseEnableForXlsExport' => [
-            'test'
+            'Da Costa Petitjean S.A.'
         ],
         'entreprisesFacturation' => [
             'test'
