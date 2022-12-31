@@ -103,17 +103,26 @@ class EditionFacture extends Component
      */
     public function getEntreprisesProperty(): Collection|array
     {
-        return Entreprise::query()
-            ->select('entreprises.*', DB::raw('COUNT(reservations.id) as nbReservations'))
-            ->join('entreprise_user', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
-            ->join('reservations', 'entreprises.id', '=', 'reservations.entreprise_id')
-            ->whereMonth('reservations.pickup_date', $this->selectedMonth)
-            ->whereYear('reservations.pickup_date', $this->selectedYear)
-            ->where('reservations.is_billed', false)
-            ->where('reservations.is_cancel', false)
-            ->where('reservations.is_confirmed', true)
-            ->orWhere('reservations.is_cancel_pay', true)
-            ->groupBy('entreprises.id')
+        return Entreprise::withCount([
+            'reservations' => function(Builder $query) {
+                $query
+                    ->whereMonth('pickup_date', $this->selectedMonth)
+                    ->whereYear('pickup_date', $this->selectedYear)
+                    ->where('is_confirmed', true)
+                    ->where('is_cancel', false)
+                    ->orWhere('is_cancel_pay', true)
+                ;
+            }]
+        )
+            ->whereHas('reservations', function (Builder $query) {
+                $query
+                    ->whereMonth('pickup_date', $this->selectedMonth)
+                    ->whereYear('pickup_date', $this->selectedYear)
+                    ->where('is_confirmed', true)
+                    ->where('is_cancel', false)
+                    ->orWhere('is_cancel_pay', true)
+                ;
+            })
             ->get();
     }
 
@@ -126,15 +135,12 @@ class EditionFacture extends Component
             return null;
         }
 
-        return Reservation::query()
-            ->select('reservations.*')
-            ->whereMonth('reservations.pickup_date', $this->selectedMonth)
-            ->whereYear('reservations.pickup_date', $this->selectedYear)
-            ->where('reservations.entreprise_id', $this->entrepriseIdSelected)
-            ->where('reservations.is_billed', $this->isBilled)
-            ->where('reservations.is_confirmed', true)
-            ->where('reservations.is_cancel', false)
-            ->orWhere('reservations.is_cancel_pay', true)
+        return Reservation::where('entreprise_id', $this->entrepriseIdSelected)
+            ->whereMonth('pickup_date', $this->selectedMonth)
+            ->whereYear('pickup_date', $this->selectedYear)
+            ->where('is_confirmed', true)
+            ->where('is_cancel', false)
+            ->orWhere('is_cancel_pay', true)
             ->get();
     }
 
@@ -204,51 +210,52 @@ class EditionFacture extends Component
     /**
      * @param int $month
      * @param int $year
-     * @param int $entreprise
+     * @param int $entrepriseId
      * @return bool
      */
-    public function isFactureExist(int $month, int $year, int $entreprise): bool
+    public function isFactureExist(int $month, int $year, int $entrepriseId): bool
     {
-        $query = Facture::query()
-            ->join('reservations', 'factures.id', '=', 'reservations.facture_id')
-            ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
-            ->join('users', 'users.id', '=', 'passagers.user_id')
-            ->join('entreprise_user', 'entreprise_user.user_id', '=', 'users.id')
-            ->join('entreprises', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
-            ->where('entreprises.id', $entreprise)
-            ->whereMonth('reservations.pickup_date', $month)
-            ->whereYear('reservations.pickup_date', $year)
-            ->count();
+        $query = Facture::where('month', $month)
+            ->where('year', $year)
+            ->whereHas('reservations', function (Builder $query) use ($entrepriseId) {
+                $query->where('entreprise_id', $entrepriseId);
+            })->count();
+
         return $query > 0;
     }
 
     /**
      * @param int $month
      * @param int $year
-     * @param int $entreprise
+     * @param int $entrepriseId
      * @return Facture
      */
-    public function getFactureFor(int $month, int $year, int $entreprise): Facture
+    public function getFactureFor(int $month, int $year, int $entrepriseId): Facture
     {
         if ($this->isFactureExist($this->selectedMonth, $this->selectedYear, $this->entrepriseIdSelected)) {
-            $facture = Facture::query()
-                ->join('reservations', 'factures.id', '=', 'reservations.facture_id')
-                ->join('passagers', 'reservations.passager_id', '=', 'passagers.id')
-                ->join('users', 'users.id', '=', 'passagers.user_id')
-                ->join('entreprise_user', 'entreprise_user.user_id', '=', 'users.id')
-                ->join('entreprises', 'entreprise_user.entreprise_id', '=', 'entreprises.id')
-                ->select('factures.*')
-                ->where('entreprises.id', $entreprise)
-                ->whereMonth('reservations.pickup_date', $month)
-                ->whereYear('reservations.pickup_date', $year)
-                ->get()
+            // Récupération de la facture existante
+            $facture = Facture::where('month', $month)
+                ->where('year', $year)
+                ->whereHas('reservations', function (Builder $query) use ($entrepriseId){
+                    $query->where('entreprise_id', $entrepriseId);
+                })
                 ->first();
         } else {
+            // Génération de l'adresse de la nouvelle facture
             $addressFacturation = (is_null($this->adresseFacturationEntreprise)) ?
                 $this->adresseEntreprise->adresse_full :
                 $this->adresseFacturationEntreprise->adresse_full;
 
+            // Génération de la référence de la facture
+            $reference = sprintf('FA%s-%s-%s',
+                $this->selectedYear,
+                $this->selectedMonth,
+                Facture::where('month', $this->selectedMonth)->where('year', $this->selectedYear)->count() + 1
+            );
+
+            // Création de la nouvelle facture
             $facture = Facture::create([
+                'reference' => $reference,
                 'month' => $this->selectedMonth,
                 'year' => $this->selectedYear,
                 'adresse_client' => $this->adresseEntreprise->adresse_full,
@@ -446,7 +453,7 @@ class EditionFacture extends Component
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function exportAction(ExportService $exportService)
+    public function exportAction()
     {
         if (in_array($this->entreprise->nom, config('motobleu.export.entrepriseEnableForXlsExport'))) {
             // Export en XLS
@@ -459,7 +466,7 @@ class EditionFacture extends Component
                     'year' => $this->facture->year,
                     'month' => $this->facture->month
                 ])->output();
-            }, 'test.pdf');
+            }, 'recap_reservations_' . $this->selectedMonth . '_' . $this->selectedYear . '.pdf');
         }
     }
 }

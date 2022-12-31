@@ -56,6 +56,10 @@ class InvoiceService
             //->logo(public_path('storage/logo-pdf.png'))
         ;
 
+        if ($notes = $facture->information) {
+            $invoice->notes($notes);
+        }
+
         if ($facture->is_acquitte) {
             $invoice->status('ACQUITTE');
         }

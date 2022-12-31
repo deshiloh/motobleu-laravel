@@ -7,6 +7,7 @@ use App\Mail\BillCreated;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
@@ -29,11 +30,13 @@ class FacturationTest extends TestCase
 
     public function testCanAcessReservationsList()
     {
+        $reservation = Reservation::where('entreprise_id', 1)->first();
         Livewire::test(EditionFacture::class)
             ->set('selectedMonth', Carbon::now()->month)
             ->set('selectedYear', Carbon::now()->year)
             ->call('goToEditPage', 1)
             ->assertHasNoErrors()
+            ->assertSee($reservation->reference)
             ->assertStatus(200);
     }
 
@@ -77,8 +80,38 @@ class FacturationTest extends TestCase
         ;
     }
 
-    public function testSendFacture()
+    public function testSendFactureWithReservationWithoutTarif()
     {
+        Event::fake();
+
+        Livewire::test(EditionFacture::class)
+            ->set('selectedMonth', Carbon::now()->month)
+            ->set('selectedYear', Carbon::now()->year)
+            ->set('entrepriseIdSelected', 1)
+            ->set('factureModal', true)
+            ->set('email.address', 'test@test.com')
+            ->set('email.message', 'Je suis un test')
+            ->call('sendFactureAction')
+            ->assertSet('factureModal', true)
+            ->assertHasNoErrors([
+                'reservations'
+            ])
+            ->assertStatus(200)
+        ;
+
+        Event::assertNotDispatched(\App\Events\BillCreated::class);
+    }
+
+    public function testSendFactureSuccess()
+    {
+        $reservations = Reservation::where('entreprise_id', 1)->get();
+
+        foreach ($reservations as $reservation) {
+            $reservation->updateQuietly([
+                'tarif' => 10
+            ]);
+        }
+
         Event::fake();
 
         Livewire::test(EditionFacture::class)
@@ -111,6 +144,8 @@ class FacturationTest extends TestCase
             ->assertStatus(200)
         ;
 
-        Mail::assertSent(BillCreated::class);
+        Mail::assertSent(BillCreated::class, function(Mailable $mail) {
+            return $mail->hasSubject('Facture créée');
+        });
     }
 }

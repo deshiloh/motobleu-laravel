@@ -47,6 +47,8 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
 
     public function __construct(int $year, int $month, Entreprise $entreprise)
     {
+        $this->datePeriod = Carbon::create($year, $month, '1');
+
         $htTextColumn = 'H';
         $tvaTextColumn = 'H';
         $ttcTextColumn = 'H';
@@ -82,8 +84,6 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         $this->generateTtcCoordinates($ttcTextColumn);
 
         $this->startFooterIndex = $this->indexDepart + $this->reservations->count() + 7;
-
-        $this->datePeriod = Carbon::create($year, $month, '1');
     }
 
     public function collection()
@@ -188,7 +188,10 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
 
     private function getReservations(): Collection
     {
-        return Reservation::all();
+        return Reservation::whereMonth('pickup_date', $this->datePeriod->month)
+            ->whereyear('pickup_date', $this->datePeriod->year)
+            ->where('entreprise_id', $this->entreprise->id)
+            ->get();
     }
 
     public function headings(): array

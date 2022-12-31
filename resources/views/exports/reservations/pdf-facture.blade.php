@@ -197,8 +197,10 @@
     <tbody>
     @php
         $prixTTC = 0;
+        $reservations = \App\Models\Reservation::whereMonth('pickup_date', $month)
+        ->whereYear('pickup_date', $year)->where('entreprise_id', $entreprise->id)->get();
     @endphp
-    @foreach($entreprise->reservations()->get() as $reservation)
+    @foreach($reservations as $reservation)
         @php
             $prixTTC = $prixTTC + $reservation->total_ttc
         @endphp

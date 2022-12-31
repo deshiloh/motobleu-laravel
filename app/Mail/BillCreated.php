@@ -3,15 +3,18 @@
 namespace App\Mail;
 
 use App\Exports\ReservationsExport;
+use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Services\InvoiceService;
-use Exception;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Maatwebsite\Excel\Facades\Excel;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class BillCreated extends Mailable
 {
@@ -32,38 +35,72 @@ class BillCreated extends Mailable
         $this->message = $message;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     * @throws Exception
-     */
-    public function build(): Mailable
+    public function envelope(): Envelope
     {
+        return new Envelope(
+            subject: "Facture créée"
+        );
+    }
+
+    /**
+     * @return Attachment[]
+     * @throws BindingResolutionException
+     */
+    public function attachments(): array
+    {
+        $attachments = [];
         $invoice = InvoiceService::generateInvoice($this->facture);
+        $entreprise = $this->getEntreprise();
 
-        $mailable = $this->markdown('emails.bill.created', [
-            'message' => $this->message
-        ])->attachData($invoice->stream()->getContent(), $this->facture->reference.'.pdf', [
-            'mime' => 'application/pdf',
-        ]);
+        $attachments[] = Attachment::fromData(
+            fn() => $invoice->stream()->getContent(),
+            $this->facture->reference.'.pdf'
+        )->withMime('application/pdf');
 
-        if (true) {
+        if (in_array($entreprise->nom, config('motobleu.export.entrepriseEnableForXlsExport'))) {
             $excel = Excel::raw(new ReservationsExport(
                 $this->facture->year,
                 $this->facture->month,
-                $this->facture->reservations()->get()->first()->entreprise
+                $entreprise
             ), \Maatwebsite\Excel\Excel::XLSX);
 
-            $fileName = sprintf('courses_periode_%s_%s',
-                $this->facture->month,
-                $this->facture->year
-            );
+            $attachments[] = Attachment::fromData(fn() => $excel, $this->getFileName() . '.xlsx')
+                ->withMime('application/xlsx');
 
-            $mailable->attachData($excel, $fileName . '.xlsx');
+        } else {
+            $pdfData = Pdf::loadView('exports.reservations.pdf-facture', [
+                'entreprise' => $entreprise,
+                'year' => $this->facture->year,
+                'month' => $this->facture->month
+            ])->output();
+
+            $attachments[] = Attachment::fromData(fn() => $pdfData, $this->getFileName() . '.pdf')
+                ->withMime('application/pdf');
         }
 
-        return $mailable;
+        return $attachments;
+    }
 
+    private function getEntreprise(): Entreprise
+    {
+        return $this->facture->reservations()->get()->first()->entreprise;
+    }
+
+    private function getFileName(): string
+    {
+        return sprintf('courses_periode_%s_%s',
+            $this->facture->month,
+            $this->facture->year
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            markdown: 'emails.bill.created',
+            with: [
+                'message' => $this->message
+            ]
+        );
     }
 }

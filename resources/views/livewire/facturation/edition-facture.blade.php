@@ -68,7 +68,7 @@
                     @forelse($this->entreprises as $entreprise)
                         <x-datatable.tr>
                             <x-datatable.td>{{ $entreprise->nom }}</x-datatable.td>
-                            <x-datatable.td>{{ $entreprise->nbReservations }}</x-datatable.td>
+                            <x-datatable.td>{{ $entreprise->reservations_count }}</x-datatable.td>
                             <x-datatable.td>
                                 <x-button primary sm wire:click="goToEditPage('{{ $entreprise->id }}')" label="Éditer la facturation" />
                             </x-datatable.td>
@@ -146,7 +146,7 @@
             <x-errors class="mb-4"/>
             <div class="grid grid-cols-2 gap-6">
                 <div>
-                    <iframe src="/admin/facturations/1/show?uniq={{ $uniqID }}#view=FitH&toolbar=1" class="w-full h-full"></iframe>
+                    <iframe src="/admin/facturations/{{ $this->facture->id }}/show?uniq={{ $uniqID }}#view=FitH&toolbar=1" class="w-full h-full"></iframe>
                 </div>
                 <div>
                     <form wire:submit.prevent="sendFactureAction" id="factureForm" class="space-y-4">
