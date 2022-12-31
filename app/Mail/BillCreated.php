@@ -3,8 +3,10 @@
 namespace App\Mail;
 
 use App\Exports\ReservationsExport;
+use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Services\InvoiceService;
+use Barryvdh\DomPDF\PDF;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -40,6 +42,10 @@ class BillCreated extends Mailable
      */
     public function build(): Mailable
     {
+        /** @var Entreprise $entreprise */
+        $entreprise = $this->facture->reservations()->get()->first()->entreprise;
+
+        // Génération de la facture en PDF
         $invoice = InvoiceService::generateInvoice($this->facture);
 
         $mailable = $this->markdown('emails.bill.created', [
@@ -48,11 +54,17 @@ class BillCreated extends Mailable
             'mime' => 'application/pdf',
         ]);
 
-        if (true) {
+        $fileName = sprintf('courses_periode_%s_%s',
+            $this->facture->month,
+            $this->facture->year
+        );
+
+        if (in_array($entreprise->nom, config('motobleu.export.entrepriseEnableForXlsExport'))) {
+            // Génération du récap des courses en xlsx
             $excel = Excel::raw(new ReservationsExport(
                 $this->facture->year,
                 $this->facture->month,
-                $this->facture->reservations()->get()->first()->entreprise
+                $entreprise
             ), \Maatwebsite\Excel\Excel::XLSX);
 
             $fileName = sprintf('courses_periode_%s_%s',
@@ -61,6 +73,15 @@ class BillCreated extends Mailable
             );
 
             $mailable->attachData($excel, $fileName . '.xlsx');
+        } else {
+            // Génération du récap des courses en PDF
+            $recapInPDF =  \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.reservations.pdf-facture', [
+                'entreprise' => $entreprise,
+                'year' => $this->facture->year,
+                'month' => $this->facture->month
+            ])->output();
+
+            $mailable->attachData($recapInPDF, $fileName . '.pdf');
         }
 
         return $mailable;
