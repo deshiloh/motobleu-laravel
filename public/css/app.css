@@ -2137,8 +2137,8 @@ video {
   font-size: 1.25rem;
   line-height: 1.75rem;
 }
-.text-6xl {
-  font-size: 3.75rem;
+.text-5xl {
+  font-size: 3rem;
   line-height: 1;
 }
 .text-2xl {
@@ -2166,10 +2166,6 @@ video {
 }
 .text-2xs {
   font-size: 0.65rem;
-}
-.text-5xl {
-  font-size: 3rem;
-  line-height: 1;
 }
 .font-extrabold {
   font-weight: 800;

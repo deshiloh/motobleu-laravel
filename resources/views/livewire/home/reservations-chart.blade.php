@@ -50,6 +50,7 @@
                                     }
                                 },
                                 y: {
+                                    beginAtZero: true,
                                     display: false,
                                     grid: {
                                         display: false
