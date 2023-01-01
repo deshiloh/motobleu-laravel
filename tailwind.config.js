@@ -11,7 +11,11 @@ module.exports = {
         './vendor/wireui/wireui/src/View/**/*.php'
     ],
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                'motobleu' : '#0A158D'
+            }
+        },
     },
     plugins: [
         //require("daisyui")

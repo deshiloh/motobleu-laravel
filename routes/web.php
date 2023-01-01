@@ -51,14 +51,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return view('welcome', [
-            'reservations_to_confirm' => Reservation::toConfirmed(),
-            'reservations' => Reservation::count(),
-            'users' => User::count()
-        ]);
-    })->name('homepage');
+Route::get('/', function () {
+    return view('front.home');
 });
 
 Route::get('/logout', [LoginController::class, 'logout'])
@@ -83,6 +77,15 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
+
+    // Accueil de la partie admin
+    Route::get('/dashboard', function () {
+        return view('welcome', [
+            'reservations_to_confirm' => Reservation::toConfirmed(),
+            'reservations' => Reservation::count(),
+            'users' => User::count()
+        ]);
+    })->name('homepage');
 
     Route::get('/accounts/{account}/password/edit', EditPasswordForm::class)
         ->name('accounts.password.edit');
