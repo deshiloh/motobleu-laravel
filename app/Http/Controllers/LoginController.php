@@ -43,7 +43,7 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->intended(route('homepage'));
+            return redirect()->intended(route('admin.homepage'));
         }
 
         return back()->withErrors([
@@ -136,7 +136,7 @@ class LoginController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('homepage')->with('status', __($status))
+            ? redirect()->route('admin.homepage')->with('status', __($status))
             : back()->withErrors(['email' => [__($status)]]);
     }
 }

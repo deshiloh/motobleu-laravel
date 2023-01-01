@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div>
-                    <x-button primary label="Retour à l'accueil" class="w-full" href="{{ route('homepage') }}" />
+                    <x-button primary label="Retour à l'accueil" class="w-full" href="{{ route('admin.homepage') }}" />
                 </div>
             </div>
         </div>
