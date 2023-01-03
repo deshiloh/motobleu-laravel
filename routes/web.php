@@ -52,8 +52,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    if (Auth::check()) {
+        return to_route('front.dashboard');
+    }
+
     return view('front.home');
 })->name('front.home');
+
+Route::prefix('dashboard')->group(function () {
+    Route::get('/', function () {
+        return view('front.dashboard');
+    })->name('front.dashboard');
+});
 
 Route::get('/logout', [LoginController::class, 'logout'])
     ->name('logout');

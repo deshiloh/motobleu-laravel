@@ -13,7 +13,11 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                'motobleu' : '#0A158D'
+                'motobleu' : {
+                    light: '#222ca1',
+                    DEFAULT: '#0A158D',
+                    'dark' : '#081068'
+                }
             }
         },
     },
