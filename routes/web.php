@@ -22,6 +22,7 @@ use App\Http\Livewire\Entreprise\AdresseEntrepriseForm;
 use App\Http\Livewire\Entreprise\EntrepriseForm;
 use App\Http\Livewire\Facturation\EditionFacture;
 use App\Http\Livewire\Facturation\FacturationDataTable;
+use App\Http\Livewire\Front\Reservation\ReservationDataTable;
 use App\Http\Livewire\Localisation\LocalisationForm;
 use App\Http\Livewire\Passager\PassagerForm;
 use App\Http\Livewire\Pilote\PiloteForm;
@@ -59,10 +60,13 @@ Route::get('/', function () {
     return view('front.home');
 })->name('front.home');
 
-Route::prefix('dashboard')->group(function () {
+Route::prefix('dashboard')->name('front.')->group(function () {
     Route::get('/', function () {
         return view('front.dashboard');
-    })->name('front.dashboard');
+    })->name('dashboard');
+
+    Route::get('/reservation', ReservationDataTable::class)
+        ->name('reservation');
 });
 
 Route::get('/logout', [LoginController::class, 'logout'])
