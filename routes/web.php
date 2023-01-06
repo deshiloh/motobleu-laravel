@@ -52,14 +52,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    if (Auth::check()) {
-        return to_route('front.dashboard');
-    }
-
-    return view('front.home');
-})->name('front.home');
-
 Route::prefix('dashboard')->name('front.')->group(function () {
     Route::get('/', function () {
         return view('front.dashboard');
@@ -89,6 +81,17 @@ Route::middleware('guest')->group(function () {
     Route::post('/reset-password', [LoginController::class, 'resetPassword'])
         ->name('password.update');
 });
+
+Route::get('/{local?}', function (string $local = 'fr') {
+
+    App::setLocale($local);
+
+    if (Auth::check()) {
+        return to_route('front.dashboard');
+    }
+
+    return view('front.home');
+})->name('front.home');
 
 Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
 
