@@ -22,6 +22,7 @@ use App\Http\Livewire\Entreprise\AdresseEntrepriseForm;
 use App\Http\Livewire\Entreprise\EntrepriseForm;
 use App\Http\Livewire\Facturation\EditionFacture;
 use App\Http\Livewire\Facturation\FacturationDataTable;
+use App\Http\Livewire\Front\Reservation\ReservationDataTable;
 use App\Http\Livewire\Localisation\LocalisationForm;
 use App\Http\Livewire\Passager\PassagerForm;
 use App\Http\Livewire\Pilote\PiloteForm;
@@ -51,14 +52,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth')->group(function () {
+Route::get('/', function () {
+    if (Auth::check()) {
+        return to_route('front.dashboard');
+    }
+
+    return view('front.home');
+})->name('front.home');
+
+Route::prefix('dashboard')->name('front.')->group(function () {
     Route::get('/', function () {
-        return view('welcome', [
-            'reservations_to_confirm' => Reservation::toConfirmed(),
-            'reservations' => Reservation::count(),
-            'users' => User::count()
-        ]);
-    })->name('homepage');
+        return view('front.dashboard');
+    })->name('dashboard');
+
+    Route::get('/reservation', ReservationDataTable::class)
+        ->name('reservation');
 });
 
 Route::get('/logout', [LoginController::class, 'logout'])
@@ -83,6 +91,15 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
+
+    // Accueil de la partie admin
+    Route::get('/dashboard', function () {
+        return view('welcome', [
+            'reservations_to_confirm' => Reservation::toConfirmed(),
+            'reservations' => Reservation::count(),
+            'users' => User::count()
+        ]);
+    })->name('homepage');
 
     Route::get('/accounts/{account}/password/edit', EditPasswordForm::class)
         ->name('accounts.password.edit');

@@ -9,7 +9,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @livewireStyles()
 </head>
-<body class="antialiased min-h-screen bg-gray-100 dark:bg-gray-900">
+<body class="antialiased h-full">
     {{ $slot }}
 <wireui:scripts/>
 <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>

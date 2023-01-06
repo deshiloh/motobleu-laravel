@@ -34,6 +34,7 @@ class LoginTest extends TestCase
      * A basic test example.
      *
      * @return void
+     * @throws \JsonException
      */
     public function testLogin()
     {
