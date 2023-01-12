@@ -6,13 +6,13 @@
                 @csrf
                 <div>
                     <div class="mt-1">
-                        <x-input label="Adresse email" placeholder="Votre adresse email..." icon="mail" name="email" />
+                        <x-input label="{{ __('Adresse email') }}" placeholder="Votre adresse email..." icon="mail" name="email" />
                     </div>
                 </div>
 
                 <div>
                     <div class="mt-1">
-                        <x-input label="Mot de passe" icon="key" name="password" type="password" placeholder="Votre mot de passe..."/>
+                        <x-input label="{{ __('Mot de passe') }}" icon="key" name="password" type="password" placeholder="Votre mot de passe..."/>
                     </div>
                 </div>
 
@@ -23,21 +23,23 @@
                     </div>--}}
 
                     <div class="text-sm">
-                        <a href="{{ route('password.request') }}" class="font-medium text-motobleu hover:text-indigo-500"> Mot de passe oublié ? </a>
+                        <a href="{{ route('password.request') }}" class="font-medium text-motobleu hover:text-indigo-500">
+                            {{ __('Mot de passe oublié') }} ?
+                        </a>
                     </div>
                 </div>
 
                 <div>
-                    <x-button type="submit" primary label="Se connecter" full/>
+                    <x-button type="submit" primary label="{{ __('Se connecter') }}" full/>
                     <div class="relative py-4">
                         <div class="absolute inset-0 flex items-center">
                             <div class="w-full border-t border-gray-300"></div>
                         </div>
                         <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200"> Ou </span>
+                            <span class="px-2 bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200"> {{ __('Ou') }} </span>
                         </div>
                     </div>
-                    <x-button secondary label="Retour à l'accueil" class="w-full" href="{{ route('front.home') }}" />
+                    <x-button secondary label="{{ __('Retour') }}" class="w-full" href="{{ route('front.home') }}" />
                 </div>
             </form>
         </div>

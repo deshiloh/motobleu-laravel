@@ -52,6 +52,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/lang/{locale}', function (string $locale) {
+    app()->setLocale($locale);
+    session()->put('locale', $locale);
+
+    return redirect()->back();
+})->name('switch.local');
+
 Route::prefix('dashboard')->name('front.')->group(function () {
     Route::get('/', function () {
         return view('front.dashboard');
@@ -82,10 +89,7 @@ Route::middleware('guest')->group(function () {
         ->name('password.update');
 });
 
-Route::get('/{local?}', function (string $local = 'fr') {
-
-    App::setLocale($local);
-
+Route::get('/', function () {
     if (Auth::check()) {
         return to_route('front.dashboard');
     }
