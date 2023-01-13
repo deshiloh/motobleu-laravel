@@ -1,6 +1,6 @@
-name: Pipeline
+name: Tests
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   laravel-tests:
@@ -20,22 +20,3 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
       - name: Execute tests (Unit and Feature tests) via PestPHP
         run: vendor/bin/phpunit
-        
-  release:
-    name: Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "lts/*"
-      - name: Install dependencies
-        run: npm ci
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}          
-        run: npx semantic-release
