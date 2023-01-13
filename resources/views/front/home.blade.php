@@ -1,22 +1,28 @@
 <x-front-layout>
+    @pushonce('styles')
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css"
+        />
+    @endpushonce
     <div class="h-[53rem] grid grid-cols-1 md:grid-cols-2 relative">
         <div class="absolute w-full h-full flex items-center justify-center z-10">
             <div class="max-w-4xl px-3 md:px-0">
                 <h1>
                     <img src="{{ asset('storage/motobleu-logo.png') }}" alt="Motobleu-Paris">
                 </h1>
-                <p class="text-center text-4xl text-white py-4">Transport de personne à moto</p>
+                <p class="text-center text-4xl text-white py-4">{{ __('Transport de personne à moto') }}</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
                     <div class="block sm:flex sm:justify-end">
                         <a href="#" class="bg-motobleu block sm:inline-block px-10 py-3 rounded text-center text-white">
-                            Nouveau client ? <br>
-                            <span class="font-bold">Enregistrez-vous</span>
+                            {{ __('Nouveau client ?') }} <br>
+                            <span class="font-bold">{{ __('Enregistrez-vous') }}</span>
                         </a>
                     </div>
                     <div class="block sm:flex justify-start">
                         <a href="{{ route('login') }}" class="bg-white block sm:inline-block px-10 py-3 text-center rounded">
-                            Déjà client ? <br>
-                            <span class="font-bold">Connectez-vous</span>
+                            {{ __('Déjà client ?') }} <br>
+                            <span class="font-bold">{{ __('Connectez-vous') }}</span>
                         </a>
                     </div>
                 </div>
@@ -49,7 +55,7 @@
     <div class="h-[53rem] grid grid-cols-1 xl:grid-cols-2 relative">
         <div class="bg-motobleu flex items-center justify-center px-8">
             <div class="text-white max-w-4xl">
-                <h2 class="text-4xl pb-9">Le transport en moto-taxi</h2>
+                <h2 class="text-4xl pb-9">{{ __('Le transport en moto-taxi') }}</h2>
                 <div class="space-y-9">
                     <div class="flex flex-col md:flex-row items-center md:items-start">
                         <div class="pb-4 md:mr-3 md:pb-0">
@@ -60,15 +66,9 @@
                             </div>
                         </div>
                         <div>
-                            <div class="font-bold pb-4 text-2xl">Nos chauffeurs</div>
+                            <div class="font-bold pb-4 text-2xl">{{ __('Nos chauffeurs') }}</div>
                             <div class="text-justify">
-                                Tous nos chauffeurs sont certifiés par le décret n°2010-1223 du 11 Octobre 2010
-                                applicable au 1er Avril 2011 relatif au transport public de personnes avec conducteur.
-                                Nos chauffeurs ont minimum 5 ans de permis moto et 2 ans de pratique en moto-taxi,
-                                ils ont tous leur carte professionnelle délivrée par leur préfecture de police, une
-                                assurance professionnelle et un autocollant sur le pare-brise avec l'inscription
-                                "transport de personne à  2 ou 3 roues". Vous pouvez à tout moment leur demander de
-                                voir ces documents.
+                                {{ __("Tous nos chauffeurs sont certifiés par le décret n°2010-1223 du 11 Octobre 2010 applicable au 1er Avril 2011 relatif au transport public de personnes avec conducteur. Nos chauffeurs ont minimum 5 ans de permis moto et 2 ans de pratique en moto-taxi, ils ont tous leur carte professionnelle délivrée par leur préfecture de police, une assurance professionnelle et un autocollant sur le pare-brise avec l'inscription \"transport de personne à  2 ou 3 roues\". Vous pouvez à tout moment leur demander de voir ces documents.") }}
                             </div>
                         </div>
                     </div>
@@ -81,13 +81,9 @@
                             </div>
                         </div>
                         <div>
-                            <div class="font-bold pb-4 text-2xl">Équipements et sécurité</div>
+                            <div class="font-bold pb-4 text-2xl">{{ __('Équipements et sécurité') }}</div>
                             <div class="text-justify">
-                                Votre confort est une de nos priorités, c'est pourquoi MOTOBLEU met toute une gamme
-                                d'équipements à votre disposition pour rendre votre déplacement plus agréable tout en
-                                vous protégeant de manière efficace. Casque, pantalon, sanitete « propreté assurée » gants,
-                                bluetooth, inter-com, veste équipée de protections (aux coudes, épaules et dos), gilet
-                                chauffant, Gilet airbag. Tous nos équipements sont aux normes NF.
+                                {{ __("Votre confort est une de nos priorités, c'est pourquoi MOTOBLEU met toute une gamme d'équipements à votre disposition pour rendre votre déplacement plus agréable tout en vous protégeant de manière efficace. Casque, pantalon, sanitete « propreté assurée » gants, bluetooth, inter-com, veste équipée de protections (aux coudes, épaules et dos), gilet chauffant, Gilet airbag. Tous nos équipements sont aux normes NF.") }}
                             </div>
                         </div>
                     </div>
@@ -142,34 +138,54 @@
         </div>
         <div class="bg-motobleu flex items-center justify-center px-8">
             <div class="text-white max-w-4xl">
-                <h3 class="uppercase text-3xl">Solutions entreprises</h3>
-                <p class="mb-3">Le transport de personnes à moto-taxi est une offre de service en pleine émergence destinée aux entreprises.</p>
+                @if(App::currentLocale() == 'fr')
+                    <h3 class="uppercase text-3xl">Solutions entreprises</h3>
+                    <p class="mb-3">Le transport de personnes à moto-taxi est une offre de service en pleine émergence destinée aux entreprises.</p>
 
-                <div class="text-2xl mb-3">Offres grands-comptes</div>
-                MOTOBLEU met à la disposition des grands comptes, la palette de ses ressources – expérience, services, technologies – pour leur permettre d'accroitre leur efficacité, et leur propose un ensemble de prestations adapté à leur contexte :
+                    <div class="text-2xl mb-3">Offres grands-comptes</div>
+                    MOTOBLEU met à la disposition des grands comptes, la palette de ses ressources – expérience, services, technologies – pour leur permettre d'accroitre leur efficacité, et leur propose un ensemble de prestations adapté à leur contexte :
 
-                <ul class="list-disc list-inside pl-7 pb-9">
-                    <li>Accueil personnalisé en gare et aéroport.</li>
-                    <li>Facturation mensuelle</li>
-                    <li>Gestion de compte et facturation par sous-compte.</li>
-                    <li>Contact dédié et personnalisé.</li>
-                    <li>Service à la demande</li>
-                </ul>
-                <p class="mb-3">
-                    Le savoir-faire et la capacité du service MOTOBLEU permet à l'entreprise de répondre sans délai à
-                    des demandes plus spécifiques, incluant la mise à disposition de plusieurs motos et de leurs pilotes
-                    pour assurer la couverture d'une manifestation ponctuelle ou régulière (évènementiel, salon
-                    professionnel, séminaire.....). <br>
-                    Nous sommes à votre disposition pour étudier tous vos projets. <br>
-                    N'hésitez pas à contacter notre service commercial « entreprise » afin d'étudier la solution la mieux adaptée.
-                </p>
-                <p>MOTOBLEU vous remercie de votre confiance !</p>
+                    <ul class="list-disc list-inside pl-7 pb-9">
+                        <li>Accueil personnalisé en gare et aéroport.</li>
+                        <li>Facturation mensuelle</li>
+                        <li>Gestion de compte et facturation par sous-compte.</li>
+                        <li>Contact dédié et personnalisé.</li>
+                        <li>Service à la demande</li>
+                    </ul>
+                    <p class="mb-3">
+                        Le savoir-faire et la capacité du service MOTOBLEU permet à l'entreprise de répondre sans délai à
+                        des demandes plus spécifiques, incluant la mise à disposition de plusieurs motos et de leurs pilotes
+                        pour assurer la couverture d'une manifestation ponctuelle ou régulière (évènementiel, salon
+                        professionnel, séminaire.....). <br>
+                        Nous sommes à votre disposition pour étudier tous vos projets. <br>
+                        N'hésitez pas à contacter notre service commercial « entreprise » afin d'étudier la solution la mieux adaptée.
+                    </p>
+                    <p>MOTOBLEU vous remercie de votre confiance !</p>
+                @endif
+                @if(App::currentLocale() == 'en')
+                        <h3 class="uppercase text-3xl">VIP ACCOUNTS</h3>
+                        <p class="mt-3">MOTOBLEU offers to VIP'S all of its resources-experience, service, technology-to increase your companies efficiency, such as:</p>
+                        <ul class="list-disc list-inside pl-7 pb-9">
+                            <li>Personalized welcome at train stations or airports</li>
+                            <li>Monthly Billing</li>
+                            <li>All invoices are taken care of</li>
+                            <li>Personalized contact</li>
+                        </ul>
+                        <h4 class="text-2xl mb-3">On Demand Services</h4>
+                        <p class="mb-3">
+                            The professionalism of MOTOBLEU can meet your specific company needs, for example, having multiple bikes and drivers to take you to any professional obligation.  We are your disposal to take care of all of your projects. <br> Don't hesitate to contact our commercial service enterprise to find the best solution to meet your needs.
+                        </p>
+
+
+                        <p class="mb-3">MOTOBLEU thanks you for your trust.</p>
+                        <p>Enjoy your ride with MOTOBLEU Company !</p>
+                @endif
             </div>
         </div>
     </div>
     <div class="h-64 bg-white py-5">
         <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 text-motobleu">
-            <div class="uppercase text-3xl font-medium">Mentions légales</div>
+            <div class="uppercase text-3xl font-medium">{{ __('Mentions légales') }}</div>
             <div>
                 <div class="text-3xl pb-6 uppercase font-medium">Informations</div>
                 <p>
@@ -185,7 +201,7 @@
     </div>
     <footer class="py-3">
         <p class="text-center text-white">
-            Copyright © 2019 Tous droits réservés. Site créé avec passion par
+            Copyright © 2019 {{ __('Tous droits réservés') }}. {{ __('Site créé avec passion par') }}
             <a href="https://agencepoint.com/" class="hover:underline">Agence Point Com</a>
         </p>
     </footer>

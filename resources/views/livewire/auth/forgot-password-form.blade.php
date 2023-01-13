@@ -5,11 +5,13 @@
             <div class="card-body items-center">
                 <div class="flex flex-col w-full border-opacity-50">
                     <div class="">
-                        <div class="text-center text-2xl mb-3 dark:text-gray-100">Mot de passe oublié</div>
-                        <div class="text-sm text-gray-400 mb-2 text-center">Renseignez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe </div>
+                        <div class="text-center text-2xl mb-3 dark:text-gray-100">{{ __('Mot de passe oublié') }} ?</div>
+                        <div class="text-sm text-gray-400 mb-2 text-center">
+                            {{ __('Renseignez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe') }}
+                        </div>
                         <form wire:submit.prevent="resetAction" class="w-full space-y-4">
                             <x-input
-                                label="Adresse email"
+                                label="{{ __('Adresse email') }}"
                                 wire:loading.attr="disabled"
                                 wire:loading.class="opacity-25"
                                 wire:model.defer="email"
@@ -19,7 +21,7 @@
                             <x-button
                                 primary full
                                 type="submit"
-                                label="Envoyer"
+                                label="{{ __('Envoyer') }}"
                             />
                         </form>
                     </div>
@@ -28,11 +30,11 @@
                             <div class="w-full border-t border-gray-300"></div>
                         </div>
                         <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200"> Ou </span>
+                            <span class="px-2 bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200"> {{ __('Ou') }} </span>
                         </div>
                     </div>
                     <div>
-                        <x-button primary label="Retour à l'accueil" class="w-full" href="{{ route('admin.homepage') }}" />
+                        <x-button primary label="{{ __('Retour') }}" class="w-full" href="{{ route('admin.homepage') }}" />
                     </div>
                 </div>
             </div>

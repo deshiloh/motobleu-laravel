@@ -52,13 +52,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    if (Auth::check()) {
-        return to_route('front.dashboard');
-    }
+Route::get('/lang/{locale}', function (string $locale) {
+    app()->setLocale($locale);
+    session()->put('locale', $locale);
 
-    return view('front.home');
-})->name('front.home');
+    return redirect()->back();
+})->name('switch.local');
 
 Route::prefix('dashboard')->name('front.')->group(function () {
     Route::get('/', function () {
@@ -89,6 +88,14 @@ Route::middleware('guest')->group(function () {
     Route::post('/reset-password', [LoginController::class, 'resetPassword'])
         ->name('password.update');
 });
+
+Route::get('/', function () {
+    if (Auth::check()) {
+        return to_route('front.dashboard');
+    }
+
+    return view('front.home');
+})->name('front.home');
 
 Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
 
