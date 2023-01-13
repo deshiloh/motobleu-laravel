@@ -6,6 +6,8 @@
     <title>Motobleu</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <wireui:scripts />
+    <script src="//unpkg.com/alpinejs" defer></script>
     @stack('styles')
     <script src="{{ asset('js/tinymce/tinymce.min.js') }}"></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -178,9 +180,6 @@
 
         {{ $slot }}
     </div>
-
-    <script src="//unpkg.com/alpinejs" defer></script>
-    <wireui:scripts/>
     <script src="{{ asset('js/app.js') }}" defer></script>
     @livewireScripts()
     @stack('scripts')
