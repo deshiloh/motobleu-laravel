@@ -30,7 +30,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Semantic
-        uses: docker://deshiloh/docker-semantic-release-github-ci
+        uses: docker://deshiloh/docker-semantic-release-github-ci@2.0
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
