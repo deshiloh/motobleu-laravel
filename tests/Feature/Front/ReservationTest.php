@@ -23,7 +23,7 @@ class ReservationTest extends TestCase
      */
     public function testAccessPageReservation(): void
     {
-        $response = $this->get(route('front.reservation'));
+        $response = $this->get(route('front.reservation.list'));
 
         $response->assertStatus(200);
     }

@@ -301,7 +301,7 @@ class FrontFormReservationTest extends TestCase
             ->set('hasBack', false)
             ->call('saveReservation')
             ->assertHasNoErrors()
-            ->assertRedirect(route('admin.reservations.index'))
+            ->assertRedirect(route('front.reservation.list'))
         ;
 
         $this->assertTrue(Reservation::wherePickupDate($pickupDate)->exists());
@@ -327,7 +327,7 @@ class FrontFormReservationTest extends TestCase
             ->set('hasBack', false)
             ->call('saveReservation')
             ->assertHasNoErrors()
-            ->assertRedirect(route('admin.reservations.index'))
+            ->assertRedirect(route('front.reservation.list'))
         ;
 
         $this->assertTrue(Passager::whereEmail('passager@passager.local')->exists());
@@ -350,7 +350,7 @@ class FrontFormReservationTest extends TestCase
             ->set('hasBack', false)
             ->call('saveReservation')
             ->assertHasNoErrors()
-            ->assertRedirect(route('admin.reservations.index'))
+            ->assertRedirect(route('front.reservation.list'))
         ;
 
         $this->assertTrue(Reservation::wherePickupDate($pickupDate)->exists());
@@ -379,7 +379,7 @@ class FrontFormReservationTest extends TestCase
             ->set('hasBack', false)
             ->call('saveReservation')
             ->assertHasNoErrors()
-            ->assertRedirect(route('admin.reservations.index'))
+            ->assertRedirect(route('front.reservation.list'))
         ;
 
         $this->assertTrue(AdresseReservation::whereAdresse('départ de test')->exists());
@@ -412,7 +412,7 @@ class FrontFormReservationTest extends TestCase
             ->set('reservation_back.localisation_to_id', Localisation::find(1)->id)
             ->call('saveReservation')
             ->assertHasNoErrors()
-            ->assertRedirect(route('admin.reservations.index'))
+            ->assertRedirect(route('front.reservation.list'))
         ;
 
         $this->assertTrue(Reservation::wherePickupDate($pickupDate)->exists());
@@ -444,7 +444,7 @@ class FrontFormReservationTest extends TestCase
             ->set('reservation_back.adresse_reservation_to_id', AdresseReservation::find(1)->id)
             ->call('saveReservation')
             ->assertHasNoErrors()
-            ->assertRedirect(route('admin.reservations.index'))
+            ->assertRedirect(route('front.reservation.list'))
         ;
 
         $this->assertTrue(Reservation::wherePickupDate($pickupDate)->exists());
@@ -480,8 +480,7 @@ class FrontFormReservationTest extends TestCase
             ->set('newAdresseReservationToBack.ville', 'Montpellier')
             ->call('saveReservation')
             ->assertHasNoErrors()
-            ->assertRedirect(route('admin.reservations.index'))
-        ;
+            ->assertRedirect(route('front.reservation.list'))        ;
 
         $this->assertTrue(AdresseReservation::whereAdresse('aller de test')->exists());
         $this->assertTrue(AdresseReservation::whereAdresse('arrivée de test')->exists());
