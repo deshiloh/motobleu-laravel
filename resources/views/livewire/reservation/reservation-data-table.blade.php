@@ -22,10 +22,6 @@
     @endif
 
     <x-datatable.search wire:model="search" />
-    <div class="flex justify-between">
-
-
-    </div>
     <x-datatable>
         <x-slot name="headers">
             <tr>
