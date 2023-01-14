@@ -55,9 +55,6 @@
                 @endforelse
             </x-slot>
         </x-datatable>
-        @php
-            ray($reservations);
-        @endphp
         @if($reservations->total() > $perPage)
             <div class="pt-4">
                 {{ $reservations->links('components.datatable.pagination') }}

@@ -59,6 +59,11 @@ Route::get('/lang/{locale}', function (string $locale) {
     return redirect()->back();
 })->name('switch.local');
 
+/*
+|--------------------------------------------------------------------------
+| FRONT Routes
+|--------------------------------------------------------------------------
+*/
 Route::prefix('dashboard')->name('front.')->group(function () {
     Route::get('/', function () {
         return view('front.dashboard');
@@ -69,6 +74,15 @@ Route::prefix('dashboard')->name('front.')->group(function () {
             ->name('list');
         Route::get('/create', \App\Http\Livewire\Front\Reservation\ReservationForm::class)
             ->name('create');
+    });
+
+    Route::prefix('/address')->name('address.')->group(function () {
+        Route::get('/list', \App\Http\Livewire\Front\Address\AddressDataTable::class)
+            ->name('list');
+        Route::get('/create', \App\Http\Livewire\Front\Address\AddressForm::class)
+            ->name('create');
+        Route::get('/{address}/edit', \App\Http\Livewire\Front\Address\AddressForm::class)
+            ->name('edit');
     });
 });
 
@@ -101,6 +115,12 @@ Route::get('/', function () {
     return view('front.home');
 })->name('front.home');
 
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes
+|--------------------------------------------------------------------------
+*/
 Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
 
     // Accueil de la partie admin
