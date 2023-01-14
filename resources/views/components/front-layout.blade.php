@@ -6,12 +6,19 @@
     <title>Motobleu</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css"
+    />
+    <wireui:scripts />
+    <script src="//unpkg.com/alpinejs" defer></script>
     @stack('styles')
     <script src="{{ asset('js/tinymce/tinymce.min.js') }}"></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @livewireStyles()
 </head>
 <body class="antialiased min-h-screen @auth bg-gray-200 @else bg-motobleu @endauth">
+    <x-notifications />
     <div class="min-h-screen">
         <nav class="@auth() bg-motobleu @elseauth bg-motobleu-dark @endauth text-white">
             <div class="px-4 sm:px-6 lg:px-8">
@@ -36,7 +43,7 @@
                                     Administration
                                 </x-front.menu.item>
 
-                                <x-front.menu.item :active="\Illuminate\Support\Facades\Route::currentRouteName() == 'front.reservation'" href="{{ route('front.reservation') }}">
+                                <x-front.menu.item :active="in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['front.reservation.list', 'front.reservation.create'])" href="{{ route('front.reservation.list') }}">
                                     <x-slot:icon>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -98,10 +105,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                             </svg>
                             <a href="mailto:contact@motobleu-paris.com" class="transition transition-all hover:text-gray-400">contact@motobleu-paris.com</a>
-                            @guest
-                                <a href="{{ route('switch.local', ['locale' => 'fr']) }}"><span class="fi fi-fr"></a>
-                                <a href="{{ route('switch.local', ['en']) }}"><span class="fi fi-gb"></a>
-                            @endguest
+                            <a href="{{ route('switch.local', ['locale' => 'fr']) }}"><span class="fi fi-fr"></a>
+                            <a href="{{ route('switch.local', ['en']) }}"><span class="fi fi-gb"></a>
                             @auth
                                 <a href="{{ route('logout') }}" class="p-1 rounded-full text-white hover:text-gray-400 transition transition-all">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -178,9 +183,6 @@
 
         {{ $slot }}
     </div>
-
-    <script src="//unpkg.com/alpinejs" defer></script>
-    <wireui:scripts/>
     <script src="{{ asset('js/app.js') }}" defer></script>
     @livewireScripts()
     @stack('scripts')

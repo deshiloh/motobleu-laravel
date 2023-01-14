@@ -1,10 +1,4 @@
 <x-front-layout>
-    @pushonce('styles')
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css"
-        />
-    @endpushonce
     <div class="h-[53rem] grid grid-cols-1 md:grid-cols-2 relative">
         <div class="absolute w-full h-full flex items-center justify-center z-10">
             <div class="max-w-4xl px-3 md:px-0">

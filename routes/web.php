@@ -64,8 +64,12 @@ Route::prefix('dashboard')->name('front.')->group(function () {
         return view('front.dashboard');
     })->name('dashboard');
 
-    Route::get('/reservation', ReservationDataTable::class)
-        ->name('reservation');
+    Route::prefix('/reservation')->name('reservation.')->group(function () {
+        Route::get('/', ReservationDataTable::class)
+            ->name('list');
+        Route::get('/create', \App\Http\Livewire\Front\Reservation\ReservationForm::class)
+            ->name('create');
+    });
 });
 
 Route::get('/logout', [LoginController::class, 'logout'])
@@ -252,10 +256,14 @@ Route::prefix('/admin/select')->group(function () {
     Route::get('/adresses', function (Request $request) {
         $search = $request->input('search');
         $selected = $request->input('selected');
+        $user = $request->input('user', false);
 
         return AdresseReservation::query()
             ->select('id', 'adresse')
             ->orderBy('adresse')
+            ->when($user, function(Builder $query, $search) {
+                $query->where('user_id', $search);
+            })
             ->when($search, function (Builder $query, $search) {
                 $query->where('adresse', 'like', "%{$search}%");
             })

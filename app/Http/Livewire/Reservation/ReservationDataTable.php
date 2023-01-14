@@ -12,8 +12,8 @@ class ReservationDataTable extends Component
     use WithSorting, WithPagination;
 
     public string $search = '';
-    public string $sortField = 'id';
     public int $perPage = 10;
+    public string $sortField = 'id';
     protected $queryString = ['querySort' => ['except' => '']];
     public string $querySort = '';
 
