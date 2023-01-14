@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('adresse_complement')->nullable();
             $table->string('code_postal');
             $table->string('ville');
+            $table->boolean('is_actif')->default(true);
+            $table->boolean('is_deleted')->default(false);
 
             $table->foreignId('user_id')
                 ->nullable(true)
