@@ -38,10 +38,21 @@ class CostCenterForm extends Component
     {
         $this->validate();
 
-        $this->costCenter->save();
-        $this->notification()->success(
-            title: "Opération réussite",
-            description: $this->contextNewCostCenter ? "Cost Center créé." : "Cost Center modifé"
-        );
+        try {
+            $this->costCenter->save();
+            $this->notification()->success(
+                title: "Opération réussite",
+                description: $this->contextNewCostCenter ? "Cost Center créé." : "Cost Center modifé"
+            );
+        } catch (\Exception $exception) {
+            $this->notification()->error(
+                title: "Erreur",
+                description: "Une erreur est survenue, veuillez essayer ultérieurement."
+            );
+            // TODO Sentry
+            if (\App::environment(['local'])) {
+                ray()->exception($exception);
+            }
+        }
     }
 }
