@@ -93,6 +93,16 @@ Route::prefix('dashboard')->name('front.')->group(function () {
         Route::get('/{passager}/edit', \App\Http\Livewire\Front\Passager\PassagerForm::class)
             ->name('edit');
     });
+
+    // DISPONIBLE UNIQUEMENT POUR ARDIAN
+    Route::prefix('/secretary')->name('user.')->group(function () {
+       Route::get('/list', \App\Http\Livewire\Front\Account\AccountDataTable::class)
+           ->name('list');
+       Route::get('/create', \App\Http\Livewire\Front\Account\AccountForm::class)
+           ->name('create');
+        Route::get('/{account}/edit', \App\Http\Livewire\Front\Account\AccountForm::class)
+            ->name('edit');
+    });
 });
 
 Route::get('/logout', [LoginController::class, 'logout'])
