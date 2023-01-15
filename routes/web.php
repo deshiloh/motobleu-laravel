@@ -103,6 +103,15 @@ Route::prefix('dashboard')->name('front.')->group(function () {
         Route::get('/{account}/edit', \App\Http\Livewire\Front\Account\AccountForm::class)
             ->name('edit');
     });
+
+    Route::prefix('/cost-center')->name('cost_center.')->group(function () {
+        Route::get('/list', \App\Http\Livewire\Front\CostCenter\CostCenterDataTable::class)
+            ->name('list');
+        Route::get('/create', \App\Http\Livewire\Front\CostCenter\CostCenterForm::class)
+            ->name('create');
+        Route::get('/{center}/edit', \App\Http\Livewire\Front\CostCenter\CostCenterForm::class)
+            ->name('edit');
+    });
 });
 
 Route::get('/logout', [LoginController::class, 'logout'])
