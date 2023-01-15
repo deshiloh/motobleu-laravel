@@ -33,6 +33,20 @@ class AddressTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testAcessEditPage()
+    {
+        $response = $this->get(route('front.address.edit', ['address' => AdresseReservation::find(1)]));
+
+        $response->assertStatus(200);
+    }
+
+    public function testAccessCreatePage()
+    {
+        $response = $this->get(route('front.address.create'));
+
+        $response->assertStatus(200);
+    }
+
     public function testSaveWithErrors()
     {
         Livewire::test(AddressForm::class)

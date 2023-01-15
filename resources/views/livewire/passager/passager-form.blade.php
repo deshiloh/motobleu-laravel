@@ -19,7 +19,7 @@
             />
             <x-select
                 label="Cost Center"
-                placeholder="Sélectionner une secrétaire"
+                placeholder="Sélectionner Cost Center"
                 :async-data="route('api.cost_center')"
                 option-label="nom"
                 option-value="id"
