@@ -27,3 +27,4 @@
         Edition des factures
     </x-menu.dropdown.item-link>
 </x-menu.dropdown>
+<x-menu.item-link href="{{ route('admin.carousel') }}">Carousel</x-menu.item-link>

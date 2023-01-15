@@ -260,6 +260,9 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
         ->name('facturations.edition');
     Route::get('facturations/{facture}/show', [FacturationsController::class, 'show'])
         ->name('facturations.show');
+
+    Route::get('carousel', \App\Http\Livewire\Carousel\CarouselDataTable::class)
+        ->name('carousel');
 });
 
 Route::prefix('/admin/select')->group(function () {
