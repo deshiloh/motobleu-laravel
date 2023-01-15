@@ -90,6 +90,8 @@ Route::prefix('dashboard')->name('front.')->group(function () {
             ->name('list');
         Route::get('/create', \App\Http\Livewire\Front\Passager\PassagerForm::class)
             ->name('create');
+        Route::get('/{passager}/edit', \App\Http\Livewire\Front\Passager\PassagerForm::class)
+            ->name('edit');
     });
 });
 

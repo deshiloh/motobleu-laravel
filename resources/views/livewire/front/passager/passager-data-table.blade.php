@@ -1,11 +1,12 @@
 <div>
+    <x-dialog />
     <x-front.card>
-        <div class="flex border-b border-gray-200 pb-3 mb-5 justify-between items-center">
-            <x-front.title>
-                {{ __('Liste des passagers') }}
-            </x-front.title>
-            <x-button primary label="{{ __('Créer un passager') }}" icon="plus" href="{{ route('front.passager.create') }}"/>
-        </div>
+        <x-front.title>
+            {{ __('Liste des passagers') }}
+            <x-slot:button>
+                <x-button primary label="{{ __('Créer un passager') }}" icon="plus" href="{{ route('front.passager.create') }}"/>
+            </x-slot:button>
+        </x-front.title>
 
         <x-datatable>
             <x-slot:headers>
@@ -16,6 +17,7 @@
                 </x-datatable.tr>
             </x-slot:headers>
             <x-slot:body>
+
                 @forelse($passagers as $passager)
                     <x-datatable.tr>
                         <x-datatable.td>{{ $passager->nom }}</x-datatable.td>
@@ -28,8 +30,8 @@
                         </x-datatable.td>
                         <x-datatable.td>
                             <div class="space-x-2">
-                                <x-button.circle icon="pencil" primary />
-                                <x-button.circle icon="trash" red />
+                                <x-button.circle icon="pencil" primary href="{{ route('front.passager.edit', ['passager' => $passager->id]) }}"/>
+                                <x-button.circle icon="trash" red wire:click="deletePassenger({{ $passager }})"/>
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>
