@@ -60,7 +60,7 @@ class Facture extends Model
     private function generateMontantTtc(): float
     {
         $ttc = $this->montant_ht + ($this->montant_ht * 0.1);
-        return number_format($ttc, 2, '.', ' ');
+        return $ttc;
     }
 
     /**
