@@ -112,6 +112,15 @@ Route::prefix('dashboard')->name('front.')->group(function () {
         Route::get('/{center}/edit', \App\Http\Livewire\Front\CostCenter\CostCenterForm::class)
             ->name('edit');
     });
+
+    Route::prefix('/invoice')->name('invoice.')->group(function () {
+        Route::get('/list', \App\Http\Livewire\Front\Invoice\InvoiceDataTable::class)
+            ->name('list');
+        Route::get('/{facture}/show', [FacturationsController::class, 'show'])
+            ->name('show');
+        Route::get('/{invoice}/reservations', \App\Http\Livewire\Front\Invoice\InvoiceReservationDataTable::class)
+            ->name('reservations');
+    });
 });
 
 Route::get('/logout', [LoginController::class, 'logout'])

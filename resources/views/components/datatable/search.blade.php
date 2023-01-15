@@ -1,3 +1,3 @@
 <div class="mb-4 max-w-xl">
-    <x-input {{ $attributes }} label="Recherche" placeholder="Tapez votre recherche..."/>
+    <x-input {{ $attributes }} label="Recherche" placeholder="Tapez votre recherche..." icon="search"/>
 </div>

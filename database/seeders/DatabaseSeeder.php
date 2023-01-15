@@ -50,6 +50,7 @@ class DatabaseSeeder extends Seeder
                 'is_confirmed' => true,
                 'entreprise_id' => 1,
             ])
+                ->for(Facture::factory()->create())
                 ->for($passager)
                 ->create()
             ;
