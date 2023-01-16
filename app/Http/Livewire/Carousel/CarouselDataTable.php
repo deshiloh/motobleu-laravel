@@ -12,6 +12,9 @@ class CarouselDataTable extends Component
 {
     use WithFileUploads, Actions;
 
+    /**
+     * @var TemporaryUploadedFile
+     */
     public $photo;
     public ?int $position;
 
@@ -39,22 +42,22 @@ class CarouselDataTable extends Component
     {
         $this->validate();
 
-        ray($this->photo->hashName());
+        $fileName = $this->photo->hashName();
 
         try {
             Carousel::create([
-                'file_name' => $this->photo->hashName(),
+                'file_name' => $fileName,
                 'position' => $this->position
             ]);
 
-            $this->photo->store('photos');
+            $this->upload($fileName);
 
             $this->notification()->success(
                 title: "Opération réussite.",
                 description: "La photo a bien été ajoutée."
             );
 
-            $this->photo = null;
+            $this->resetFields();
         } catch (\Exception $exception) {
             $this->notification()->error(
                 title: "Une erreur est survenue",
@@ -64,8 +67,40 @@ class CarouselDataTable extends Component
         }
     }
 
+    public function resetFields()
+    {
+        $this->photo = null;
+        $this->position = null;
+    }
+
+    public function upload(string $name)
+    {
+        $this->photo->storeAs('/', $name, $disk = 'photos');
+    }
+
     public function deleteCarousel(Carousel $carousel)
     {
+        $storage = \Storage::disk('photos');
 
+        try {
+            if ($storage->fileExists($carousel->file_name)) {
+                $storage->delete($carousel->file_name);
+                $carousel->delete();
+                $this->notification()->success(
+                    title: "Opération réussite.",
+                    description: "La photo a bien été supprimée."
+                );
+            }
+        } catch (\Exception $exception) {
+            $this->notification()->error(
+                title: "Erreur",
+                description: "Une erreur est survenue, veuillez réessayer ultérieurement."
+            );
+            if (\App::environment(['local'])) {
+                ray()->exception($exception);
+            }
+
+            // TODO Sentry
+        }
     }
 }

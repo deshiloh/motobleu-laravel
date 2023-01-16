@@ -23,19 +23,14 @@
                 </div>
             </div>
             <input type="file" x-ref="fileinput" class="hidden" wire:model="photo">
-            <div class="mt-2">
+            <div class="mt-2 space-x-2">
                 <x-button type="submit" primary label="Enregistrer"/>
+                <x-button type="button" flat label="Annuler" wire:click="resetFields"/>
             </div>
         </form>
     </x-bloc-content>
     <x-bloc-content>
-        <div class="text-xl font-bold">Photos en haut</div>
-    </x-bloc-content>
-    <x-bloc-content>
-        <div class="text-xl font-bold">Photos au milieu</div>
-    </x-bloc-content>
-    <x-bloc-content>
-        <div class="text-xl font-bold mb-5">Photos en bas</div>
+        <div class="text-xl font-bold mb-3">Photos en haut</div>
         <x-datatable>
             <x-slot:headers>
                 <x-datatable.tr>
@@ -44,16 +39,86 @@
                 </x-datatable.tr>
             </x-slot:headers>
             <x-slot:body>
-                @foreach($photosBottom as $photo)
+                @forelse($photosTop as $photo)
                     <x-datatable.tr>
                         <x-datatable.td>
                             <img src="{{ asset('photos/'.$photo->file_name) }}" alt="" class="h-64 rounded-lg">
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-button.circle icon="trash" red lg />
+                            <x-button.circle icon="trash" red lg wire:click="deleteCarousel({{ $photo }})"/>
                         </x-datatable.td>
                     </x-datatable.tr>
-                @endforeach
+                    @empty
+                    <x-datatable.tr>
+                        <x-datatable.td colspan="2">
+                            <div class="text-center">
+                                Aucune photo
+                            </div>
+                        </x-datatable.td>
+                    </x-datatable.tr>
+                @endforelse
+            </x-slot:body>
+        </x-datatable>
+    </x-bloc-content>
+    <x-bloc-content>
+        <div class="text-xl font-bold mb-3">Photos au milieu</div>
+        <x-datatable>
+            <x-slot:headers>
+                <x-datatable.tr>
+                    <x-datatable.th>Photo</x-datatable.th>
+                    <x-datatable.th>Actions</x-datatable.th>
+                </x-datatable.tr>
+            </x-slot:headers>
+            <x-slot:body>
+                @forelse($photosMiddle as $photo)
+                    <x-datatable.tr>
+                        <x-datatable.td>
+                            <img src="{{ asset('photos/'.$photo->file_name) }}" alt="" class="h-64 rounded-lg">
+                        </x-datatable.td>
+                        <x-datatable.td>
+                            <x-button.circle icon="trash" red lg wire:click="deleteCarousel({{ $photo }})"/>
+                        </x-datatable.td>
+                    </x-datatable.tr>
+                @empty
+                    <x-datatable.tr>
+                        <x-datatable.td colspan="2">
+                            <div class="text-center">
+                                Aucune photo
+                            </div>
+                        </x-datatable.td>
+                    </x-datatable.tr>
+                @endforelse
+            </x-slot:body>
+        </x-datatable>
+    </x-bloc-content>
+    <x-bloc-content>
+        <div class="text-xl font-bold mb-5 mb-3">Photos en bas</div>
+        <x-datatable>
+            <x-slot:headers>
+                <x-datatable.tr>
+                    <x-datatable.th>Photo</x-datatable.th>
+                    <x-datatable.th>Actions</x-datatable.th>
+                </x-datatable.tr>
+            </x-slot:headers>
+            <x-slot:body>
+                @forelse($photosBottom as $photo)
+                    <x-datatable.tr>
+                        <x-datatable.td>
+                            <img src="{{ asset('photos/'.$photo->file_name) }}" alt="" class="h-64 rounded-lg">
+                        </x-datatable.td>
+                        <x-datatable.td>
+                            <x-button.circle icon="trash" red lg wire:click="deleteCarousel({{ $photo }})"/>
+                        </x-datatable.td>
+                    </x-datatable.tr>
+                @empty
+                    <x-datatable.tr>
+                        <x-datatable.td colspan="2">
+                            <div class="text-center">
+                                Aucune photo
+                            </div>
+                        </x-datatable.td>
+                    </x-datatable.tr>
+                @endforelse
             </x-slot:body>
         </x-datatable>
     </x-bloc-content>

@@ -34,15 +34,18 @@
             }, 5000)
             "
         >
-            @for($i = 0; $i < 3; $i ++)
+            @foreach(\App\Models\Carousel::where('position', 1)->get() as $photo)
+                @php
+                    $photoUrl = Storage::disk('photos')->url($photo->file_name);
+                @endphp
                 <img
-                    x-show="currentIndex == {{ $i }}"
-                    src="https://picsum.photos/id/1{{ $i }}/2000/2000"
+                    x-show="currentIndex === {{ $loop->index }}"
+                    src="{{ asset($photoUrl) }}"
                     alt=""
                     class="absolute inset-0 h-full w-full object-cover z-0 sliderItem"
                     x-transition
                 >
-            @endfor
+            @endforeach
         </div>
         <div class="bg-motobleu hidden md:block"></div>
     </div>
@@ -96,15 +99,18 @@
             }, 5000)
             "
         >
-            @for($i = 0; $i < 3; $i ++)
+            @foreach(\App\Models\Carousel::where('position', 2)->get() as $photo)
+                @php
+                    $photoUrl = Storage::disk('photos')->url($photo->file_name);
+                @endphp
                 <img
-                    x-show="currentIndex == {{ $i }}"
-                    src="https://picsum.photos/id/1{{ $i }}/2000/2000"
+                    x-show="currentIndex === {{ $loop->index }}"
+                    src="{{ asset($photoUrl) }}"
                     alt=""
                     class="absolute inset-0 h-full w-full object-cover z-0 sliderItem"
                     x-transition
                 >
-            @endfor
+            @endforeach
         </div>
     </div>
     <div class="h-[53rem] grid grid-cols-1 xl:grid-cols-2">
@@ -120,15 +126,18 @@
             }, 5000)
             "
         >
-            @for($i = 0; $i < 3; $i ++)
+            @foreach(\App\Models\Carousel::where('position', 3)->get() as $photo)
+                @php
+                    $photoUrl = Storage::disk('photos')->url($photo->file_name);
+                @endphp
                 <img
-                    x-show="currentIndex == {{ $i }}"
-                    src="https://picsum.photos/id/1{{ $i }}/2000/2000"
+                    x-show="currentIndex === {{ $loop->index }}"
+                    src="{{ asset($photoUrl) }}"
                     alt=""
                     class="absolute inset-0 h-full w-full object-cover z-0 sliderItem"
                     x-transition
                 >
-            @endfor
+            @endforeach
         </div>
         <div class="bg-motobleu flex items-center justify-center px-8">
             <div class="text-white max-w-4xl">
