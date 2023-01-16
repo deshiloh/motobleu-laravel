@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\AdresseEntreprise;
 use App\Models\AdresseReservation;
+use App\Models\Carousel;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Localisation;
@@ -59,5 +60,9 @@ class DatabaseSeeder extends Seeder
         Pilote::factory()->count(30)->create();
 
         Localisation::factory()->count(30)->create();
+
+        if (App::environment(['test'])) {
+            Carousel::factory()->count(20)->create();
+        }
     }
 }
