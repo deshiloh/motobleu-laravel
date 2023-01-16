@@ -263,6 +263,9 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
 
     Route::get('carousel', \App\Http\Livewire\Carousel\CarouselDataTable::class)
         ->name('carousel');
+
+    Route::get('/pages', \App\Http\Livewire\Pages\PageForm::class)
+        ->name('pages');
 });
 
 Route::prefix('/admin/select')->group(function () {

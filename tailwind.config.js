@@ -40,19 +40,8 @@ module.exports = {
             }
         },
     },
-    plugins: [
-        //require("daisyui")
-    ],
+    plugins: [],
     presets: [
         require('./vendor/wireui/wireui/tailwind.config.js')
     ],
-    /*daisyui: {
-        styled: true,
-        themes: ['corporate', 'business'],
-        base: true,
-        utils: true,
-        logs: true,
-        rtl: false,
-        darkTheme: "business",
-    },*/
 }
