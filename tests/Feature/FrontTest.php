@@ -8,6 +8,9 @@ use Tests\TestCase;
 
 class FrontTest extends TestCase
 {
+    use RefreshDatabase;
+    
+    protected bool $seed = true;
     /**
      * A basic feature test example.
      *
