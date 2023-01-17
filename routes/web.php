@@ -184,8 +184,11 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
         ->name('accounts.create');
     Route::get('accounts/{account}/edit', AccountForm::class)
         ->name('accounts.edit');
+    Route::get('accounts/{account}/entreprise', \App\Http\Livewire\Account\EntrepriseForm::class)
+        ->name('accounts.entreprise.edit');
     Route::resource('accounts', AccountController::class)
         ->except(['show', 'create', 'store', 'edit', 'update']);
+
 
     // ENTREPRISE
     Route::get('entreprises/create', EntrepriseForm::class)

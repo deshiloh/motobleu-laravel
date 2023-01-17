@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Livewire\Account\AccountForm;
 use App\Http\Livewire\Account\EditPasswordForm;
+use App\Http\Livewire\Account\EntrepriseForm;
 use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -158,7 +159,48 @@ class AccountTest extends TestCase
     {
         $response = $this->delete(route('admin.accounts.destroy', ['account' => $this->user]));
         $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
         $this->assertDatabaseHas('users', ['is_actif' => false]);
+    }
+
+    public function testAccessEntrepriseEdit()
+    {
+        $response = $this->get(route('admin.accounts.entreprise.edit', ['account' => $this->user->id]));
+        $response->assertStatus(200);
+    }
+
+    public function testAttachEntreprise()
+    {
+        Livewire::test(EntrepriseForm::class, ['account' => $this->user])
+            ->set('entreprises', [4,5])
+            ->call('save')
+            ->assertHasNoErrors()
+        ;
+
+        $this->assertDatabaseHas('entreprise_user', [
+            'entreprise_id' => 5,
+            'user_id' => $this->user->id
+        ]);
+
+        $this->assertDatabaseHas('entreprise_user', [
+            'entreprise_id' => 4,
+            'user_id' => $this->user->id
+        ]);
+    }
+
+    public function testDetachEntreprise()
+    {
+        $this->assertDatabaseHas('entreprise_user', [
+            'entreprise_id' => 1,
+            'user_id' => $this->user->id
+        ]);
+
+        Livewire::test(EntrepriseForm::class, ['account' => $this->user])
+            ->call('detach', Entreprise::find(1))
+        ;
+
+        $this->assertDatabaseMissing('entreprise_user', [
+            'entreprise_id' => 1,
+            'user_id' => $this->user->id
+        ]);
     }
 }

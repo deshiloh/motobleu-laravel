@@ -29,6 +29,7 @@
                         <div class="flex space-x-2">
                             <x-button.circle icon="pencil" primary href="{{ route('admin.accounts.edit', ['account' => $user->id]) }}" />
                             <x-button.circle icon="key" info href="{{ route('admin.accounts.password.edit', ['account' => $user->id]) }}" />
+                            <x-button.circle icon="office-building" emerald href="{{ route('admin.accounts.entreprise.edit', ['account' => $user->id]) }}"/>
                             <x-button.circle icon="trash" red route="{{ route('admin.accounts.destroy', ['account' => $user->id]) }}" />
                         </div>
                     </x-datatable.td>
