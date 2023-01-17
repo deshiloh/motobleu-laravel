@@ -9,9 +9,14 @@ class PageFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => 'Je suis un test',
-            'content' => 'Ceci est mon contenu',
-            'slug' => \Str::slug('Je suis un test')
+            'title' => [
+                'fr' => 'Je suis un test',
+                'en' => 'im a test'
+            ],
+            'content' => [
+                'fr' => \Faker\Factory::create('fr')->paragraph,
+                'en' => \Faker\Factory::create('en')->paragraph,
+            ]
         ];
     }
 }

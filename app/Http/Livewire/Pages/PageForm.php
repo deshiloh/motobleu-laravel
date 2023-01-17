@@ -4,9 +4,13 @@ namespace App\Http\Livewire\Pages;
 
 use App\Models\Page;
 use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class PageForm extends Component
 {
+    use Actions;
+
+    public bool $contextNewPage = false;
     public bool $editPageModal = false;
     public ?Page $selectedPage;
     public array $data = [];
@@ -33,6 +37,7 @@ class PageForm extends Component
         $this->selectedPage = $page;
         $this->updateData();
         $this->editPageModal = true;
+        $this->contextNewPage = false;
     }
 
     public function updateData()
@@ -50,10 +55,51 @@ class PageForm extends Component
         $this->selectedPage = new Page();
         $this->updateData();
         $this->editPageModal = true;
+        $this->contextNewPage = true;
     }
 
     public function savePage()
     {
         $this->validate();
+
+        try {
+            if ($this->contextNewPage) {
+                Page::create([
+                    'title' => [
+                        'fr' => $this->data['titleFR'],
+                        'en' => $this->data['titleEN']
+                    ],
+                    'content' => [
+                        'fr' => $this->data['contentFR'],
+                        'en' => $this->data['contentEN']
+                    ]
+                ]);
+            } else {
+                $this->selectedPage->update([
+                    'title' => [
+                        'fr' => $this->data['titleFR'],
+                        'en' => $this->data['titleEN']
+                    ],
+                    'content' => [
+                        'fr' => $this->data['contentFR'],
+                        'en' => $this->data['contentEN']
+                    ]
+                ]);
+            }
+
+            $this->notification()->success(
+                title: "Opération réussite",
+                description: $this->contextNewPage ? "La page a bien été créée." : "La page a bien été modifiée."
+            );
+        } catch (\Exception $exception) {
+            $this->notification()->error(
+                title: "Une erreur est survenue", description: "Erreur pendant la création de la page."
+            );
+
+            if (\App::environment(['local'])) {
+                ray()->exception($exception);
+            }
+            // TODO SENTRY
+        }
     }
 }

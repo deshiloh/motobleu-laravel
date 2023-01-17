@@ -188,7 +188,15 @@
     </div>
     <div class="h-64 bg-white py-5">
         <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 text-motobleu">
-            <div class="uppercase text-3xl font-medium">{{ __('Mentions légales') }}</div>
+            <div>
+                <div class="uppercase text-3xl font-medium mb-6">{{ __('Mentions légales') }}</div>
+                <div class="space-y-2">
+                    @foreach(\App\Models\Page::all() as $page)
+                        <a href="{{ route('pages', ['slug' => $page->slug]) }}" class="block">{{ $page->title }}</a>
+                    @endforeach
+                </div>
+            </div>
+
             <div>
                 <div class="text-3xl pb-6 uppercase font-medium">Informations</div>
                 <p>
