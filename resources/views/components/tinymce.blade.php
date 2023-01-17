@@ -38,6 +38,6 @@
     wire:ignore
 >
     <div>
-        <x-textarea x-ref="tinymce" {{ $attributes }} label="Message" wire:model.defer="email.message"/>
+        <x-textarea x-ref="tinymce" {{ $attributes }} />
     </div>
 </div>

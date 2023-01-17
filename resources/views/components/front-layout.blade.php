@@ -17,10 +17,10 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @livewireStyles()
 </head>
-<body class="antialiased min-h-screen @auth bg-gray-200 @else bg-motobleu @endauth">
+<body class="antialiased min-h-screen @if(Auth::check() || Route::currentRouteName() == 'pages') bg-gray-200 @else bg-motobleu @endif">
     <x-notifications />
     <div class="min-h-screen">
-        <nav class="@auth() bg-motobleu @elseauth bg-motobleu-dark @endauth text-white">
+        <nav class="@if(Auth::check() || Route::currentRouteName() == 'pages') bg-motobleu @elseauth bg-motobleu-dark @endauth text-white">
             <div class="px-4 sm:px-6 lg:px-8">
                 <div class="flex h-16 justify-between">
                     <div class="flex">

@@ -56,7 +56,7 @@ Route::get('/lang/{locale}', function (string $locale) {
     app()->setLocale($locale);
     session()->put('locale', $locale);
 
-    return redirect()->back();
+    return to_route('front.home');
 })->name('switch.local');
 
 /*
@@ -142,6 +142,13 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/reset-password', [LoginController::class, 'resetPassword'])
         ->name('password.update');
+
+    Route::get('/pages/{slug}', function (string $slug) {
+        $page = \App\Models\Page::where('slug->'.App::getLocale(), $slug)->firstOrFail();
+        return view('front.pages', [
+            'page' => $page
+        ]);
+    })->name('pages');
 });
 
 Route::get('/', function () {
@@ -263,6 +270,9 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
 
     Route::get('carousel', \App\Http\Livewire\Carousel\CarouselDataTable::class)
         ->name('carousel');
+
+    Route::get('/pages', \App\Http\Livewire\Pages\PageForm::class)
+        ->name('pages');
 });
 
 Route::prefix('/admin/select')->group(function () {
