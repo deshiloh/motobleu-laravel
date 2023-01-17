@@ -130,10 +130,14 @@ Route::get('/pilotes', function (Request $request) {
 Route::get('/entreprises', function (Request $request) {
     $search = $request->input('search');
     $selected = $request->input('selected');
+    $without = $request->input('exclude');
 
     return Entreprise::query()
         ->select('id', 'nom')
         ->orderBy('nom')
+        ->when($without, function (Builder $query, $excludes) {
+            $query->whereNotIn('id', $excludes);
+        })
         ->when(
             $search, function (Builder $query, $search) {
                 $query->where('nom', 'like', "%{$search}%");
