@@ -1,4 +1,5 @@
 <x-front-layout>
+
     <div class="flex h-full flex-col bg-motobleu absolute inset-0 z-10">
         <div class="flex flex-grow flex-col">
             <main class="flex flex-grow flex-col bg-motobleu">
