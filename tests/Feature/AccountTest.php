@@ -35,7 +35,8 @@ class AccountTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::find(1);
+        $this->user = User::factory()->create();
+        $this->user->assignRole('super admin');
 
         $this->actingAs($this->user);
     }
@@ -57,6 +58,39 @@ class AccountTest extends TestCase
     {
         $response = $this->get(route('admin.accounts.edit', ['account' => $this->user->id]));
         $response->assertStatus(200);
+    }
+
+    public function testRoleUserCantAccessIndexPage()
+    {
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('admin.accounts.index'));
+        $response->assertStatus(403);
+    }
+
+    public function testRoleUserCantAccessCreatePage()
+    {
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('admin.accounts.create'));
+        $response->assertStatus(403);
+    }
+
+    public function testRoleUserCantAccessEditPage()
+    {
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('admin.accounts.edit', ['account' => $this->user->id]));
+        $response->assertStatus(403);
     }
 
     public function testCreateAccountWithErrors(): void
@@ -189,18 +223,19 @@ class AccountTest extends TestCase
 
     public function testDetachEntreprise()
     {
+        $user = User::find(1);
         $this->assertDatabaseHas('entreprise_user', [
             'entreprise_id' => 1,
-            'user_id' => $this->user->id
+            'user_id' => $user->id
         ]);
 
-        Livewire::test(EntrepriseForm::class, ['account' => $this->user])
+        Livewire::test(EntrepriseForm::class, ['account' => $user])
             ->call('detach', Entreprise::find(1))
         ;
 
         $this->assertDatabaseMissing('entreprise_user', [
             'entreprise_id' => 1,
-            'user_id' => $this->user->id
+            'user_id' => $user->id
         ]);
     }
 }

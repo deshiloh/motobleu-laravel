@@ -30,8 +30,12 @@
                         </x-datatable.td>
                         <x-datatable.td>
                             <div class="space-x-2">
-                                <x-button.circle icon="pencil" primary href="{{ route('front.passager.edit', ['passager' => $passager->id]) }}"/>
-                                <x-button.circle icon="trash" red wire:click="deletePassenger({{ $passager }})"/>
+                                @can('edit passenger')
+                                    <x-button.circle icon="pencil" primary href="{{ route('front.passager.edit', ['passager' => $passager->id]) }}"/>
+                                @endcan
+                                @can('delete passenger')
+                                    <x-button.circle icon="trash" red wire:click="deletePassenger({{ $passager }})"/>
+                                @endcan
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>

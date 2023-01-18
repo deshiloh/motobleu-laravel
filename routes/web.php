@@ -96,7 +96,7 @@ Route::prefix('dashboard')->name('front.')->group(function () {
     });
 
     // DISPONIBLE UNIQUEMENT POUR ARDIAN
-    Route::prefix('/secretary')->name('user.')->group(function () {
+    Route::prefix('/secretary')->middleware('role:admin|super admin')->name('user.')->group(function () {
        Route::get('/list', \App\Http\Livewire\Front\Account\AccountDataTable::class)
            ->name('list');
        Route::get('/create', \App\Http\Livewire\Front\Account\AccountForm::class)
@@ -105,7 +105,7 @@ Route::prefix('dashboard')->name('front.')->group(function () {
             ->name('edit');
     });
 
-    Route::prefix('/cost-center')->name('cost_center.')->group(function () {
+    Route::prefix('/cost-center')->name('cost_center.')->middleware('role:admin|super admin')->group(function () {
         Route::get('/list', \App\Http\Livewire\Front\CostCenter\CostCenterDataTable::class)
             ->name('list');
         Route::get('/create', \App\Http\Livewire\Front\CostCenter\CostCenterForm::class)
@@ -114,7 +114,7 @@ Route::prefix('dashboard')->name('front.')->group(function () {
             ->name('edit');
     });
 
-    Route::prefix('/invoice')->name('invoice.')->group(function () {
+    Route::prefix('/invoice')->name('invoice.')->middleware('role:admin|super admin')->group(function () {
         Route::get('/list', \App\Http\Livewire\Front\Invoice\InvoiceDataTable::class)
             ->name('list');
         Route::get('/{facture}/show', [FacturationsController::class, 'show'])
@@ -166,7 +166,7 @@ Route::get('/', function () {
 | Admin Routes
 |--------------------------------------------------------------------------
 */
-Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function () {
+Route::prefix('/admin')->middleware(['auth', 'role:super admin'])->name('admin.')->group(function () {
 
     // Accueil de la partie admin
     Route::get('/dashboard', function () {

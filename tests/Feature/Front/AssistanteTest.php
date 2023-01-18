@@ -21,7 +21,11 @@ class AssistanteTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::find(1));
+        /** @var User $user */
+        $user = User::find(1);
+        $user->assignRole(['admin', 'super admin']);
+
+        $this->actingAs($user);
     }
 
     public function testAccessAssistantesList()

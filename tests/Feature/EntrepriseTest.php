@@ -32,7 +32,10 @@ class EntrepriseTest extends TestCase
     {
         parent::setUp();
 
+        /** @var USer $user */
         $user = User::find(1);
+        $user->assignRole('super admin');
+
         $this->actingAs($user);
 
         $this->entreprise = Entreprise::find(1);

@@ -2,9 +2,11 @@
     <x-front.card>
         <x-front.title>
             {{ __('Liste des secrétaires') }}
+            @can('create reservation')
             <x-slot:button>
                 <x-button primary icon="plus" label="{{ __('Ajouter une secrétaire') }}" href="{{ route('front.user.create') }}"/>
             </x-slot:button>
+            @endcan
         </x-front.title>
         <x-datatable>
             <x-slot:headers>
@@ -33,8 +35,12 @@
                         </x-datatable.td>
                         <x-datatable.td>
                             <div class="space-x-2">
-                                <x-button.circle primary icon="pencil" href="{{ route('front.user.edit', ['account' => $user->id]) }}"/>
-                                <x-button.circle red icon="trash" />
+                                @can('edit user')
+                                    <x-button.circle primary icon="pencil" href="{{ route('front.user.edit', ['account' => $user->id]) }}"/>
+                                @endcan
+                                @can('delete user')
+                                    <x-button.circle red icon="trash" />
+                                @endcan
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>

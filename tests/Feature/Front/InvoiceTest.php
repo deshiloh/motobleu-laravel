@@ -19,7 +19,11 @@ class InvoiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::find(1));
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole(['admin', 'super admin']);
+
+        $this->actingAs($user);
     }
 
     /**

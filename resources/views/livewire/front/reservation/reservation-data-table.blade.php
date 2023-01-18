@@ -43,8 +43,12 @@
                         </x-datatable.td>
                         <x-datatable.td>
                             <div class="flex space-x-2">
-                                <x-button.circle icon="pencil" info sm wire:click="openAskEditModal({{ $reservation }})" />
-                                <x-button.circle icon="x" red sm wire:click="openAskCancelModal({{ $reservation }})"/>
+                                @can('edit reservation')
+                                    <x-button.circle icon="pencil" info sm wire:click="openAskEditModal({{ $reservation }})" />
+                                @endcan
+                                @can('delete reservation')
+                                    <x-button.circle icon="x" red sm wire:click="openAskCancelModal({{ $reservation }})"/>
+                                @endcan
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>
