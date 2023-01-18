@@ -2238,6 +2238,10 @@ video {
   font-size: 2.25rem;
   line-height: 2.5rem;
 }
+.text-6xl {
+  font-size: 3.75rem;
+  line-height: 1;
+}
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
@@ -2627,6 +2631,10 @@ video {
 .text-negative-900 {
   --tw-text-opacity: 1;
   color: rgb(127 29 29 / var(--tw-text-opacity));
+}
+.text-motobleu-dark {
+  --tw-text-opacity: 1;
+  color: rgb(8 16 104 / var(--tw-text-opacity));
 }
 .antialiased {
   -webkit-font-smoothing: antialiased;
@@ -5492,10 +5500,6 @@ fieldset legend {
 
   .lg\:absolute {
     position: absolute;
-  }
-
-  .lg\:relative {
-    position: relative;
   }
 
   .lg\:inset-y-0 {
