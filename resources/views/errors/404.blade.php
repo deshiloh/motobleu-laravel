@@ -1,18 +1,18 @@
 <x-front-layout>
-    <div class="flex h-full flex-col bg-white absolute inset-0 z-10">
+    <div class="flex h-full flex-col bg-motobleu absolute inset-0 z-10">
         <div class="flex flex-grow flex-col">
-            <main class="flex flex-grow flex-col bg-white">
+            <main class="flex flex-grow flex-col bg-motobleu">
                 <div class="mx-auto flex w-full max-w-7xl flex-grow flex-col px-6 lg:px-8">
                     <div class="flex-shrink-0 pt-10 sm:pt-16"></div>
                     <div class="my-auto flex-shrink-0 py-16 sm:py-32">
-                        <p class="text-base font-semibold text-indigo-600">404</p>
-                        <h1 class="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">{{ __('Page non trouvée') }} !</h1>
+                        <p class="text-base font-semibold text-gray-600">404</p>
+                        <h1 class="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">{{ __('Page non trouvée') }} !</h1>
                         <p class="mt-2 text-base text-gray-500">{{ __('Désolé, nous n\'avons pas pu trouver la page que vous recherchiez.') }}</p>
                         <div class="mt-6">
                             <div class="text-6xl font-bold">
                                 {{ Cookie::get('locale') }}
                             </div>
-                            <a href="{{ route('front.home') }}" class="text-base font-medium text-indigo-600 hover:text-indigo-500">
+                            <a href="{{ route('front.home') }}" class="text-base font-medium text-white hover:text-gray-500 transition">
                                 {{ __('Retour à l\'accueil') }}
                                 <span aria-hidden="true"> &rarr;</span>
                             </a>
