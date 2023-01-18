@@ -56,7 +56,7 @@ Route::get('/lang/{locale}', function (string $locale) {
     app()->setLocale($locale);
     session()->put('locale', $locale);
 
-    return to_route('front.home');
+    return redirect()->back();
 })->name('switch.local');
 
 /*
@@ -65,6 +65,7 @@ Route::get('/lang/{locale}', function (string $locale) {
 |--------------------------------------------------------------------------
 */
 Route::prefix('dashboard')->name('front.')->group(function () {
+
     Route::get('/', function () {
         return view('front.dashboard');
     })->name('dashboard');
