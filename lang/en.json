@@ -19,5 +19,8 @@
     "Ou" : "Or",
     "Retour" : "Back",
     "Renseignez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe" : "Fill your email address and we will send you a link to reset your password",
-    "Envoyer" : "Send"
+    "Envoyer" : "Send",
+    "Page non trouvée" : "Page not found",
+    "Désolé, nous n'avons pas pu trouver la page que vous recherchiez." : "Sorry, we couldn’t find the page you’re looking for.",
+    "Retour à l'accueil" : "Go back home"
 }
