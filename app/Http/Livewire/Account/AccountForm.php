@@ -65,8 +65,6 @@ class AccountForm extends Component
         try {
             if ($this->user->exists) {
 
-                $this->handlePermission();
-
                 $this->user->update();
 
                 $this->notification()->success(
@@ -74,19 +72,18 @@ class AccountForm extends Component
                     $description = 'Le compte a bien été modifié'
                 );
 
-                $this->reset(['user.nom']);
             } else {
                 $this->user->password = Hash::make('test');
 
                 $this->user->save();
-
-                $this->handlePermission();
 
                 $this->notification()->success(
                     $title = 'Compte créé',
                     $description = 'Le compte a bien été créé'
                 );
             }
+
+            $this->handlePermission();
         } catch (\Exception $exception) {
             if (App::environment(['local'])) {
                 ray([
@@ -100,6 +97,7 @@ class AccountForm extends Component
     private function handlePermission()
     {
         if ($this->user->is_admin_ardian) {
+            $this->user->removeRole('user');
             $this->user->assignRole('admin');
         } else {
             $this->user->removeRole('admin');

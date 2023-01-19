@@ -4,7 +4,9 @@
             <x-front.title>
                 {{ __('Historique des réservations') }}
             </x-front.title>
-            <x-button primary label="{{ __('Nouvelle réservation') }}" icon="plus" href="{{ route('front.reservation.create') }}"/>
+            @can('create reservation')
+                <x-button primary label="{{ __('Nouvelle réservation') }}" icon="plus" href="{{ route('front.reservation.create') }}"/>
+            @endcan
         </div>
         <hr class="my-3">
         <x-datatable.search wire:model="search" />

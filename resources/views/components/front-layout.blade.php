@@ -54,6 +54,7 @@
                                         Administration
                                     </x-front.menu.item>
                                 @endrole
+
                                 @can('see reservation')
                                 <x-front.menu.item :active="in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['front.reservation.list', 'front.reservation.create'])" href="{{ route('front.reservation.list') }}">
                                     <x-slot:icon>

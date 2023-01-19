@@ -71,6 +71,7 @@ class RolePermissionForm extends Component
 
     public function changePermission()
     {
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         $this->currentRole->syncPermissions($this->permissionsForm);
     }
 }
