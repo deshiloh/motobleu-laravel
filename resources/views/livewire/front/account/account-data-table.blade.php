@@ -2,10 +2,10 @@
     <x-front.card>
         <x-front.title>
             {{ __('Liste des secrétaires') }}
-            @can('create reservation')
-            <x-slot:button>
-                <x-button primary icon="plus" label="{{ __('Ajouter une secrétaire') }}" href="{{ route('front.user.create') }}"/>
-            </x-slot:button>
+            @can('create user')
+                <x-slot:button>
+                    <x-button primary icon="plus" label="{{ __('Ajouter une secrétaire') }}" href="{{ route('front.user.create') }}"/>
+                </x-slot:button>
             @endcan
         </x-front.title>
         <x-datatable>

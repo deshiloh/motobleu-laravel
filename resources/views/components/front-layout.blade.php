@@ -54,6 +54,7 @@
                                         Administration
                                     </x-front.menu.item>
                                 @endrole
+                                @can('see reservation')
                                 <x-front.menu.item :active="in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['front.reservation.list', 'front.reservation.create'])" href="{{ route('front.reservation.list') }}">
                                     <x-slot:icon>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -62,7 +63,9 @@
                                         {{ __('Réservations') }}
                                     </x-slot:icon>
                                 </x-front.menu.item>
+                                @endcan
 
+                                @can('see address reservation')
                                 <x-front.menu.item :active="in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['front.address.list', 'front.address.create', 'front.address.edit'])" href="{{ route('front.address.list') }}">
                                     <x-slot:icon>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -71,7 +74,9 @@
                                     </x-slot:icon>
                                     {{ __('Adresses') }}
                                 </x-front.menu.item>
+                                @endcan
 
+                                @can('see passenger')
                                 <x-front.menu.item :active="in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['front.passager.list', 'front.passager.create', 'front.passager.edit'])" href="{{ route('front.passager.list') }}">
                                     <x-slot:icon>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -80,8 +85,9 @@
                                     </x-slot:icon>
                                     {{ __('Passagers') }}
                                 </x-front.menu.item>
+                                @endcan
 
-                                @role('admin|super admin')
+                                @can('see user')
                                 <x-front.menu.item :active="in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['front.user.list', 'front.user.create', 'front.user.edit'])" href="{{ route('front.user.list') }}">
                                     <x-slot:icon>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -90,9 +96,9 @@
                                     </x-slot:icon>
                                     {{ __('Assistantes') }}
                                 </x-front.menu.item>
-                                @endrole
+                                @endcan
 
-                                @role('admin|super admin')
+                                @can('see cost center')
                                 <x-front.menu.item :active="in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['front.cost_center.list', 'front.cost_center.create', 'front.cost_center.edit'])" href="{{ route('front.cost_center.list') }}">
                                     <x-slot:icon>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -101,9 +107,9 @@
                                     </x-slot:icon>
                                     {{ __('Cost Center') }}
                                 </x-front.menu.item>
-                                @endrole
+                                @endcan
 
-                                @role('admin|super admin')
+                                @can('see facture')
                                 <x-front.menu.item :active="in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['front.invoice.list', 'front.invoice.reservations'])" href="{{ route('front.invoice.list') }}">
                                     <x-slot:icon>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -112,7 +118,7 @@
                                     </x-slot:icon>
                                     {{ __('Factures') }}
                                 </x-front.menu.item>
-                                @endrole
+                                @endcan
                             @endauth
                         </div>
                     </div>

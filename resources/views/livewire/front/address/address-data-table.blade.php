@@ -2,7 +2,9 @@
     <x-front.card>
         <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-5">
             <x-front.title>{{ __('Liste des adresses') }}</x-front.title>
-            <x-button primary href="{{ route('front.address.create') }}" label="{{ __('Créer une adresse') }}" icon="plus"/>
+            @can('create address reservation')
+                <x-button primary href="{{ route('front.address.create') }}" label="{{ __('Créer une adresse') }}" icon="plus"/>
+            @endcan
         </div>
         <x-datatable.search wire:model="search"/>
         <x-datatable>

@@ -3,9 +3,11 @@
     <x-front.card>
         <x-front.title>
             {{ __('Liste des passagers') }}
-            <x-slot:button>
-                <x-button primary label="{{ __('Créer un passager') }}" icon="plus" href="{{ route('front.passager.create') }}"/>
-            </x-slot:button>
+            @can('create passenger')
+                <x-slot:button>
+                    <x-button primary label="{{ __('Créer un passager') }}" icon="plus" href="{{ route('front.passager.create') }}"/>
+                </x-slot:button>
+            @endcan
         </x-front.title>
 
         <x-datatable>
