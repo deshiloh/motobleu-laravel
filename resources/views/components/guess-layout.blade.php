@@ -6,15 +6,14 @@
     <title>{{ config('app.name') }}</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @livewireStyles()
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased h-full">
     {{ $slot }}
 <wireui:scripts/>
 <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
 <script defer src="https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js"></script>
-<script src="{{ asset('js/app.js') }}" defer></script>
 @livewireScripts()
 @stack('scripts')
 </body>

@@ -1,5 +1,5 @@
-require('./bootstrap');
-import 'alpinejs';
+//import './bootstrap'
+import 'alpinejs'
 
 
 // checkDarkMode();

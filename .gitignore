@@ -2,7 +2,7 @@
 /public/hot
 /public/storage
 /public/photos
-/public/js/tinymce
+/public/build/js
 /storage/*.key
 /vendor
 .env
