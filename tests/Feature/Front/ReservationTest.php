@@ -23,6 +23,12 @@ class ReservationTest extends TestCase
      */
     public function testAccessPageReservation(): void
     {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $this->actingAs($user);
+
         $response = $this->get(route('front.reservation.list'));
 
         $response->assertStatus(200);
