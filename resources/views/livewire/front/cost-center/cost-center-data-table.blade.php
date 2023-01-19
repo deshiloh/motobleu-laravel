@@ -32,13 +32,15 @@
                         </x-datatable.td>
                         <x-datatable.td>
                             <div class="space-x-2">
-                                <x-button.circle primary icon="pencil" href="{{ route('front.cost_center.edit', ['center' => $item]) }}"/>
+                                @can('edit cost center')
+                                    <x-button.circle primary icon="pencil" href="{{ route('front.cost_center.edit', ['center' => $item]) }}"/>
 
-                                @if($item->is_actif)
-                                    <x-button.circle warning icon="x" wire:click="toggleActifCostCenter({{ $item }})" />
-                                    @else
-                                    <x-button.circle positive icon="check" wire:click="toggleActifCostCenter({{ $item }})" />
-                                @endif
+                                    @if($item->is_actif)
+                                        <x-button.circle warning icon="x" wire:click="toggleActifCostCenter({{ $item }})" />
+                                        @else
+                                        <x-button.circle positive icon="check" wire:click="toggleActifCostCenter({{ $item }})" />
+                                    @endif
+                                @endcan
 
                             </div>
                         </x-datatable.td>

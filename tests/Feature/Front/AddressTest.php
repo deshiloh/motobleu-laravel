@@ -20,7 +20,11 @@ class AddressTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::factory()->create());
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $this->actingAs($user);
     }
 
     /**

@@ -21,7 +21,7 @@ class CostCenterTest extends TestCase
      *
      * @var bool
      */
-    protected $seed = true;
+    protected bool $seed = true;
 
     /**
      * @var Collection|HasFactory|Model|mixed
@@ -32,7 +32,10 @@ class CostCenterTest extends TestCase
     {
         parent::setUp();
 
+        /** @var User $user */
         $user = User::find(1);
+        $user->assignRole('super admin');
+
         $this->actingAs($user);
 
         $this->costCenter = CostCenter::find(1);

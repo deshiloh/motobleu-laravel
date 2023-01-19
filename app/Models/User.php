@@ -16,6 +16,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Scout\Searchable;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property boolean $is_actif
@@ -23,7 +24,7 @@ use Laravel\Scout\Searchable;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, CanResetPassword, Searchable;
+    use HasApiTokens, HasFactory, Notifiable, CanResetPassword, Searchable, HasRoles;
 
     protected $appends = ['full_name'];
 

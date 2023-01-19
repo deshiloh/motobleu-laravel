@@ -33,7 +33,10 @@ class PassagerTest extends TestCase
     {
         parent::setUp();
 
+        /** @var User $user */
         $user = User::find(1);
+        $user->assignRole('super admin');
+
         $this->actingAs($user);
 
         $this->passager = $user->passagers()->get()->first();

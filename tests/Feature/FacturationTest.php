@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Livewire;
+namespace Tests\Feature;
 
 use App\Http\Livewire\Facturation\EditionFacture;
 use App\Mail\BillCreated;

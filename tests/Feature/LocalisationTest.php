@@ -33,7 +33,10 @@ class LocalisationTest extends TestCase
     {
         parent::setUp();
 
-        $user = User::find(1);
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('super admin');
+
         $this->actingAs($user);
 
         $this->localisation = Localisation::find(1);

@@ -18,13 +18,30 @@ class CarouselTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->actingAs(User::find(1));
+
+        /** @var User $user */
+        $user = User::find(1);
+        $user->assignRole('super admin');
+
+        $this->actingAs($user);
     }
 
     public function testAccessCarouselPage(): void
     {
         $response = $this->get(route('admin.carousel'));
         $response->assertStatus(200);
+    }
+
+    public function testUserRoleCantAccess()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('admin.carousel'));
+        $response->assertStatus(403);
     }
 
     public function testAddCarouselWithErrors(): void

@@ -22,7 +22,10 @@ class AdresseReservationTest extends TestCase
     {
         parent::setUp();
 
+        /** @var User $user */
         $user = User::find(1);
+        $user->assignRole('super admin');
+
         $this->actingAs($user);
     }
 

@@ -21,7 +21,11 @@ class CostCenterTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::factory()->create());
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole(['admin', 'super admin']);
+
+        $this->actingAs($user);
     }
 
     public function testAccessListPage()

@@ -22,8 +22,10 @@
                         <x-datatable.td>{{ number_format($facture->montant_ttc, '2', ',', ' ') }} €</x-datatable.td>
                         <x-datatable.td>
                             <div class="space-x-2">
-                                <x-button.circle icon="eye" primary target="_blank" href="{{ route('front.invoice.show', ['facture' => $facture]) }}"/>
-                                <x-button.circle icon="view-list" positive href="{{ route('front.invoice.reservations', ['invoice' => $facture]) }}"/>
+                                @can('see facture')
+                                    <x-button.circle icon="eye" primary target="_blank" href="{{ route('front.invoice.show', ['facture' => $facture]) }}"/>
+                                    <x-button.circle icon="view-list" positive href="{{ route('front.invoice.reservations', ['invoice' => $facture]) }}"/>
+                                @endcan
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>

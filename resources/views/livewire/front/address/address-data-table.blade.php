@@ -2,7 +2,9 @@
     <x-front.card>
         <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-5">
             <x-front.title>{{ __('Liste des adresses') }}</x-front.title>
-            <x-button primary href="{{ route('front.address.create') }}" label="{{ __('Créer une adresse') }}" icon="plus"/>
+            @can('create address reservation')
+                <x-button primary href="{{ route('front.address.create') }}" label="{{ __('Créer une adresse') }}" icon="plus"/>
+            @endcan
         </div>
         <x-datatable.search wire:model="search"/>
         <x-datatable>
@@ -26,15 +28,20 @@
                         </x-datatable.td>
                         <x-datatable.td>
                             <div class="space-x-2">
-                                <x-button.circle primary icon="pencil" href="{{ route('front.address.edit', ['address' => $address->id]) }}"/>
+                                @can('edit address reservation')
+                                    <x-button.circle primary icon="pencil" href="{{ route('front.address.edit', ['address' => $address->id]) }}"/>
 
-                                @if($address->is_actif)
-                                    <x-button.circle warning icon="x" wire:click="toggleAddress({{ $address }})"/>
-                                    @else
-                                    <x-button.circle positive icon="check" wire:click="toggleAddress({{ $address }})"/>
-                                @endif
 
-                                <x-button.circle red icon="trash" wire:click="deleteAddress({{ $address }})"/>
+                                    @if($address->is_actif)
+                                        <x-button.circle warning icon="x" wire:click="toggleAddress({{ $address }})"/>
+                                        @else
+                                        <x-button.circle positive icon="check" wire:click="toggleAddress({{ $address }})"/>
+                                    @endif
+                                @endcan
+
+                                @can('delete address reservation')
+                                    <x-button.circle red icon="trash" wire:click="deleteAddress({{ $address }})"/>
+                                @endcan
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>

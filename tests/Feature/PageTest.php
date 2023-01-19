@@ -27,18 +27,15 @@ class PageTest extends TestCase
      */
     protected $seed = true;
 
-    /**
-     * @var Collection|HasFactory|Model|mixed
-     */
-    private $user;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->user = User::find(1);
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('super admin');
 
-        $this->actingAs($this->user);
+        $this->actingAs($user);
     }
 
     public function testAccessPageForm()
