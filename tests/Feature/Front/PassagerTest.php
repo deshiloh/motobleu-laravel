@@ -46,6 +46,34 @@ class PassagerTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testGuestNotAccess()
+    {
+        \Auth::logout();
+
+        $passager = Passager::find(1);
+
+        $response = $this->get(route('front.passager.list', ['passager' => $passager->id]));
+        $response->assertStatus(302);
+    }
+
+    public function testGuestNotAccessCreate()
+    {
+        \Auth::logout();
+
+        $response = $this->get(route('front.passager.create'));
+        $response->assertStatus(302);
+    }
+
+    public function testGuestNotAccessEdit()
+    {
+        \Auth::logout();
+
+        $passager = Passager::find(1);
+
+        $response = $this->get(route('front.passager.edit', ['passager' => $passager]));
+        $response->assertStatus(302);
+    }
+
     public function testCreatePassagerWithErrors(): void
     {
         Livewire::test(PassagerForm::class)

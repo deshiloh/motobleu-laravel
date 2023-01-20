@@ -51,6 +51,32 @@ class AddressTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testGuestNotAccess()
+    {
+        \Auth::logout();
+
+        $response = $this->get(route('front.address.list'));
+        $response->assertStatus(302);
+    }
+
+    public function testGuestNotAccessCreate()
+    {
+        \Auth::logout();
+
+        $response = $this->get(route('front.address.create'));
+        $response->assertStatus(302);
+    }
+
+    public function testGuestNotAccessEdit()
+    {
+        \Auth::logout();
+
+        $address = AdresseReservation::factory()->create();
+
+        $response = $this->get(route('front.address.edit', ['address' => $address->id]));
+        $response->assertStatus(302);
+    }
+
     public function testSaveWithErrors()
     {
         Livewire::test(AddressForm::class)

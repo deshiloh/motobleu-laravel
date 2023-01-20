@@ -34,6 +34,44 @@ class CostCenterTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testRoleUserCanNotAccess()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('front.cost_center.list'));
+        $response->assertStatus(403);
+    }
+
+    public function testRoleUserCanNotAccessEdit()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $this->actingAs($user);
+
+        $costCenter = CostCenter::factory()->create();
+
+        $response = $this->get(route('front.cost_center.edit', ['center' => $costCenter->id]));
+        $response->assertStatus(403);
+    }
+
+    public function testRoleUserCanNotAccessCreate()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('front.cost_center.create'));
+        $response->assertStatus(403);
+    }
+
     public function testToggleActifCostCenter()
     {
         /** @var CostCenter $costCenter */

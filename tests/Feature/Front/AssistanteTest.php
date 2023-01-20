@@ -41,6 +41,68 @@ class AssistanteTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testGuestNotAccess()
+    {
+        \Auth::logout();
+
+        $response = $this->get(route('front.user.list'));
+        $response->assertStatus(302);
+    }
+
+    public function testGuestNotAccessCreate()
+    {
+        \Auth::logout();
+
+        $response = $this->get(route('front.user.create'));
+        $response->assertStatus(302);
+    }
+
+    public function testGuestNotAccessEdit()
+    {
+        \Auth::logout();
+
+        $user = User::factory()->create();
+
+        $response = $this->get(route('front.user.edit', ['account' => $user->id]));
+        $response->assertStatus(302);
+    }
+
+    public function testRoleUserCanNotAccess()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('front.user.list'));
+        $response->assertStatus(403);
+    }
+
+    public function testRoleUserCanNotAccessCreate()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('front.user.create'));
+        $response->assertStatus(403);
+    }
+
+    public function testRoleUserCanNotAccessEdit()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('front.user.edit', ['account' => $user->id]));
+        $response->assertStatus(403);
+    }
+
     public function testCreateAccountWithErrors()
     {
         Livewire::test(AccountForm::class)

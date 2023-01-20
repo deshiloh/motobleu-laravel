@@ -34,6 +34,22 @@ class ReservationTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testGuestNotAccess()
+    {
+        \Auth::logout();
+
+        $response = $this->get(route('front.reservation.list'));
+        $response->assertStatus(302);
+    }
+
+    public function testGuestNotAccessCreate()
+    {
+        \Auth::logout();
+
+        $response = $this->get(route('front.reservation.create'));
+        $response->assertStatus(302);
+    }
+
     public function testSendEditEmailUpdateReservationWithErrors()
     {
         Mail::fake();
