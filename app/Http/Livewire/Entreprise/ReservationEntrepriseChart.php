@@ -28,7 +28,6 @@ class ReservationEntrepriseChart extends Component
 
         foreach ($period as $date)
         {
-            ray()->showQueries();
             $nbReservation = Reservation::where('entreprise_id', $this->entreprise->id)
                 ->whereMonth('pickup_date', $date->month)
                 ->whereYear('pickup_date', $date->year)

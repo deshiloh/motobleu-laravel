@@ -16,6 +16,17 @@ class ReservationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        /** @var User $user */
+        $user = User::find(1);
+        $user->assignRole('user');
+
+        $this->actingAs($user);
+    }
+
     protected bool $seed = true;
 
     /**
@@ -23,12 +34,6 @@ class ReservationTest extends TestCase
      */
     public function testAccessPageReservation(): void
     {
-        /** @var User $user */
-        $user = User::factory()->create();
-        $user->assignRole('user');
-
-        $this->actingAs($user);
-
         $response = $this->get(route('front.reservation.list'));
 
         $response->assertStatus(200);
