@@ -45,16 +45,23 @@
                     <x-datatable.td>{{ $reservation->localdisplay_from }}</x-datatable.td>
                     <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
                     <x-datatable.td>
+
                         @if($reservation->is_cancel && !$reservation->is_confirmed)
-                            <span class="bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900">Annulée</span>
+                            <x-front.badge danger>
+                                Annulée
+                            </x-front.badge>
                         @endif
 
                         @if($reservation->is_confirmed && !$reservation->is_cancel)
-                                <span class="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">Confirmée</span>
+                                <x-front.badge success>
+                                    Confirmée
+                                </x-front.badge>
                         @endif
 
                         @if(!$reservation->is_confirmed && !$reservation->is_cancel)
-                            <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-200 dark:text-yellow-900 whitespace-nowrap">à confirmer</span>
+                            <x-front.badge warning>
+                                à confirmer
+                            </x-front.badge>
                         @endif
                     </x-datatable.td>
                     <x-datatable.td>

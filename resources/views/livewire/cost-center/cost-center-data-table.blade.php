@@ -14,11 +14,9 @@
                 <x-datatable.tr>
                     <x-datatable.td>{{ $costcenter->nom }}</x-datatable.td>
                     <x-datatable.td>
-                        @if($costcenter->is_actif)
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800"> Oui </span>
-                        @else
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800"> Non </span>
-                        @endif
+                        <x-front.badge :success="$costcenter->is_actif" :danger="!$costcenter->is_actif">
+                            {{ $costcenter->is_actif ? "Oui" : "Non" }}
+                        </x-front.badge>
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">

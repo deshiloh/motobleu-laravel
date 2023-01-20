@@ -54,10 +54,6 @@
                 @endforelse
             </x-slot:body>
         </x-datatable>
-        @if($addresses->total() > $perPage)
-            <div class="pt-4">
-                {{ $addresses->links('components.datatable.pagination') }}
-            </div>
-        @endif
+        <x-front.pagination :pagination="$addresses" :per-page="$perPage" />
     </x-front.card>
 </div>
