@@ -1,11 +1,16 @@
 <div>
     <x-front.card>
-        <div class="flex justify-between">
-            <x-front.title>{{ __('Formulaire de réservation') }}</x-front.title>
-            <x-button flat label="{{ __('Retour à la liste') }}" href="{{ route('front.reservation.list') }}"/>
-        </div>
+
+        <x-front.title>
+            {{ __('Formulaire de réservation') }}
+            <x-slot:button>
+                <x-button flat label="{{ __('Retour à la liste') }}" href="{{ route('front.reservation.list') }}"/>
+            </x-slot:button>
+        </x-front.title>
+
         <x-errors class="mt-3"/>
     </x-front.card>
+
     <form wire:submit.prevent="saveReservation" wire:loading.class="opacity-25" wire:key="form_reservation">
         <x-front.card>
             <div class="flex flex-col space-y-3">
@@ -18,6 +23,7 @@
             </div>
         </x-front.card>
         <x-front.card>
+
             <x-select
                 label="{{ __('Entreprise rattachée') }} *"
                 placeholder="{{ __('Sélectionner une entreprise') }}"
@@ -26,6 +32,7 @@
                 option-value="id"
                 wire:model="reservation.entreprise_id"
             />
+
         </x-front.card>
         <x-front.card>
             <div class="space-y-3">
@@ -227,6 +234,7 @@
             </x-front.card>
 
             <x-front.card>
+
                 <div class="space-y-3">
                     <div class="dark:text-white text-xl">{{ __('Départ du retour') }} :</div>
                     <div class="flex mb-3 space-x-3">
@@ -278,6 +286,7 @@
             </x-front.card>
 
             <x-front.card>
+
                 <div class="space-y-3">
                     <div class="dark:text-white text-xl">{{ __('Arrivée du retour') }} :</div>
                     <div class="flex mb-3 space-x-3">
@@ -329,6 +338,7 @@
             </x-front.card>
 
             <x-front.card>
+
                 <div class="mb-4">
                     <x-textarea label="{{ __('Commentaire du retour') }}" placeholder="{{ __('Votre commentaire') }}..."
                                 wire:model="reservation_back.comment"/>
@@ -336,6 +346,7 @@
             </x-front.card>
         @endif
         <x-front.card>
+
             <div class="flex flex-col space-y-2 my-3">
                 <x-toggle wire:model="reservation.send_to_passager" md
                           label="{{ __('Envoyer par mail une invitation agenda au passager') }}"/>

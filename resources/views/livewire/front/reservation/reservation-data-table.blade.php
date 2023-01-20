@@ -1,14 +1,15 @@
 <div>
     <x-front.card>
-        <div class="flex items-center justify-between">
-            <x-front.title>
-                {{ __('Historique des réservations') }}
-            </x-front.title>
-            @can('create reservation')
-                <x-button primary label="{{ __('Nouvelle réservation') }}" icon="plus" href="{{ route('front.reservation.create') }}"/>
-            @endcan
-        </div>
-        <hr class="my-3">
+
+        <x-front.title>
+            {{ __('Historique des réservations') }}
+            <x-slot:button>
+                @can('create reservation')
+                    <x-button primary label="{{ __('Nouvelle réservation') }}" icon="plus" href="{{ route('front.reservation.create') }}"/>
+                @endcan
+            </x-slot:button>
+        </x-front.title>
+
         <x-datatable.search wire:model="search" />
         <x-datatable>
             <x-slot name="headers">
