@@ -10,7 +10,7 @@
                     wire:key="user"
                     label="Comptes"
                     placeholder="Rechercher un compte"
-                    :async-data="route('admin.api.user_in_entreprise')"
+                    :async-data="route('api.user_in_entreprise')"
                     option-label="full_name"
                     option-value="id"
                     wire:model="userId"
