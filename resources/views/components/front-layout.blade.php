@@ -14,8 +14,8 @@
     <script src="//unpkg.com/alpinejs" defer></script>
     @stack('styles')
     <script src="{{ asset('js/tinymce/tinymce.min.js') }}"></script>
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @livewireStyles()
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body @class([
     'antialiased min-h-screen h-full',
@@ -207,7 +207,6 @@
 
         {{ $slot }}
     </div>
-    <script src="{{ asset('js/app.js') }}" defer></script>
     @livewireScripts()
     @stack('scripts')
 </body>
