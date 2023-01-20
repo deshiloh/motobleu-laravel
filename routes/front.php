@@ -12,9 +12,8 @@ use App\Http\Livewire\Front\Reservation\ReservationDataTable;
 
 Route::prefix('dashboard')->name('front.')->group(function () {
 
-    Route::get('/', function () {
-        return view('front.dashboard');
-    })->name('dashboard');
+    Route::get('/', \App\Http\Livewire\Front\DashboardHome::class)
+        ->name('dashboard');
 
     Route::prefix('/reservation')->name('reservation.')->group(function () {
         Route::get('/', ReservationDataTable::class)
