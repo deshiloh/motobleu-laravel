@@ -55,5 +55,6 @@
                 @endforelse
             </x-slot:body>
         </x-datatable>
+        <x-front.pagination :pagination="$users" :per-page="$perPage" />
     </x-front.card>
 </div>

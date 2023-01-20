@@ -51,5 +51,6 @@
 
             </x-slot:body>
         </x-datatable>
+        <x-front.pagination :pagination="$passagers" :per-page="$perPage" />
     </x-front.card>
 </div>

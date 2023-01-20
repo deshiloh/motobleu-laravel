@@ -62,12 +62,9 @@
                 @endforelse
             </x-slot>
         </x-datatable>
-        @if($reservations->total() > $perPage)
-            <div class="pt-4">
-                {{ $reservations->links('components.datatable.pagination') }}
-            </div>
-        @endif
+        <x-front.pagination  :pagination="$reservations" :per-page="$perPage"/>
     </x-front.card>
+
     <x-modal.card title="{{ __('Demande de modification') }}" blur wire:model.defer="editAskCard">
         <form class="w-full" id="udpapteDemandeForm" wire:submit.prevent="sendUpdateReservationEmail">
             @if($selectedReservation)

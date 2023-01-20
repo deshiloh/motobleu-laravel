@@ -13,11 +13,9 @@
                 <x-datatable.tr>
                     <x-datatable.td>{{ $entreprise->nom }}</x-datatable.td>
                     <x-datatable.td>
-                        @if($entreprise->is_actif)
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800"> Oui </span>
-                            @else
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800"> Non </span>
-                        @endif
+                        <x-front.badge :success="$entreprise->is_actif" :danger="!$entreprise->is_actif">
+                            {{ $entreprise->is_actif ? "Oui" : "Non" }}
+                        </x-front.badge>
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
