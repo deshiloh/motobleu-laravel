@@ -216,4 +216,5 @@
             <a href="https://agencepoint.com/" class="hover:underline">Agence Point Com</a>
         </p>
     </footer>
+    @include('cookie-consent::index')
 </x-front-layout>
