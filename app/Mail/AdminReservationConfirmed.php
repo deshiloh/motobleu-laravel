@@ -6,13 +6,15 @@ use App\Models\Reservation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class AdminReservationConfirmed extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private Reservation $reservation;
+    public Reservation $reservation;
 
     /**
      * Create a new message instance.
@@ -24,15 +26,18 @@ class AdminReservationConfirmed extends Mailable
         $this->reservation = $reservation;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build()
+
+    public function envelope(): Envelope
     {
-        return $this->markdown('emails.reservation.admin.confirmed', [
-            'reservation' => $this->reservation
-        ]);
+        return new Envelope(
+            subject: 'MOTOBLEU / Réservation ' . $this->reservation->reference . ' a été confirmé'
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            markdown: 'emails.reservation.admin.confirmed'
+        );
     }
 }
