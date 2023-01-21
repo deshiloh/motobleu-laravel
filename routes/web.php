@@ -24,6 +24,9 @@ Route::get('/lang/{locale}', function (string $locale) {
     return redirect()->back();
 })->name('switch.local');
 
+Route::get('/account/new', \App\Http\Livewire\Front\NewAccountForm::class)
+    ->name('account.new');
+
 
 Route::get('/logout', [LoginController::class, 'logout'])
     ->name('logout');

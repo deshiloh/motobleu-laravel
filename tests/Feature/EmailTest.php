@@ -43,7 +43,7 @@ class EmailTest extends TestCase
         $mailable = new BillCreated($facture, 'test');
         $attachments = $mailable->attachments();
 
-        $mailable->assertHasSubject("Facture créée");
+        $mailable->assertHasSubject("MOTOBLEU / Facture créée");
         $mailable->assertSeeInHtml('test');
 
         $this->assertEquals($attachments[0]->as, $facture->reference.'.pdf');

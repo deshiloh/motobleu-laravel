@@ -2,8 +2,6 @@
 
 namespace App\Mail;
 
-use App\Models\Reservation;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -11,22 +9,20 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CancelReservationDemand extends Mailable
+class RegisterUserDemand extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public Reservation $reservation;
-    public User $user;
+    public array $datas;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Reservation $reservation, User $user)
+    public function __construct(array $datas)
     {
-        $this->reservation = $reservation;
-        $this->user = $user;
+        $this->datas = $datas;
     }
 
     /**
@@ -37,7 +33,7 @@ class CancelReservationDemand extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'MOTOBLEU / Demande d\'annulation de réservation ' . $this->reservation->reference,
+            subject: 'MOTOBLEU / Demande de création de compte',
         );
     }
 
@@ -49,7 +45,7 @@ class CancelReservationDemand extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.reservation.front.cancel_demande',
+            markdown: 'emails.users.front.register-demand',
         );
     }
 

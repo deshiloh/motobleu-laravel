@@ -38,7 +38,7 @@ class BillCreated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Facture créée"
+            subject: "MOTOBLEU / Facture créée"
         );
     }
 

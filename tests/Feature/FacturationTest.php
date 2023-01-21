@@ -145,7 +145,7 @@ class FacturationTest extends TestCase
         ;
 
         Mail::assertSent(BillCreated::class, function(Mailable $mail) {
-            return $mail->hasSubject('Facture créée');
+            return $mail->hasSubject('MOTOBLEU / Facture créée');
         });
     }
 }

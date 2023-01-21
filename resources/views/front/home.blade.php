@@ -8,7 +8,7 @@
                 <p class="text-center text-4xl text-white py-4">{{ __('Transport de personne à moto') }}</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
                     <div class="block sm:flex sm:justify-end">
-                        <a href="#" class="bg-motobleu block sm:inline-block px-10 py-3 rounded text-center text-white">
+                        <a href="{{ route('account.new') }}" class="bg-motobleu block sm:inline-block px-10 py-3 rounded text-center text-white">
                             {{ __('Nouveau client ?') }} <br>
                             <span class="font-bold">{{ __('Enregistrez-vous') }}</span>
                         </a>
