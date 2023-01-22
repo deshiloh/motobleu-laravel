@@ -17,7 +17,6 @@
             <x-input label="{{ __('Code postal') }}" wire:model.defer="user.code_postal"/>
             <x-input label="{{ __('Ville') }}" wire:model.defer="user.ville"/>
             <x-toggle md label="{{ __('Compte actif') }}" wire:model.defer="user.is_actif" />
-            {{-- TODO Test entreprise éligibilité --}}
             <x-toggle md label="{{ __('Compte admin Ardian') }}" wire:model.defer="user.is_admin_ardian" />
             <x-button type="submit" label="{{ __('Enregistrer') }}" wire:loading.class="disabled" primary sm />
         </form>

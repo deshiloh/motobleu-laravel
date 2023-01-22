@@ -1,3 +1,7 @@
+@php
+    $billSettings = app(\app\Settings\BillSettings::class);
+ray(Auth::user()->entreprises()->first())
+@endphp
 <div>
     <x-front.card>
         <x-front.title>
@@ -12,26 +16,26 @@
             <x-input type="tel" label="{{ __('Téléphone bureau') }}" wire:model.defer="passager.telephone"/>
             <x-input label="{{ __('Téléphone portable') }}" wire:model.defer="passager.portable" />
 
-            {{-- TODO Entreprise éligible au coster center et type facturation --}}
-
-            <x-select
-                label="{{ __('Cost Center') }}"
-                placeholder="{{ __('Sélectionner un Cost Center') }}"
-                :async-data="route('api.cost_center')"
-                option-label="nom"
-                option-value="id"
-                option-description="entreprise.nom"
-                wire:model.defer="passager.cost_center_id"
-            />
-            <x-select
-                label="{{ __('Type Facturation') }}"
-                placeholder="{{ __('Sélectionner un type de facturation') }}"
-                :async-data="route('api.type_facturation')"
-                option-label="nom"
-                option-value="id"
-                option-description="entreprise.nom"
-                wire:model.defer="passager.type_facturation_id"
-            />
+            @if(in_array(Auth::user()->entreprises()->first()->id, $billSettings->entreprises_cost_center_facturation))
+                <x-select
+                    label="{{ __('Cost Center') }}"
+                    placeholder="{{ __('Sélectionner un Cost Center') }}"
+                    :async-data="route('api.cost_center')"
+                    option-label="nom"
+                    option-value="id"
+                    option-description="entreprise.nom"
+                    wire:model.defer="passager.cost_center_id"
+                />
+                <x-select
+                    label="{{ __('Type Facturation') }}"
+                    placeholder="{{ __('Sélectionner un type de facturation') }}"
+                    :async-data="route('api.type_facturation')"
+                    option-label="nom"
+                    option-value="id"
+                    option-description="entreprise.nom"
+                    wire:model.defer="passager.type_facturation_id"
+                />
+            @endif
             <x-button type="submit" primary sm label="{{ __('Enregistrer') }}" wire:loading.attr="disabled"/>
         </form>
     </x-front.card>

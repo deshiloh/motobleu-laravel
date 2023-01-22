@@ -10,6 +10,7 @@ use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Reservation;
 use App\Services\ExportService;
+use app\Settings\BillSettings;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -453,9 +454,9 @@ class EditionFacture extends Component
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function exportAction()
+    public function exportAction(BillSettings $billSettings)
     {
-        if (in_array($this->entreprise->nom, config('motobleu.export.entrepriseEnableForXlsExport'))) {
+        if (in_array($this->entreprise->id, $billSettings->entreprises_xls_file)) {
             // Export en XLS
             return Excel::download(new ReservationsExport($this->selectedYear, $this->selectedMonth, $this->entreprise), 'reservations.xlsx');
         } else {

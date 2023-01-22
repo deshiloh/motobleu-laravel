@@ -42,8 +42,11 @@ class ReservationObserver
 
             foreach ($recipients as $recipient) {
                 // Envois au passager et secrétaire si sélectionnés
-                Mail::to($recipient)->send(new ReservationCreated($reservation));
+                Mail::to($recipient)->send(new ReservationCreated($reservation, false));
             }
+
+            // Envoi de l'email à l'admin
+            Mail::to(config('mail.admin.address'))->send(new ReservationCreated($reservation, true));
 
             $this->calendarService->createEventForMotobleu($reservation);
             $this->calendarService->createEventForSecretary($reservation);

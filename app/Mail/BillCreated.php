@@ -6,6 +6,7 @@ use App\Exports\ReservationsExport;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Services\InvoiceService;
+use app\Settings\BillSettings;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -38,7 +39,7 @@ class BillCreated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "MOTOBLEU / Facture créée"
+            subject: "MOTOBLEU / Votre facturation (" . $this->facture->month . " / " . $this->facture->year . ")"
         );
     }
 
@@ -48,6 +49,7 @@ class BillCreated extends Mailable
      */
     public function attachments(): array
     {
+        $billSettings = app(BillSettings::class);
         $attachments = [];
         $invoice = InvoiceService::generateInvoice($this->facture);
         $entreprise = $this->getEntreprise();
@@ -57,7 +59,7 @@ class BillCreated extends Mailable
             $this->facture->reference.'.pdf'
         )->withMime('application/pdf');
 
-        if (in_array($entreprise->nom, config('motobleu.export.entrepriseEnableForXlsExport'))) {
+        if (in_array($entreprise->id, $billSettings->entreprises_xls_file)) {
             $excel = Excel::raw(new ReservationsExport(
                 $this->facture->year,
                 $this->facture->month,

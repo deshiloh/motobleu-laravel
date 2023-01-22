@@ -36,7 +36,7 @@ class UpdateReservationDemand extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Demande de modification de réservation',
+            subject: 'MOTOBLEU / Demande de modification de la réservation ' . $this->reservation->reference,
         );
     }
 
@@ -50,15 +50,5 @@ class UpdateReservationDemand extends Mailable
         return new Content(
             markdown: 'emails.reservation.front.edit_demande',
         );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array
-     */
-    public function attachments(): array
-    {
-        return [];
     }
 }

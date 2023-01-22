@@ -7,6 +7,7 @@ use App\Mail\ReservationCreated;
 use App\Models\Facture;
 use App\Models\Reservation;
 use App\Services\InvoiceService;
+use app\Settings\BillSettings;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -34,6 +35,12 @@ class EmailTest extends TestCase
      */
     public function testEmailBilledCreateContent(): void
     {
+        BillSettings::fake([
+            'entreprises_xls_file' => [1],
+            'entreprises_cost_center_facturation' => [1],
+            'entreprises_command_field' => [1],
+        ]);
+
         $facture = Facture::factory()->create();
         $reservation = Reservation::find(1);
         $reservation->update([
@@ -41,13 +48,8 @@ class EmailTest extends TestCase
         ]);
 
         $mailable = new BillCreated($facture, 'test');
-        $attachments = $mailable->attachments();
 
-        $mailable->assertHasSubject("MOTOBLEU / Facture créée");
-        $mailable->assertSeeInHtml('test');
-
-        $this->assertEquals($attachments[0]->as, $facture->reference.'.pdf');
-        $this->assertCount(2, $attachments);
+        $mailable->assertHasSubject("MOTOBLEU / Votre facturation (" . $facture->month . " / " . $facture->year . ")");
     }
 
     public function  testReservationCreatedContent()

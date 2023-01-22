@@ -44,7 +44,7 @@ class Passager extends Model
     /**
      * @return BelongsTo
      */
-    public function facturation(): BelongsTo
+    public function typeFacturation(): BelongsTo
     {
         return $this->belongsTo(TypeFacturation::class);
     }
