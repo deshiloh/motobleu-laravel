@@ -150,4 +150,7 @@ Route::prefix('/admin')->name('admin.')->group(function () {
 
     Route::get('/permissions', \App\Http\Livewire\Admin\PermissionForm::class)
         ->name('permissions');
+
+    Route::get('/settings', \App\Http\Livewire\Settings\SettingsForm::class)
+        ->name('settings');
 });

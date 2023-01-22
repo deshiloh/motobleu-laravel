@@ -16,14 +16,6 @@ class TypeFacturation extends Model
 
     protected $guarded = [];
 
-    /**
-     * @return BelongsTo
-     */
-    public function entreprise(): BelongsTo
-    {
-        return $this->belongsTo(Entreprise::class);
-    }
-
     public function toSearchableArray(): array
     {
         return [

@@ -4,7 +4,9 @@ namespace App\Exports;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
 use App\Models\Entreprise;
+use App\Models\Passager;
 use App\Models\Reservation;
+use app\Settings\BillSettings;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -44,9 +46,11 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
     private string $ttcValueCoordinate;
     private Entreprise $entreprise;
     private Carbon|false $datePeriod;
+    private BillSettings $billSettings;
 
     public function __construct(int $year, int $month, Entreprise $entreprise)
     {
+        $this->billSettings = app(BillSettings::class);
         $this->datePeriod = Carbon::create($year, $month, '1');
 
         $htTextColumn = 'H';
@@ -58,7 +62,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         $this->entreprise = $entreprise;
         $this->reservations = $this->getReservations();
 
-        if (in_array($this->entreprise->nom, config('motobleu.export.entreprisesCode'))) {
+        if (in_array($this->entreprise->id, $this->billSettings->entreprises_command_field)) {
             $this->priceColumn = 'J';
             $this->lastColumn = 'J';
 
@@ -67,7 +71,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             $ttcTextColumn = 'I';
         }
 
-        if (in_array($this->entreprise->nom, config('motobleu.export.entreprisesFacturation'))) {
+        if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
             $this->lastColumn = 'K';
         }
 
@@ -208,13 +212,13 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             'Prix TTC (en €)',
         ];
 
-        if (in_array($this->entreprise->nom, config('motobleu.export.entreprisesCode'))) {
+        if (in_array($this->entreprise->id, $this->billSettings->entreprises_command_field)) {
             array_splice($headers, 1, 0, [
                 'Code'
             ]);
         }
 
-        if (in_array($this->entreprise->nom, config('motobleu.export.entreprisesFacturation'))) {
+        if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
             array_push($headers, 'Facturation', 'COST CENTER');
         }
 
@@ -339,14 +343,14 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             $row->tarif,
         ];
 
-        if (in_array($this->entreprise->nom, config('motobleu.export.entreprisesCode'))) {
+        if (in_array($this->entreprise->id, $this->billSettings->entreprises_command_field)) {
             array_splice($datas, 1, 0, [
                 'CODE'
             ]);
         }
 
-        if (in_array($this->entreprise->nom, config('motobleu.export.entreprisesFacturation'))) {
-            array_push($datas, 'test', 'trest');
+        if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
+            array_push($datas, $row->passager->typeFacturation->nom, $row->passager->costCenter->nom);
         }
 
         return $datas;

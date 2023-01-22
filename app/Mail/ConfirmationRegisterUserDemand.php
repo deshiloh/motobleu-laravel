@@ -13,16 +13,14 @@ class ConfirmationRegisterUserDemand extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public array $datas;
-
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(array $datas)
+    public function __construct()
     {
-        $this->datas = $datas;
+        //
     }
 
     /**
