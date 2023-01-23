@@ -4,6 +4,8 @@ namespace App\Http\Livewire\Settings;
 
 use App\Mail\CancelReservationDemand;
 use App\Mail\ConfirmationRegisterUserDemand;
+use App\Mail\PiloteAttached;
+use App\Mail\PiloteDetached;
 use App\Mail\RegisterUserDemand;
 use App\Mail\ReservationCanceled;
 use App\Mail\ReservationConfirmed;
@@ -108,6 +110,14 @@ class EmailSettingsForm extends Component
             case $this->cleanClassName(UpdateReservationDemand::class) :
                 Mail::to($this->emailTest)
                     ->send(new UpdateReservationDemand(Reservation::find(1), "Ici sera affiché le contenu du message renseigné par l'assistante."));
+                break;
+            case $this->cleanClassName(PiloteAttached::class) :
+                Mail::to($this->emailTest)
+                    ->send(new PiloteAttached(Reservation::find(1)));
+                break;
+            case $this->cleanClassName(PiloteDetached::class) :
+                Mail::to($this->emailTest)
+                    ->send(new PiloteDetached(Reservation::find(1)));
                 break;
             default :
                 ray('NON');

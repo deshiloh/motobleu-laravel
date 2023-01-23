@@ -85,6 +85,20 @@
                         </div>
                         <x-button label="Envoyer le test" wire:click="sendEmailTest('{{ \App\Mail\UpdateReservationDemand::class }}')"/>
                     </li>
+                    <li class="flex items-center justify-between py-4">
+                        <div class="flex flex-col">
+                            <p class="text-sm font-medium text-gray-900" id="privacy-option-3-label">Pilote ajouté à une réservation</p>
+                            <p class="text-sm text-gray-500" id="privacy-option-3-description">Email envoyé lorsque un pilote est ajouté dans une réservation</p>
+                        </div>
+                        <x-button label="Envoyer le test" wire:click="sendEmailTest('{{ \App\Mail\PiloteAttached::class }}')"/>
+                    </li>
+                    <li class="flex items-center justify-between py-4">
+                        <div class="flex flex-col">
+                            <p class="text-sm font-medium text-gray-900" id="privacy-option-3-label">Pilote retiré d'une réservation</p>
+                            <p class="text-sm text-gray-500" id="privacy-option-3-description">Email envoyé lorsque pilote est retiré d'une réservation (modification du pilote ou annulation de la réservation)</p>
+                        </div>
+                        <x-button label="Envoyer le test" wire:click="sendEmailTest('{{ \App\Mail\PiloteDetached::class }}')"/>
+                    </li>
                 </ul>
             </div>
             <div class="mt-4 flex justify-end py-4 px-4 sm:px-6 space-x-2">

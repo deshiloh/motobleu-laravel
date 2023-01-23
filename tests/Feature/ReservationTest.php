@@ -2,8 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Events\ReservationCanceled;
 use App\Http\Livewire\Reservation\ReservationForm;
 use App\Http\Livewire\Reservation\ReservationShow;
+use App\Mail\PiloteAttached;
+use App\Mail\PiloteDetached;
 use App\Models\AdresseReservation;
 use App\Models\Localisation;
 use App\Models\Passager;
@@ -529,8 +532,10 @@ class ReservationTest extends TestCase
         ;
     }
 
-    public function testReservationConfirmOK(): void
+    public function testReservationConfirmOk(): void
     {
+        \Mail::fake();
+
         $reservation = Reservation::find(1);
         $pilote = Pilote::find(1);
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
@@ -539,11 +544,16 @@ class ReservationTest extends TestCase
             ->assertHasNoErrors()
         ;
         $this->assertTrue(Reservation::where('is_confirmed', true)->exists());
+
+        \Mail::assertSent(PiloteAttached::class);
     }
 
-    public function testReservationCancelOK(): void
+    public function testReservationCancelOk(): void
     {
+        \Event::fake();
+
         $reservation = Reservation::find(1);
+
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
             ->call('cancelAction')
             ->assertHasNoErrors()
@@ -552,5 +562,23 @@ class ReservationTest extends TestCase
             ['is_confirmed', '=', false],
             ['is_cancel', '=', true]
         ])->exists());
+
+        \Event::assertDispatched(ReservationCanceled::class);
+    }
+
+    public function testUpdatePiloteOk()
+    {
+        \Mail::fake();
+
+        $reservation = Reservation::find(1);
+        $newPilote = Pilote::factory()->create();
+
+        Livewire::test(ReservationShow::class, ['reservation' => $reservation])
+            ->set('reservation.pilote_id', $newPilote->id)
+            ->call('updatePilote')
+            ->assertHasNoErrors();
+
+        \Mail::assertSent(PiloteDetached::class);
+        \Mail::assertSent(PiloteAttached::class);
     }
 }

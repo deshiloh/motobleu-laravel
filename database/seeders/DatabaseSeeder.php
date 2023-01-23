@@ -70,8 +70,16 @@ class DatabaseSeeder extends Seeder
             ])
                 ->for(Facture::factory()->create())
                 ->for($passager)
+                ->for(Pilote::factory()->create())
                 ->create()
             ;
+
+            Reservation::factory([
+                'is_confirmed' => false,
+                'entreprise_id' => $user->entreprises()->first()->id,
+            ])
+                ->for($passager)
+                ->create();
         }
 
         Pilote::factory()->count(30)->create();
