@@ -100,10 +100,14 @@ class GoogleCalendarService
         return $event;
     }
 
-    public function deleteEvent(Reservation $reservation): void
+    public function deleteEvent(Reservation $reservation): bool
     {
         try {
             if (App::environment(['local', 'prod'])) {
+                if (is_null($reservation->event_id)) {
+                    return false;
+                }
+
                 $event = Event::find($reservation->event_id);
                 $event->delete();
 
@@ -122,7 +126,10 @@ class GoogleCalendarService
                 ])->exception($exception);
             }
             // TODO Sentry en production
+            return false;
         }
+
+        return true;
     }
 
     /**

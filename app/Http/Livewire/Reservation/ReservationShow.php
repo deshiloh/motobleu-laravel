@@ -124,4 +124,19 @@ Cordialement.";
 
         ReservationCanceled::dispatch($this->reservation);
     }
+
+    public function cancelBilledAction()
+    {
+        $this->reservation->is_cancel = false;
+        $this->reservation->is_confirmed = true;
+        $this->reservation->is_cancel_pay = true;
+
+        $this->reservation->update([
+            'is_cancel' => false,
+            'is_confirmed' => false,
+            'is_cancel_pay' => true
+        ]);
+
+        ReservationCanceled::dispatch($this->reservation);
+    }
 }
