@@ -13,7 +13,6 @@ use App\Mail\ReservationCreated;
 use App\Mail\UpdateReservationDemand;
 use App\Mail\UserCreated;
 use App\Models\Reservation;
-use app\Settings\MailSettings;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use WireUi\Traits\Actions;
@@ -30,38 +29,11 @@ class EmailSettingsForm extends Component
         'fromAddress' => 'required|email'
     ];
 
-    public function mount(MailSettings $mailSettings)
-    {
-        $mailSettings1 = $mailSettings;
-
-        $this->fromName = $mailSettings1->from_name;
-        $this->fromAddress = $mailSettings1->from_address;
-    }
-
     public function render()
     {
         return view('livewire.settings.email-settings-form');
     }
-
-    public function save(MailSettings $mailSettings)
-    {
-        $this->validate();
-
-        try {
-            $mailSettings->from_name = $this->fromName;
-            $mailSettings->from_address = $this->fromAddress;
-            $mailSettings->save();
-
-            $this->notification()->success(
-                title: "Opération réussite",
-                description: "Sauvegarde des paramètres emails réussite."
-            );
-        } catch (\Exception $exception) {
-
-        }
-
-    }
-
+    
     public function sendEmailTest($email)
     {
         $this->validate([

@@ -1,21 +1,5 @@
 <div class="pt-6">
     <form class="divide-y divide-gray-200 lg:col-span-9" wire:submit.prevent="save">
-        <!-- Profile section -->
-        <div class="py-6 px-4 sm:p-6 lg:pb-8">
-            <div>
-                <h2 class="text-lg font-medium leading-6 text-gray-900">Email administateur</h2>
-                <p class="mt-1 text-sm text-gray-500">Paramètres pour le FROM à l'envoie d'email, permet d'afficher à la personne qui reçoit les emails qui vous êtes, essentiel pour ne pas être considéré comme SPAM</p>
-            </div>
-            <div class="mt-6 grid grid-cols-12 gap-6">
-                <div class="col-span-12 sm:col-span-7">
-                    <x-input label="Nom" placeholder="Entrez le nom à afficher" wire:model.defer="fromName"/>
-                </div>
-                <div class="col-span-12 sm:col-span-7">
-                    <x-input label="Adresse email" placeholder="Entrez votre adresse email" wire:model.defer="fromAddress"/>
-                </div>
-            </div>
-        </div>
-
         <!-- Privacy section -->
         <div class="divide-y divide-gray-200 pt-6">
             <div class="px-4 sm:px-6">
