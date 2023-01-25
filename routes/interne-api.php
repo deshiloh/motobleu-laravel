@@ -112,8 +112,8 @@ Route::get('/entreprises_users', function (Request $request) {
         ->orderBy('entreprises.nom')
         ->when(
             $search, function (Builder $query, $search) {
-            $query->where('entreprises.nom', 'like', "%$search%");
-        }
+                $query->where('entreprises.nom', 'like', "%$search%");
+            }
         )
         ->when(
             $selected,

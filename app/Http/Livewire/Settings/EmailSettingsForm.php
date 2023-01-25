@@ -10,6 +10,7 @@ use App\Mail\RegisterUserDemand;
 use App\Mail\ReservationCanceled;
 use App\Mail\ReservationConfirmed;
 use App\Mail\ReservationCreated;
+use App\Mail\ReservationUpdated;
 use App\Mail\UpdateReservationDemand;
 use App\Mail\UserCreated;
 use App\Models\Reservation;
@@ -20,14 +21,8 @@ use WireUi\Traits\Actions;
 class EmailSettingsForm extends Component
 {
     use Actions;
-    public string $fromName = "";
-    public string $fromAddress = "";
     public string $emailTest = "test@test.com";
-
-    protected array $rules = [
-        'fromName' => 'required',
-        'fromAddress' => 'required|email'
-    ];
+    public bool $adminMode = false;
 
     public function render()
     {
@@ -37,7 +32,8 @@ class EmailSettingsForm extends Component
     public function sendEmailTest($email)
     {
         $this->validate([
-            'emailTest' => 'required|email'
+            'emailTest' => 'required|email',
+            'adminMode' => 'boolean'
         ]);
 
         switch ($email) {
@@ -65,7 +61,11 @@ class EmailSettingsForm extends Component
                 break;
             case $this->cleanClassName(ReservationCreated::class) :
                 \Mail::to($this->emailTest)
-                    ->send(new ReservationCreated(Reservation::find(1)));
+                    ->send(new ReservationCreated(Reservation::find(1), $this->adminMode));
+                break;
+            case $this->cleanClassName(ReservationUpdated::class) :
+                \Mail::to($this->emailTest)
+                    ->send(new ReservationUpdated(Reservation::find(1)));
                 break;
             case $this->cleanClassName(ReservationConfirmed::class) :
                 Mail::to($this->emailTest)

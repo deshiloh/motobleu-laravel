@@ -1,14 +1,17 @@
 @component('mail::message')
 
 @if($reservation->reservationBack()->exists())
-Bonjour,
-Vos réservations N° <strong>{{ $reservation->reference }}</strong> et N° <strong>{{ $reservation->reservationBack->reference }}</strong> sont en cours de validation.<br>
-Vous allez recevoir prochainement un email de confirmation.
+Bonjour, <br>
+Deux nouvelles réservations viennent d'être créées N° <strong>{{ $reservation->reference }}</strong> et N° <strong>{{ $reservation->reservationBack->reference }}</strong><br>
+Vous pouvez les voir / modifier en cliquant sur le lien ci-dessous.
     @else
-Bonjour,
-Votre réservation N° <strong>{{ $reservation->reference }}</strong> est en cours de validation.<br>
-Vous allez recevoir prochainement un email de confirmation.
+Bonjour, <br>
+Une nouvelle réservation vient d'être créée N° <strong>{{ $reservation->reference }}</strong> <br>
 @endif
+
+<x-mail::button :url="route('admin.reservations.show', ['reservation' => $reservation->id])">
+    Voir / Modifier la réservation
+</x-mail::button>
 
 @if($reservation->reservationBack()->exists())
 <strong><u>Récapitulatif :</u></strong>
