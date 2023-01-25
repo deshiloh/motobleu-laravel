@@ -33,7 +33,7 @@ class EmailSettingsForm extends Component
     {
         return view('livewire.settings.email-settings-form');
     }
-    
+
     public function sendEmailTest($email)
     {
         $this->validate([
