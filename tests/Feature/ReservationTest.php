@@ -7,6 +7,7 @@ use App\Http\Livewire\Reservation\ReservationForm;
 use App\Http\Livewire\Reservation\ReservationShow;
 use App\Mail\PiloteAttached;
 use App\Mail\PiloteDetached;
+use App\Mail\ReservationUpdated;
 use App\Models\AdresseReservation;
 use App\Models\Localisation;
 use App\Models\Passager;
@@ -52,6 +53,13 @@ class ReservationTest extends TestCase
     public function testAcessCreateReservationForm()
     {
         $response = $this->get(route('admin.reservations.create'));
+        $response->assertStatus(200);
+    }
+
+    public function testAccessEditPage()
+    {
+        $reservation = Reservation::find(1);
+        $response = $this->get(route('admin.reservations.edit', ['reservation' => $reservation->id]));
         $response->assertStatus(200);
     }
 
@@ -580,5 +588,22 @@ class ReservationTest extends TestCase
 
         \Mail::assertSent(PiloteDetached::class);
         \Mail::assertSent(PiloteAttached::class);
+    }
+
+    public function testReservationEditWihPiloteSuccess()
+    {
+        \Mail::fake();
+
+        $reservation = Reservation::find(1);
+        Livewire::test(ReservationForm::class, ['reservation' => $reservation])
+            ->set('reservation.commande', 'test')
+            ->call('saveReservation')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('reservations', [
+            'commande' => 'test'
+        ]);
+
+        \Mail::assertSent(ReservationUpdated::class);
     }
 }
