@@ -4,12 +4,12 @@
         <x-slot:right>
             <div class="flex items-center justify-center space-x-2">
                 @if(!is_null($reservation->event_id))
-                    <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info />
+                    <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled"/>
                 @endif
-                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" />
+                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled"/>
                 @if(!$reservation->is_cancel)
-                    <x-button warning label="Annuler mais facturer" icon="credit-card"/>
-                    <x-button wire:click="cancelAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction"/>
+                    <x-button warning label="Annuler mais facturer" icon="credit-card" wire:loading.attr="disabled" wire:click="cancelBilledAction" spinner="cancelBilledAction"/>
+                    <x-button wire:click="cancelAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction" spinner="cancelAction"/>
                 @endif
             </div>
         </x-slot:right>
@@ -47,7 +47,7 @@
                 </div>
             </div>
         @endif
-        @if($reservation->is_cancel)
+        @if($reservation->is_cancel && !$reservation->is_cancel_pay)
             <div class="rounded-md bg-red-100 p-4 mb-4">
                 <div class="flex">
                     <div class="flex-shrink-0">
@@ -61,42 +61,58 @@
                 </div>
             </div>
         @endif
-    </x-center-bloc>
-    @if(!$reservation->is_confirmed && !$reservation->is_cancel)
-        <x-bloc-content>
-            <form wire:submit.prevent="confirmedAction" action="post" wire:loading.class="opacity-25" class="space-y-4">
-                <div class="block text-xl dark:text-white">Formulaire de confirmation</div>
-                @csrf
-                <x-select
-                    label="Pilote"
-                    placeholder="Sélectionner un pilote"
-                    :async-data="route('api.pilotes')"
-                    option-label="full_name"
-                    option-value="id"
-                    option-description="email"
-                    wire:model.defer="reservation.pilote_id"
-                />
-                <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <div class="dark:text-white">Emails de confirmation</div>
-                        <div class="space-y-3 mt-3">
-                            <x-toggle wire:model="reservation.send_to_user" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
-                            <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
+            @if(!$reservation->is_cancel && $reservation->is_cancel_pay)
+                <div class="rounded-md bg-red-100 p-4 mb-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
                         </div>
-                    </div>
-                    <div>
-                        <div class="dark:text-white">Invitation Google Calendar</div>
-                        <div class="space-y-3 mt-3">
-                            <x-toggle wire:model.defer="reservation.calendar_user_invitation" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
-                            <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-red-800">Cette réservation est annulée mais facturée</p>
                         </div>
                     </div>
                 </div>
-                <x-button type="submit" label="Valider et envoyer le message" primary sm />
-            </form>
-        </x-bloc-content>
-    @endif
+            @endif
+    </x-center-bloc>
+    <x-bloc-content>
+        <div class="space-y-4">
+            <div class="block text-xl dark:text-white">Formulaire de confirmation</div>
+            @csrf
+            <x-select
+                label="Pilote"
+                placeholder="Sélectionner un pilote"
+                :async-data="route('api.pilotes')"
+                option-label="full_name"
+                option-value="id"
+                option-description="email"
+                wire:model.defer="reservation.pilote_id"
+            />
+            <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <div class="dark:text-white">Emails de confirmation</div>
+                    <div class="space-y-3 mt-3">
+                        <x-toggle wire:model="reservation.send_to_user" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
+                        <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
+                    </div>
+                </div>
+                <div>
+                    <div class="dark:text-white">Invitation Google Calendar</div>
+                    <div class="space-y-3 mt-3">
+                        <x-toggle wire:model.defer="reservation.calendar_user_invitation" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
+                        <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
+                    </div>
+                </div>
+            </div>
+            @if($reservation->pilote()->exists())
+                <x-button label="Mettre à jour le pilote" primary sm wire:loading.attr="disabled" wire:click="updatePilote" spinner="updatePilote"/>
+            @else
+                <x-button label="Valider et envoyer le message" primary sm wire:click="confirmedAction" spinner="confirmedAction"/>
+            @endif
+        </div>
+    </x-bloc-content>
     <div class="space-y-4">
         <x-center-bloc>
             <x-simple-card title="Détails de la réservation" description="Créer le {{ $reservation->created_at->format('d/m/Y H:i') }}">

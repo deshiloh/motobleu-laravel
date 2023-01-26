@@ -30,9 +30,12 @@ class ReservationCreated extends Mailable
 
     public function envelope(): Envelope
     {
-        // TODO Réservation retour
+        $subject = !$this->reservation->has_back ?
+            "MOTOBLEU / Réservation " . $this->reservation->reference . " en attente de validation." :
+            "MOTOBLEU / Réservation " . $this->reservation->reference . " & " . $this->reservation->reservationBack->reference . " en attente de validation.";
+
         return new Envelope(
-            subject: "MOTOBLEU / Réservation " . $this->reservation->reference . " en attente de validation."
+            subject: $subject
         );
     }
 
@@ -40,13 +43,12 @@ class ReservationCreated extends Mailable
     {
         if ($this->sendToAdmin) {
             return new Content(
-                markdown: 'emails.reservation.admin-created',
+                markdown: 'emails.reservation.admin.created',
                 with: [
                     'reservation' => $this->reservation
                 ]
             );
         } else {
-            // TODO Changer le contenu
             return new Content(
                 markdown: 'emails.reservation.created',
                 with: [

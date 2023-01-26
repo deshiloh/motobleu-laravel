@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Reservation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,18 +10,20 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ConfirmationRegisterUserDemand extends Mailable
+class PiloteAttached extends Mailable
 {
     use Queueable, SerializesModels;
+
+    private Reservation $reservation;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Reservation $reservation)
     {
-        //
+        $this->reservation = $reservation;
     }
 
     /**
@@ -31,7 +34,7 @@ class ConfirmationRegisterUserDemand extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'MOTOBLEU / Confirmation de la demande de création de compte',
+            subject: 'MOTOBLEU / Vous avez été ajouté à la réservation N° '.$this->reservation->reference,
         );
     }
 
@@ -43,7 +46,10 @@ class ConfirmationRegisterUserDemand extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.users.front.confirmation-register-demand',
+            markdown: 'emails.pilote.reservation-attached',
+            with: [
+                'reservation' => $this->reservation
+            ]
         );
     }
 }

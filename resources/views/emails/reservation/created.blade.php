@@ -1,11 +1,11 @@
 @component('mail::message')
 
 @if($reservation->reservationBack()->exists())
-Bonjour,
+Bonjour, <br>
 Vos réservations N° <strong>{{ $reservation->reference }}</strong> et N° <strong>{{ $reservation->reservationBack->reference }}</strong> sont en cours de validation.<br>
 Vous allez recevoir prochainement un email de confirmation.
     @else
-Bonjour,
+Bonjour, <br>
 Votre réservation N° <strong>{{ $reservation->reference }}</strong> est en cours de validation.<br>
 Vous allez recevoir prochainement un email de confirmation.
 @endif

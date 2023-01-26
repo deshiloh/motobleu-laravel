@@ -4,14 +4,16 @@ namespace App\Http\Livewire\Settings;
 
 use App\Mail\CancelReservationDemand;
 use App\Mail\ConfirmationRegisterUserDemand;
+use App\Mail\PiloteAttached;
+use App\Mail\PiloteDetached;
 use App\Mail\RegisterUserDemand;
 use App\Mail\ReservationCanceled;
 use App\Mail\ReservationConfirmed;
 use App\Mail\ReservationCreated;
+use App\Mail\ReservationUpdated;
 use App\Mail\UpdateReservationDemand;
 use App\Mail\UserCreated;
 use App\Models\Reservation;
-use app\Settings\MailSettings;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use WireUi\Traits\Actions;
@@ -19,51 +21,19 @@ use WireUi\Traits\Actions;
 class EmailSettingsForm extends Component
 {
     use Actions;
-    public string $fromName = "";
-    public string $fromAddress = "";
     public string $emailTest = "test@test.com";
-
-    protected array $rules = [
-        'fromName' => 'required',
-        'fromAddress' => 'required|email'
-    ];
-
-    public function mount(MailSettings $mailSettings)
-    {
-        $mailSettings1 = $mailSettings;
-
-        $this->fromName = $mailSettings1->from_name;
-        $this->fromAddress = $mailSettings1->from_address;
-    }
+    public bool $adminMode = false;
 
     public function render()
     {
         return view('livewire.settings.email-settings-form');
     }
 
-    public function save(MailSettings $mailSettings)
-    {
-        $this->validate();
-
-        try {
-            $mailSettings->from_name = $this->fromName;
-            $mailSettings->from_address = $this->fromAddress;
-            $mailSettings->save();
-
-            $this->notification()->success(
-                title: "Opération réussite",
-                description: "Sauvegarde des paramètres emails réussite."
-            );
-        } catch (\Exception $exception) {
-
-        }
-
-    }
-
     public function sendEmailTest($email)
     {
         $this->validate([
-            'emailTest' => 'required|email'
+            'emailTest' => 'required|email',
+            'adminMode' => 'boolean'
         ]);
 
         switch ($email) {
@@ -91,7 +61,11 @@ class EmailSettingsForm extends Component
                 break;
             case $this->cleanClassName(ReservationCreated::class) :
                 \Mail::to($this->emailTest)
-                    ->send(new ReservationCreated(Reservation::find(1)));
+                    ->send(new ReservationCreated(Reservation::find(1), $this->adminMode));
+                break;
+            case $this->cleanClassName(ReservationUpdated::class) :
+                \Mail::to($this->emailTest)
+                    ->send(new ReservationUpdated(Reservation::find(1)));
                 break;
             case $this->cleanClassName(ReservationConfirmed::class) :
                 Mail::to($this->emailTest)
@@ -108,6 +82,14 @@ class EmailSettingsForm extends Component
             case $this->cleanClassName(UpdateReservationDemand::class) :
                 Mail::to($this->emailTest)
                     ->send(new UpdateReservationDemand(Reservation::find(1), "Ici sera affiché le contenu du message renseigné par l'assistante."));
+                break;
+            case $this->cleanClassName(PiloteAttached::class) :
+                Mail::to($this->emailTest)
+                    ->send(new PiloteAttached(Reservation::find(1)));
+                break;
+            case $this->cleanClassName(PiloteDetached::class) :
+                Mail::to($this->emailTest)
+                    ->send(new PiloteDetached(Reservation::find(1)));
                 break;
             default :
                 ray('NON');

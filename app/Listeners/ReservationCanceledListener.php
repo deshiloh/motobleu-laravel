@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ReservationCanceled;
+use App\Mail\PiloteDetached;
 use App\Services\EventCalendar\GoogleCalendarService;
 use App\Services\SentryService;
 use Illuminate\Support\Facades\App;
@@ -30,7 +31,7 @@ class ReservationCanceledListener
      * @param ReservationCanceled $event
      * @return void
      */
-    public function handle(ReservationCanceled $event)
+    public function handle(ReservationCanceled $event): void
     {
         try {
             // Suppression de l'évènement dans le calendrier
@@ -67,6 +68,9 @@ class ReservationCanceledListener
                 // TODO Sentry en prodduction
             }
         }
+
+        Mail::to($event->reservation->pilote->email)
+            ->send(new PiloteDetached($event->reservation));
 
         Log::channel('logtail')->info("Annulation d'une réservation", [
             'utilisateur' => Auth::user(),

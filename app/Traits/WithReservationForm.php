@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Mail\ReservationUpdated;
 use App\Models\AdresseReservation;
 use App\Models\Passager;
 use App\Models\Reservation;
@@ -42,7 +43,6 @@ trait WithReservationForm
         ReservationService::generateToLocalisationRules($this->generatedRules, $this->dropMode);
 
         if ($this->hasBack) {
-
             ReservationService::generateFromLocalisationBackRules($this->generatedRules, $this->backPickupMode);
             ReservationService::generateToLocalisationBackRules($this->generatedRules, $this->backDropMode);
         }
@@ -180,8 +180,27 @@ trait WithReservationForm
                 $this->reservation->reservationBack()->associate($this->reservation_back->id);
             }
 
-            $this->reservation->is_cancel = false;
-            $this->reservation->is_confirmed = false;
+            if (!$this->reservation->exists()) {
+                $this->reservation->is_cancel = false;
+                $this->reservation->is_confirmed = false;
+            }
+
+            if ($this->reservation->isDirty()) {
+                $contacts = [];
+
+                if ($this->reservation->send_to_user) {
+                    $contacts[] = $this->reservation->passager->user->email;
+                }
+
+                if ($this->reservation->send_to_passager) {
+                    $contacts[] = $this->reservation->passager->email;
+                }
+
+                foreach ($contacts as $contact) {
+                    \Mail::to($contact)
+                        ->send(new ReservationUpdated($this->reservation));
+                }
+            }
 
             $this->reservation->save();
 

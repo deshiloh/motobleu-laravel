@@ -26,6 +26,9 @@ class Reservation extends Model
         'drop_date' => 'datetime:Y-m-d H:i:s',
         'is_confirmed' => 'boolean',
         'is_cancel' => 'boolean',
+        'has_back' => 'boolean',
+        'send_to_passager' => 'boolean',
+        'send_to_user' => 'boolean',
         'tarif' => 'float',
         'majoration' => 'float',
         'complement' => 'float'

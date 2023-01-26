@@ -66,12 +66,20 @@ class DatabaseSeeder extends Seeder
             Reservation::factory([
                 'pickup_date' => Carbon::now(),
                 'is_confirmed' => true,
-                'entreprise_id' => 1,
+                'entreprise_id' => $user->entreprises()->first()->id,
             ])
                 ->for(Facture::factory()->create())
                 ->for($passager)
+                ->for(Pilote::factory()->create())
                 ->create()
             ;
+
+            Reservation::factory([
+                'is_confirmed' => false,
+                'entreprise_id' => $user->entreprises()->first()->id,
+            ])
+                ->for($passager)
+                ->create();
         }
 
         Pilote::factory()->count(30)->create();
