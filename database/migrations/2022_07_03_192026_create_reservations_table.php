@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
 
+            $table->integer('statut')->default(\App\Enum\ReservationStatus::Created->value);
             $table->string('commande')->nullable();
             $table->string('reference')->nullable();
             $table->string('pickup_origin')->nullable();
@@ -34,13 +35,9 @@ return new class extends Migration
 
             $table->boolean('send_to_passager')->default(false);
             $table->boolean('send_to_user')->default(false);
-            $table->boolean('is_confirmed')->default(false);
-            $table->boolean('is_cancel')->default(false);
             $table->boolean('has_back')->default(false);
-            $table->boolean('is_cancel_pay')->default(false);
             $table->boolean('calendar_passager_invitation')->default(false);
             $table->boolean('calendar_user_invitation')->default(false);
-            $table->boolean('is_billed')->default(false);
 
             $table->dateTime('pickup_date');
 

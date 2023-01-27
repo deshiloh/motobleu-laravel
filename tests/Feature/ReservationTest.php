@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enum\ReservationStatus;
 use App\Events\ReservationCanceled;
 use App\Http\Livewire\Reservation\ReservationForm;
 use App\Http\Livewire\Reservation\ReservationShow;
@@ -321,7 +322,7 @@ class ReservationTest extends TestCase
 
         Livewire::test(ReservationForm::class)
             ->set('userId', 1)
-            ->set('reservation.entreprise_id', 1)
+            ->set('reservation.entreprise_id', 20)
             ->set('passagerMode', ReservationService::EXIST_PASSAGER)
             ->set('reservation.passager_id', Passager::find(1)->id)
             ->set('reservation.pickup_date', $pickupDate)
@@ -334,7 +335,12 @@ class ReservationTest extends TestCase
             ->assertRedirect(route('admin.reservations.index'))
         ;
 
-        $this->assertTrue(Reservation::wherePickupDate($pickupDate)->exists());
+        $this->assertDatabaseHas('reservations', [
+            'entreprise_id' => 20,
+            'has_back' => 0,
+            'pickup_date' => $pickupDate->format('Y-m-d H:i:s'),
+            'statut' => ReservationStatus::Created
+        ]);
     }
 
     public function testCreateReservationWithNewPassagerOK()
@@ -343,7 +349,7 @@ class ReservationTest extends TestCase
 
         Livewire::test(ReservationForm::class)
             ->set('userId', 1)
-            ->set('reservation.entreprise_id', 1)
+            ->set('reservation.entreprise_id', 20)
             ->set('passagerMode', ReservationService::NEW_PASSAGER)
             ->set('newPassager.nom', 'passager test')
             ->set('newPassager.telephone', '0404')
@@ -361,7 +367,12 @@ class ReservationTest extends TestCase
         ;
 
         $this->assertTrue(Passager::whereEmail('passager@passager.local')->exists());
-        $this->assertTrue(Reservation::wherePickupDate($pickupDate)->exists());
+        $this->assertDatabaseHas('reservations', [
+            'entreprise_id' => 20,
+            'has_back' => 0,
+            'pickup_date' => $pickupDate->format('Y-m-d H:i:s'),
+            'statut' => ReservationStatus::Created
+        ]);
     }
 
     public function testCreateReservationWithExistAddressOK()
@@ -369,7 +380,7 @@ class ReservationTest extends TestCase
         $pickupDate = Carbon::now();
         Livewire::test(ReservationForm::class)
             ->set('userId', 1)
-            ->set('reservation.entreprise_id', 1)
+            ->set('reservation.entreprise_id', 20)
             ->set('passagerMode', ReservationService::EXIST_PASSAGER)
             ->set('reservation.passager_id', Passager::find(1)->id)
             ->set('reservation.pickup_date', $pickupDate)
@@ -383,7 +394,12 @@ class ReservationTest extends TestCase
             ->assertRedirect(route('admin.reservations.index'))
         ;
 
-        $this->assertTrue(Reservation::wherePickupDate($pickupDate)->exists());
+        $this->assertDatabaseHas('reservations', [
+            'entreprise_id' => 20,
+            'has_back' => 0,
+            'pickup_date' => $pickupDate->format('Y-m-d H:i:s'),
+            'statut' => ReservationStatus::Created
+        ]);
     }
 
     public function testCreateReservationWithNewAddressOk()
@@ -392,7 +408,7 @@ class ReservationTest extends TestCase
 
         Livewire::test(ReservationForm::class)
             ->set('userId', 1)
-            ->set('reservation.entreprise_id', 1)
+            ->set('reservation.entreprise_id', 20)
             ->set('passagerMode', ReservationService::EXIST_PASSAGER)
             ->set('reservation.passager_id', Passager::find(1)->id)
             ->set('reservation.pickup_date', $pickupDate)
@@ -414,7 +430,12 @@ class ReservationTest extends TestCase
 
         $this->assertTrue(AdresseReservation::whereAdresse('départ de test')->exists());
         $this->assertTrue(AdresseReservation::whereAdresse('Arrivée de test')->exists());
-        $this->assertTrue(Reservation::wherePickupDate($pickupDate)->exists());
+        $this->assertDatabaseHas('reservations', [
+            'entreprise_id' => 20,
+            'has_back' => 0,
+            'pickup_date' => $pickupDate->format('Y-m-d H:i:s'),
+            'statut' => ReservationStatus::Created
+        ]);
     }
 
     public function testCreateBackReservationWithPlaceOk()
@@ -424,7 +445,7 @@ class ReservationTest extends TestCase
 
         Livewire::test(ReservationForm::class)
             ->set('userId', 1)
-            ->set('reservation.entreprise_id', 1)
+            ->set('reservation.entreprise_id', 20)
             ->set('passagerMode', ReservationService::EXIST_PASSAGER)
             ->set('reservation.passager_id', Passager::find(1)->id)
             ->set('reservation.pickup_date', $pickupDate)
@@ -436,17 +457,32 @@ class ReservationTest extends TestCase
             ->set('reservation_back.pickup_date', $backPickUpDate)
             // BACK PLACE FROM
             ->set('backPickupMode', ReservationService::WITH_PLACE)
-            ->set('reservation_back.localisation_from_id', Localisation::find(1)->id)
+            ->set('reservation_back.localisation_from_id', Localisation::find(2)->id)
             // BACK PLACE TO
             ->set('backDropMode', ReservationService::WITH_PLACE)
-            ->set('reservation_back.localisation_to_id', Localisation::find(1)->id)
+            ->set('reservation_back.localisation_to_id', Localisation::find(2)->id)
             ->call('saveReservation')
             ->assertHasNoErrors()
             ->assertRedirect(route('admin.reservations.index'))
         ;
 
-        $this->assertTrue(Reservation::wherePickupDate($pickupDate)->exists());
-        $this->assertTrue(Reservation::wherePickupDate($backPickUpDate)->exists());
+        $this->assertDatabaseHas('reservations', [
+            'id' => 21,
+            'entreprise_id' => 20,
+            'has_back' => 1,
+            'pickup_date' => $pickupDate->format('Y-m-d H:i:s'),
+            'statut' => ReservationStatus::Created,
+            'reservation_id' => 22
+        ]);
+
+        $this->assertDatabaseHas('reservations', [
+            'id' => 22,
+            'entreprise_id' => 20,
+            'has_back' => 0,
+            'pickup_date' => $backPickUpDate->format('Y-m-d H:i:s'),
+            'statut' => ReservationStatus::Created,
+            'reservation_id' => null
+        ]);
     }
 
     public function testCreateBackReservationWithExistedAddressOk(): void
@@ -456,7 +492,7 @@ class ReservationTest extends TestCase
 
         Livewire::test(ReservationForm::class)
             ->set('userId', 1)
-            ->set('reservation.entreprise_id', 1)
+            ->set('reservation.entreprise_id', 20)
             ->set('passagerMode', ReservationService::EXIST_PASSAGER)
             ->set('reservation.passager_id', Passager::find(1)->id)
             ->set('reservation.pickup_date', $pickupDate)
@@ -477,8 +513,19 @@ class ReservationTest extends TestCase
             ->assertRedirect(route('admin.reservations.index'))
         ;
 
-        $this->assertTrue(Reservation::wherePickupDate($pickupDate)->exists());
-        $this->assertTrue(Reservation::wherePickupDate($backPickUpDate)->exists());
+        $this->assertDatabaseHas('reservations', [
+            'entreprise_id' => 20,
+            'has_back' => 1,
+            'pickup_date' => $pickupDate->format('Y-m-d H:i:s'),
+            'statut' => ReservationStatus::Created
+        ]);
+
+        $this->assertDatabaseHas('reservations', [
+            'entreprise_id' => 20,
+            'has_back' => 0,
+            'pickup_date' => $backPickUpDate->format('Y-m-d H:i:s'),
+            'statut' => ReservationStatus::Created
+        ]);
     }
 
     public function testCreateBackReservationWithNewAddressOk()
@@ -488,7 +535,7 @@ class ReservationTest extends TestCase
 
         Livewire::test(ReservationForm::class)
             ->set('userId', 1)
-            ->set('reservation.entreprise_id', 1)
+            ->set('reservation.entreprise_id', 20)
             ->set('passagerMode', ReservationService::EXIST_PASSAGER)
             ->set('reservation.passager_id', Passager::find(1)->id)
             ->set('reservation.pickup_date', $pickupDate)
@@ -515,8 +562,20 @@ class ReservationTest extends TestCase
 
         $this->assertTrue(AdresseReservation::whereAdresse('aller de test')->exists());
         $this->assertTrue(AdresseReservation::whereAdresse('arrivée de test')->exists());
-        $this->assertTrue(Reservation::wherePickupDate($pickupDate)->exists());
-        $this->assertTrue(Reservation::wherePickupDate($backPickUpDate)->exists());
+
+        $this->assertDatabaseHas('reservations', [
+            'entreprise_id' => 20,
+            'has_back' => 1,
+            'pickup_date' => $pickupDate->format('Y-m-d H:i:s'),
+            'statut' => ReservationStatus::Created
+        ]);
+
+        $this->assertDatabaseHas('reservations', [
+            'entreprise_id' => 20,
+            'has_back' => 0,
+            'pickup_date' => $backPickUpDate->format('Y-m-d H:i:s'),
+            'statut' => ReservationStatus::Created
+        ]);
     }
 
     public function the_component_can_render(): void
@@ -551,7 +610,7 @@ class ReservationTest extends TestCase
             ->call('confirmedAction')
             ->assertHasNoErrors()
         ;
-        $this->assertTrue(Reservation::where('is_confirmed', true)->exists());
+        $this->assertTrue(Reservation::where('statut', ReservationStatus::Confirmed)->exists());
 
         \Mail::assertSent(PiloteAttached::class);
     }
@@ -566,10 +625,7 @@ class ReservationTest extends TestCase
             ->call('cancelAction')
             ->assertHasNoErrors()
         ;
-        $this->assertTrue(Reservation::where([
-            ['is_confirmed', '=', false],
-            ['is_cancel', '=', true]
-        ])->exists());
+        $this->assertTrue(Reservation::where('statut', ReservationStatus::Canceled)->exists());
 
         \Event::assertDispatched(ReservationCanceled::class);
     }

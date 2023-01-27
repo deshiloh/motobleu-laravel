@@ -81,7 +81,7 @@
                 </tr>
             </x-slot:headers>
             <x-slot:body>
-                @forelse(\App\Models\Reservation::where('is_confirmed', false)->where('is_cancel', false)->get() as $reservation)
+                @forelse(\App\Models\Reservation::where('statut', \App\Enum\ReservationStatus::Created)->get() as $reservation)
                     <x-datatable.tr>
                         <x-datatable.td>{{ $reservation->reference }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>

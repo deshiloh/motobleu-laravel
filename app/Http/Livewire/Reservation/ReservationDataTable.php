@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Reservation;
 
+use App\Enum\ReservationStatus;
 use App\Models\Reservation;
 use App\Traits\WithSorting;
 use Livewire\Component;
@@ -29,8 +30,7 @@ class ReservationDataTable extends Component
 
         if ($this->querySort == 'not_confirmed') {
             $reservations
-                ->where('is_confirmed', false)
-                ->where('is_cancel', false)
+                ->where('statut', ReservationStatus::Created)
             ;
         }
 

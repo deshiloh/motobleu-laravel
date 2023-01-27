@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Facturation;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
+use App\Enum\ReservationStatus;
 use App\Events\BillCreated;
 use App\Exports\ReservationsExport;
 use App\Models\AdresseEntreprise;
@@ -109,9 +110,8 @@ class EditionFacture extends Component
                 $query
                     ->whereMonth('pickup_date', $this->selectedMonth)
                     ->whereYear('pickup_date', $this->selectedYear)
-                    ->where('is_confirmed', true)
-                    ->where('is_cancel', false)
-                    ->orWhere('is_cancel_pay', true)
+                    ->where('statut',ReservationStatus::Confirmed)
+                    ->orWhere('statut', ReservationStatus::CanceledToPay)
                 ;
             }]
         )
@@ -119,9 +119,8 @@ class EditionFacture extends Component
                 $query
                     ->whereMonth('pickup_date', $this->selectedMonth)
                     ->whereYear('pickup_date', $this->selectedYear)
-                    ->where('is_confirmed', true)
-                    ->where('is_cancel', false)
-                    ->orWhere('is_cancel_pay', true)
+                    ->where('statut',ReservationStatus::Confirmed)
+                    ->orWhere('statut', ReservationStatus::CanceledToPay)
                 ;
             })
             ->get();
@@ -139,9 +138,8 @@ class EditionFacture extends Component
         return Reservation::where('entreprise_id', $this->entrepriseIdSelected)
             ->whereMonth('pickup_date', $this->selectedMonth)
             ->whereYear('pickup_date', $this->selectedYear)
-            ->where('is_confirmed', true)
-            ->where('is_cancel', false)
-            ->orWhere('is_cancel_pay', true)
+            ->where('statut',ReservationStatus::Confirmed)
+            ->orWhere('statut', ReservationStatus::CanceledToPay)
             ->get();
     }
 
@@ -362,7 +360,7 @@ class EditionFacture extends Component
         })->validate();
 
         foreach ($this->reservations as $reservation) {
-            $reservation->is_billed = true;
+            $reservation->statut = ReservationStatus::Billed;
             $reservation->updateQuietly();
         }
 
