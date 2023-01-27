@@ -32,17 +32,28 @@
                         <x-datatable.td>{{ $reservation->display_from }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
                         <x-datatable.td>
-                            @if($reservation->is_cancel && !$reservation->is_confirmed)
-                                <span class="bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900">{{ __('Annulée') }}</span>
-                            @endif
-
-                            @if($reservation->is_confirmed && !$reservation->is_cancel)
-                                <span class="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">{{ __('Confirmée') }}</span>
-                            @endif
-
-                            @if(!$reservation->is_confirmed && !$reservation->is_cancel)
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-200 dark:text-yellow-900 whitespace-nowrap">{{ __('à confirmer') }}</span>
-                            @endif
+                            @switch($reservation->statut)
+                                @case(\App\Enum\ReservationStatus::Created)
+                                    <x-front.badge warning>
+                                        à confirmer
+                                    </x-front.badge>
+                                    @break
+                                @case(\App\Enum\ReservationStatus::Canceled)
+                                    <x-front.badge danger>
+                                        Annulée
+                                    </x-front.badge>
+                                    @break
+                                @case(\App\Enum\ReservationStatus::CanceledToPay)
+                                    <x-front.badge danger>
+                                        Annulée à payer
+                                    </x-front.badge>
+                                    @break
+                                @case(\App\Enum\ReservationStatus::Confirmed)
+                                    <x-front.badge success>
+                                        Confirmée
+                                    </x-front.badge>
+                                    @break
+                            @endswitch
                         </x-datatable.td>
                         <x-datatable.td>
                             <div class="flex space-x-2">

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enum\ReservationStatus;
 use App\Models\Facture;
 use App\Models\Localisation;
 use App\Models\Passager;
@@ -27,13 +28,12 @@ class ReservationFactory extends Factory
         return [
             'commande' => '345678HFG',
             'reference' => '202207' . self::$ref ++,
+            'statut' => ReservationStatus::Created,
             'pickup_origin' => 'vol num 4440',
             'drop_off_origin' => 'vol num 4440',
             'comment' => 'lorem',
             'send_to_passager' => true,
             'send_to_user' => true,
-            'is_confirmed' => false,
-            'is_cancel' => false,
             'has_back' => false,
             'pickup_date' => $this->faker->dateTime,
             'localisation_from_id' => Localisation::factory(),

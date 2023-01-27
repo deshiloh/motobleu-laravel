@@ -7,7 +7,7 @@
                     <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled"/>
                 @endif
                 <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled"/>
-                @if(!$reservation->is_cancel)
+                @if(!$reservation->statut != \App\Enum\ReservationStatus::Canceled)
                     <x-button warning label="Annuler mais facturer" icon="credit-card" wire:loading.attr="disabled" wire:click="cancelBilledAction" spinner="cancelBilledAction"/>
                     <x-button wire:click="cancelAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction" spinner="cancelAction"/>
                 @endif
@@ -15,7 +15,7 @@
         </x-slot:right>
     </x-header>
     <x-center-bloc class="mb-4">
-        @if(!$reservation->is_confirmed && !$reservation->is_cancel)
+        @if($reservation->statut == \App\Enum\ReservationStatus::Created)
             <div class="rounded-md bg-yellow-50 p-4">
                 <div class="flex">
                     <div class="flex-shrink-0">
@@ -33,7 +33,7 @@
                 </div>
             </div>
         @endif
-        @if($reservation->is_confirmed && !$reservation->is_cancel)
+        @if($reservation->statut == \App\Enum\ReservationStatus::Confirmed)
             <div class="rounded-md bg-green-50 dark:bg-green-200 p-4 mb-4 shadow dark:shadow-none">
                 <div class="flex">
                     <div class="flex-shrink-0">
@@ -47,7 +47,7 @@
                 </div>
             </div>
         @endif
-        @if($reservation->is_cancel && !$reservation->is_cancel_pay)
+        @if($reservation->statut == \App\Enum\ReservationStatus::Canceled)
             <div class="rounded-md bg-red-100 p-4 mb-4">
                 <div class="flex">
                     <div class="flex-shrink-0">
@@ -61,7 +61,7 @@
                 </div>
             </div>
         @endif
-            @if(!$reservation->is_cancel && $reservation->is_cancel_pay)
+            @if($reservation->statut == \App\Enum\ReservationStatus::CanceledToPay)
                 <div class="rounded-md bg-red-100 p-4 mb-4">
                     <div class="flex">
                         <div class="flex-shrink-0">

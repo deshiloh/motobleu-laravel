@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Reservation;
 
 use _PHPStan_446ead745\Nette\Neon\Exception;
+use App\Enum\ReservationStatus;
 use App\Events\ReservationCanceled;
 use App\Events\ReservationConfirmed;
 use App\Mail\PiloteAttached;
@@ -58,14 +59,14 @@ Cordialement.";
         $this->validate();
 
         try {
-            $this->reservation->is_confirmed = true;
+            $this->reservation->statut = ReservationStatus::Confirmed;
 
             $this->reservation->pilote()->associate(
                 Pilote::findOrFail($this->reservation->pilote_id)
             );
 
             $this->reservation->update([
-                'is_confirmed' => $this->reservation->is_confirmed,
+                'statut' => ReservationStatus::Confirmed,
             ]);
 
             \Mail::to($this->reservation->pilote->email)
@@ -114,12 +115,10 @@ Cordialement.";
 
     public function cancelAction()
     {
-        $this->reservation->is_cancel = true;
-        $this->reservation->is_confirmed = false;
+        $this->reservation->statut = ReservationStatus::Canceled;
 
         $this->reservation->update([
-            'is_cancel' => true,
-            'is_confirmed' => false
+            'statut' => ReservationStatus::Canceled
         ]);
 
         ReservationCanceled::dispatch($this->reservation);
@@ -127,14 +126,10 @@ Cordialement.";
 
     public function cancelBilledAction()
     {
-        $this->reservation->is_cancel = false;
-        $this->reservation->is_confirmed = true;
-        $this->reservation->is_cancel_pay = true;
+        $this->reservation->statut = ReservationStatus::CanceledToPay;
 
         $this->reservation->update([
-            'is_cancel' => false,
-            'is_confirmed' => false,
-            'is_cancel_pay' => true
+            'statut' => ReservationStatus::CanceledToPay,
         ]);
 
         ReservationCanceled::dispatch($this->reservation);
