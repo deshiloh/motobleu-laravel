@@ -1,30 +1,19 @@
-<x-layout>
-    <div class="flex flex-col items-center justify-center bg-gray-200 h-screen w-screen dark:bg-gray-700">
+<x-guess-layout>
+    <div class="h-screen bg-motobleu flex items-center justify-center">
         <div class="container bg-white dark:bg-gray-900 max-w-lg mx-auto rounded-lg p-5 shadow-sm dark:text-gray-100">
-            <h3 class="text-2xl">Changement du mot de passe</h3>
-            <x-form method="post" route="{{ route('password.update') }}">
-                <x-form.input type="hidden" name="token" value="{{ $token }}"></x-form.input>
-                <x-form.input
-                    type="email"
-                    required="true"
-                    label="Email"
-                    name="email"
-                    value="{{ $email }}"
-                >
-                    <x-slot name="append">
-                        <div class="absolute inset-y-0 right-0 flex items-center p-0.5">
-                            <x-button
-                                class="h-full rounded-r-md"
-                                icon="sort-ascending"
-                                primary
-                                flat
-                                squared
-                            />
-                        </div>
-                    </x-slot>
-                </x-form.input>
-                <x-form.input type="password" name="password" label="Mot de passe"></x-form.input>
-            </x-form>
+            <h3 class="text-2xl text-center">{{ __('Changement du mot de passe') }}</h3>
+            <div class="w-full space-x-2 text-center py-3">
+                <a href="{{ route('switch.local', ['locale' => 'fr']) }}"><span class="fi fi-fr"></a>
+                <a href="{{ route('switch.local', ['en']) }}"><span class="fi fi-gb"></a>
+            </div>
+            <x-errors />
+            <form action="{{ route('password.update') }}" method="post" class="space-y-3">
+                @csrf
+                <input type="hidden" name="token" value="{{ $token }}">
+                <x-input type="email" label="Email" value="{{ $email }}" name="email"/>
+                <x-input type="password" label="{{ __('Mot de passe') }}" name="password"/>
+                <x-button type="submit" label="{{ __('Envoyer') }}" primary full />
+            </form>
         </div>
     </div>
-</x-layout>
+</x-guess-layout>

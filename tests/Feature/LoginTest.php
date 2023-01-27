@@ -25,11 +25,6 @@ class LoginTest extends TestCase
      */
     protected $seed = true;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     /**
      * A basic test example.
      *
@@ -131,12 +126,11 @@ class LoginTest extends TestCase
     {
         Notification::fake();
 
-        $user = User::factory([
-            'email' => 'toto@test.com'
-        ])->create();
+        /** @var User $user */
+        $user = User::find(1);
 
         Livewire::test(ForgotPasswordForm::class)
-            ->set('email', 'toto@test.com')
+            ->set('email', $user->email)
             ->call('resetAction')
             ->assertHasNoErrors();
 

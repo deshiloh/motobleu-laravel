@@ -17,19 +17,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/lang/{locale}', function (string $locale) {
-    app()->setLocale($locale);
-    session()->put('locale', $locale);
-
-    return redirect()->back();
-})->name('switch.local');
-
-Route::get('/account/new', \App\Http\Livewire\Front\NewAccountForm::class)
-    ->name('account.new');
-
-
-Route::get('/logout', [LoginController::class, 'logout'])
-    ->name('logout');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', function () {
@@ -56,6 +43,13 @@ Route::middleware('guest')->group(function () {
     })->name('pages');
 });
 
+Route::get('/account/new', \App\Http\Livewire\Front\NewAccountForm::class)
+    ->name('account.new');
+
+
+Route::get('/logout', [LoginController::class, 'logout'])
+    ->name('logout');
+
 Route::get('/', function () {
     if (Auth::check()) {
         return to_route('front.dashboard');
@@ -63,3 +57,10 @@ Route::get('/', function () {
 
     return view('front.home');
 })->name('front.home');
+
+Route::get('/lang/{locale}', function (string $locale) {
+    app()->setLocale($locale);
+    session()->put('locale', $locale);
+
+    return redirect()->back();
+})->name('switch.local');

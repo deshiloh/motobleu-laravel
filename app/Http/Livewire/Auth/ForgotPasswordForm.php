@@ -18,7 +18,7 @@ class ForgotPasswordForm extends Component
             ->layout('components.guess-layout');
     }
 
-    protected function getRules()
+    protected function getRules(): array
     {
         return [
             'email' => 'required|email'

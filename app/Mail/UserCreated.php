@@ -41,7 +41,8 @@ class UserCreated extends Mailable
         return new Content(
             markdown: 'emails.users.created',
             with: [
-                'account' => $this->user
+                'account' => $this->user,
+                'token' => \Password::createToken($this->user)
             ]
         );
     }
