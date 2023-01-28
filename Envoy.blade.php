@@ -17,9 +17,9 @@
     git reset --hard origin/develop
 
     /opt/plesk/php/8.1/bin/php /usr/lib/plesk-9.0/composer.phar install --optimize-autoloader
+    npm install && npm run build
+    /opt/plesk/php/8.1/bin/php artisan key:generate
     /opt/plesk/php/8.1/bin/php artisan migrate:fresh --seed --force
     /opt/plesk/php/8.1/bin/php artisan route:cache
     /opt/plesk/php/8.1/bin/php artisan view:cache
-    npm install && npm run build
-    /opt/plesk/php/8.1/bin/php artisan key:generate
 @endtask
