@@ -6,6 +6,7 @@ use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 

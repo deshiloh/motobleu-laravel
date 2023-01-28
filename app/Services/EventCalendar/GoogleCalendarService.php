@@ -2,6 +2,7 @@
 
 namespace App\Services\EventCalendar;
 
+use App\Enum\ReservationStatus;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\App;
 use Spatie\GoogleCalendar\Event;
@@ -31,7 +32,7 @@ class GoogleCalendarService
         $this->reservation = $reservation;
         $this->forSecretary = true;
 
-        if ($this->reservation->is_cancel) {
+        if ($this->reservation->statut == ReservationStatus::Canceled) {
             return false;
         }
 
@@ -56,7 +57,7 @@ class GoogleCalendarService
     {
         $this->reservation = $reservation;
 
-        if ($this->reservation->is_cancel) {
+        if ($this->reservation->statut == ReservationStatus::Canceled) {
             return false;
         }
 
@@ -100,10 +101,14 @@ class GoogleCalendarService
         return $event;
     }
 
-    public function deleteEvent(Reservation $reservation): void
+    public function deleteEvent(Reservation $reservation): bool
     {
         try {
             if (App::environment(['local', 'prod'])) {
+                if (is_null($reservation->event_id)) {
+                    return false;
+                }
+
                 $event = Event::find($reservation->event_id);
                 $event->delete();
 
@@ -122,7 +127,10 @@ class GoogleCalendarService
                 ])->exception($exception);
             }
             // TODO Sentry en production
+            return false;
         }
+
+        return true;
     }
 
     /**

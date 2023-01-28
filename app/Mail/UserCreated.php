@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class UserCreated extends Mailable
@@ -27,17 +29,21 @@ class UserCreated extends Mailable
         $this->user = $user;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build()
+    public function envelope(): Envelope
     {
-        return $this
-            ->markdown('emails.users.created')
-            ->with([
-                'account' => $this->user
-            ]);
+        return new Envelope(
+            subject: "MOTOBLEU / Votre compte a été créé"
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            markdown: 'emails.users.created',
+            with: [
+                'account' => $this->user,
+                'token' => \Password::createToken($this->user)
+            ]
+        );
     }
 }

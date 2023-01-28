@@ -18,7 +18,6 @@ class ReservationForm extends Component
 {
     use Actions, WithReservationForm;
 
-
     public function mount(Reservation $reservation)
     {
         $this->reservation = $reservation;

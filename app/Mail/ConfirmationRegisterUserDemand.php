@@ -13,16 +13,14 @@ class ConfirmationRegisterUserDemand extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public array $datas;
-
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(array $datas)
+    public function __construct()
     {
-        $this->datas = $datas;
+        //
     }
 
     /**
@@ -47,15 +45,5 @@ class ConfirmationRegisterUserDemand extends Mailable
         return new Content(
             markdown: 'emails.users.front.confirmation-register-demand',
         );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array
-     */
-    public function attachments(): array
-    {
-        return [];
     }
 }

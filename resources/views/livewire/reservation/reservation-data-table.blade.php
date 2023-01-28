@@ -45,24 +45,28 @@
                     <x-datatable.td>{{ $reservation->localdisplay_from }}</x-datatable.td>
                     <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
                     <x-datatable.td>
-
-                        @if($reservation->is_cancel && !$reservation->is_confirmed)
-                            <x-front.badge danger>
-                                Annulée
-                            </x-front.badge>
-                        @endif
-
-                        @if($reservation->is_confirmed && !$reservation->is_cancel)
+                        @switch($reservation->statut)
+                            @case(\App\Enum\ReservationStatus::Created)
+                                <x-front.badge warning>
+                                    à confirmer
+                                </x-front.badge>
+                                @break
+                            @case(\App\Enum\ReservationStatus::Canceled)
+                                <x-front.badge danger>
+                                    Annulée
+                                </x-front.badge>
+                                @break
+                            @case(\App\Enum\ReservationStatus::CanceledToPay)
+                                <x-front.badge danger>
+                                    Annulée à payer
+                                </x-front.badge>
+                                @break
+                            @case(\App\Enum\ReservationStatus::Confirmed)
                                 <x-front.badge success>
                                     Confirmée
                                 </x-front.badge>
-                        @endif
-
-                        @if(!$reservation->is_confirmed && !$reservation->is_cancel)
-                            <x-front.badge warning>
-                                à confirmer
-                            </x-front.badge>
-                        @endif
+                            @break
+                        @endswitch
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">

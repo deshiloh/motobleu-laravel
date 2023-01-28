@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Enum\ReservationStatus;
+use App\Mail\ReservationUpdated;
 use App\Models\AdresseReservation;
 use App\Models\Passager;
 use App\Models\Reservation;
@@ -42,7 +44,6 @@ trait WithReservationForm
         ReservationService::generateToLocalisationRules($this->generatedRules, $this->dropMode);
 
         if ($this->hasBack) {
-
             ReservationService::generateFromLocalisationBackRules($this->generatedRules, $this->backPickupMode);
             ReservationService::generateToLocalisationBackRules($this->generatedRules, $this->backDropMode);
         }
@@ -139,49 +140,23 @@ trait WithReservationForm
 
         }
 
-        if ($this->hasBack) {
-
-            $this->reservation_back->passager_id = $this->reservation->passager_id;
-
-            if ($this->backPickupMode == ReservationService::WITH_NEW_ADRESSE) {
-                $this->newAdresseReservationFromBack->user_id = $this->reservation->passager->user->id;
-                $this->newAdresseReservationFromBack->save();
-                $this->reservation_back->adresseReservationFrom()->associate($this->newAdresseReservationFromBack);
-
-            }
-
-            if ($this->backDropMode == ReservationService::WITH_NEW_ADRESSE) {
-                $this->newAdresseReservationToBack->user_id = $this->reservation->passager->user->id;
-                $this->newAdresseReservationToBack->save();
-                $this->reservation_back->adresseReservationTo()->associate($this->newAdresseReservationToBack);
-            }
-
-            $this->reservation->has_back = true;
-
-            try {
-                $this->reservation_back->save();
-            } catch (\Exception $exception) {
-
-                $this->notification()->error(
-                    $title = 'Création impossible',
-                    $description = 'Une erreur est survenue pendant la création de la réservation'
-                );
-
-                Log::channel('logtail')->critical('Erreur pendant la création de la réservation de retour', [
-                    'erreur' => $exception->getMessage(),
-                    'reservation' => $this->reservation,
-                    'reservation_back' => $this->reservation_back
-                ]);
-            }
-        }
-
         try {
-            if ($this->hasBack) {
-                $this->reservation->reservationBack()->associate($this->reservation_back->id);
-            }
+            if ($this->reservation->isDirty()) {
+                $contacts = [];
 
-            $this->reservation->is_cancel = false;
-            $this->reservation->is_confirmed = false;
+                if ($this->reservation->send_to_user) {
+                    $contacts[] = $this->reservation->passager->user->email;
+                }
+
+                if ($this->reservation->send_to_passager) {
+                    $contacts[] = $this->reservation->passager->email;
+                }
+
+                foreach ($contacts as $contact) {
+                    \Mail::to($contact)
+                        ->send(new ReservationUpdated($this->reservation));
+                }
+            }
 
             $this->reservation->save();
 
@@ -210,6 +185,49 @@ trait WithReservationForm
                 'reservation' => $this->reservation,
                 'reservation_back' => $this->reservation_back
             ]);
+        }
+
+        if ($this->hasBack) {
+            $this->reservation->has_back = true;
+
+            $this->reservation_back->passager_id = $this->reservation->passager_id;
+            $this->reservation_back->entreprise_id = $this->reservation->entreprise_id;
+
+            if ($this->backPickupMode == ReservationService::WITH_NEW_ADRESSE) {
+                $this->newAdresseReservationFromBack->user_id = $this->reservation->passager->user->id;
+                $this->newAdresseReservationFromBack->save();
+                $this->reservation_back->adresseReservationFrom()->associate($this->newAdresseReservationFromBack);
+
+            }
+
+            if ($this->backDropMode == ReservationService::WITH_NEW_ADRESSE) {
+                $this->newAdresseReservationToBack->user_id = $this->reservation->passager->user->id;
+                $this->newAdresseReservationToBack->save();
+                $this->reservation_back->adresseReservationTo()->associate($this->newAdresseReservationToBack);
+            }
+
+            try {
+                $this->reservation_back->save();
+
+                $this->reservation->reservationBack()
+                    ->associate($this->reservation_back->id);
+
+                $this->reservation->update([
+                    'reservation_id' => $this->reservation_back->id
+                ]);
+            } catch (\Exception $exception) {
+
+                $this->notification()->error(
+                    $title = 'Création impossible',
+                    $description = 'Une erreur est survenue pendant la création de la réservation de retour'
+                );
+
+                Log::channel('logtail')->critical('Erreur pendant la création de la réservation de retour', [
+                    'erreur' => $exception->getMessage(),
+                    'reservation' => $this->reservation,
+                    'reservation_back' => $this->reservation_back
+                ]);
+            }
         }
     }
 }

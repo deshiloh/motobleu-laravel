@@ -9,6 +9,7 @@ use App\Http\Livewire\Front\Passager\PassagerForm;
 use App\Models\AdresseReservation;
 use App\Models\Passager;
 use App\Models\User;
+use app\Settings\BillSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -24,10 +25,16 @@ class PassagerTest extends TestCase
         parent::setUp();
 
         /** @var User $user */
-        $user = User::factory()->create();
+        $user = User::find(1);
         $user->assignRole('user');
 
         $this->actingAs($user);
+
+        BillSettings::fake([
+            'entreprises_xls_file' => [1],
+            'entreprises_cost_center_facturation' => [1],
+            'entreprises_command_field' => [1],
+        ]);
     }
 
     /**

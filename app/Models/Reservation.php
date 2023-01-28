@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\ReservationStatus;
 use Carbon\Carbon;
 use Google_Service_Calendar_Event;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,10 +23,12 @@ class Reservation extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'statut' => ReservationStatus::class,
         'pickup_date' => 'datetime:Y-m-d H:i:s',
         'drop_date' => 'datetime:Y-m-d H:i:s',
-        'is_confirmed' => 'boolean',
-        'is_cancel' => 'boolean',
+        'has_back' => 'boolean',
+        'send_to_passager' => 'boolean',
+        'send_to_user' => 'boolean',
         'tarif' => 'float',
         'majoration' => 'float',
         'complement' => 'float'
@@ -96,10 +99,7 @@ class Reservation extends Model
 
     public function scopeToConfirmed(Builder $query)
     {
-        return $query->where([
-            ['is_confirmed', '=', false],
-            ['is_cancel', '=', false]
-        ]);
+        return $query->where('statut', ReservationStatus::Confirmed);
     }
 
     /**
@@ -169,8 +169,7 @@ class Reservation extends Model
             'pilote' => $this->pilote() === null ? $this->pilote()->first()->full_name : null,
             'comment' => $this->comment,
             'pickup_origin' => $this->pickup_origin,
-            'is_cancel' => $this->is_cancel,
-            'is_confirmed' => $this->is_confirmed,
+            'statut' => $this->statut
         ];
     }
 }

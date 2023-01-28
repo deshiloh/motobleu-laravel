@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enum\ReservationStatus;
 use App\Models\AdresseEntreprise;
 use App\Models\AdresseReservation;
 use App\Models\Carousel;
@@ -65,13 +66,21 @@ class DatabaseSeeder extends Seeder
 
             Reservation::factory([
                 'pickup_date' => Carbon::now(),
-                'is_confirmed' => true,
-                'entreprise_id' => 1,
+                'statut' => ReservationStatus::Confirmed,
+                'entreprise_id' => $user->entreprises()->first()->id,
             ])
-                ->for(Facture::factory()->create())
+                ->for(Facture::factory(['montant_ht' => 0])->create())
                 ->for($passager)
+                ->for(Pilote::factory()->create())
                 ->create()
             ;
+
+            Reservation::factory([
+                'statut' => ReservationStatus::Created,
+                'entreprise_id' => $user->entreprises()->first()->id,
+            ])
+                ->for($passager)
+                ->create();
         }
 
         Pilote::factory()->count(30)->create();

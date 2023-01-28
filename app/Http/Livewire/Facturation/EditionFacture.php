@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Facturation;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
+use App\Enum\ReservationStatus;
 use App\Events\BillCreated;
 use App\Exports\ReservationsExport;
 use App\Models\AdresseEntreprise;
@@ -10,6 +11,7 @@ use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Reservation;
 use App\Services\ExportService;
+use app\Settings\BillSettings;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -108,9 +110,8 @@ class EditionFacture extends Component
                 $query
                     ->whereMonth('pickup_date', $this->selectedMonth)
                     ->whereYear('pickup_date', $this->selectedYear)
-                    ->where('is_confirmed', true)
-                    ->where('is_cancel', false)
-                    ->orWhere('is_cancel_pay', true)
+                    ->where('statut',ReservationStatus::Confirmed)
+                    ->orWhere('statut', ReservationStatus::CanceledToPay)
                 ;
             }]
         )
@@ -118,9 +119,8 @@ class EditionFacture extends Component
                 $query
                     ->whereMonth('pickup_date', $this->selectedMonth)
                     ->whereYear('pickup_date', $this->selectedYear)
-                    ->where('is_confirmed', true)
-                    ->where('is_cancel', false)
-                    ->orWhere('is_cancel_pay', true)
+                    ->where('statut',ReservationStatus::Confirmed)
+                    ->orWhere('statut', ReservationStatus::CanceledToPay)
                 ;
             })
             ->get();
@@ -138,9 +138,8 @@ class EditionFacture extends Component
         return Reservation::where('entreprise_id', $this->entrepriseIdSelected)
             ->whereMonth('pickup_date', $this->selectedMonth)
             ->whereYear('pickup_date', $this->selectedYear)
-            ->where('is_confirmed', true)
-            ->where('is_cancel', false)
-            ->orWhere('is_cancel_pay', true)
+            ->where('statut',ReservationStatus::Confirmed)
+            ->orWhere('statut', ReservationStatus::CanceledToPay)
             ->get();
     }
 
@@ -361,7 +360,7 @@ class EditionFacture extends Component
         })->validate();
 
         foreach ($this->reservations as $reservation) {
-            $reservation->is_billed = true;
+            $reservation->statut = ReservationStatus::Billed;
             $reservation->updateQuietly();
         }
 
@@ -453,9 +452,9 @@ class EditionFacture extends Component
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function exportAction()
+    public function exportAction(BillSettings $billSettings)
     {
-        if (in_array($this->entreprise->nom, config('motobleu.export.entrepriseEnableForXlsExport'))) {
+        if (in_array($this->entreprise->id, $billSettings->entreprises_xls_file)) {
             // Export en XLS
             return Excel::download(new ReservationsExport($this->selectedYear, $this->selectedMonth, $this->entreprise), 'reservations.xlsx');
         } else {
