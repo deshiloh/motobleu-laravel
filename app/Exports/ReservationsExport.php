@@ -317,7 +317,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         $drawing = new Drawing();
         $drawing->setName('Logo');
         $drawing->setDescription('Logo motobleu');
-        $drawing->setPath(public_path('storage/Motobleu.png'));
+        $drawing->setPath(public_path('storage/motobleu.png'));
         $drawing->setHeight(90);
         $drawing->setOffsetX(20);
         $drawing->setCoordinates('A2');

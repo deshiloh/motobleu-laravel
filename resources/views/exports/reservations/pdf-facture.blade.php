@@ -147,7 +147,7 @@
     <table>
         <tr>
             <td>
-                <img src="{{ storage_path('app/public/Motobleu.png') }}" alt="Motobleu Paris" width="300" style="padding-left: 30px; padding-top: 30px;">
+                <img src="{{ storage_path('app/public/motobleu.png') }}" alt="Motobleu Paris" width="300" style="padding-left: 30px; padding-top: 30px;">
             </td>
         </tr>
     </table>
