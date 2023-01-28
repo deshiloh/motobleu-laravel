@@ -1,8 +1,11 @@
 /node_modules
-/public/hot
+/public/build
 /public/storage
+/public/hot
+/public/.php-ini
+/public/.php-ini
+/public/.php-version
 /public/photos
-/public/build/js
 /storage/*.key
 /vendor
 .env
