@@ -14,8 +14,6 @@ class Pilote extends Model
 {
     use HasFactory, Searchable;
 
-    protected $appends = ['full_name'];
-
     /**
      * The attributes that are mass assignable.
      *
@@ -33,6 +31,9 @@ class Pilote extends Model
         'ville',
     ];
 
+    /**
+     * @return Attribute
+     */
     public function fullName(): Attribute
     {
         return Attribute::make(
