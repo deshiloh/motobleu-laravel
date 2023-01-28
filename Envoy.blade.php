@@ -45,6 +45,7 @@
     rm -rf www/
     mv ./temp/ ./www/
     mv ./photos ./www/storage/app/photos
+    cp -R ./google-calendar ./www/storage/app/
 
     cd /var/www/vhosts/motobleu-paris.com/test.motobleu-paris.com/www
     /opt/plesk/php/8.1/bin/php artisan storage:link
