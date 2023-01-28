@@ -5,8 +5,11 @@
     git checkout master
     git pull
 
-    composer install
+    composer install --optimize-autoloader --no-dev
     php artisan migrate
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
 @endtask
 
 @task('beta', ['confirm' => true])
@@ -14,6 +17,9 @@
     git checkout develop
     git pull
 
-    composer install
-    php artisan migrate:fresh --seed
+    /opt/plesk/php/8.1/bin/php /usr/lib/plesk-9.0/composer.phar install --optimize-autoloader
+    /opt/plesk/php/8.1/bin/php artisan migrate:fresh --seed --force
+    /opt/plesk/php/8.1/bin/php artisan route:cache
+    /opt/plesk/php/8.1/bin/php artisan view:cache
+    npm install && npm run build
 @endtask
