@@ -23,7 +23,7 @@ jobs:
 
   release:
     name: Release
-    runs-on: laravel-tests
+    runs-on: ubuntu-latest
     needs: laravel-tests
     if: github.ref == 'refs/heads/master'
     steps:
