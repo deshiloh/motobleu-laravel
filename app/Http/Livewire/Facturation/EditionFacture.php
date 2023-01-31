@@ -282,6 +282,7 @@ class EditionFacture extends Component
     public function goToEditPage(int $entreprise): void
     {
         $this->entrepriseIdSelected = $entreprise;
+        $this->factureModal = true;
     }
 
     /**

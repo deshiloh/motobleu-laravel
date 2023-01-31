@@ -41,7 +41,7 @@
                             @endif
                         </x-datatable.td>
                         <x-datatable.td>
-                            {{ $this->getEntreprise($facture)->nom }}
+                            {{ $facture->reservations->first()->entreprise->nom }}
                         </x-datatable.td>
                         <x-datatable.td>
                             <x-button label="Voir" href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank" icon="eye" info sm />
@@ -63,5 +63,6 @@
                 @endforelse
             </x-slot:body>
         </x-datatable>
+        <x-front.pagination :pagination="$facturations" :per-page="$perPage"/>
     </x-bloc-content>
 </div>
