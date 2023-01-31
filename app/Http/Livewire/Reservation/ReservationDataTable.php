@@ -5,6 +5,10 @@ namespace App\Http\Livewire\Reservation;
 use App\Enum\ReservationStatus;
 use App\Models\Reservation;
 use App\Traits\WithSorting;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -23,9 +27,12 @@ class ReservationDataTable extends Component
         $this->sortDirection = 'desc';
     }
 
-    public function render()
+    public function render(): Factory|View|Application
     {
-        $reservations = Reservation::search($this->search)
+        $reservations = Reservation::query()
+            ->when($this->search, function (Builder $query, $search) {
+                return $query->where('reference', 'like', $search . '%');
+            })
             ->orderBy($this->sortField, $this->sortDirection);
 
         if ($this->querySort == 'not_confirmed') {

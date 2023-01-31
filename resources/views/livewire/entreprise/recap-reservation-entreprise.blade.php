@@ -54,5 +54,5 @@
         <x-slot name="tfoot">
         </x-slot>
     </x-datatable>
-    {{ $reservations->links() }}
+    <x-front.pagination :pagination="$reservations" :per-page="$perPage"/>
 </div>

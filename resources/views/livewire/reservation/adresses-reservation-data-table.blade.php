@@ -28,7 +28,5 @@
             @endforelse
         </x-slot>
     </x-datatable>
-    <div class="px-3 py-4">
-        {{ $adresses->links('components.datatable.pagination') }}
-    </div>
+    <x-front.pagination :pagination="$adresses" :per-page="$perPage"/>
 </div>

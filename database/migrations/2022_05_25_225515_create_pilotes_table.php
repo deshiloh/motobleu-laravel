@@ -25,6 +25,9 @@ return new class extends Migration
             $table->string('code_postal')->nullable(true);
             $table->string('ville')->nullable(true);
             $table->timestamps();
+
+            $table->index('nom');
+            $table->index('prenom');
         });
     }
 

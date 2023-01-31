@@ -34,12 +34,5 @@
                 </tr>
             @endforelse
         </x-slot>
-        <x-slot name="tfoot">
-            <tr>
-                <x-datatable.td colspan="5">
-                    {{ $adresses->links('components.datatable.pagination') }}
-                </x-datatable.td>
-            </tr>
-        </x-slot>
     </x-datatable>
 </div>

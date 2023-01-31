@@ -35,7 +35,7 @@ class ImportOldData extends Command
      */
     public function handle()
     {
-        
+
         $reservationPermissions = [
             'see reservation',
             'create reservation',

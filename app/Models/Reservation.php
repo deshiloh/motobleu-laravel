@@ -22,6 +22,17 @@ class Reservation extends Model
 
     protected $guarded = [];
 
+    protected $with = [
+        'passager' => [
+            'user'
+        ],
+        'localisationFrom',
+        'localisationTo',
+        'adresseReservationFrom',
+        'adresseReservationTo',
+        'entreprise'
+    ];
+
     protected $casts = [
         'statut' => ReservationStatus::class,
         'pickup_date' => 'datetime:Y-m-d H:i:s',
@@ -57,49 +68,49 @@ class Reservation extends Model
         return $this->belongsTo(Entreprise::class);
     }
 
-    public function facture()
+    public function facture(): BelongsTo
     {
         return $this->belongsTo(Facture::class);
     }
 
-    public function passager()
+    public function passager(): BelongsTo
     {
         return $this->belongsTo(Passager::class);
     }
 
-    public function localisationFrom()
+    public function localisationFrom(): BelongsTo
     {
         return $this->belongsTo(Localisation::class);
     }
 
-    public function localisationTo()
+    public function localisationTo(): BelongsTo
     {
         return $this->belongsTo(Localisation::class);
     }
 
-    public function adresseReservationFrom()
+    public function adresseReservationFrom(): BelongsTo
     {
         return $this->belongsTo(AdresseReservation::class);
     }
 
-    public function adresseReservationTo()
+    public function adresseReservationTo(): BelongsTo
     {
         return $this->belongsTo(AdresseReservation::class);
     }
 
-    public function reservationBack()
+    public function reservationBack(): BelongsTo
     {
         return $this->belongsTo(Reservation::class, 'reservation_id');
     }
 
-    public function pilote()
+    public function pilote(): BelongsTo
     {
         return $this->belongsTo(Pilote::class);
     }
 
     public function scopeToConfirmed(Builder $query)
     {
-        return $query->where('statut', ReservationStatus::Confirmed);
+        return $query->where('statut', ReservationStatus::Created);
     }
 
     /**
@@ -150,26 +161,5 @@ class Reservation extends Model
         $total = floatval($this->tarif);
         $montantMajoration = $total * (floatval($this->majoration) / 100);
         return $total + $montantMajoration + floatval($this->complement);
-    }
-
-    /**
-     * @return array
-     */
-    public function toSearchableArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'reference' => $this->reference,
-            'pickup_date' => $this->pickup_date,
-            'user' => $this->passager->user()->first()->full_name,
-            'entreprise' => $this->entreprise()->first()->nom,
-            'passager' => $this->passager()->first()->nom,
-            'localisation_from' => $this->display_from,
-            'localisation_to' => $this->display_to,
-            'pilote' => $this->pilote() === null ? $this->pilote()->first()->full_name : null,
-            'comment' => $this->comment,
-            'pickup_origin' => $this->pickup_origin,
-            'statut' => $this->statut
-        ];
     }
 }

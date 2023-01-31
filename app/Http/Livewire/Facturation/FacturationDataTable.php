@@ -25,7 +25,14 @@ class FacturationDataTable extends Component
     public function render()
     {
         return view('livewire.facturation.facturation-data-table', [
-            'facturations' => $this->buildQuery()
+            'facturations' => Facture::where('factures.reference', 'like', '%' . $this->search . '%')
+                ->when($this->entreprise != 0, function (Builder $query) {
+                    return $query
+                        ->join('reservations', 'reservations.facture_id', '=', 'factures.id')
+                        ->where('reservations.entreprise_id', $this->entreprise);
+                })
+                ->orderBy('factures.id', 'desc')
+                ->paginate($this->perPage)
         ])
             ->layout('components.layout');
     }
@@ -38,17 +45,5 @@ class FacturationDataTable extends Component
             ->join('reservations', 'reservations.entreprise_id', '=', 'entreprise_user.entreprise_id')
             ->where('reservations.facture_id', $facture->id)
             ->first();
-    }
-
-    public function buildQuery()
-    {
-        return Facture::where('factures.reference', 'like', '%' . $this->search . '%')
-            ->when($this->entreprise != 0, function (Builder $query) {
-                return $query
-                    ->join('reservations', 'reservations.facture_id', '=', 'factures.id')
-                    ->where('reservations.entreprise_id', $this->entreprise);
-            })
-            ->orderBy('factures.id', 'desc')
-            ->paginate($this->perPage);
     }
 }

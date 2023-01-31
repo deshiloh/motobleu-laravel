@@ -23,8 +23,7 @@ class AdressesEntrepriseDataTable extends Component
     public function render(): View|Factory|Application
     {
         return view('livewire.entreprise.adresses-entreprise-data-table', [
-            'adresses' => AdresseEntreprise::where('entreprise_id', $this->entreprise->id)
-                ->paginate($this->perPage)
+            'adresses' => AdresseEntreprise::where('entreprise_id', $this->entreprise->id)->get()
         ]);
     }
 }

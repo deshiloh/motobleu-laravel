@@ -78,6 +78,8 @@ return new class extends Migration
                 ->constrained('entreprises');
 
             $table->timestamps();
+
+            $table->index('reference');
         });
     }
 
