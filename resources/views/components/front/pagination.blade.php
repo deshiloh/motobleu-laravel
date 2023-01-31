@@ -2,7 +2,7 @@
 
 @if($pagination->total() > $perPage)
     <div class="mt-4">
-        {{ $pagination->links('components.datatable.pagination') }}
+        {{ $pagination->links() }}
     </div>
 @endif
 

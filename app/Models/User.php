@@ -24,7 +24,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, CanResetPassword, Searchable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, CanResetPassword, HasRoles;
 
     protected $appends = ['full_name'];
 
@@ -104,32 +104,5 @@ class User extends Authenticatable
     public function getFullNameAttribute(): string
     {
         return implode(' ', [$this->nom, $this->prenom]);
-    }
-
-    /**
-     * @return array
-     */
-    public function toSearchableArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'nom' => $this->nom,
-            'prenom' => $this->prenom,
-            'email' => $this->email
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public static function selectInputDatas(): array
-    {
-        $selectDatas = [];
-
-        foreach (self::all() as $data) {
-            $selectDatas[$data->id] = $data->nom;
-        }
-
-        return $selectDatas;
     }
 }

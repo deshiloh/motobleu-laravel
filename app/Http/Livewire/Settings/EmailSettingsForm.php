@@ -21,8 +21,13 @@ use WireUi\Traits\Actions;
 class EmailSettingsForm extends Component
 {
     use Actions;
-    public string $emailTest = "test@test.com";
+    public string $emailTest = "";
     public bool $adminMode = false;
+
+    public function mount()
+    {
+        $this->emailTest = config('mail.admin.address');
+    }
 
     public function render()
     {

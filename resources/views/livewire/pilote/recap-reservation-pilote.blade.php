@@ -66,7 +66,7 @@
                                 <div class="tooltip-arrow" data-popper-arrow></div>
                             </div>
                         </x-datatable.td>
-                        <x-datatable.td>{{ $reservation->passager->user->entreprise->nom }}</x-datatable.td>
+                        <x-datatable.td>{{ $reservation->entreprise->nom }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->passager->user->full_name }}</x-datatable.td>
                         <x-datatable.td>
@@ -99,8 +99,6 @@
             <x-slot name="tfoot">
             </x-slot>
         </x-datatable>
-        <div class="mt-4 px-1">
-            {{ $reservations->links('components.datatable.pagination') }}
-        </div>
+        <x-front.pagination :pagination="$reservations" :per-page="$perPage"/>
     </x-bloc-content>
 </div>

@@ -16,11 +16,11 @@ return new class extends Migration
         Schema::create('entreprises', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->string('responsable_name')
-                ->nullable(true);
-            $table->boolean('is_actif')
-                ->default(true);
+            $table->string('responsable_name')->nullable();
+            $table->boolean('is_actif')->default(true);
             $table->timestamps();
+
+            $table->index('nom');
         });
     }
 
