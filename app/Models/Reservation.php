@@ -60,6 +60,11 @@ class Reservation extends Model
         });
     }
 
+    public function totalTarifPilote()
+    {
+        return $this->tarif_pilote * (1 + $this->majoration_pilote / 100);
+    }
+
     /**
      * @return BelongsTo
      */

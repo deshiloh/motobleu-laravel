@@ -1,6 +1,9 @@
 <div>
     <x-header>
         Liste des courses du pilote <span class="text-blue-500">{{ $pilote->full_name }}</span>
+        <x-slot:right>
+            <x-button fllat label="Retour à la liste" href="{{ route('admin.pilotes.index') }}" sm />
+        </x-slot:right>
     </x-header>
     <x-bloc-content>
         <div class="pb-3 border-b border-gray-200 dark:border-gray-600 sm:flex sm:items-center sm:justify-between">
@@ -15,15 +18,18 @@
                 without-timezone
                 label="Date de début"
                 placeholder="Date de début"
-                wire:model="dateDebut"
+                wire:model.defer="dateDebut"
             />
             <x-datetime-picker
                 without-time
                 without-timezone
                 label="Date de fin"
                 placeholder="Date de fin"
-                wire:model="dateFin"
+                wire:model.defer="dateFin"
             />
+            <div class="flex items-end">
+                <x-button label="Rechercher" primary wire:click="searchReservations"/>
+            </div>
         </div>
         <x-datatable>
             <x-slot name="headers">
@@ -33,16 +39,18 @@
                     <x-datatable.th>Date</x-datatable.th>
                     <x-datatable.th>Client</x-datatable.th>
                     <x-datatable.th>Validation</x-datatable.th>
-                    <x-datatable.th>Tarif</x-datatable.th>
-                    <x-datatable.th>Majoration</x-datatable.th>
-                    <x-datatable.th>Encaisse</x-datatable.th>
-                    <x-datatable.th>Encompte</x-datatable.th>
                     <x-datatable.th>Action</x-datatable.th>
                 </tr>
             </x-slot>
             <x-slot name="body">
+                @php
+                    $validationAmount = 0;
+                @endphp
                 @forelse($reservations as $reservation)
-                    <x-datatable.tr>
+                    @php
+                        $validationAmount = $validationAmount + $reservation->totalTarifPilote();
+                    @endphp
+                    <x-datatable.tr :success="$reservation->tarif_pilote > 0">
                         <x-datatable.td>
                             <span class="text-blue-500" data-tooltip-target="tooltip-left{{ $reservation->id }}"
                                   data-tooltip-placement="top">{{ $reservation->reference }}</span>
@@ -70,24 +78,13 @@
                         <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->passager->user->full_name }}</x-datatable.td>
                         <x-datatable.td>
-                            XXXX €
+
+                            @if($reservation->tarif_pilote)
+                                <div class="text-left">{{ number_format($validationAmount, 2, ',', ' ') }} €</div>
+                            @endif
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-input placeholder="Tarif" right-icon="currency-euro" form="form{{ $reservation->id }}"/>
-                        </x-datatable.td>
-                        <x-datatable.td>
-                            <x-input placeholder="Majoration en %"/>
-                        </x-datatable.td>
-                        <x-datatable.td>
-                            <x-input placeholder="Encaisse"/>
-                        </x-datatable.td>
-                        <x-datatable.td>
-                            <x-input placeholder="Encompte" right-icon="currency-euro"/>
-                        </x-datatable.td>
-                        <x-datatable.td>
-                            <form action="" id="form{{ $reservation->id }}">
-                                <x-button label="Valider" info sm/>
-                            </form>
+                            <x-button label="Valider" primary sm wire:click="editReservation({{ $reservation }})" />
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty
@@ -99,6 +96,21 @@
             <x-slot name="tfoot">
             </x-slot>
         </x-datatable>
-        <x-front.pagination :pagination="$reservations" :per-page="$perPage"/>
     </x-bloc-content>
+
+    <x-modal.card title="{{ $reservationSelected ? 'Édition de la réservation ' . $reservationSelected->reference : '' }}" blur wire:model.defer="editReservationMode">
+        <x-errors class="mb-3"/>
+        <div class="space-y-3">
+            <x-input placeholder="Tarif" right-icon="currency-euro" wire:model="reservationSelected.tarif_pilote" />
+            <x-input placeholder="Majoration en %" wire:model="reservationSelected.majoration_pilote"/>
+            <x-input placeholder="Encaisse" right-icon="currency-euro" wire:model="reservationSelected.encaisse_pilote"/>
+            <x-input placeholder="Encompte" right-icon="currency-euro" wire:model="reservationSelected.encompte_pilote"/>
+        </div>
+        <x-slot name="footer">
+            <div class="flex items-center justify-end">
+                <x-button flat label="Annuler" wire:click="closeEditReservation" />
+                <x-button primary label="Enregistrer" wire:click="save" spinner="save"/>
+            </div>
+        </x-slot>
+    </x-modal.card>
 </div>
