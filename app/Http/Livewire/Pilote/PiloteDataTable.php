@@ -27,7 +27,8 @@ class PiloteDataTable extends Component
         return view('livewire.pilote.pilote-data-table', [
             'pilotes' => Pilote::query()
                 ->when($this->search, function (Builder $builder, $search) {
-                    $builder->where('nom', 'like', $search . '%');
+                    $builder->where('nom', 'like', $search . '%')
+                        ->orWhere('prenom', 'like', $search . '%');
                 })
                 ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate($this->perPage)

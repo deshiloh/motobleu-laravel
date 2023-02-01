@@ -39,6 +39,10 @@
                     <x-datatable.th>Date</x-datatable.th>
                     <x-datatable.th>Client</x-datatable.th>
                     <x-datatable.th>Validation</x-datatable.th>
+                    <x-datatable.th>Tarif</x-datatable.th>
+                    <x-datatable.th>Majoration</x-datatable.th>
+                    <x-datatable.th>Encaisse</x-datatable.th>
+                    <x-datatable.th>Encompte</x-datatable.th>
                     <x-datatable.th>Action</x-datatable.th>
                 </tr>
             </x-slot>
@@ -50,7 +54,7 @@
                     @php
                         $validationAmount = $validationAmount + $reservation->totalTarifPilote();
                     @endphp
-                    <x-datatable.tr :success="$reservation->tarif_pilote > 0">
+                    <x-datatable.tr :success="$reservation->tarif_pilote > 0"  x-data="formReservationPilote({{ json_encode($reservation) }})">
                         <x-datatable.td>
                             <span class="text-blue-500" data-tooltip-target="tooltip-left{{ $reservation->id }}"
                                   data-tooltip-placement="top">{{ $reservation->reference }}</span>
@@ -83,7 +87,20 @@
                             </div>
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-button label="Valider" primary sm wire:click="editReservation({{ $reservation }})" />
+                            <x-input placeholder="Tarif" right-icon="currency-euro" x-model="formData.tarif" value="{{ $reservation->tarif_pilote }}"/>
+                        </x-datatable.td>
+                        <x-datatable.td>
+                            <x-input placeholder="Majoration en %" x-model="formData.majoration"/>
+                        </x-datatable.td>
+                        <x-datatable.td>
+                            <x-input placeholder="Encaisse" right-icon="currency-euro" x-model="formData.encaisse"/>
+                        </x-datatable.td>
+                        <x-datatable.td>
+                            <x-input placeholder="Encompte" right-icon="currency-euro" x-model="formData.encompte"/>
+                        </x-datatable.td>
+                        <x-datatable.td>
+                            <input type="hidden">
+                            <x-button label="Valider" primary sm @click="toto({{ $reservation->id }})" wire:loading.attr="disabled"/>
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty
@@ -96,20 +113,23 @@
             </x-slot>
         </x-datatable>
     </x-bloc-content>
-
-    <x-modal.card title="{{ $reservationSelected ? 'Édition de la réservation ' . $reservationSelected->reference : '' }}" blur wire:model.defer="editReservationMode">
-        <x-errors class="mb-3"/>
-        <div class="space-y-3">
-            <x-input placeholder="Tarif" right-icon="currency-euro" wire:model="reservationSelected.tarif_pilote" />
-            <x-input placeholder="Majoration en %" wire:model="reservationSelected.majoration_pilote"/>
-            <x-input placeholder="Encaisse" right-icon="currency-euro" wire:model="reservationSelected.encaisse_pilote"/>
-            <x-input placeholder="Encompte" right-icon="currency-euro" wire:model="reservationSelected.encompte_pilote"/>
-        </div>
-        <x-slot name="footer">
-            <div class="flex items-center justify-end">
-                <x-button flat label="Annuler" wire:click="closeEditReservation" />
-                <x-button primary label="Enregistrer" wire:click="save" spinner="save"/>
-            </div>
-        </x-slot>
-    </x-modal.card>
+    @push("scripts")
+        <script>
+            function formReservationPilote(reservation) {
+                return {
+                    formData : {
+                        tarif: reservation.tarif_pilote,
+                        majoration: reservation.majoration_pilote,
+                        encaisse: reservation.encaisse_pilote,
+                        encompte: reservation.encompte_pilote,
+                        reservation: ''
+                    },
+                    toto(reservationId) {
+                        this.formData.reservation = reservationId
+                        @this.emit('eventTest', this.formData)
+                    }
+                }
+            }
+        </script>
+    @endpush
 </div>

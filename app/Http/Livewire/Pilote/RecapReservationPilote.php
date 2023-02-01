@@ -2,31 +2,27 @@
 
 namespace App\Http\Livewire\Pilote;
 
+use App\Enum\ReservationStatus;
 use App\Models\Pilote;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
+use WireUi\Traits\Actions;
 
 class RecapReservationPilote extends Component
 {
-    use WithPagination;
+    use WithPagination, Actions;
 
     public Pilote $pilote;
-    public ?Reservation $reservationSelected;
-    public bool $editReservationMode = false;
     public $reservations = [];
     public $dateDebut;
     public $dateFin;
     public int $perPage = 10;
     protected $queryString = ['dateDebut', 'dateFin'];
-
-    protected array $rules = [
-        'reservationSelected.tarif_pilote' => 'required',
-        'reservationSelected.majoration_pilote' => 'nullable',
-        'reservationSelected.encaisse_pilote' => 'nullable',
-        'reservationSelected.encompte_pilote' => 'nullable'
+    protected $listeners = [
+        'eventTest' => 'myTestEvent'
     ];
 
     /**
@@ -54,6 +50,7 @@ class RecapReservationPilote extends Component
     private function getReservations()
     {
         return Reservation::where('pilote_id', $this->pilote->id)
+            ->where('statut', ReservationStatus::Confirmed->value)
             ->whereBetween('pickup_date', [$this->dateDebut, $this->dateFin])
             ->orderBy('pickup_date', 'desc')
             ->get();
@@ -76,14 +73,31 @@ class RecapReservationPilote extends Component
         $this->reservationSelected = null;
     }
 
-    public function save()
+    public function myTestEvent(array $datas)
     {
-        $this->validate();
+        $validator = \Validator::make($datas, [
+            'tarif' => 'required',
+            'majoration' => 'nullable',
+            'encaisse' => 'nullable',
+            'encompte' => 'nullable',
+            'reservation' => 'required'
+        ]);
 
-        $this->reservationSelected->update();
+        if ($validator->fails()) {
+            $description = implode('<br>', $validator->errors()->all());
+            $this->notification()->error('Erreur', $description);
+            return false;
+        }
 
-        $this->reservationSelected = null;
-        $this->editReservationMode = false;
+        $reservation = Reservation::find($datas['reservation']);
+        $reservation->update([
+            'tarif_pilote' => $datas['tarif'],
+            'majoration_pilote' => $datas['majoration'],
+            'encaisse_pilote' => $datas['encaisse'],
+            'encompte_pilote' => $datas['encompte'],
+        ]);
+
+        $this->notification()->success('test');
 
         $this->reservations = $this->getReservations();
     }

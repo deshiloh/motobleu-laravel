@@ -53,7 +53,7 @@ class InvoiceService
                     ->pricePerUnit($facture->montant_ht)
             )
             ->taxRate(10)
-            //->logo(public_path('storage/logo-pdf.png'))
+            ->logo(public_path('storage/motobleu-dark.png'))
         ;
 
         if ($notes = $facture->information) {
