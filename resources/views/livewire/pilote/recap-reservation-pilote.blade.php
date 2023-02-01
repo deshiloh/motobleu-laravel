@@ -78,10 +78,9 @@
                         <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->passager->user->full_name }}</x-datatable.td>
                         <x-datatable.td>
-
-                            @if($reservation->tarif_pilote)
-                                <div class="text-left">{{ number_format($validationAmount, 2, ',', ' ') }} €</div>
-                            @endif
+                            <div class="text-left">
+                                {{ $reservation->tarif_pilote ? number_format($validationAmount, 2, ',', ' ') : 0 }} €
+                            </div>
                         </x-datatable.td>
                         <x-datatable.td>
                             <x-button label="Valider" primary sm wire:click="editReservation({{ $reservation }})" />

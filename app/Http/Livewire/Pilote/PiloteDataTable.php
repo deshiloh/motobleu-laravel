@@ -7,6 +7,7 @@ use App\Traits\WithSorting;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -24,9 +25,12 @@ class PiloteDataTable extends Component
     public function render(): View|Factory|Application
     {
         return view('livewire.pilote.pilote-data-table', [
-            'pilotes' => Pilote::search($this->search)->query(function ($q) {
-                $q->orderBy($this->sortField, $this->sortDirection);
-            })->paginate($this->perPage)
+            'pilotes' => Pilote::query()
+                ->when($this->search, function (Builder $builder, $search) {
+                    $builder->where('nom', 'like', $search . '%');
+                })
+                ->orderBy($this->sortField, $this->sortDirection)
+                ->paginate($this->perPage)
         ]);
     }
 }
