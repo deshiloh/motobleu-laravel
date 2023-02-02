@@ -3,12 +3,16 @@
 namespace App\Http\Livewire\Pilote;
 
 use App\Enum\ReservationStatus;
+use App\Exports\ReservationPiloteExport;
 use App\Models\Pilote;
 use App\Models\Reservation;
+use App\Services\ExportService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
+use PhpOffice\PhpSpreadsheet\Exception;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use WireUi\Traits\Actions;
 
 class RecapReservationPilote extends Component
@@ -19,10 +23,9 @@ class RecapReservationPilote extends Component
     public $reservations = [];
     public $dateDebut;
     public $dateFin;
-    public int $perPage = 10;
     protected $queryString = ['dateDebut', 'dateFin'];
     protected $listeners = [
-        'eventTest' => 'myTestEvent'
+        'editReservation'
     ];
 
     /**
@@ -34,7 +37,7 @@ class RecapReservationPilote extends Component
         $this->pilote = $pilote;
         $this->dateDebut = $this->dateDebut ?? Carbon::today()->startOfMonth()->addHour();
         $this->dateFin = $this->dateFin ?? Carbon::today()->endOfMonth();
-        $this->reservations = $this->getReservations();
+        $this->reservations = $this->handleQuery();
         $this->reservationSelected = null;
     }
 
@@ -47,7 +50,7 @@ class RecapReservationPilote extends Component
             ->layout('components.layout');
     }
 
-    private function getReservations()
+    private function handleQuery()
     {
         return Reservation::where('pilote_id', $this->pilote->id)
             ->where('statut', ReservationStatus::Confirmed->value)
@@ -58,28 +61,17 @@ class RecapReservationPilote extends Component
 
     public function searchReservations()
     {
-        $this->reservations = $this->getReservations();
+        $this->reservations = $this->handleQuery();
     }
 
-    public function editReservation(Reservation $reservation)
-    {
-        $this->reservationSelected = $reservation;
-        $this->editReservationMode = true;
-    }
-
-    public function closeEditReservation()
-    {
-        $this->editReservationMode = false;
-        $this->reservationSelected = null;
-    }
-
-    public function myTestEvent(array $datas)
+    public function editReservation(array $datas): bool
     {
         $validator = \Validator::make($datas, [
             'tarif' => 'required',
             'majoration' => 'nullable',
             'encaisse' => 'nullable',
             'encompte' => 'nullable',
+            'comment' => 'nullable',
             'reservation' => 'required'
         ]);
 
@@ -90,15 +82,27 @@ class RecapReservationPilote extends Component
         }
 
         $reservation = Reservation::find($datas['reservation']);
-        $reservation->update([
+        $reservation->updateQuietly([
             'tarif_pilote' => $datas['tarif'],
             'majoration_pilote' => $datas['majoration'],
             'encaisse_pilote' => $datas['encaisse'],
             'encompte_pilote' => $datas['encompte'],
+            'comment_pilote' => $datas['comment'],
         ]);
 
-        $this->notification()->success('test');
+        $this->reservations = $this->handleQuery();
 
-        $this->reservations = $this->getReservations();
+        $this->notification()->success('Opération réussite', "La réservation a bien été modifiée.");
+
+        return true;
+    }
+
+    /**
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function exportReservations(ExportService $exportService): BinaryFileResponse
+    {
+        return $exportService->exportForPilote([$this->dateDebut, $this->dateFin], $this->pilote);
     }
 }

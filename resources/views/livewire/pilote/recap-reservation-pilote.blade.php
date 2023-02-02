@@ -9,7 +9,7 @@
         <div class="pb-3 border-b border-gray-200 dark:border-gray-600 sm:flex sm:items-center sm:justify-between">
             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Liste des réservations</h3>
             <div class="mt-3 sm:mt-0 sm:ml-4">
-                <x-button label="Exporter" icon="download" sm primary/>
+                <x-button label="Exporter" icon="download" sm primary wire:click="exportReservations" spinner="exportReservations"/>
             </div>
         </div>
         <div class="py-3 grid grid-cols-3 gap-6">
@@ -43,6 +43,7 @@
                     <x-datatable.th>Majoration</x-datatable.th>
                     <x-datatable.th>Encaisse</x-datatable.th>
                     <x-datatable.th>Encompte</x-datatable.th>
+                    <x-datatable.th>Commentaire</x-datatable.th>
                     <x-datatable.th>Action</x-datatable.th>
                 </tr>
             </x-slot>
@@ -54,11 +55,10 @@
                     @php
                         $validationAmount = $validationAmount + $reservation->totalTarifPilote();
                     @endphp
-                    <x-datatable.tr :success="$reservation->tarif_pilote > 0"  x-data="formReservationPilote({{ json_encode($reservation) }})">
+                    <x-datatable.tr :success="$reservation->tarif_pilote > 0"  x-data="formReservationPilote({{ json_encode($reservation) }})" wire:key="{{ $reservation->id }}">
                         <x-datatable.td>
                             <span class="text-blue-500" data-tooltip-target="tooltip-left{{ $reservation->id }}"
                                   data-tooltip-placement="top">{{ $reservation->reference }}</span>
-
                             <div id="tooltip-left{{ $reservation->id }}" role="tooltip"
                                  class="shadow-xl transition-opacity duration-300 inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                                 <dl>
@@ -90,13 +90,16 @@
                             <x-input placeholder="Tarif" right-icon="currency-euro" x-model="formData.tarif" value="{{ $reservation->tarif_pilote }}"/>
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-input placeholder="Majoration en %" x-model="formData.majoration"/>
+                            <x-input placeholder="Majoration" x-model="formData.majoration" right-icon="currency-euro"/>
                         </x-datatable.td>
                         <x-datatable.td>
                             <x-input placeholder="Encaisse" right-icon="currency-euro" x-model="formData.encaisse"/>
                         </x-datatable.td>
                         <x-datatable.td>
                             <x-input placeholder="Encompte" right-icon="currency-euro" x-model="formData.encompte"/>
+                        </x-datatable.td>
+                        <x-datatable.td>
+                            <x-textarea placeholder="Commentaire pour le pilote" x-model="formData.comment"/>
                         </x-datatable.td>
                         <x-datatable.td>
                             <input type="hidden">
@@ -122,11 +125,12 @@
                         majoration: reservation.majoration_pilote,
                         encaisse: reservation.encaisse_pilote,
                         encompte: reservation.encompte_pilote,
+                        comment: reservation.comment_pilote,
                         reservation: ''
                     },
                     toto(reservationId) {
                         this.formData.reservation = reservationId
-                        @this.emit('eventTest', this.formData)
+                        @this.emit('editReservation', this.formData)
                     }
                 }
             }
