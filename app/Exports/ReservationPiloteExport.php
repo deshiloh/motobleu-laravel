@@ -235,13 +235,15 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $titleStyles->getFont()->setSize(14);
                 $titleStyles->getFont()->setBold(true);
 
+                /** @var Carbon $currentDate */
+                $currentDate = $this->period[1];
                 $sheet->getSheet()->getCell('E' . 10)
                     ->setValue(
                         sprintf(
                             '%s / %s / %s',
                             $this->pilote->nom,
                             $this->pilote->email,
-                            'test 2023'
+                            $currentDate->isoFormat('MMMM') . ' ' . $currentDate->format('Y')
                         )
                     );
 

@@ -45,6 +45,7 @@ class ExportService
      */
     public function exportForPilote(array $period, Pilote $pilote): BinaryFileResponse
     {
-        return Excel::download(new ReservationPiloteExport($period, $pilote), 'pilote.xlsx');
+        $name = sprintf('Moto Bleu-%s-%s.xlsx', $period[1]->format('m'), $period[1]->format("Y"));
+        return Excel::download(new ReservationPiloteExport($period, $pilote), $name);
     }
 }
