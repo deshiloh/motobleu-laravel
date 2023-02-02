@@ -313,7 +313,7 @@ class EditionFacture extends Component
     /**
      * @return void
      */
-    public function sendFactureAction()
+    public function sendFactureAction(): void
     {
         $this->withValidator(function (Validator $validator) {
             $validator->after(function ($validator) {
@@ -326,6 +326,8 @@ class EditionFacture extends Component
             });
         })->validate();
 
+        $this->facture->information = $this->email['complement'];
+
         foreach ($this->reservations as $reservation) {
             $reservation->statut = ReservationStatus::Billed;
             $reservation->updateQuietly();
@@ -334,7 +336,7 @@ class EditionFacture extends Component
         BillCreated::dispatch($this->facture, $this->email);
 
         $this->notification([
-            'title' => 'Facture envoyée avec succés.',
+            'title' => 'Facture envoyée.',
             'description' => 'Vous allez être redirigé vers la page de listing entreprises',
             'icon' => 'success',
             'onTimeout' => [

@@ -379,6 +379,19 @@
             </p>
         @endif
 
+        <p>
+            MOTOBLEU <br>
+            26 - 28 RUE MARIUS AUFAN 92300 LEVALLOIS PERRET <br>
+            SIRET : 82472195500014 - TVA intracommunautaire : FR69824721955 Tél : +33647938617 - contact@motobleu-paris.com
+        </p>
+        <p style="margin-bottom: -5;">
+            CONDITIONS DE PAIEMENT :
+        </p>
+        <ul>
+            <li>- Pas d'escompte si règlement anticipé.</li>
+            <li>- Toute somme non payée dans les 30 jours est augmentée du taux d'intérêt légal majoré de 7 points.</li>
+            <li>- Indemnité forfaitaire de recouvrement : 40 euros</li>
+        </ul>
         {{--<p>
             {{ trans('invoice.amount_in_words') }}: {{ $invoice->getTotalAmountInWords() }}
         </p>--}}
