@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Livewire\Pilote\PiloteForm;
+use App\Http\Livewire\Pilote\RecapReservationPilote;
 use App\Models\Pilote;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -45,6 +46,13 @@ class PiloteTest extends TestCase
     public function testCanAcessCreateFormPilote()
     {
         $response = $this->get(route('admin.pilotes.create'));
+        $response->assertStatus(200);
+    }
+
+    public function testAccessRecapPiloteReservations()
+    {
+        $pilote = Pilote::find(1);
+        $response = $this->get(route('admin.pilotes.recap-reservation', ['pilote' => $pilote->id]));
         $response->assertStatus(200);
     }
 
@@ -121,5 +129,37 @@ class PiloteTest extends TestCase
 
         $response->assertStatus(302);
         $this->assertModelMissing($pilote);
+    }
+
+    public function testUpdateReservationPiloteWithEmptyTarif()
+    {
+        $pilote = Pilote::find(1);
+        Livewire::test(RecapReservationPilote::class, ['pilote' => $pilote])
+            ->call('editReservation', [
+                'tarif' => ''
+            ])
+            ->assertDispatchedBrowserEvent('wireui:notification')
+        ;
+        $this->assertDatabaseMissing('reservations', [
+            'tarif_pilote' => ''
+        ]);
+    }
+
+    public function testUpdateReservationPiloteSuccessful()
+    {
+        $pilote = Pilote::find(1);
+        Livewire::test(RecapReservationPilote::class, ['pilote' => $pilote])
+            ->call('editReservation', [
+                'tarif' => 100,
+                'majoration' => 0,
+                'encaisse' => 0,
+                'encompte' => 0,
+                'comment' => '',
+                'reservation' => 1
+            ]);
+
+        $this->assertDatabaseHas('reservations', [
+            'tarif_pilote' => 100
+        ]);
     }
 }

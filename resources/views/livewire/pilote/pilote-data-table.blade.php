@@ -35,5 +35,5 @@
             @endforelse
         </x-slot>
     </x-datatable>
-    <x-front.pagination :pagination="$pilotes" :per-page="$perPage"/>
+    <x-front.pagination :pagination="$pilotes" :per-page="$perPage" />
 </div>
