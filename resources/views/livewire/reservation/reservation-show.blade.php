@@ -76,44 +76,44 @@
                 </div>
             @endif
     </x-center-bloc>
-    <x-bloc-content>
-        <div class="space-y-4">
-            <div class="block text-xl dark:text-white">Formulaire de confirmation</div>
-            @csrf
-            <x-select
-                label="Pilote"
-                placeholder="Sélectionner un pilote"
-                :async-data="route('api.pilotes')"
-                option-label="full_name"
-                option-value="id"
-                option-description="email"
-                wire:model.defer="reservation.pilote_id"
-            />
-            <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <div class="dark:text-white">Emails de confirmation</div>
-                    <div class="space-y-3 mt-3">
-                        <x-toggle wire:model="reservation.send_to_user" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
-                        <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
-                    </div>
-                </div>
-                <div>
-                    <div class="dark:text-white">Invitation Google Calendar</div>
-                    <div class="space-y-3 mt-3">
-                        <x-toggle wire:model.defer="reservation.calendar_user_invitation" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
-                        <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
-                    </div>
-                </div>
-            </div>
-            @if($reservation->pilote()->exists())
-                <x-button label="Mettre à jour le pilote" primary sm wire:loading.attr="disabled" wire:click="updatePilote" spinner="updatePilote"/>
-            @else
-                <x-button label="Valider et envoyer le message" primary sm wire:click="confirmedAction" spinner="confirmedAction"/>
-            @endif
-        </div>
-    </x-bloc-content>
     <div class="space-y-4">
+        <x-center-bloc>
+            <div class="space-y-4 bg-white p-4 rounded-lg border border-gray-200">
+                <div class="block text-xl dark:text-white">Formulaire de confirmation</div>
+                @csrf
+                <x-select
+                    label="Pilote"
+                    placeholder="Sélectionner un pilote"
+                    :async-data="route('api.pilotes')"
+                    option-label="full_name"
+                    option-value="id"
+                    option-description="email"
+                    wire:model.defer="reservation.pilote_id"
+                />
+                <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <div class="dark:text-white">Emails de confirmation</div>
+                        <div class="space-y-3 mt-3">
+                            <x-toggle wire:model="reservation.send_to_user" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
+                            <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
+                        </div>
+                    </div>
+                    <div>
+                        <div class="dark:text-white">Invitation Google Calendar</div>
+                        <div class="space-y-3 mt-3">
+                            <x-toggle wire:model.defer="reservation.calendar_user_invitation" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
+                            <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
+                        </div>
+                    </div>
+                </div>
+                @if($reservation->pilote()->exists())
+                    <x-button label="Mettre à jour le pilote" primary sm wire:loading.attr="disabled" wire:click="updatePilote" spinner="updatePilote"/>
+                @else
+                    <x-button label="Valider et envoyer le message" primary sm wire:click="confirmedAction" spinner="confirmedAction"/>
+                @endif
+            </div>
+        </x-center-bloc>
         <x-center-bloc>
             <x-simple-card title="Détails de la réservation" description="Créer le {{ $reservation->created_at->format('d/m/Y H:i') }}">
                 <x-simple-card.item title="Date de la réservation">

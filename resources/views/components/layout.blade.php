@@ -15,7 +15,7 @@
 <div class="min-h-screen">
     @auth
         <nav class="bg-gray-800" x-data="{isMobileMenuOpen : false}">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16">
                     <div class="flex items-center">
                         <a href="/" class="flex-shrink-0 flex items-center space-x-2">
