@@ -40,7 +40,6 @@ class EditionFacture extends Component
     public float $montant_ttc = 0;
 
     public bool $factureModal = false;
-    public bool $reservationModal = false;
     public bool $isAcquitte = false;
     public bool $isFormFacture = false;
     public int|null $isBilled = null;
@@ -62,7 +61,7 @@ class EditionFacture extends Component
     /**
      * @var string[]
      */
-    protected $listeners = ['reservationUpdated'];
+    protected $listeners = ['reservationUpdated', 'editReservation'];
 
     public function mount()
     {
@@ -140,6 +139,7 @@ class EditionFacture extends Component
             ->whereYear('pickup_date', $this->selectedYear)
             ->where('statut',ReservationStatus::Confirmed)
             ->orWhere('statut', ReservationStatus::CanceledToPay)
+            ->orderBy('id', 'desc')
             ->get();
     }
 
@@ -165,15 +165,6 @@ class EditionFacture extends Component
         }
 
         return $this->getFactureFor($this->selectedMonth, $this->selectedYear, $this->entrepriseIdSelected);
-    }
-
-    public function getReservationProperty()
-    {
-        if (!$this->reservationSelected) {
-            return null;
-        }
-
-        return Reservation::find($this->reservationSelected);
     }
 
     /**
@@ -317,31 +308,6 @@ class EditionFacture extends Component
                 'isAcquitte' => 'bool'
             ];
         }
-
-        return [
-            'reservationFormData.tarif' => 'required|numeric',
-            'reservationFormData.majoration' => 'nullable',
-            'reservationFormData.complement' => 'nullable',
-            'reservationFormData.comment_pilote' => 'nullable'
-        ];
-    }
-
-    /**
-     * @param int $reservationId
-     * @return void
-     */
-    public function reservationModal(int $reservationId): void
-    {
-        $this->resetErrorBag();
-
-        $this->reservationSelected = $reservationId;
-
-        $this->reservationFormData['tarif'] = $this->reservation->tarif;
-        $this->reservationFormData['majoration'] = $this->reservation->majoration;
-        $this->reservationFormData['complement'] = $this->reservation->complement;
-        $this->reservationFormData['comment_pilote'] = $this->reservation->comment_pilote;
-
-        $this->reservationModal = true;
     }
 
     /**
@@ -388,21 +354,6 @@ class EditionFacture extends Component
         ));
     }
 
-    /**
-     * @return void
-     */
-    public function saveReservationAction(): void
-    {
-        $this->validate();
-        $this->reservation->updateQuietly($this->reservationFormData);
-        $this->reservationModal = false;
-        $this->emit('reservationUpdated');
-        $this->notification()->success(
-            'Opération réussite',
-            'La valeur de la réservation a bien été sauvegardée.'
-        );
-    }
-
     public function sendEmailTestAction()
     {
         Mail::to(config('mail.admin.address'))
@@ -439,6 +390,35 @@ class EditionFacture extends Component
         ]);
 
         $this->uniqID = uniqid('facture_');
+    }
+
+    public function editReservation(array $datas): bool
+    {
+        $validator = \Illuminate\Support\Facades\Validator::make($datas, [
+            'tarif' => 'required',
+            'majoration' => 'nullable',
+            'complement' => 'nullable',
+            'comment' => 'nullable'
+        ]);
+
+        if ($validator->fails()) {
+            $this->notification()->error('Erreur', implode('', $validator->errors()->all()));
+            return false;
+        }
+
+        $reservation = Reservation::find($datas['reservation']);
+        $reservation->updateQuietly([
+            'tarif' => $datas['tarif'],
+            'majoration' => $datas['majoration'],
+            'complement' => $datas['complement'],
+            'comment' => $datas['comment'],
+        ]);
+
+        $this->emit('reservationUpdated');
+
+        $this->notification()->success('Opération réussite', 'Modifications correctement effectuées');
+
+        return true;
     }
 
     public function editFactureAction()
