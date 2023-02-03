@@ -128,7 +128,10 @@ class FacturationTest extends TestCase
 
         foreach ($reservations as $reservation) {
             $reservation->updateQuietly([
-                'tarif' => 10
+                'tarif' => 10,
+                'majoration' => 0,
+                'complement' => 0,
+                'comment' => ''
             ]);
         }
 
@@ -141,6 +144,7 @@ class FacturationTest extends TestCase
             ->set('factureModal', true)
             ->set('email.address', 'test@test.com')
             ->set('email.message', 'Je suis un test')
+            ->set('email.complement', 'Je suis un test')
             ->call('sendFactureAction')
             ->assertSet('factureModal', false)
             ->assertHasNoErrors()
