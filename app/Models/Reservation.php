@@ -135,7 +135,6 @@ class Reservation extends Model
         $text = '';
 
         if ($this->localisation_from_id) {
-            ray($this->localisationFrom);
             $text = $this->localisationFrom->full_adresse;
         }
         if ($this->adresse_reservation_from_id) {
