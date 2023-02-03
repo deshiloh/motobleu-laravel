@@ -147,7 +147,7 @@
     <table>
         <tr>
             <td>
-                <img src="{{ storage_path('app/public/motobleu.png') }}" alt="Motobleu Paris" width="300" style="padding-left: 30px; padding-top: 30px;">
+                <img src="{{ storage_path('app/public/logo-pdf.png') }}" alt="Motobleu Paris" width="300" style="padding-left: 30px; padding-top: 15px;">
             </td>
         </tr>
     </table>
@@ -198,7 +198,10 @@
     @php
         $prixTTC = 0;
         $reservations = \App\Models\Reservation::whereMonth('pickup_date', $month)
-        ->whereYear('pickup_date', $year)->where('entreprise_id', $entreprise->id)->get();
+            ->whereYear('pickup_date', $year)
+            ->where('entreprise_id', $entreprise->id)
+            ->orderBy('pickup_date', 'desc')
+            ->get();
     @endphp
     @foreach($reservations as $reservation)
         @php
@@ -213,7 +216,7 @@
                 {{ $reservation->passager->user->full_name }}
             </td>
             <td style="text-align: center;">
-                {{ $reservation->commande }} test
+                {{ $reservation->commande }}
             </td>
             <td class="text-center" style="">
                 {{ $reservation->pickup_date->format('d/m/Y') }}
@@ -234,7 +237,7 @@
                 {{ $reservation->total_ttc }} €
             </td>
             <td class="text-center" style="">
-                {{ $reservation->comment_facture }}
+                {{ $reservation->comment }}
             </td>
         </tr>
     @endforeach

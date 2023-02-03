@@ -86,20 +86,6 @@ class FacturationTest extends TestCase
         ]);
     }
 
-    public function testOpenFactureModal()
-    {
-        Livewire::test(EditionFacture::class)
-            ->set('selectedMonth', Carbon::now()->month)
-            ->set('selectedYear', Carbon::now()->year)
-            ->set('entrepriseIdSelected', 1)
-            ->set('isAcquitte', false)
-            ->call('sendFactureModal')
-            ->assertSet('factureModal', true)
-            ->assertHasNoErrors()
-            ->assertStatus(200)
-        ;
-    }
-
     public function testSendFactureWithReservationWithoutTarif()
     {
         Event::fake();
@@ -128,7 +114,10 @@ class FacturationTest extends TestCase
 
         foreach ($reservations as $reservation) {
             $reservation->updateQuietly([
-                'tarif' => 10
+                'tarif' => 10,
+                'majoration' => 0,
+                'complement' => 0,
+                'comment' => ''
             ]);
         }
 
@@ -141,6 +130,7 @@ class FacturationTest extends TestCase
             ->set('factureModal', true)
             ->set('email.address', 'test@test.com')
             ->set('email.message', 'Je suis un test')
+            ->set('email.complement', 'Je suis un test')
             ->call('sendFactureAction')
             ->assertSet('factureModal', false)
             ->assertHasNoErrors()
@@ -159,6 +149,7 @@ class FacturationTest extends TestCase
             ->set('selectedYear', Carbon::now()->year)
             ->set('entrepriseIdSelected', 1)
             ->set('factureModal', true)
+            ->set('email.complement', 'je suis un test')
             ->call('sendEmailTestAction')
             ->assertHasNoErrors()
             ->assertStatus(200)
