@@ -48,6 +48,12 @@ class FactureSettingsForm extends Component
             if (\App::environment(['local'])) {
                 ray()->exception($exception);
             }
+            if (\App::environment(['prod', 'local'])) {
+                \Log::channel("sentry")->error("Erreur pendant la modification des paramètres BillSettings", [
+                    'exception' => $exception,
+                    'settings' => $billSettings
+                ]);
+            }
         }
     }
 }

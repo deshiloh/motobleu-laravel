@@ -67,7 +67,13 @@ class PiloteForm extends Component
                     'pilote' => $this->pilote
                 ])->exception($exception);
             }
-            // TODO Sentry in production
+
+            if (App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la création / édition d'un pilote", [
+                    'exception' => $exception,
+                    'pilote' => $this->pilote
+                ]);
+            }
         }
     }
 }

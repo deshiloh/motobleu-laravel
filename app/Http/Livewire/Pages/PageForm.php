@@ -99,7 +99,13 @@ class PageForm extends Component
             if (\App::environment(['local'])) {
                 ray()->exception($exception);
             }
-            // TODO SENTRY
+
+            if (\App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la création / édition d'une page", [
+                    'exception' => $exception,
+                    'Page' => $this->selectedPage
+                ]);
+            }
         }
     }
 }

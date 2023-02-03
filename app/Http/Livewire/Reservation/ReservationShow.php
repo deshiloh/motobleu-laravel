@@ -86,6 +86,12 @@ Cordialement.";
             if (\App::environment(['local'])) {
                 ray()->exception($exception);
             }
+            if(\App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant l'ajout / modification pilote d'une réservation", [
+                    'exception' => $exception,
+                    'reservation' => $this->reservation
+                ]);
+            }
         }
 
     }

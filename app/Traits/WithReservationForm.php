@@ -177,10 +177,7 @@ trait WithReservationForm
                 ])->exception($exception);
             }
 
-            // TODO Sentry en production
-
-            Log::channel('logtail')->critical('Erreur pendant la création de la réservation', [
-                'erreur' => $exception->getMessage(),
+            Log::channel("sentry")->error("Erreur pendant la création / édition d'une réservation retour", [
                 'exception' => $exception,
                 'reservation' => $this->reservation,
                 'reservation_back' => $this->reservation_back
@@ -222,11 +219,13 @@ trait WithReservationForm
                     $description = 'Une erreur est survenue pendant la création de la réservation de retour'
                 );
 
-                Log::channel('logtail')->critical('Erreur pendant la création de la réservation de retour', [
-                    'erreur' => $exception->getMessage(),
-                    'reservation' => $this->reservation,
-                    'reservation_back' => $this->reservation_back
-                ]);
+                if (App::environment(['prod', 'beta'])) {
+                    Log::channel("sentry")->error("Erreur pendant la création / édition d'une réservation", [
+                        'exception' => $exception,
+                        'reservation' => $this->reservation,
+                        'reservation_back' => $this->reservation_back
+                    ]);
+                }
             }
         }
     }

@@ -83,6 +83,13 @@ class NewAccountForm extends Component
                 title: "Une erreur est survenue",
                 description: "Une erreur est survenue pendant l'enregistrement de la demande, veuillez essayer ultérieurement."
             );
+            if (\App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la demande de création de compte", [
+                    'exception' => $exception,
+                    'data' => $datas,
+                    'user' => $this->user
+                ]);
+            }
         }
     }
 }

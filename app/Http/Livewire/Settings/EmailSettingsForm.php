@@ -96,8 +96,6 @@ class EmailSettingsForm extends Component
                 Mail::to($this->emailTest)
                     ->send(new PiloteDetached(Reservation::find(1)));
                 break;
-            default :
-                ray('NON');
         }
     }
 

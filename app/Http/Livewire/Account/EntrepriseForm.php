@@ -53,7 +53,13 @@ class EntrepriseForm extends Component
             if (\App::environment(['local'])) {
                 ray()->exception($exception);
             }
-            // TODO SENTRY
+            if (\App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error('Erreur pendant l\'attachement entreprises dans utilisateur', [
+                    'exception' => $exception,
+                    'user' => $this->user,
+                    'entreprises' => $this->entreprises
+                ]);
+            }
         }
     }
 

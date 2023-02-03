@@ -6,6 +6,7 @@ use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Livewire\Component;
 use WireUi\Traits\Actions;
@@ -91,7 +92,15 @@ class AccountForm extends Component
                     'user' => $this->user
                 ])->exception($exception);
             }
-            // TODO Sentry en production
+
+            if (App::environment('prod')) {
+                Log::channel("sentry")->error('Erreur formulaire utilisateur', [
+                    'user_id' => \Auth::user()->id,
+                    'email' => \Auth::user()->email,
+                    'exception' => $exception,
+                    'data' => $this->user
+                ]);
+            }
         }
     }
 

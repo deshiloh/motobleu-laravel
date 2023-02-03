@@ -66,7 +66,12 @@ class LocalisationForm extends Component
                     'localisation' => $this->localisation
                 ])->exception($exception);
             }
-            // TODO Sentry en production
+            if (App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la création / édition d'une localisation", [
+                    'exception' => $exception,
+                    'localisation' => $this->localisation
+                ]);
+            }
         }
 
     }
