@@ -6,6 +6,7 @@ use App\Enum\AdresseEntrepriseTypeEnum;
 use App\Enum\ReservationStatus;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
@@ -154,12 +155,17 @@ class ImportOldData extends Command
                         'email' => $user->email
                     ]);
 
-                    // Role
-                    if ($user->email == 'm.alvarez.iglisias@gmail.com') {
-                        /** @var User $user */
-                        $user = User::find($idInsert);
-                        $user->assignRole('super admin');
+                    /** @var User $user */
+                    $user = User::find($idInsert);
+                    switch ($user->email) {
+                        case 'm.alvarez.iglisias@gmail.com':
+                            $user->assignRole('super admin');
+                            break;
+                        default :
+                            $user->assignRole('user');
+                            break;
                     }
+
                 } catch (Exception $exception) {
                     ray()->exception($exception);
                 }

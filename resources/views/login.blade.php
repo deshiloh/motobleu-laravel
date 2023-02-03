@@ -6,7 +6,7 @@
                 @csrf
                 <div>
                     <div class="mt-1">
-                        <x-input label="{{ __('Adresse email') }}" placeholder="Votre adresse email..." icon="mail" name="email" />
+                        <x-input label="{{ __('Adresse email') }}" placeholder="Votre adresse email..." icon="mail" name="email" value="{{ old('email') }}"/>
                     </div>
                 </div>
 
