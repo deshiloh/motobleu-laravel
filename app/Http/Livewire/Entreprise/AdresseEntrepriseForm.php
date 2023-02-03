@@ -70,7 +70,13 @@ class AdresseEntrepriseForm extends Component
                     'adresse_entreprise' => $this->adresseEntreprise
                 ])->exception($exception);
             }
-            // TODO Sentry en production
+            if (App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la création / édition d'une adresse entreprise", [
+                    'exception' => $exception,
+                    'address' => $this->adresseEntreprise,
+                    'entreprise' => $this->entreprise
+                ]);
+            }
         }
     }
 }

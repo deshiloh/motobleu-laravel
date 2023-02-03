@@ -86,7 +86,13 @@ class AccountForm extends Component
                     'user' => $this->user
                 ])->exception($exception);
             }
-            // TODO Sentry en production
+            if (App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la création / édition d'un utilisateur", [
+                    'exception' => $exception,
+                    'user' => \Auth::user(),
+                    'data_user' => $this->user
+                ]);
+            }
         }
     }
 

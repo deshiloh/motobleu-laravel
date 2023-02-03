@@ -58,7 +58,12 @@ class AdresseReservationForm extends Component
                     'adresse_reservation' => $this->adresseReservation
                 ])->exception($exception);
             }
-            // TODO Sentry en production
+            if (App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la création / édition d'une adresse réservation", [
+                    'exception' => $exception,
+                    'address' => $this->adresseReservation
+                ]);
+            }
         }
     }
 }

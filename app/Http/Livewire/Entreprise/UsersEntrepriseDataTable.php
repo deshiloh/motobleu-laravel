@@ -80,6 +80,13 @@ class UsersEntrepriseDataTable extends Component
                 $title = 'Erreur',
                 $description = 'Une erreur est survenue.'
             );
+            if (\App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant le détachement d'un user à une entreprise", [
+                    'exception' => $exception,
+                    'entreprise' => $this->entreprise,
+                    'user' => $user
+                ]);
+            }
         }
     }
 }

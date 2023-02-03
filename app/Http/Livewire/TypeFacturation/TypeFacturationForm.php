@@ -24,7 +24,7 @@ class TypeFacturationForm extends Component
             ->layout('components.layout');
     }
 
-    protected function getRules()
+    protected function getRules(): array
     {
         return [
             'typeFacturation.nom' => 'required'
@@ -59,7 +59,13 @@ class TypeFacturationForm extends Component
                     'typeFacturation' => $this->typeFacturation
                 ])->exception($exception);
             }
-            // TODO Sentry en production
+
+            if (App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la création / édition du type facturation", [
+                    'exception' => $exception,
+                    'typeFacturation' => $this->typeFacturation
+                ]);
+            }
         }
     }
 }

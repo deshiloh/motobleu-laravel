@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Carousel;
 
 use App\Models\Carousel;
+use Illuminate\Support\Facades\App;
 use Livewire\Component;
 use Livewire\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -63,7 +64,15 @@ class CarouselDataTable extends Component
                 title: "Une erreur est survenue",
                 description: "Une erreur est survenue pendant le traitement."
             );
-            ray()->exception($exception);
+            if (App::environment(['local'])) {
+                ray()->exception($exception);
+            }
+            if (App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant l'enregistrement de la photo carousel", [
+                    'exception' => $exception,
+                    'photo' => $this->photo
+                ]);
+            }
         }
     }
 
@@ -100,7 +109,12 @@ class CarouselDataTable extends Component
                 ray()->exception($exception);
             }
 
-            // TODO Sentry
+            if (App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la suppression d'un Slide Carousel", [
+                    'exception' => $exception,
+                    'carousel' => $carousel
+                ]);
+            }
         }
     }
 }

@@ -49,9 +49,14 @@ class CostCenterForm extends Component
                 title: "Erreur",
                 description: "Une erreur est survenue, veuillez essayer ultérieurement."
             );
-            // TODO Sentry
             if (\App::environment(['local'])) {
                 ray()->exception($exception);
+            }
+            if (\App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la création / édition d'un Cost Center", [
+                    'exception' => $exception,
+                    'CostCenter' => $this->costCenter
+                ]);
             }
         }
     }

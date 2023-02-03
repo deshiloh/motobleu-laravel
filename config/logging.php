@@ -119,6 +119,10 @@ return [
             'driver' => 'custom',
             'via' => App\Logging\LogTailLogger::class,
         ],
+        'sentry' => [
+            'driver' => 'sentry',
+            'level' => 'error'
+        ]
     ],
 
 ];

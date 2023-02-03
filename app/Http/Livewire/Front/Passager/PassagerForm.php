@@ -70,7 +70,12 @@ class PassagerForm extends Component
                     'passager' => $this->passager
                 ])->exception($exception);
             }
-            // TODO Sentry en production
+            if (App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la création d'un passage", [
+                    'exception' => $exception,
+                    'passager' => $this->passager
+                ]);
+            }
         }
     }
 }

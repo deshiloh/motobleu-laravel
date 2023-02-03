@@ -48,8 +48,12 @@ class AddressForm extends Component
             if (\App::environment(['local'])) {
                 ray()->exception($exception);
             }
-
-            // TODO Sentry
+            if (\App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Une erreur s'est produite pendant la création d'une adresse de réservation", [
+                    'exception' => $exception,
+                    'address' => $this->adresseReservation
+                ]);
+            }
         }
     }
 }

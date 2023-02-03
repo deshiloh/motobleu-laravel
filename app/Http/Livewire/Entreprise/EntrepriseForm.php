@@ -72,7 +72,12 @@ class EntrepriseForm extends Component
                     'entreprise' => $this->entreprise
                 ])->exception($exception);
             }
-            // TODO Sentry en productiion
+            if (App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la création entreprise", [
+                    'exception' => $exception,
+                    'entreprise' => $this->entreprise
+                ]);
+            }
         }
     }
 }
