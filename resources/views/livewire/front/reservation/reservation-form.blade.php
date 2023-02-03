@@ -355,7 +355,7 @@
             </div>
         </x-front.card>
         <x-front.card>
-            <x-button type="submit" primary label="{{ __('Enregistrer') }}" wire:loading.attr="disabled"/>
+            <x-button type="submit" primary label="{{ __('Enregistrer') }}" wire:loading.attr="disabled" spinner="saveReservation"/>
         </x-front.card>
     </form>
 </div>

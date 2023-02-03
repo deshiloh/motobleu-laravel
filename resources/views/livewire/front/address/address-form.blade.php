@@ -11,7 +11,7 @@
             <x-input label="Adresse complémentaire" wire:model.defer="adresseReservation.adresse_complement" />
             <x-input label="Code postal" wire:model.defer="adresseReservation.code_postal" />
             <x-input label="Ville" wire:model.defer="adresseReservation.ville" />
-            <x-button primary label="Enregistrer" type="submit" wire:loading.attr="disabled"/>
+            <x-button primary label="Enregistrer" type="submit" wire:loading.attr="disabled" spinner="save"/>
         </form>
     </x-front.card>
 </div>
