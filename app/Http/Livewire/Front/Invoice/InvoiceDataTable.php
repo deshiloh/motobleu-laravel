@@ -21,6 +21,7 @@ class InvoiceDataTable extends Component
             ->when($this->search, function (Builder $query, $search) {
                 return $query->where('factures.reference', 'like' , '%' . $search . '%');
             })
+            ->orderBy('id', 'desc')
             ->paginate($this->perPage);
 
         return view('livewire.front.invoice.invoice-data-table', [

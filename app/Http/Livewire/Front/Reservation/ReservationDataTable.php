@@ -35,7 +35,7 @@ class ReservationDataTable extends Component
     public function render()
     {
         return view('livewire.front.reservation.reservation-data-table', [
-            'reservations' => Reservation::where('reference', 'like', '%' . $this->search . '%')
+            'reservations' => Reservation::where('reference', 'like', $this->search . '%')
                 ->whereIn('entreprise_id', \Auth::user()->entreprises()->pluck('id')->toArray())
                 ->orderBy('pickup_date', 'desc')
                 ->paginate($this->perPage)

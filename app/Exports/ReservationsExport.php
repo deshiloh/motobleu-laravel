@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
+use App\Enum\ReservationStatus;
 use App\Models\Entreprise;
 use App\Models\Passager;
 use App\Models\Reservation;
@@ -195,6 +196,8 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         return Reservation::whereMonth('pickup_date', $this->datePeriod->month)
             ->whereyear('pickup_date', $this->datePeriod->year)
             ->where('entreprise_id', $this->entreprise->id)
+            ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
+            ->orderBy('pickup_date', 'desc')
             ->get();
     }
 

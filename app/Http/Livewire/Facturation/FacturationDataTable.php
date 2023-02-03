@@ -14,17 +14,25 @@ class FacturationDataTable extends Component
     use WithPagination;
 
     public string $search = '';
-    public int|null $entreprise = 0;
+    public ?int $entreprise = null;
+    public int $perPage = 10;
 
     protected $queryString = [
         'search' => ['except' => ''],
-        'entreprise'
+        'entreprise' => ['except' => null]
     ];
 
     public function render()
     {
         return view('livewire.facturation.facturation-data-table', [
-            'facturations' => $this->buildQuery()
+            'facturations' => Facture::where('factures.reference', 'like', '%' . $this->search . '%')
+                ->when($this->entreprise != 0, function (Builder $query) {
+                    return $query
+                        ->join('reservations', 'reservations.facture_id', '=', 'factures.id')
+                        ->where('reservations.entreprise_id', $this->entreprise);
+                })
+                ->orderBy('factures.id', 'desc')
+                ->paginate($this->perPage)
         ])
             ->layout('components.layout');
     }
@@ -37,18 +45,5 @@ class FacturationDataTable extends Component
             ->join('reservations', 'reservations.entreprise_id', '=', 'entreprise_user.entreprise_id')
             ->where('reservations.facture_id', $facture->id)
             ->first();
-    }
-
-    public function buildQuery()
-    {
-        $factures = Facture::where('reference', 'like', '%' . $this->search . '%');
-
-        if ($this->entreprise != 0) {
-            $factures->whereHas('reservations', function (Builder $query) {
-                $query->where('entreprise_id', $this->entreprise);
-            });
-        }
-
-        return $factures->paginate(10);
     }
 }

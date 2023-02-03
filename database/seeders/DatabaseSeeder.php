@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enum\AdresseEntrepriseTypeEnum;
 use App\Enum\ReservationStatus;
 use App\Models\AdresseEntreprise;
 use App\Models\AdresseReservation;
@@ -16,6 +17,7 @@ use App\Models\Reservation;
 use App\Models\User;
 use App\Observers\ReservationObserver;
 use Carbon\Carbon;
+use Exception;
 use Faker\Factory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Factories\Sequence;

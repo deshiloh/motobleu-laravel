@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Exports\ReservationPiloteExport;
 use App\Exports\ReservationsExport;
 use App\Models\Entreprise;
+use App\Models\Pilote;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
@@ -31,5 +33,19 @@ class ExportService
 
             return $pdf->download('reservations.pdf');
         }
+    }
+
+    /**
+     * Exportation des réservations au format Excel pour un pilote et une période données.
+     * @param array $period
+     * @param Pilote $pilote
+     * @return BinaryFileResponse
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function exportForPilote(array $period, Pilote $pilote): BinaryFileResponse
+    {
+        $name = sprintf('Moto Bleu-%s-%s.xlsx', $period[1]->format('m'), $period[1]->format("Y"));
+        return Excel::download(new ReservationPiloteExport($period, $pilote), $name);
     }
 }

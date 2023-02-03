@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        <div class="relative" id="slider1"
+        <div class="relative overflow-hidden" id="slider1"
              x-data="{
                 currentIndex: 0,
                 nbElement: document.querySelectorAll('#slider1 .sliderItem ').length
@@ -31,7 +31,7 @@
             setInterval(function() {
                 currentIndex ++;
                 if (currentIndex > nbElement - 1) { currentIndex = 0; }
-            }, 5000)
+            }, 9000)
             "
         >
             @foreach(\App\Models\Carousel::where('position', 1)->get() as $photo)
@@ -43,7 +43,12 @@
                     src="{{ asset($photoUrl) }}"
                     alt=""
                     class="absolute inset-0 h-full w-full object-cover z-0 sliderItem"
-                    x-transition
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 transform translate-x-full"
+                    x-transition:enter-end="opacity-100 transform translate-x-0"
+                    x-transition:leave="transition ease-out duration-300"
+                    x-transition:leave-start="opacity-100 transform translate-x-0"
+                    x-transition:leave-end="opacity-0 transform -translate-x-full"
                 >
             @endforeach
         </div>
@@ -87,7 +92,7 @@
                 </div>
             </div>
         </div>
-        <div class="relative hidden xl:block" id="slider2"
+        <div class="relative hidden xl:block overflow-hidden" id="slider2"
              x-data="{
                 currentIndex: 0,
                 nbElement: document.querySelectorAll('#slider2 .sliderItem ').length
@@ -96,7 +101,7 @@
             setInterval(function() {
                 currentIndex ++;
                 if (currentIndex > nbElement - 1) { currentIndex = 0; }
-            }, 5000)
+            }, 9000)
             "
         >
             @foreach(\App\Models\Carousel::where('position', 2)->get() as $photo)
@@ -108,13 +113,18 @@
                     src="{{ asset($photoUrl) }}"
                     alt=""
                     class="absolute inset-0 h-full w-full object-cover z-0 sliderItem"
-                    x-transition
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 transform translate-x-full"
+                    x-transition:enter-end="opacity-100 transform translate-x-0"
+                    x-transition:leave="transition ease-out duration-300"
+                    x-transition:leave-start="opacity-100 transform translate-x-0"
+                    x-transition:leave-end="opacity-0 transform -translate-x-full"
                 >
             @endforeach
         </div>
     </div>
     <div class="h-[53rem] grid grid-cols-1 xl:grid-cols-2">
-        <div class="relative hidden xl:block" id="slider3"
+        <div class="relative hidden xl:block overflow-hidden" id="slider3"
              x-data="{
                 currentIndex: 0,
                 nbElement: document.querySelectorAll('#slider3 .sliderItem ').length
@@ -123,7 +133,7 @@
             setInterval(function() {
                 currentIndex ++;
                 if (currentIndex > nbElement - 1) { currentIndex = 0; }
-            }, 5000)
+            }, 9000)
             "
         >
             @foreach(\App\Models\Carousel::where('position', 3)->get() as $photo)
@@ -135,7 +145,12 @@
                     src="{{ asset($photoUrl) }}"
                     alt=""
                     class="absolute inset-0 h-full w-full object-cover z-0 sliderItem"
-                    x-transition
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 transform translate-x-full"
+                    x-transition:enter-end="opacity-100 transform translate-x-0"
+                    x-transition:leave="transition ease-out duration-300"
+                    x-transition:leave-start="opacity-100 transform translate-x-0"
+                    x-transition:leave-end="opacity-0 transform -translate-x-full"
                 >
             @endforeach
         </div>

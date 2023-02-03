@@ -36,7 +36,7 @@ ray(Auth::user()->entreprises()->first())
                     wire:model.defer="passager.type_facturation_id"
                 />
             @endif
-            <x-button type="submit" primary sm label="{{ __('Enregistrer') }}" wire:loading.attr="disabled"/>
+            <x-button type="submit" primary sm label="{{ __('Enregistrer') }}" wire:loading.attr="disabled" spinner="save"/>
         </form>
     </x-front.card>
 </div>

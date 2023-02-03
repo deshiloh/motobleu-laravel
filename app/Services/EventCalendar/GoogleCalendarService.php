@@ -85,14 +85,20 @@ class GoogleCalendarService
         $event->endDateTime = $this->reservation->pickup_date->addHour();
 
         if ($this->reservation->calendar_user_invitation) {
-            $email = App::environment(['local', 'testing']) ? 'm.alvarez.iglisias@gmail.com' : $this->reservation->passager->user->email;
+            $email = App::environment(['local', 'testing']) ?
+                'm.alvarez.iglisias@gmail.com' :
+                $this->reservation->passager->user->email;
+
             $event->addAttendee([
                 'email' => $email
             ]);
         }
 
         if ($this->reservation->calendar_passager_invitation) {
-            $email = App::environment(['local', 'testing']) ? 'm.alvarez.iglisias@gmail.com' : $this->reservation->passager->email;
+            $email = App::environment(['local', 'testing']) ?
+                'm.alvarez.iglisias@gmail.com' :
+                $this->reservation->passager->email;
+
             $event->addAttendee([
                 'email' => $email
             ]);

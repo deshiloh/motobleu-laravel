@@ -40,14 +40,27 @@ class FacturationTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testOpenModalReservation()
+    public function testEditReservationControl()
     {
         Livewire::test(EditionFacture::class)
             ->set('selectedMonth', Carbon::now()->month)
             ->set('selectedYear', Carbon::now()->year)
-            ->call('reservationModal', 1)
+            ->set('entrepriseIdSelected', 1)
+            ->call('editReservation', [
+                'tarif' => '',
+                'majoration' => 0,
+                'complement' => 0,
+                'comment' => '',
+                'reservation' => 1
+            ])
+            ->assertNotEmitted('reservationUpdated')
             ->assertHasNoErrors()
             ->assertStatus(200);
+
+        $this->assertDatabaseMissing('reservations', [
+            'id' => 1,
+            'tarif' => 300
+        ]);
     }
 
     public function testEditReservation()
@@ -56,28 +69,21 @@ class FacturationTest extends TestCase
             ->set('selectedMonth', Carbon::now()->month)
             ->set('selectedYear', Carbon::now()->year)
             ->set('entrepriseIdSelected', 1)
-            ->set('reservationSelected', 1)
-            ->set('reservationFormData.tarif', 300)
-            ->call('saveReservationAction')
-            ->emit('reservationUpdated')
+            ->call('editReservation', [
+                'tarif' => 300,
+                'majoration' => 0,
+                'complement' => 0,
+                'comment' => '',
+                'reservation' => 1
+            ])
+            ->assertEmitted('reservationUpdated')
             ->assertHasNoErrors()
             ->assertStatus(200);
 
-        $this->assertTrue(Reservation::where('tarif', 300)->exists());
-    }
-
-    public function testOpenFactureModal()
-    {
-        Livewire::test(EditionFacture::class)
-            ->set('selectedMonth', Carbon::now()->month)
-            ->set('selectedYear', Carbon::now()->year)
-            ->set('entrepriseIdSelected', 1)
-            ->set('isAcquitte', false)
-            ->call('sendFactureModal')
-            ->assertSet('factureModal', true)
-            ->assertHasNoErrors()
-            ->assertStatus(200)
-        ;
+        $this->assertDatabaseHas('reservations', [
+            'id' => 1,
+            'tarif' => 300
+        ]);
     }
 
     public function testSendFactureWithReservationWithoutTarif()
@@ -108,7 +114,10 @@ class FacturationTest extends TestCase
 
         foreach ($reservations as $reservation) {
             $reservation->updateQuietly([
-                'tarif' => 10
+                'tarif' => 10,
+                'majoration' => 0,
+                'complement' => 0,
+                'comment' => ''
             ]);
         }
 
@@ -121,6 +130,7 @@ class FacturationTest extends TestCase
             ->set('factureModal', true)
             ->set('email.address', 'test@test.com')
             ->set('email.message', 'Je suis un test')
+            ->set('email.complement', 'Je suis un test')
             ->call('sendFactureAction')
             ->assertSet('factureModal', false)
             ->assertHasNoErrors()
@@ -139,6 +149,7 @@ class FacturationTest extends TestCase
             ->set('selectedYear', Carbon::now()->year)
             ->set('entrepriseIdSelected', 1)
             ->set('factureModal', true)
+            ->set('email.complement', 'je suis un test')
             ->call('sendEmailTestAction')
             ->assertHasNoErrors()
             ->assertStatus(200)

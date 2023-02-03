@@ -12,6 +12,7 @@
                 <input type="hidden" name="token" value="{{ $token }}">
                 <x-input type="email" label="Email" value="{{ $email }}" name="email"/>
                 <x-input type="password" label="{{ __('Mot de passe') }}" name="password"/>
+                <x-input type="password" label="{{ __('Confirmer le mot de passe') }}" name="password_confirmation"/>
                 <x-button type="submit" label="{{ __('Envoyer') }}" primary full />
             </form>
         </div>

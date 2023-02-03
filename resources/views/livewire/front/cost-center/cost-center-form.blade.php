@@ -10,7 +10,7 @@
         <form wire:submit.prevent="save" class="space-y-3">
             <x-input label="{{ __('Nom') }}" wire:model.defer="costCenter.nom" />
             <x-toggle wire:model.defer="costCenter.is_actif" md label="{{ __('Actif') }}" />
-            <x-button type="submit" primary sm label="{{ __('Enregistrer') }}" wire:loading.attr="disabled"/>
+            <x-button type="submit" primary sm label="{{ __('Enregistrer') }}" wire:loading.attr="disabled" spinner="save"/>
         </form>
     </x-front.card>
 </div>

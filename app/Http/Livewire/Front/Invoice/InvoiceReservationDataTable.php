@@ -23,7 +23,7 @@ class InvoiceReservationDataTable extends Component
                 ->when($this->search, function (Builder $query, $search) {
                     $query->where('reference', 'like', '%' . $search . '%');
                 })
-                ->orderBy('id', 'desc')
+                ->orderBy('pickup_date', 'desc')
                 ->paginate($this->perPage)
         ])
             ->layout('components.front-layout');

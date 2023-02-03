@@ -29,6 +29,9 @@ return new class extends Migration
             $table->boolean('is_actif')->default(true);
             $table->rememberToken();
             $table->timestamps();
+
+            $table->index('nom');
+            $table->index('prenom');
         });
     }
 

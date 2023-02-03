@@ -9,26 +9,21 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Livewire\Component;
+use Livewire\WithPagination;
 use WireUi\Traits\Actions;
 
 class UsersEntrepriseDataTable extends Component
 {
-    use Actions;
+    use Actions, WithPagination;
 
     public Entreprise $entreprise;
     public ?string $userId = '';
-    public Collection $users;
-
-    public function mount(): void
-    {
-        $this->users = new Collection();
-
-        $this->users = $this->entreprise->users()->get();
-    }
 
     public function render(): Factory|View|Application
     {
-        return view('livewire.entreprise.users-entreprise-data-table');
+        return view('livewire.entreprise.users-entreprise-data-table', [
+            'users' => $this->entreprise->users()->paginate(10, ['*'], 'usersPage')
+        ]);
     }
 
     /**
@@ -85,9 +80,6 @@ class UsersEntrepriseDataTable extends Component
                 $title = 'Erreur',
                 $description = 'Une erreur est survenue.'
             );
-
-            ray($exception->getMessage());
         }
-
     }
 }

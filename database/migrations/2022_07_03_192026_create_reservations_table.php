@@ -27,9 +27,13 @@ return new class extends Migration
 
             $table->float('tarif')->nullable();
             $table->float('majoration')->nullable();
-            $table->float('encaisse')->nullable();
-            $table->float('encompte')->nullable();
             $table->float('complement')->nullable();
+
+            $table->float('tarif_pilote')->nullable();
+            $table->float('majoration_pilote')->nullable();
+            $table->float('encompte_pilote')->nullable();
+            $table->float('encaisse_pilote')->nullable();
+
             $table->longText('comment_facture')->nullable();
             $table->longText('comment_pilote')->nullable();
 
@@ -78,6 +82,8 @@ return new class extends Migration
                 ->constrained('entreprises');
 
             $table->timestamps();
+
+            $table->index('reference');
         });
     }
 

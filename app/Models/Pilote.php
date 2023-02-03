@@ -31,6 +31,10 @@ class Pilote extends Model
         'ville',
     ];
 
+    protected $appends = [
+        'full_name'
+    ];
+
     /**
      * @return Attribute
      */

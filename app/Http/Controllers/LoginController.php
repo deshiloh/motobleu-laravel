@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -20,15 +22,12 @@ class LoginController extends Controller
 {
 
     /**
-     * @param Request $request
+     * @param LoginRequest $request
      * @return RedirectResponse
      */
-    public function authenticate(Request $request)
+    public function authenticate(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required']
-        ]);
+        $credentials = $request->validated();
 
         if (Auth::attempt($credentials)) {
 
@@ -42,12 +41,14 @@ class LoginController extends Controller
             }
 
             $request->session()->regenerate();
-
-            return redirect()->intended(route('front.home'));
+            ;
+            return (Auth::user()->hasRole('super admin')) ?
+                redirect()->intended(route('admin.homepage')) :
+                redirect()->intended(route('front.home'));
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => trans('auth.failed'),
         ])->onlyInput('email');
     }
 
@@ -111,15 +112,15 @@ class LoginController extends Controller
 
     /**
      * Reset password update action
-     * @param Request $request
+     * @param ResetPasswordRequest $request
      * @return RedirectResponse
      */
-    public function resetPassword(Request $request)
+    public function resetPassword(ResetPasswordRequest $request)
     {
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|confirmed',
         ]);
 
         $status = Password::reset(

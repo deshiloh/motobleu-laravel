@@ -1,71 +1,68 @@
 <x-layout>
-    <x-center-bloc>
-        <!-- This example requires Tailwind CSS v2.0+ -->
-        <div class="my-4">
-            <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
+    <div class="my-4 px-4">
+        <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
 
-                <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
-                    <div class="absolute">
-                        <div class="flex">
-                            <div class="flex flex-col ml-4">
-                                <p class="text-xl font-medium text-gray-500 truncate">Total réservations</p>
-                                <div class="text-5xl font-semibold text-gray-900 dark:text-gray-200" >
-                                    <livewire:components.reservations-count />
-                                </div>
+            <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+                <div class="absolute">
+                    <div class="flex">
+                        <div class="flex flex-col ml-4">
+                            <p class="text-xl font-medium text-gray-500 truncate">Total réservations</p>
+                            <div class="text-5xl font-semibold text-gray-900 dark:text-gray-200" >
+                                <livewire:components.reservations-count />
                             </div>
                         </div>
-                    </div>
-                    <dd class="pb-6 flex items-baseline sm:pb-7">
-                        <div class="absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-slate-700 px-4 py-4 sm:px-6">
-                            <div class="grid grid-cols-2">
-                                <div>
-                                    <livewire:home.company-reservation-stats />
-                                </div>
-                                <div class="flex justify-end">
-                                    <livewire:home.company-reservation-stats :is-last="true"/>
-                                </div>
-                            </div>
-                        </div>
-                    </dd>
-                    <div class="mb-6">
-                        <livewire:home.reservations-chart />
                     </div>
                 </div>
-
-                <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
-                    <div class="absolute">
-                        <div class="flex">
-                            <div class="flex flex-col ml-4">
-                                <p class="text-xl font-medium text-gray-500 truncate">Total facturé</p>
-                                <div class="text-5xl font-semibold text-gray-900 dark:text-gray-200" >
-                                    @php
-                                        $ht = \App\Models\Facture::all()->sum('montant_ht');
-                                        $ttc = $ht + ($ht * 0.1);
-                                    @endphp
-                                    {{ number_format($ttc, 2, '.', ' ') }} €
-                                </div>
+                <dd class="pb-6 flex items-baseline sm:pb-7">
+                    <div class="absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-slate-700 px-4 py-4 sm:px-6">
+                        <div class="grid grid-cols-2">
+                            <div>
+                                <livewire:home.company-reservation-stats />
+                            </div>
+                            <div class="flex justify-end">
+                                <livewire:home.company-reservation-stats :is-last="true"/>
                             </div>
                         </div>
                     </div>
-                    <dd class="pb-6 flex items-baseline sm:pb-7">
-                        <div class="absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-slate-700 px-4 py-4 sm:px-6">
-                            <div class="grid grid-cols-2">
-                                <div>
-                                    Informations
-                                </div>
-                                <div class="flex justify-end">
-                                    Informations
-                                </div>
+                </dd>
+                <div class="mb-6">
+                    <livewire:home.reservations-chart />
+                </div>
+            </div>
+
+            <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+                <div class="absolute">
+                    <div class="flex">
+                        <div class="flex flex-col ml-4">
+                            <p class="text-xl font-medium text-gray-500 truncate">Total facturé</p>
+                            <div class="text-5xl font-semibold text-gray-900 dark:text-gray-200" >
+                                @php
+                                    $ht = \App\Models\Facture::all()->sum('montant_ht');
+                                    $ttc = $ht + ($ht * 0.1);
+                                @endphp
+                                {{ number_format($ttc, 2, '.', ' ') }} €
                             </div>
                         </div>
-                    </dd>
-                    <div class="mb-6">
-                        <livewire:home.home-facturation-chart />
                     </div>
                 </div>
-            </dl>
-        </div>
-    </x-center-bloc>
+                <dd class="pb-6 flex items-baseline sm:pb-7">
+                    <div class="absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-slate-700 px-4 py-4 sm:px-6">
+                        <div class="grid grid-cols-2">
+                            <div>
+                                Informations
+                            </div>
+                            <div class="flex justify-end">
+                                Informations
+                            </div>
+                        </div>
+                    </div>
+                </dd>
+                <div class="mb-6">
+                    <livewire:home.home-facturation-chart />
+                </div>
+            </div>
+        </dl>
+    </div>
 
     <x-bloc-content>
         <h3 class="text-xl mb-4 dark:text-gray-100">Réservation à confirmer</h3>

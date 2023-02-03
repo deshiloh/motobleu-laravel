@@ -27,11 +27,11 @@
             <tr>
                 <x-datatable.th sortable wire:click="sortBy('id')" :direction="$sortDirection">Référence</x-datatable.th>
                 <x-datatable.th sortable wire:click="sortBy('pickup_date')" :direction="$sortDirection">Date</x-datatable.th>
-                <x-datatable.th sortable wire:click="sortBy('entreprise')" :direction="$sortDirection">Entreprise</x-datatable.th>
+                <x-datatable.th>Entreprise</x-datatable.th>
                 <x-datatable.th>Passager</x-datatable.th>
-                <x-datatable.th sortable wire:click="sortBy('localisation_from')" :direction="$sortDirection">Départ</x-datatable.th>
-                <x-datatable.th sortable wire:click="sortBy('localisation_to')" :direction="$sortDirection">Arrivée</x-datatable.th>
-                <x-datatable.th>Etat</x-datatable.th>
+                <x-datatable.th>Départ</x-datatable.th>
+                <x-datatable.th>Arrivée</x-datatable.th>
+                <x-datatable.th>État</x-datatable.th>
                 <x-datatable.th>Actions</x-datatable.th>
             </tr>
         </x-slot>
@@ -42,7 +42,7 @@
                     <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
                     <x-datatable.td>{{ $reservation->entreprise?->nom }}</x-datatable.td>
                     <x-datatable.td>{{ $reservation->passager->nom }}</x-datatable.td>
-                    <x-datatable.td>{{ $reservation->localdisplay_from }}</x-datatable.td>
+                    <x-datatable.td>{{ $reservation->display_from }}</x-datatable.td>
                     <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
                     <x-datatable.td>
                         @switch($reservation->statut)
@@ -82,7 +82,5 @@
             @endforelse
         </x-slot>
     </x-datatable>
-    <div class="px-3 py-4">
-        {{ $reservations->links('components.datatable.pagination') }}
-    </div>
+        <x-front.pagination :pagination="$reservations" :per-page="$perPage"/>
 </div>
