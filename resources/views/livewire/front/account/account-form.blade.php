@@ -18,7 +18,7 @@
             <x-input label="{{ __('Ville') }}" wire:model.defer="user.ville"/>
             <x-toggle md label="{{ __('Compte actif') }}" wire:model.defer="user.is_actif" />
             <x-toggle md label="{{ __('Compte admin Ardian') }}" wire:model.defer="user.is_admin_ardian" />
-            <x-button type="submit" label="{{ __('Enregistrer') }}" wire:loading.class="disabled" primary sm />
+            <x-button type="submit" label="{{ __('Enregistrer') }}" wire:loading.class="disabled" primary sm spinner="save"/>
         </form>
     </x-front.card>
 </div>
