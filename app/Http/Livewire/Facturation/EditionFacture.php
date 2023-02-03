@@ -109,8 +109,7 @@ class EditionFacture extends Component
                 $query
                     ->whereMonth('pickup_date', $this->selectedMonth)
                     ->whereYear('pickup_date', $this->selectedYear)
-                    ->where('statut',ReservationStatus::Confirmed)
-                    ->orWhere('statut', ReservationStatus::CanceledToPay)
+                    ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
                 ;
             }]
         )
@@ -118,8 +117,7 @@ class EditionFacture extends Component
                 $query
                     ->whereMonth('pickup_date', $this->selectedMonth)
                     ->whereYear('pickup_date', $this->selectedYear)
-                    ->where('statut',ReservationStatus::Confirmed)
-                    ->orWhere('statut', ReservationStatus::CanceledToPay)
+                    ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
                 ;
             })
             ->get();
@@ -137,9 +135,8 @@ class EditionFacture extends Component
         return Reservation::where('entreprise_id', $this->entrepriseIdSelected)
             ->whereMonth('pickup_date', $this->selectedMonth)
             ->whereYear('pickup_date', $this->selectedYear)
-            ->where('statut',ReservationStatus::Confirmed)
-            ->orWhere('statut', ReservationStatus::CanceledToPay)
-            ->orderBy('id', 'desc')
+            ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
+            ->orderBy('pickup_date', 'desc')
             ->get();
     }
 
@@ -236,6 +233,10 @@ class EditionFacture extends Component
                 $this->adresseEntreprise->adresse_full :
                 $this->adresseFacturationEntreprise->adresse_full;
 
+            $addressLocalEntreprise = (is_null($this->adresseEntreprise)) ?
+                $this->adresseFacturationEntreprise->adresse_full :
+                $this->adresseEntreprise->adresse_full;
+
             // Génération de la référence de la facture
             $reference = sprintf('FA%s-%s-%s',
                 $this->selectedYear,
@@ -248,7 +249,7 @@ class EditionFacture extends Component
                 'reference' => $reference,
                 'month' => $this->selectedMonth,
                 'year' => $this->selectedYear,
-                'adresse_client' => $this->adresseEntreprise->adresse_full,
+                'adresse_client' => $addressLocalEntreprise,
                 'adresse_facturation' => $addressFacturation
             ]);
         }
@@ -273,7 +274,6 @@ class EditionFacture extends Component
     public function goToEditPage(int $entreprise): void
     {
         $this->entrepriseIdSelected = $entreprise;
-        $this->factureModal = true;
     }
 
     /**
@@ -289,7 +289,7 @@ class EditionFacture extends Component
             $this->months[$this->facture->month],
             $this->facture->year
         );
-        $this->email['complement'] = '';
+        $this->email['complement'] = $this->facture->information;
         $this->isAcquitte = (int) $this->facture->is_acquitte;
 
         $this->factureModal = true;
@@ -300,14 +300,12 @@ class EditionFacture extends Component
      */
     public function getRules(): array
     {
-        if ($this->factureModal) {
-            return [
-                'email.address' => 'required|email',
-                'email.message' => 'required',
-                'email.complement' => 'nullable',
-                'isAcquitte' => 'bool'
-            ];
-        }
+        return [
+            'email.address' => 'required|email',
+            'email.message' => 'required',
+            'email.complement' => 'nullable',
+            'isAcquitte' => 'bool'
+        ];
     }
 
     /**
@@ -358,6 +356,8 @@ class EditionFacture extends Component
 
     public function sendEmailTestAction()
     {
+        $this->facture->information = $this->email['complement'];
+
         Mail::to(config('mail.admin.address'))
             ->send(new \App\Mail\BillCreated($this->facture, $this->email['message']));
     }

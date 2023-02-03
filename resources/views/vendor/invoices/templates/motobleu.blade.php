@@ -375,7 +375,7 @@
 
         @if($invoice->notes)
             <p>
-                {{ trans('invoice.notes') }}: {!! $invoice->notes !!}
+                {{ trans('invoice.notes') }}: <br> {!! $invoice->notes !!}
             </p>
         @endif
 
@@ -388,9 +388,9 @@
             CONDITIONS DE PAIEMENT :
         </p>
         <ul>
-            <li>- Pas d'escompte si règlement anticipé.</li>
-            <li>- Toute somme non payée dans les 30 jours est augmentée du taux d'intérêt légal majoré de 7 points.</li>
-            <li>- Indemnité forfaitaire de recouvrement : 40 euros</li>
+            <li>Pas d'escompte si règlement anticipé.</li>
+            <li>Toute somme non payée dans les 30 jours est augmentée du taux d'intérêt légal majoré de 7 points.</li>
+            <li>Indemnité forfaitaire de recouvrement : 40 euros</li>
         </ul>
         {{--<p>
             {{ trans('invoice.amount_in_words') }}: {{ $invoice->getTotalAmountInWords() }}

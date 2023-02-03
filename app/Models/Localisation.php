@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
@@ -15,21 +16,18 @@ class Localisation extends Model
 
     protected $guarded = [];
 
-    /**
-     * @return string
-     */
-    public function getFullAdresseAttribute(): string
+    public function fullAdresse(): Attribute
     {
-        return $this->adresse . ' '. $this->adresse_complement. ' '. $this->code_postal.' '.$this->ville;
-    }
-
-    /**
-     * @return array
-     */
-    public function toSearchableArray(): array
-    {
-        return [
-            'nom' => $this->nom
-        ];
+        return Attribute::make(
+            get: fn($value, $attributes) => implode(' ',
+                [
+                    $attributes['nom'],
+                    $attributes['adresse'],
+                    $attributes['adresse_complement'],
+                    $attributes['code_postal'],
+                    $attributes['ville']
+                ]
+            )
+        );
     }
 }

@@ -24,17 +24,14 @@ class InvoiceService
     {
         $entreprise = (new self())->getEntreprise($facture);
 
-        $addressPhysique = (new self())->getAdresse($entreprise, AdresseEntrepriseTypeEnum::PHYSIQUE);
-        $addressFacturation = (new self())->getAdresse($entreprise, AdresseEntrepriseTypeEnum::FACTURATION);
-
         $physique = new Party([
             'name' => $entreprise->nom,
-            'address' => $addressPhysique->adresse_full
+            'address' => $facture->adresse_client
         ]);
 
         $facturation = new Party([
             'name' => $entreprise->nom,
-            'address' => $addressFacturation->adresse_full
+            'address' => $facture->adresse_facturation
         ]);
 
         $invoiceDate = Carbon::create($facture->year, $facture->month, 1, 0, 0, 0, 'Europe/Paris');
