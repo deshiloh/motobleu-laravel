@@ -71,7 +71,7 @@
                         <x-input label="Téléphone de bureau" wire:model="newPassager.telephone"/>
                         <x-input label="Téléphone portable" wire:model="newPassager.portable"/>
                         <x-input type="email" label="Adresse email" wire:model="newPassager.email"/>
-                        @if($reservation->entreprise()->exists() && $reservation->entreprise->id == 1)
+                        @if(!is_null($reservation->entreprise_id) && in_array($reservation->entreprise_id, app(\app\Settings\BillSettings::class)->entreprises_cost_center_facturation))
                             <x-select
                                 wire:key="cost_center"
                                 label="Cost Center"

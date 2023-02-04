@@ -27,7 +27,7 @@
             </div>
         </x-bloc-content>
         <div class="px-4">
-            <div class="grid grid-cols-3 gap-5 bg-white rounded-lg border border-gray-200">
+            <div class="grid max-lg:grid-cols-1 grid-cols-2 gap-5 dark:bg-slate-800 bg-white rounded-lg border border-gray-200 dark:border-black">
                 <div class="dark:bg-slate-800 rounded-lg p-3 relative">
                     <div class="absolute flex flex-col">
                         <div class="text-3xl text-gray-500">

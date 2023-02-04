@@ -25,6 +25,7 @@
                     <x-datatable.th>Date</x-datatable.th>
                     <x-datatable.th>Acquittée</x-datatable.th>
                     <x-datatable.th>Entreprise</x-datatable.th>
+                    <x-datatable.th>Montant</x-datatable.th>
                     <x-datatable.th>Actions</x-datatable.th>
                 </tr>
             </x-slot:headers>
@@ -44,12 +45,15 @@
                             {{ $facture->reservations->first()->entreprise->nom }}
                         </x-datatable.td>
                         <x-datatable.td>
+                            {{ number_format($facture->montant_ttc, 2, ',', ' ') }} €
+                        </x-datatable.td>
+                        <x-datatable.td>
                             <x-button label="Voir" href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank" icon="eye" info sm />
 
                             <x-button label="Liste des courses" icon="view-list" primary sm href="{!! route('admin.facturations.edition', [
                                     'selectedMonth' => $facture->month,
                                     'selectedYear' => $facture->year,
-                                    'entrepriseIdSelected' => $this->getEntreprise($facture)->id,
+                                    'entrepriseIdSelected' => $facture->reservations->first()->entreprise->id,
                                     'isBilled' => 1
                                 ]
                             ) !!}" />

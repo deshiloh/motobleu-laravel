@@ -320,7 +320,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         $drawing = new Drawing();
         $drawing->setName('Logo');
         $drawing->setDescription('Logo motobleu');
-        $drawing->setPath(public_path('storage/motobleu.png'));
+        $drawing->setPath(public_path('storage/logo-pdf.png'));
         $drawing->setHeight(90);
         $drawing->setOffsetX(20);
         $drawing->setCoordinates('A2');
@@ -353,7 +353,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         }
 
         if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
-            array_push($datas, $row->passager->typeFacturation->nom, $row->passager->costCenter->nom);
+            array_push($datas, $row->passager->typeFacturation->nom ?? 'NC', $row->passager->costCenter->nom ?? 'NC');
         }
 
         return $datas;

@@ -309,20 +309,20 @@ class ImportOldData extends Command
         $etat = 0;
 
         switch (true) {
-            case !$reservation->is_canceled && !$reservation->cancel_pay && !$reservation->is_factured && !$reservation->is_confirmed :
+            case !$reservation->is_canceled && !$reservation->cancel_pay && !$reservation->is_factured && !$reservation->is_confirmed:
                 $etat = ReservationStatus::Created->value;
                 break;
-            case $reservation->is_confirmed && !$reservation->cancel_pay && !$reservation->is_factured :
-                $etat = ReservationStatus::Confirmed->value;
-                break;
-            case $reservation->is_factured:
-                $etat = ReservationStatus::Billed->value;
-                break;
-            case $reservation->is_canceled && !$reservation->cancel_pay:
+            case $reservation->is_canceled :
                 $etat = ReservationStatus::Canceled->value;
                 break;
-            case !$reservation->is_canceled && $reservation->cancel_pay:
+            case $reservation->cancel_pay && !$reservation->is_factured:
                 $etat = ReservationStatus::CanceledToPay->value;
+                break;
+            case $reservation->is_confirmed && !$reservation->cancel_pay && is_null($reservation->facture_id):
+                $etat = ReservationStatus::Confirmed->value;
+                break;
+            case $reservation->is_factured && $reservation->facture_id > 0:
+                $etat = ReservationStatus::Billed->value;
                 break;
         }
 
