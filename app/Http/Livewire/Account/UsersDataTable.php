@@ -24,12 +24,11 @@ class UsersDataTable extends Component
      */
     public function render(): View|Factory|Application
     {
+        ray()->showQueries();
         return view('livewire.account.users-data-table', [
             'users' => User::query()
-                ->when($this->search != '', function (Builder $query, $search) {
-                    return $query
-                        ->where('nom', 'like', $search . '%');
-                })
+                ->where('nom', 'like', '%'. $this->search . '%')
+                ->orWhere('prenom', 'like', '%'.$this->search.'%')
                 ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate($this->perPage)
         ]);

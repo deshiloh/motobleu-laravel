@@ -9,6 +9,7 @@ use App\Models\Passager;
 use App\Models\Reservation;
 use App\Models\User;
 use App\Services\ReservationService;
+use app\Settings\BillSettings;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutEvents;
@@ -77,15 +78,19 @@ class FrontFormReservationTest extends TestCase
 
     public function testCreateReservationWithCreatePassagerEmpty()
     {
+        BillSettings::fake([
+            'entreprises_cost_center_facturation' => [1]
+        ]);
+
         Livewire::test(ReservationForm::class)
             ->set('passagerMode', ReservationService::NEW_PASSAGER)
+            ->set('reservation.entreprise_id', 1)
             ->set('newPassager.nom', '')
             ->set('newPassager.telephone', '')
             ->set('newPassager.email', '')
             ->set('newPassager.cost_center_id', '')
             ->set('newPassager.type_facturation_id', '')
             ->set('userId', 1)
-            ->set('reservation.entreprise_id', 1)
             ->call('saveReservation')
             ->assertHasErrors([
                 'newPassager.nom' => 'required',
@@ -310,6 +315,9 @@ class FrontFormReservationTest extends TestCase
     public function testCreateReservationWithNewPassagerOK()
     {
         $pickupDate = Carbon::now();
+        BillSettings::fake([
+            'entreprises_cost_center_facturation' => [1]
+        ]);
 
         Livewire::test(ReservationForm::class)
             ->set('userId', 1)

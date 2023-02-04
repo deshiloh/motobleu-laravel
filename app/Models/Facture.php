@@ -18,6 +18,10 @@ class Facture extends Model
 
     protected $guarded = [];
 
+    protected $with = [
+        'reservations.entreprise'
+    ];
+
     public function reference(): Attribute
     {
         return Attribute::make(
@@ -38,14 +42,12 @@ class Facture extends Model
         );
     }
 
-    private function generateReference(): string
+    /**
+     * @return HasMany
+     */
+    public function reservations(): HasMany
     {
-        $currentDate = Carbon::now();
-        return sprintf('FA%s-%s-%s',
-            $currentDate->year,
-            $currentDate->month,
-            Facture::where('month', $currentDate->month)->where('year', $currentDate->year)->count() + 1
-        );
+        return $this->hasMany(Reservation::class);
     }
 
     public function montantTtc(): Attribute
@@ -57,17 +59,19 @@ class Facture extends Model
         );
     }
 
+    private function generateReference(): string
+    {
+        $currentDate = Carbon::now();
+        return sprintf('FA%s-%s-%s',
+            $currentDate->year,
+            $currentDate->month,
+            Facture::where('month', $currentDate->month)->where('year', $currentDate->year)->count() + 1
+        );
+    }
+
     private function generateMontantTtc(): float
     {
         $ttc = $this->montant_ht + ($this->montant_ht * 0.1);
         return $ttc;
-    }
-
-    /**
-     * @return HasMany
-     */
-    public function reservations(): HasMany
-    {
-        return $this->hasMany(Reservation::class);
     }
 }

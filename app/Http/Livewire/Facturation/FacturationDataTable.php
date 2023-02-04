@@ -24,12 +24,17 @@ class FacturationDataTable extends Component
 
     public function render()
     {
+        ray()->showQueries();
         return view('livewire.facturation.facturation-data-table', [
-            'facturations' => Facture::where('factures.reference', 'like', '%' . $this->search . '%')
-                ->when($this->entreprise != 0, function (Builder $query) {
-                    return $query
-                        ->join('reservations', 'reservations.facture_id', '=', 'factures.id')
-                        ->where('reservations.entreprise_id', $this->entreprise);
+            'facturations' => Facture::query()
+                ->select('factures.*')
+                ->when($this->search, function (Builder $query) {
+                    return $query->where('reference', 'like', '%'.$this->search.'%');
+                })
+                ->when($this->entreprise, function (Builder $query){
+                    return $query->whereHas('reservations', function (Builder $query) {
+                        return $query->where('entreprise_id', $this->entreprise);
+                    });
                 })
                 ->orderBy('factures.id', 'desc')
                 ->paginate($this->perPage)

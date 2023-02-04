@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use app\Settings\BillSettings;
+
 class ReservationService
 {
     const EXIST_PASSAGER = 1;
@@ -32,9 +34,10 @@ class ReservationService
     /**
      * @param array $rules
      * @param int $mode
+     * @param int|null $companySelected $
      * @return void
      */
-    public static function generatePassagerFromRules(array &$rules, int $mode): void
+    public static function generatePassagerFromRules(array &$rules, int $mode, ?int $companySelected): void
     {
         if ($mode == ReservationService::EXIST_PASSAGER) {
             $rules['reservation.passager_id'] = 'required';
@@ -44,9 +47,13 @@ class ReservationService
             $rules['newPassager.nom'] = 'required';
             $rules['newPassager.telephone'] = 'required';
             $rules['newPassager.email'] = 'required|email';
-            $rules['newPassager.cost_center_id'] = 'required';
-            $rules['newPassager.type_facturation_id'] = 'required';
+            $rules['newPassager.portable'] = 'nullable';
             $rules['userId'] = 'required';
+
+            if (!is_null($companySelected) && in_array($companySelected, app(BillSettings::class)->entreprises_cost_center_facturation)) {
+                $rules['newPassager.cost_center_id'] = 'required';
+                $rules['newPassager.type_facturation_id'] = 'required';
+            }
         }
     }
 

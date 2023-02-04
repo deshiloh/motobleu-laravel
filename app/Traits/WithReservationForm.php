@@ -39,7 +39,7 @@ trait WithReservationForm
     protected function rules(): array
     {
         ReservationService::generateDefaultRules($this->generatedRules);
-        ReservationService::generatePassagerFromRules($this->generatedRules, $this->passagerMode);
+        ReservationService::generatePassagerFromRules($this->generatedRules, $this->passagerMode, $this->reservation->entreprise_id);
         ReservationService::generateFromLocalisationRules($this->generatedRules, $this->pickupMode);
         ReservationService::generateToLocalisationRules($this->generatedRules, $this->dropMode);
 
