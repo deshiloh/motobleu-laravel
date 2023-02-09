@@ -17,10 +17,17 @@ class ReservationDataTable extends Component
     use WithSorting, WithPagination;
 
     public string $search = '';
-    public int $perPage = 10;
+    public int $perPage = 100;
     public string $sortField = 'id';
     protected $queryString = ['querySort' => ['except' => '']];
     public string $querySort = '';
+    public array $listPerPage = [
+        20,
+        50,
+        100,
+        200,
+        300
+    ];
 
     public function mount()
     {

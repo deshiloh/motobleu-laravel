@@ -21,8 +21,21 @@
         </a>
     @endif
 
-    <x-datatable.search wire:model="search" />
-    <x-datatable>
+    <div class="grid grid-cols-4 gap-6 pb-5">
+        <div>
+            <x-input wire:model="search" label="Recherche" placeholder="Tapez votre recherche..." icon="search"/>
+        </div>
+        <div>
+            <x-select
+                label="Pagination"
+                placeholder="Select many statuses"
+                :options="$listPerPage"
+                wire:model="perPage"
+                :clearable="false"
+            />
+        </div>
+    </div>
+    <x-datatable wire:loading.class="opacity-25">
         <x-slot name="headers">
             <tr>
                 <x-datatable.th sortable wire:click="sortBy('id')" :direction="$sortDirection">Référence</x-datatable.th>
