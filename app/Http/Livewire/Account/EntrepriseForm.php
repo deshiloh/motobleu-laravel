@@ -21,7 +21,6 @@ class EntrepriseForm extends Component
 
     public function mount(User $account)
     {
-        ray($this->exclude);
         $this->user = $account;
         $this->exclude = $this->user->entreprises()->pluck('id')->toArray();
     }
