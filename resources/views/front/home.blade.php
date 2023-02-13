@@ -227,7 +227,7 @@
     </div>
     <footer class="py-3">
         <p class="text-center text-white">
-            Copyright © 2019 {{ __('Tous droits réservés') }}. {{ __('Site créé avec passion par') }}
+            Copyright © {{ date('Y') }} {{ __('Tous droits réservés') }}. {{ __('Site créé avec passion par') }}
             <a href="https://agencepoint.com/" class="hover:underline">Agence Point Com</a>
         </p>
     </footer>

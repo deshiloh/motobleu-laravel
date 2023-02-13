@@ -27,7 +27,7 @@ return [
     'sub_total'              => 'sous-total',
     'total_discount'         => 'Total remise',
     'taxable_amount'         => 'Prix HT',
-    'total_taxes'            => 'Total taxes',
+    'total_taxes'            => 'Total TVA',
     'tax_rate'               => 'Taxe',
     'total_amount'           => 'Total TTC',
     'pay_until'              => 'Please pay until',
