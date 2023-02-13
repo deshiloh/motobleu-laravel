@@ -24,7 +24,6 @@ class FacturationDataTable extends Component
 
     public function render()
     {
-        ray()->showQueries();
         return view('livewire.facturation.facturation-data-table', [
             'facturations' => Facture::query()
                 ->select('factures.*')
