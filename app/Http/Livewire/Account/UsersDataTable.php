@@ -24,7 +24,6 @@ class UsersDataTable extends Component
      */
     public function render(): View|Factory|Application
     {
-        ray()->showQueries();
         return view('livewire.account.users-data-table', [
             'users' => User::query()
                 ->where('nom', 'like', '%'. $this->search . '%')
