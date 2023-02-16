@@ -203,16 +203,16 @@
             <x-center-bloc wire:key="pilote_details">
                 <x-simple-card title="Pilote" description="Informations sur le pilote">
                     <x-simple-card.item title="Nom">
-                        {{ $reservation->pilote->full_name }}
+                        {{ $reservation->pilote?->full_name }}
                     </x-simple-card.item>
                     <x-simple-card.item title="Adresse email">
-                        {{ $reservation->pilote->email }}
+                        {{ $reservation->pilote?->email }}
                     </x-simple-card.item>
                     <x-simple-card.item title="Téléphone">
-                        {{ $reservation->pilote->telephone }}
+                        {{ $reservation->pilote?->telephone }}
                     </x-simple-card.item>
                     <x-simple-card.item title="Entreprise">
-                        {{ $reservation->pilote->entreprise }}
+                        {{ $reservation->pilote?->entreprise }}
                     </x-simple-card.item>
                 </x-simple-card>
             </x-center-bloc>
