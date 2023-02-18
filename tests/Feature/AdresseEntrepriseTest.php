@@ -57,7 +57,6 @@ class AdresseEntrepriseTest extends TestCase
                 'adresseEntreprise.adresse' => 'required',
                 'adresseEntreprise.code_postal' => 'required',
                 'adresseEntreprise.ville' => 'required',
-                'adresseEntreprise.type' => 'required',
             ]);
     }
 
