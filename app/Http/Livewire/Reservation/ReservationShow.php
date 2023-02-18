@@ -27,6 +27,11 @@ class ReservationShow extends Component
         $this->message = "Bonjour,
 Votre réservation a bien été prise en compte
 Cordialement.";
+
+        if (is_null($reservation->pilote_id)) {
+            $defaultPilote = Pilote::firstWhere('email', 'pilotes.motobleu@gmail.com');
+            $reservation->pilote_id = $defaultPilote->id;
+        }
     }
 
     public function render()
@@ -119,15 +124,36 @@ Cordialement.";
         }
     }
 
-    public function cancelAction()
+    public function cancelAskAction()
     {
-        $this->reservation->statut = ReservationStatus::Canceled;
-
-        $this->reservation->update([
-            'statut' => ReservationStatus::Canceled
+        $this->dialog()->confirm([
+            'title'       => 'Attention !',
+            'description' => 'Êtes vous sur de vouloir annuler la réservation ?',
+            'icon'        => 'question',
+            'accept'      => [
+                'label'  => 'Oui',
+                'method' => 'cancelAction'
+            ],
+            'reject' => [
+                'label'  => 'Non',
+            ],
         ]);
+    }
 
-        ReservationCanceled::dispatch($this->reservation);
+    public function cancelToPayAskAction()
+    {
+        $this->dialog()->confirm([
+            'title'       => 'Attention !',
+            'description' => 'Êtes vous sur de vouloir annuler la réservation ? Celle ci sera cependant facturable.',
+            'icon'        => 'question',
+            'accept'      => [
+                'label'  => 'Oui',
+                'method' => 'cancelBilledAction'
+            ],
+            'reject' => [
+                'label'  => 'Non',
+            ],
+        ]);
     }
 
     public function cancelBilledAction()
@@ -139,5 +165,25 @@ Cordialement.";
         ]);
 
         ReservationCanceled::dispatch($this->reservation);
+    }
+
+    public function cancelAction()
+    {
+        $this->reservation->statut = ReservationStatus::Canceled;
+
+        $this->reservation->update([
+            'statut' => ReservationStatus::Canceled
+        ]);
+
+        ReservationCanceled::dispatch($this->reservation);
+    }
+
+    public function confirmedStatusAction()
+    {
+        $this->reservation->statut = ReservationStatus::CanceledToPay;
+
+        $this->reservation->update([
+            'statut' => ReservationStatus::CanceledToPay,
+        ]);
     }
 }

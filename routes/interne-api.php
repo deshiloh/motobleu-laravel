@@ -62,10 +62,7 @@ Route::get('/adresses', function (Request $request) {
     $selected = $request->input('selected');
     $user = $request->input('user', false);
 
-    return AdresseReservation::query()
-        ->select('id', 'adresse')
-        ->orderBy('adresse')
-        ->when($user, function(Builder $query, $search) {
+    return AdresseReservation::when($user, function(Builder $query, $search) {
             $query->where('user_id', $search);
         })
         ->when($search, function (Builder $query, $search) {
@@ -77,6 +74,7 @@ Route::get('/adresses', function (Request $request) {
                 $query->whereIn('id', $selected);
             }
         )
+        ->orderBy('adresse')
         ->get();
 })->name('api.adresses');
 
