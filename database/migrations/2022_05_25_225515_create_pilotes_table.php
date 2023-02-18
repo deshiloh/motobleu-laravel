@@ -19,11 +19,12 @@ return new class extends Migration
             $table->string('prenom');
             $table->string('telephone');
             $table->string('email');
-            $table->string('entreprise')->nullable(true);
-            $table->string('adresse')->nullable(true);
-            $table->string('adresse_complement')->nullable(true);
-            $table->string('code_postal')->nullable(true);
-            $table->string('ville')->nullable(true);
+            $table->string('entreprise')->nullable();
+            $table->string('adresse')->nullable();
+            $table->string('adresse_complement')->nullable();
+            $table->string('code_postal')->nullable();
+            $table->string('ville')->nullable();
+            $table->boolean('is_actif')->default(true);
             $table->timestamps();
 
             $table->index('nom');

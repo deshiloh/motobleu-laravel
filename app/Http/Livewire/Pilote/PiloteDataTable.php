@@ -10,10 +10,11 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
+use WireUi\Traits\Actions;
 
 class PiloteDataTable extends Component
 {
-    use WithPagination, WithSorting;
+    use WithPagination, WithSorting, Actions;
 
     public string $search = '';
     public string $sortField = 'nom';
@@ -33,5 +34,27 @@ class PiloteDataTable extends Component
                 ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate($this->perPage)
         ]);
+    }
+
+    public function disablePilote(Pilote $pilote)
+    {
+        $pilote->is_actif = false;
+        $pilote->update();
+
+        $this->notification()->success(
+            'Opération réussite',
+            'Le pilote' . $pilote->full_name . ' a bien été désactivé.'
+        );
+    }
+
+    public function enablePilote(Pilote $pilote)
+    {
+        $pilote->is_actif = true;
+        $pilote->update();
+
+        $this->notification()->success(
+            'Opération réussite',
+            'Le pilote' . $pilote->full_name . ' a bien été activé.'
+        );
     }
 }

@@ -18,11 +18,20 @@ class UsersEntrepriseDataTable extends Component
 
     public Entreprise $entreprise;
     public ?string $userId = '';
+    public array $exclude = [];
+
+    public function mount()
+    {
+        $this->exclude = $this->entreprise->users()->pluck('id')->toArray();
+    }
 
     public function render(): Factory|View|Application
     {
         return view('livewire.entreprise.users-entreprise-data-table', [
-            'users' => $this->entreprise->users()->paginate(10, ['*'], 'usersPage')
+            'users' => $this->entreprise
+                ->users()
+                ->orderBy('nom')
+                ->paginate(10, ['*'], 'usersPage')
         ]);
     }
 

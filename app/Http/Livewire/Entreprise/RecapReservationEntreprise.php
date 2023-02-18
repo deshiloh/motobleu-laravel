@@ -34,6 +34,7 @@ class RecapReservationEntreprise extends Component
                 return $query
                     ->whereBetween('pickup_date', [$this->dateDebut, $this->dateFin]);
             })
+                ->orderBy('id', 'desc')
             ->paginate($this->perPage, ['*'], 'reservationsPage')
         ]);
     }

@@ -17,9 +17,13 @@ use Livewire\WithPagination;
  */
 class Entreprise extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory;
 
+    protected $guarded = [];
     protected $fillable = ['nom'];
+    protected $casts = [
+        'is_actif' => 'boolean'
+    ];
 
     /**
      * @return BelongsToMany
@@ -63,15 +67,5 @@ class Entreprise extends Model
     public function reservations(): HasMany
     {
         return $this->hasMany(Reservation::class);
-    }
-
-    /**
-     * @return array
-     */
-    public function toSearchableArray(): array
-    {
-        return [
-            'nom' => $this->nom
-        ];
     }
 }

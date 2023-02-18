@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\Pilote\PiloteDataTable;
 use App\Http\Livewire\Pilote\PiloteForm;
 use App\Http\Livewire\Pilote\RecapReservationPilote;
 use App\Models\Pilote;
@@ -122,13 +123,35 @@ class PiloteTest extends TestCase
         ]);
     }
 
-    public function testCanDeletePilote()
+    public function testDisablePilote()
     {
-        $pilote = Pilote::factory()->create();
-        $response = $this->delete(route('admin.pilotes.destroy', ['pilote' => $pilote->id]));
+        $pilote = Pilote::find(1);
 
-        $response->assertStatus(302);
-        $this->assertModelMissing($pilote);
+        Livewire::test(PiloteDataTable::class)
+            ->call('disablePilote', $pilote)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('pilotes', [
+            'nom' => $pilote->nom,
+            'is_actif' => false
+        ]);
+    }
+
+    public function testEnablePilote()
+    {
+        $pilote = Pilote::factory([
+            'nom' => 'test',
+            'is_actif' => false
+        ])->create();
+
+        Livewire::test(PiloteDataTable::class)
+            ->call('enablePilote', $pilote)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('pilotes', [
+            'nom' => 'test',
+            'is_actif' => true
+        ]);
     }
 
     public function testUpdateReservationPiloteWithEmptyTarif()

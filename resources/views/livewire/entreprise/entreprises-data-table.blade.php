@@ -21,7 +21,12 @@
                         <div class="flex space-x-2">
                             <x-button.circle icon="eye" info href="{{ route('admin.entreprises.show', ['entreprise' => $entreprise->id]) }}" />
                             <x-button.circle icon="pencil" primary href="{{ route('admin.entreprises.edit', ['entreprise' => $entreprise->id]) }}" />
-                            <x-button.circle icon="trash" red route="{{ route('admin.entreprises.destroy', ['entreprise' => $entreprise->id]) }}" />
+                            @if($entreprise->is_actif)
+                                <x-button.circle icon="trash" red wire:click="disableEntreprise({{ $entreprise }})" />
+                                @else
+                                <x-button.circle icon="check" green wire:click="enableEntreprise({{ $entreprise }})" />
+                            @endif
+
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>
