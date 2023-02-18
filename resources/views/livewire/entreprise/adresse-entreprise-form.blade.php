@@ -11,7 +11,7 @@
             <x-input label="Code postal" wire:model.defer="adresseEntreprise.code_postal" />
             <x-input label="Ville" wire:model.defer="adresseEntreprise.ville" />
             <x-input label="TVA" wire:model.defer="adresseEntreprise.tva" />
-            <x-native-select label="Type de l'adresse" wire:model="adresseEntreprise.type">
+            <x-native-select label="Type de l'adresse" wire:model="adresseEntreprise.type" placeholder="Sélectionnez un type d'adresse">
                 @foreach(\App\Enum\AdresseEntrepriseTypeEnum::cases() as $type)
                     <option value="{{ $type->value }}">{{ $type->name }}</option>
                 @endforeach
