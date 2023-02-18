@@ -9,8 +9,10 @@
                 <x-datatable.th sortable wire:click="sortBy('email')" :direction="$sortDirection">Email
                 </x-datatable.th>
                 <x-datatable.th>Téléphone</x-datatable.th>
-                <x-datatable.th sortable wire:click="sortBy('adresse')" :direction="$sortDirection">Adresse
+                <x-datatable.th sortable wire:click="sortBy('adresse')" :direction="$sortDirection">
+                    Adresse
                 </x-datatable.th>
+                <x-datatable.th>État</x-datatable.th>
                 <x-datatable.th>Actions</x-datatable.th>
             </tr>
         </x-slot>
@@ -23,9 +25,18 @@
                     <x-datatable.td>{{ $pilote->telephone }}</x-datatable.td>
                     <x-datatable.td>{{ $pilote->adresse }}</x-datatable.td>
                     <x-datatable.td>
+                        <x-front.badge :success="$pilote->is_actif" :danger="!$pilote->is_actif">
+                            {{ $pilote->is_actif ? 'Actif' : 'Non actif'}}
+                        </x-front.badge>
+                    </x-datatable.td>
+                    <x-datatable.td>
                         <x-button.circle href="{{ route('admin.pilotes.edit', ['pilote' => $pilote->id]) }}" info sm icon="pencil" />
                         <x-button.circle href="{{ route('admin.pilotes.recap-reservation', ['pilote' => $pilote->id]) }}" primary sm icon="view-list" />
-                        <x-button.circle href="{{ route('admin.pilotes.destroy', ['pilote' => $pilote->id]) }}" red sm icon="trash" />
+                        @if($pilote->is_actif)
+                            <x-button.circle wire:click="disablePilote({{ $pilote }})" red sm icon="trash" />
+                            @else
+                            <x-button.circle wire:click="enablePilote({{ $pilote }})" green sm icon="check" />
+                        @endif
                     </x-datatable.td>
                 </x-datatable.tr>
             @empty

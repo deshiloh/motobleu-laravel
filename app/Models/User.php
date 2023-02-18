@@ -103,7 +103,7 @@ class User extends Authenticatable
         return Attribute::make(
             get: function ($value, $attributes) {
                 $attr = [];
-                
+
                 if (isset($attributes['nom'])) {
                     $attr[] = $attributes['nom'];
                 }
