@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('type');
             $table->string('email');
             $table->string('nom');
-            $table->string('tva');
+            $table->string('tva')->nullable();
 
             $table->foreignId('entreprise_id')
                 ->nullable(true)
