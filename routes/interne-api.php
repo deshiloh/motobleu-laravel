@@ -139,12 +139,12 @@ Route::get('/users', function (Request $request){
         ->orderBy('nom')
         ->when(
             $search, function (Builder $query, $search) {
-            $query
-                ->where('nom', 'like', "%$search%")
-                ->orWhere('email', 'like', "%$search%")
-                ->orWhere('prenom', 'like', "%$search%")
-            ;
-        }
+            $query->where(function (Builder $query) use ($search) {
+                $query->where('nom', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('prenom', 'like', "%$search%");
+                });
+            }
         )
         ->when(
             $selected,
@@ -155,6 +155,7 @@ Route::get('/users', function (Request $request){
                 $query->limit(10);
             }
         )
+        ->where('is_actif', true)
         ->get();
 })->name('api.users');
 
