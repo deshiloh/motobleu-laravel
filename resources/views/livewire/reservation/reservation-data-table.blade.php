@@ -71,19 +71,15 @@
                                 @break
                             @case(\App\Enum\ReservationStatus::CanceledToPay)
                                 <x-front.badge danger>
-                                    Annulée à payer
+                                    Annulée facturable
                                 </x-front.badge>
                                 @break
                             @case(\App\Enum\ReservationStatus::Confirmed)
-                                <x-front.badge success>
-                                    Confirmée
-                                </x-front.badge>
-                            @break
                             @case(\App\Enum\ReservationStatus::Billed)
                                 <x-front.badge success>
                                     Confirmée
                                 </x-front.badge>
-                                @break
+                            @break
                         @endswitch
                     </x-datatable.td>
                     <x-datatable.td>

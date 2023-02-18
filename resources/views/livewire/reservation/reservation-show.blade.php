@@ -1,4 +1,5 @@
 <div class="pb-6">
+    <x-dialog />
     <x-header>
         Réservation : <span class="text-blue-500">{{ $reservation->reference }}</span>
         <x-slot:right>
@@ -7,9 +8,12 @@
                     <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled"/>
                 @endif
                 <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled"/>
-                @if(!$reservation->statut != \App\Enum\ReservationStatus::Canceled)
-                    <x-button warning label="Annuler mais facturer" icon="credit-card" wire:loading.attr="disabled" wire:click="cancelBilledAction" spinner="cancelBilledAction"/>
-                    <x-button wire:click="cancelAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction" spinner="cancelAction"/>
+                @if($reservation == \App\Enum\ReservationStatus::Canceled || $reservation == \App\Enum\ReservationStatus::CanceledToPay)
+                    <x-button warning label="Confirmer" icon="credit-card" wire:loading.attr="disabled" wire:click="confirmedStatusAction" spinner="confirmedStatusAction"/>
+                @endif
+                @if($reservation->statut != \App\Enum\ReservationStatus::Canceled)
+                    <x-button warning label="Annuler mais facturer" icon="credit-card" wire:loading.attr="disabled" wire:click="cancelToPayAskAction" spinner="cancelBilledAction"/>
+                    <x-button wire:click="cancelAskAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction" spinner="cancelAction"/>
                 @endif
             </div>
         </x-slot:right>
@@ -143,7 +147,7 @@
                 </x-simple-card.item>
 
                 <x-simple-card.item title="Téléphone">
-                    {{ $reservation->passager->user->telephone }}
+                    {{ $reservation->passager->user->telephone ?? 'Non renseigné.' }}
                 </x-simple-card.item>
 
                 <x-simple-card.item title="Portable">
@@ -170,7 +174,19 @@
                                             <span>Facturation : </span>
                                         </div>
                                     @endif
-                                    <span class="ml-2 flex-1 w-0 truncate">{{ $adresse->adresse_full }}</span>
+                                    <div class="ml-2 flex-1 w-0 truncate flex justify-between items-center">
+                                        <div>{{ $adresse->adresse_full }}</div>
+                                        <div>
+                                            <x-button.circle
+                                                icon="pencil"
+                                                info
+                                                sm
+                                                href="{{ route('admin.entreprises.adresses.edit', [
+                                                    'entreprise' => $adresse->entreprise_id,
+                                                    'adress' => $adresse->id
+                                                ]) }}" />
+                                        </div>
+                                    </div>
                                 </div>
                             </li>
                         @endforeach
@@ -190,7 +206,7 @@
                 </x-simple-card.item>
 
                 <x-simple-card.item title="Téléphone">
-                    {{ $reservation->passager->telephone }}
+                    {{ $reservation->passager->telephone ?? 'Non renseigné.' }}
                 </x-simple-card.item>
 
                 <x-simple-card.item title="Portable">

@@ -98,11 +98,22 @@ class User extends Authenticatable
         return $this->hasManyThrough(Reservation::class, Passager::class);
     }
 
-    /**
-     * @return string
-     */
-    public function getFullNameAttribute(): string
+    public function fullName(): Attribute
     {
-        return implode(' ', [$this->nom, $this->prenom]);
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $attr = [];
+                
+                if (isset($attributes['nom'])) {
+                    $attr[] = $attributes['nom'];
+                }
+
+                if (isset($attributes['prenom'])) {
+                    $attr[] = $attributes['prenom'];
+                }
+
+                return implode(' ', $attr);
+            }
+        );
     }
 }

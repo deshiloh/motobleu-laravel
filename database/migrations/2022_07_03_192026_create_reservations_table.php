@@ -37,11 +37,11 @@ return new class extends Migration
             $table->longText('comment_facture')->nullable();
             $table->longText('comment_pilote')->nullable();
 
-            $table->boolean('send_to_passager')->default(false);
-            $table->boolean('send_to_user')->default(false);
+            $table->boolean('send_to_passager')->default(true);
+            $table->boolean('send_to_user')->default(true);
             $table->boolean('has_back')->default(false);
-            $table->boolean('calendar_passager_invitation')->default(false);
-            $table->boolean('calendar_user_invitation')->default(false);
+            $table->boolean('calendar_passager_invitation')->default(true);
+            $table->boolean('calendar_user_invitation')->default(true);
 
             $table->dateTime('pickup_date');
 

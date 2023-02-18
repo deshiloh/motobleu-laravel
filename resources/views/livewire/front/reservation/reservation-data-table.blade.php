@@ -45,7 +45,7 @@
                                     @break
                                 @case(\App\Enum\ReservationStatus::CanceledToPay)
                                     <x-front.badge danger>
-                                        Annulée à payer
+                                        Annulée facturée
                                     </x-front.badge>
                                     @break
                                 @case(\App\Enum\ReservationStatus::Confirmed)
