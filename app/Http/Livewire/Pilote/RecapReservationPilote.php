@@ -3,12 +3,11 @@
 namespace App\Http\Livewire\Pilote;
 
 use App\Enum\ReservationStatus;
-use App\Exports\ReservationPiloteExport;
 use App\Models\Pilote;
 use App\Models\Reservation;
 use App\Services\ExportService;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithPagination;
 use PhpOffice\PhpSpreadsheet\Exception;
@@ -66,7 +65,7 @@ class RecapReservationPilote extends Component
 
     public function editReservation(array $datas): bool
     {
-        $validator = \Validator::make($datas, [
+        $validator = Validator::make($datas, [
             'tarif' => 'required',
             'majoration' => 'nullable',
             'encaisse' => 'nullable',
@@ -74,6 +73,15 @@ class RecapReservationPilote extends Component
             'comment' => 'nullable',
             'reservation' => 'required'
         ]);
+
+        $validator->after(function (\Illuminate\Validation\Validator $validator) {
+            $datas = $validator->getData();
+            if ($datas['encaisse'] > 0 && $datas['encompte'] > 0) {
+                $validator->errors()->add(
+                    'encompte', 'Encompte et encaisse ne peuvent pas avoir de valeurs en même temps'
+                );
+            }
+        });
 
         if ($validator->fails()) {
             $description = implode('<br>', $validator->errors()->all());

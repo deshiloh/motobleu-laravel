@@ -61,4 +61,35 @@ class Pilote extends Model
             }
         );
     }
+
+    /**
+     * Permet d'afficher l'adresse en entière
+     * @return Attribute
+     */
+    public function fullAdresse(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $attr = [];
+
+                if (isset($attributes['adresse'])) {
+                    $attr[] = $attributes['adresse'];
+                }
+
+                if (isset($attributes['adresse_complement'])) {
+                    $attr[] = $attributes['adresse_complement'];
+                }
+
+                if (isset($attributes['code_postal'])) {
+                    $attr[] = $attributes['code_postal'];
+                }
+
+                if (isset($attributes['ville'])) {
+                    $attr[] = $attributes['ville'];
+                }
+
+                return implode(' ', $attr);
+            }
+        );
+    }
 }

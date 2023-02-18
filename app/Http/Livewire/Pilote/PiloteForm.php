@@ -29,7 +29,7 @@ class PiloteForm extends Component
         return [
             'pilote.nom' => 'required',
             'pilote.prenom' => 'required',
-            'pilote.telephone' => 'required',
+            'pilote.telephone' => 'nullable',
             'pilote.email' => 'required|email',
             'pilote.entreprise' => 'nullable',
             'pilote.adresse' => 'nullable',
