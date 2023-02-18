@@ -23,7 +23,7 @@
                     <x-datatable.td>{{ $pilote->prenom }}</x-datatable.td>
                     <x-datatable.td>{{ $pilote->email }}</x-datatable.td>
                     <x-datatable.td>{{ $pilote->telephone }}</x-datatable.td>
-                    <x-datatable.td>{{ $pilote->adresse }}</x-datatable.td>
+                    <x-datatable.td>{{ $pilote->full_adresse }}</x-datatable.td>
                     <x-datatable.td>
                         <x-front.badge :success="$pilote->is_actif" :danger="!$pilote->is_actif">
                             {{ $pilote->is_actif ? 'Actif' : 'Non actif'}}

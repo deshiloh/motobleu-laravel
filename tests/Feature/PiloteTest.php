@@ -7,11 +7,7 @@ use App\Http\Livewire\Pilote\PiloteForm;
 use App\Http\Livewire\Pilote\RecapReservationPilote;
 use App\Models\Pilote;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -73,7 +69,6 @@ class PiloteTest extends TestCase
             ->assertHasErrors([
                 'pilote.nom' => 'required',
                 'pilote.prenom' => 'required',
-                'pilote.telephone' => 'required',
                 'pilote.email' => 'required',
             ]);
     }
@@ -159,7 +154,9 @@ class PiloteTest extends TestCase
         $pilote = Pilote::find(1);
         Livewire::test(RecapReservationPilote::class, ['pilote' => $pilote])
             ->call('editReservation', [
-                'tarif' => ''
+                'tarif' => '',
+                'encaisse' => '0',
+                'encompte' => '200',
             ])
             ->assertDispatchedBrowserEvent('wireui:notification')
         ;
