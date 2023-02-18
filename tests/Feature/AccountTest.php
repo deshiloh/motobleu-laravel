@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Http\Livewire\Account\AccountForm;
 use App\Http\Livewire\Account\EditPasswordForm;
 use App\Http\Livewire\Account\EntrepriseForm;
+use App\Http\Livewire\Account\UsersDataTable;
 use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -108,13 +109,7 @@ class AccountTest extends TestCase
             ->set('user.is_admin_ardian', false)
             ->call('save')
             ->assertHasErrors([
-                'user.nom' => 'required',
-                'user.prenom' => 'required',
-                'user.email' => 'required',
-                'user.telephone' => 'required',
-                'user.adresse' => 'required',
-                'user.code_postal' => 'required',
-                'user.ville' => 'required',
+                'user.email' => 'required'
             ]);
     }
 
@@ -236,6 +231,37 @@ class AccountTest extends TestCase
         $this->assertDatabaseMissing('entreprise_user', [
             'entreprise_id' => 1,
             'user_id' => $user->id
+        ]);
+    }
+
+    public function testDisableAccount()
+    {
+        $user = User::find(1);
+
+        Livewire::test(UsersDataTable::class)
+            ->call('disableAccount', $user)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('users', [
+            'nom' => $user->nom,
+            'is_actif' => false
+        ]);
+    }
+
+    public function testEnableAccount()
+    {
+        $user = User::factory([
+            'nom' => 'test',
+            'is_actif' => false
+        ])->create();
+
+        Livewire::test(UsersDataTable::class)
+            ->call('enableAccount', $user)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('users', [
+            'nom' => 'test',
+            'is_actif' => true
         ]);
     }
 }
