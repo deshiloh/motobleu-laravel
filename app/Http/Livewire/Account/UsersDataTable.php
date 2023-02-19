@@ -28,7 +28,7 @@ class UsersDataTable extends Component
     {
         return view('livewire.account.users-data-table', [
             'users' => User::query()
-                ->where(function (Builder $query) {
+                ->when($this->search, function (Builder $query) {
                     $query->where('nom', 'like', '%'. $this->search . '%');
                     $query->orWhere('prenom', 'like', '%'.$this->search.'%');
                 })

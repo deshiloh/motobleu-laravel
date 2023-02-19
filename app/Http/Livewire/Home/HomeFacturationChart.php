@@ -3,6 +3,8 @@
 namespace App\Http\Livewire\Home;
 
 use App\Models\Facture;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -24,7 +26,7 @@ class HomeFacturationChart extends Component
 
     public function getDatas(): array
     {
-        $period = now()->subMonths(6)->monthsUntil(now());
+        $period = $this->getPeriod();
         $data = [];
 
         foreach ($period as $date)
@@ -40,5 +42,14 @@ class HomeFacturationChart extends Component
         }
 
         return $data;
+    }
+
+    /**
+     * Permet de récupérer la période de l'année en cours
+     * @return CarbonPeriod
+     */
+    private function getPeriod()
+    {
+        return CarbonPeriod::create(Carbon::now()->startOfYear(), '1 month', Carbon::now()->endOfMonth());
     }
 }

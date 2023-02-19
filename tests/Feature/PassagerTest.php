@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Livewire\Passager\PassagerForm;
+use App\Http\Livewire\Passager\PassagersDataTable;
 use App\Models\Passager;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -95,11 +96,52 @@ class PassagerTest extends TestCase
         $this->assertTrue(Passager::where('nom', $passager->nom)->exists());
     }
 
-    public function testCanDeletePassager()
+    public function testDisablePassager()
     {
-        $response = $this->delete(route('admin.passagers.destroy', ['passager' => $this->passager->id]));
-        $this->passager->is_actif = false;
-        $response->assertStatus(302);
-        $this->assertModelExists($this->passager);
+        $passenger = Passager::find(1);
+
+        Livewire::test(PassagersDataTable::class)
+            ->call('disablePassenger', $passenger)
+            ->assertHasNoErrors()
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('passagers', [
+            'nom' => $passenger->nom,
+            'is_actif' => false
+        ]);
+    }
+
+    public function testEnablePassager()
+    {
+        $passenger = Passager::factory([
+            'nom' => 'test',
+            'is_actif' => false,
+            'user_id' => 1
+        ])->create();
+
+        Livewire::test(PassagersDataTable::class)
+            ->call('enablePassenger', $passenger)
+            ->assertHasNoErrors()
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('passagers', [
+            'nom' => 'test',
+            'is_actif' => true
+        ]);
+    }
+
+    public function testSearchPassager()
+    {
+        Passager::factory([
+            'nom' => 'test',
+            'is_actif' => true,
+            'user_id' => 1
+        ])->create();
+
+        Livewire::test(PassagersDataTable::class)
+            ->set('search', 'test')
+            ->assertSee(['test', 'Actif'])
+            ->assertHasNoErrors()
+            ->assertStatus(200);
     }
 }

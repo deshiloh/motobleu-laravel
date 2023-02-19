@@ -10,6 +10,7 @@
             @endcan
         </x-front.title>
 
+        <x-datatable.search wire:model="search"/>
         <x-datatable>
             <x-slot:headers>
                 <x-datatable.tr>
@@ -36,7 +37,7 @@
                                     <x-button.circle icon="pencil" primary href="{{ route('front.passager.edit', ['passager' => $passager->id]) }}"/>
                                 @endcan
                                 @can('delete passenger')
-                                    <x-button.circle icon="trash" red wire:click="deletePassenger({{ $passager }})"/>
+                                    <x-button.circle icon="x" red wire:click="deletePassenger({{ $passager }})"/>
                                 @endcan
                             </div>
                         </x-datatable.td>
