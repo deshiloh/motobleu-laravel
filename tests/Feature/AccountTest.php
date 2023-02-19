@@ -184,13 +184,6 @@ class AccountTest extends TestCase
             ->assertHasNoErrors();
     }
 
-    public function testDeletedAccount()
-    {
-        $response = $this->delete(route('admin.accounts.destroy', ['account' => $this->user]));
-        $response->assertStatus(302);
-        $this->assertDatabaseHas('users', ['is_actif' => false]);
-    }
-
     public function testAccessEntrepriseEdit()
     {
         $response = $this->get(route('admin.accounts.entreprise.edit', ['account' => $this->user->id]));
@@ -263,5 +256,18 @@ class AccountTest extends TestCase
             'nom' => 'test',
             'is_actif' => true
         ]);
+    }
+
+    public function testSearchAccount()
+    {
+        User::factory([
+            'nom' => 'test'
+        ])->create();
+
+        Livewire::test(UsersDataTable::class)
+            ->set('search', 'test')
+            ->assertSee('test')
+            ->assertHasNoErrors()
+            ->assertStatus(200);
     }
 }

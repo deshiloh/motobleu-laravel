@@ -74,6 +74,8 @@ Route::get('/adresses', function (Request $request) {
                 $query->whereIn('id', $selected);
             }
         )
+        ->where('is_actif', true)
+        ->where('is_deleted', false)
         ->orderBy('adresse')
         ->get();
 })->name('api.adresses');

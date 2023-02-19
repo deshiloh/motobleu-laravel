@@ -5,6 +5,8 @@ namespace App\Http\Livewire\Home;
 use App\Enum\Entreprise;
 use App\Models\Entreprise as EntrepriseModel;
 use App\Models\Reservation;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -22,7 +24,6 @@ class ReservationsChart extends Component
         $this->dataset = $this->getDatas();
         $this->firstEntreprise = $this->getCompanyBorderNbReservationOrder(Entreprise::FIRST->value);
         $this->lastEntreprise = $this->getCompanyBorderNbReservationOrder(Entreprise::LAST->value);
-        $this->nbTotalReservation = Reservation::count();
     }
 
     public function render(): Factory|View|Application
@@ -32,7 +33,7 @@ class ReservationsChart extends Component
 
     private function getLabels(): array
     {
-        $period = now()->subMonths(6)->monthsUntil(now());
+        $period = $this->getPeriod();
         $labels = [];
 
         foreach ($period as $date) {
@@ -44,7 +45,7 @@ class ReservationsChart extends Component
 
     private function getDatas(): array
     {
-        $period = now()->subMonths(6)->monthsUntil(now());
+        $period = $this->getPeriod();
         $data = [];
 
         foreach ($period as $date)
@@ -77,8 +78,12 @@ class ReservationsChart extends Component
 
     public function reloadData()
     {
-        $this->nbTotalReservation = Reservation::count();
         $dataset = $this->getDatas();
         $this->emit('updateHomeReservationChart', $dataset);
+    }
+
+    private function getPeriod()
+    {
+        return CarbonPeriod::create(Carbon::now()->startOfYear(), '1 month', Carbon::now()->endOfMonth());
     }
 }

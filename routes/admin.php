@@ -41,9 +41,7 @@ Route::prefix('/admin')->name('admin.')->group(function () {
     // Accueil de la partie admin
     Route::get('/dashboard', function () {
         return view('welcome', [
-            'reservations_to_confirm' => Reservation::toConfirmed(),
-            'reservations' => Reservation::count(),
-            'users' => User::count()
+            'reservations_to_confirm' => Reservation::toConfirmed()
         ]);
     })->name('homepage');
 

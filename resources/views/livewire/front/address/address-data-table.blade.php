@@ -20,19 +20,16 @@
             <x-slot:body>
                 @forelse($addresses as $address)
                     <x-datatable.tr>
-                        <x-datatable.td>{{ $address->adresse }}</x-datatable.td>
+                        <x-datatable.td>{{ $address->full_adresse }}</x-datatable.td>
                         <x-datatable.td>
-                            @if($address->is_actif)
-                                <span class="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">{{ __('Oui') }}</span>
-                                @else
-                                <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Non</span>
-                            @endif
+                            <x-front.badge :success="$address->is_actif" :danger="!$address->is_actif">
+                                {{ $address->is_actif ? __('Actif') : __('Non actif') }}
+                            </x-front.badge>
                         </x-datatable.td>
                         <x-datatable.td>
                             <div class="space-x-2">
                                 @can('edit address reservation')
                                     <x-button.circle primary icon="pencil" href="{{ route('front.address.edit', ['address' => $address->id]) }}"/>
-
 
                                     @if($address->is_actif)
                                         <x-button.circle warning icon="x" wire:click="toggleAddress({{ $address }})"/>
@@ -49,7 +46,11 @@
                     </x-datatable.tr>
                 @empty
                         <x-datatable.tr>
-                            <x-datatable.td colspan="2">{{ __('Aucune adresse') }}</x-datatable.td>
+                            <x-datatable.td colspan="3">
+                                <div class="text-center">
+                                    {{ __('Aucune adresse') }}
+                                </div>
+                            </x-datatable.td>
                         </x-datatable.tr>
                 @endforelse
             </x-slot:body>

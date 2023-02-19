@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Front\Passager;
 
 use App\Models\Passager;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -11,6 +12,7 @@ class PassagerDataTable extends Component
     use Actions;
 
     public int $perPage = 10;
+    public string $search = '';
 
     public function render()
     {
@@ -19,6 +21,9 @@ class PassagerDataTable extends Component
                 'user_id' => \Auth::user()->id,
                 'is_actif' => true
             ])
+                ->when($this->search, function (Builder $query, $search) {
+                    $query->where('nom', 'LIKE', '%'.$search.'%');
+                })
                 ->orderBy('nom', 'asc')
                 ->paginate($this->perPage)
         ])
@@ -67,7 +72,13 @@ class PassagerDataTable extends Component
                 ray()->exception($exception);
             }
 
-            // TODO Sentry
+            if (\App::environment(['prod', 'beta'])) {
+                \Log::channel('sentry')->error("Erreur pendant l'activation / désactivation d'un passager", [
+                    'exception' => $exception,
+                    'passager' => $passager,
+                    'user' => \Auth::user()
+                ]);
+            }
         }
 
     }

@@ -150,10 +150,6 @@
                     {{ $reservation->passager->user->telephone ?? 'Non renseigné.' }}
                 </x-simple-card.item>
 
-                <x-simple-card.item title="Portable">
-                    {{ $reservation->passager->user->portable ?? 'Non renseigné' }}
-                </x-simple-card.item>
-
                 <x-simple-card.item title="Adresses">
                     <ul role="list" class="border border-gray-200 rounded-md divide-y divide-gray-200">
                         @foreach($reservation->entreprise->adresseEntreprises()->get() as $adresse)

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\Reservation\AdressesReservationDataTable;
+use App\Models\AdresseReservation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -40,5 +42,47 @@ class AdresseReservationTest extends TestCase
         $this->withoutExceptionHandling();
         $response = $this->get(route('admin.adresse-reservation.create'));
         $response->assertStatus(200);
+    }
+
+    public function testSearchAdresseReservation()
+    {
+        \Livewire::test(AdressesReservationDataTable::class)
+            ->set('search', 'test')
+            ->assertHasNoErrors()
+            ->assertStatus(200);
+    }
+
+    public function testDisableAddressReservation()
+    {
+        $address = AdresseReservation::find(1);
+
+        \Livewire::test(AdressesReservationDataTable::class)
+            ->call('disableAddress', $address)
+            ->assertHasNoErrors()
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('adresse_reservations', [
+            'adresse' => $address->adresse,
+            'is_actif' => false
+        ]);
+    }
+
+    public function testEnableAddressReservation()
+    {
+        $address = AdresseReservation::factory([
+            'adresse' => 'test',
+            'user_id' => 1,
+            'is_actif' => false
+        ])->create();
+
+        \Livewire::test(AdressesReservationDataTable::class)
+            ->call('enableAddress', $address)
+            ->assertHasNoErrors()
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('adresse_reservations', [
+            'adresse' => 'test',
+            'is_actif' => true
+        ]);
     }
 }
