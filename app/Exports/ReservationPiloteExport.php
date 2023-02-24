@@ -147,21 +147,24 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
         // Styles de la liste réservations
         for ($i = $this->indexDepart; $i <= $this->reservations->count() + $this->indexDepart; $i++) {
+            $styles[$i] = [
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => Color::COLOR_BLACK]
+                    ]
+                ]
+            ];
+
             if ($i % 2 == 0) {
                 $styles[$i] = [
                     'fill' => [
                         'fillType' => Fill::FILL_SOLID,
                         'startColor' => ['argb' => 'FFE0E0E0'],
-                    ],
-                    'alignment' => [
-                        'horizontal' => Alignment::HORIZONTAL_CENTER,
-                        'vertical' => Alignment::VERTICAL_CENTER,
-                    ],
-                    'borders' => [
-                        'allBorders' => [
-                            'borderStyle' => Border::BORDER_THIN,
-                            'color' => ['argb' => Color::COLOR_BLACK]
-                        ]
                     ]
                 ];
             }
@@ -225,7 +228,6 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             AfterSheet::class => function(AfterSheet $sheet) {
                 // Settings
                 $sheet->getDelegate()->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
-                $sheet->getSheet()->getProtection()->setSheet(true);
 
                 // Header
                 $sheet->getSheet()->getCell('E' . 9)
