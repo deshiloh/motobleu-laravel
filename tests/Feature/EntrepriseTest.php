@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Livewire\Entreprise\EntrepriseForm;
 use App\Http\Livewire\Entreprise\EntreprisesDataTable;
+use App\Http\Livewire\Entreprise\UsersEntrepriseDataTable;
 use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -108,5 +109,29 @@ class EntrepriseTest extends TestCase
             'nom' => 'test',
             'is_actif' => true
         ]);
+    }
+
+    public function testAttachUserInEntreprise()
+    {
+        $entrepriseSelected = Entreprise::find(1);
+        $userSelected = User::find(10);
+
+        Livewire::test(UsersEntrepriseDataTable::class, ['entreprise' => $entrepriseSelected])
+            ->set('userId', $userSelected->id)
+            ->call('attach')
+            ->assertStatus(200)
+            ->assertHasNoErrors();
+    }
+
+    public function testDettachUserInEntreprise()
+    {
+        $entrepriseSelected = Entreprise::find(1);
+        $userSelected = User::find(10);
+
+        Livewire::test(UsersEntrepriseDataTable::class, ['entreprise' => $entrepriseSelected])
+            ->set('userId', $userSelected->id)
+            ->call('detach')
+            ->assertStatus(200)
+            ->assertHasNoErrors();
     }
 }

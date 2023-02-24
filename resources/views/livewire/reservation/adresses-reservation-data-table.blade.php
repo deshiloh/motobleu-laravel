@@ -18,6 +18,7 @@
                 <x-datatable.th>Adresse</x-datatable.th>
                 <x-datatable.th>Code postal</x-datatable.th>
                 <x-datatable.th>Ville</x-datatable.th>
+                <x-datatable.th>Assistante</x-datatable.th>
                 <x-datatable.th>État</x-datatable.th>
                 <x-datatable.th>Actions</x-datatable.th>
             </tr>
@@ -28,6 +29,9 @@
                     <x-datatable.td>{{ $address->adresse }}</x-datatable.td>
                     <x-datatable.td>{{ $address->code_postal }}</x-datatable.td>
                     <x-datatable.td>{{ $address->ville }}</x-datatable.td>
+                    <x-datatable.td>
+                        {{ $address->user->full_name }}
+                    </x-datatable.td>
                     <x-datatable.td>
                         @if(!$address->is_deleted)
                             <x-front.badge :success="$address->is_actif" :danger="!$address->is_actif">

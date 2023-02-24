@@ -15,7 +15,7 @@
     <div class="space-y-5">
         <x-bloc-content>
             <div class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                Responsable / Directeur : {{ $entreprise->responsable_name }}
+                Nom/prénom du responsable : {{ $entreprise->responsable_name }}
             </div>
         </x-bloc-content>
         <div class="px-4">

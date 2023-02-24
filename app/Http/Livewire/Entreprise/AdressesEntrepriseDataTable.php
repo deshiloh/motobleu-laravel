@@ -12,9 +12,6 @@ use Livewire\WithPagination;
 
 class AdressesEntrepriseDataTable extends Component
 {
-    use WithPagination;
-
-    public int $perPage = 15;
     public Entreprise $entreprise;
 
     /**

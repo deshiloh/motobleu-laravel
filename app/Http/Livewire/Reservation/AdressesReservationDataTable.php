@@ -24,6 +24,7 @@ class AdressesReservationDataTable extends Component
             'adresses' => AdresseReservation::when($this->search, function (Builder $query, $search) {
                 $query->where('adresse', 'LIKE', '%'.$search.'%');
             })
+                ->with('user')
                 ->orderBy('adresse')
                 ->paginate($this->perPage)
         ]);
