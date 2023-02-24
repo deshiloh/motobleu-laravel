@@ -27,6 +27,9 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, CanResetPassword, HasRoles;
 
     protected $appends = ['full_name'];
+    protected $with = [
+        'entreprises'
+    ];
 
     /**
      * The attributes that are mass assignable.

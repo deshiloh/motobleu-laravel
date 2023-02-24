@@ -17,6 +17,7 @@
             <tr>
                 <x-datatable.th sortable wire:click="sortBy('nom')" :direction="$sortDirection">Nom</x-datatable.th>
                 <x-datatable.th>Secrétaire</x-datatable.th>
+                <x-datatable.th>Entreprises</x-datatable.th>
                 <x-datatable.th>État</x-datatable.th>
                 <x-datatable.th>Actions</x-datatable.th>
             </tr>
@@ -25,7 +26,14 @@
             @forelse($passagers as $passager)
                 <x-datatable.tr>
                     <x-datatable.td>{{ $passager->nom }}</x-datatable.td>
-                    <x-datatable.td>{{ $passager->user->full_name }}</x-datatable.td>
+                    <x-datatable.td>
+                        <a href="{{ route('admin.accounts.edit', ['account' => $passager->user->id]) }}" class="text-motobleu">
+                            {{ $passager->user->full_name }}
+                        </a>
+                    </x-datatable.td>
+                    <x-datatable.td>
+                        {{ implode(', ', $passager->user->entreprises()->pluck('nom')->toArray()) }}
+                    </x-datatable.td>
                     <x-datatable.td>
                         <x-front.badge :success="$passager->is_actif" :danger="!$passager->is_actif">
                             {{ $passager->is_actif ? "Actif" : "Non actif" }}
