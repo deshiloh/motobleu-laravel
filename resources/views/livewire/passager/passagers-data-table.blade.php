@@ -1,5 +1,17 @@
 <div>
-    <x-datatable.search wire:model="search" />
+    <div class="grid grid-cols-1 md:grid-cols-6 gap-3 mb-4">
+        <div class="col-span-2">
+            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="search" wire:model="search"/>
+        </div>
+        <div>
+            <x-native-select
+                label="Item par page"
+                :options="['20', '50', '100', '150', '200']"
+                wire:model="perPage"
+                class="col-span-1"
+            />
+        </div>
+    </div>
     <x-datatable>
         <x-slot name="headers">
             <tr>

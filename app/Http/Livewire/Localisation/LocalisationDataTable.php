@@ -14,7 +14,7 @@ class LocalisationDataTable extends Component
 {
     use WithPagination, WithSorting;
 
-    public int $perPage = 10;
+    public int $perPage = 20;
     public string $sortField = 'nom';
     public string $search = '';
 

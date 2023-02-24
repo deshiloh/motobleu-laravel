@@ -16,10 +16,12 @@ class UsersDataTable extends Component
 {
     use WithPagination, WithSorting, Actions;
 
-    public int $perPage = 6;
+    public int $perPage = 20;
     public string $search = '';
     public string $sortField = 'nom';
     public ?int $selectedEntreprise = null;
+
+
 
     /**
      * @return Application|Factory|View

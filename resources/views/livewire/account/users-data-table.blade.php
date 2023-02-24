@@ -10,6 +10,11 @@
             wire:model="selectedEntreprise"
             class="md:col-span-1"
         />
+        <x-native-select
+            label="Item par page"
+            :options="['20', '50', '100', '150', '200']"
+            wire:model="perPage"
+        />
     </div>
 
     <x-datatable>
