@@ -43,13 +43,7 @@
                 </x-datatable.tr>
             @endforeach
         </x-slot>
-        <x-slot name="tfoot">
-            <tr>
-                <x-datatable.td colspan="5">
-                    Pagination
-                </x-datatable.td>
-            </tr>
-        </x-slot>
     </x-datatable>
+
     <x-front.pagination :pagination="$users" :per-page="10" />
 </div>
