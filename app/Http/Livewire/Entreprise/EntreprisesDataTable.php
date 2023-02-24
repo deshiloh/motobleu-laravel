@@ -18,7 +18,7 @@ class EntreprisesDataTable extends Component
 
     public string $search = '';
     public string $sortField = 'nom';
-    public int $perPage = 8;
+    public int $perPage = 20;
 
     /**
      * @return Application|Factory|View

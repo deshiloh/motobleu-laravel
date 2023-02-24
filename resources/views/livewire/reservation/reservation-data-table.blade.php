@@ -26,12 +26,11 @@
             <x-input wire:model="search" label="Recherche" placeholder="Tapez votre recherche..." icon="search"/>
         </div>
         <div>
-            <x-select
-                label="Pagination"
-                placeholder="Select many statuses"
-                :options="$listPerPage"
+            <x-native-select
+                label="Item par page"
+                :options="['20', '50', '100', '150', '200']"
                 wire:model="perPage"
-                :clearable="false"
+                class="col-span-1"
             />
         </div>
     </div>

@@ -16,7 +16,7 @@ class AdressesReservationDataTable extends Component
     use WithPagination, Actions;
 
     public string $search = '';
-    public int $perPage = 10;
+    public int $perPage = 20;
 
     public function render(): Factory|View|Application
     {

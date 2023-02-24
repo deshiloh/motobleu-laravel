@@ -40,7 +40,7 @@
                                </div>
 
                                <div class="col-span-6 sm:col-span-6 lg:col-span-3">
-                                   <x-input label="{{ __('Code postale') }} *" wire:model.defer="user.code_postal" />
+                                   <x-input label="{{ __('Code postal') }} *" wire:model.defer="user.code_postal" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-3 lg:col-span-3">
