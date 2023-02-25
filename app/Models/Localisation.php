@@ -16,6 +16,10 @@ class Localisation extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'is_actif' => "boolean"
+    ];
+
     public function fullAdresse(): Attribute
     {
         return Attribute::make(

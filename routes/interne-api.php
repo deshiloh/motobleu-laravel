@@ -44,6 +44,7 @@ Route::get('/pickup_place', function (Request $request) {
     return Localisation::query()
         ->select('id', 'nom')
         ->orderBy('nom')
+        ->where('is_actif', true)
         ->when($search, function (Builder $query, $search) {
             $query->where('nom', 'like', "%$search%");
         })

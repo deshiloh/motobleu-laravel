@@ -10,10 +10,11 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
+use WireUi\Traits\Actions;
 
 class LocalisationDataTable extends Component
 {
-    use WithPagination, WithSorting;
+    use WithPagination, WithSorting, Actions;
 
     public int $perPage = 20;
     public string $sortField = 'nom';
@@ -31,5 +32,16 @@ class LocalisationDataTable extends Component
                 ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate($this->perPage)
         ]);
+    }
+
+    public function toggleStatus(Localisation $localisation)
+    {
+        $localisation->is_actif = !$localisation->is_actif;
+        $localisation->update();
+
+        $this->notification()->success(
+            "Opération réussite",
+            $localisation->is_actif ? "Localisation activée." : "Localisation désactivée"
+        );
     }
 }
