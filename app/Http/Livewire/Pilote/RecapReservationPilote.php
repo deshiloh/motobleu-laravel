@@ -80,6 +80,26 @@ class RecapReservationPilote extends Component
                 $validator->errors()->add(
                     'encompte', 'Encompte et encaisse ne peuvent pas avoir de valeurs en même temps'
                 );
+                return false;
+            }
+
+            $totalWithEncaisse = $datas['majoration'] + $datas['encaisse'];
+            $totalWithEncompte = $datas['majoration'] + $datas['encompte'];
+
+            if ($datas['encaisse'] > 0 && $datas['tarif'] != $totalWithEncaisse) {
+                $validator->errors()->add(
+                    'encaisse', 'Le total encaisse et majoration ne corresponds pas au tarif'
+                );
+
+                return false;
+            }
+
+            if ($datas['encompte'] > 0 && $datas['tarif'] != $totalWithEncompte) {
+                $validator->errors()->add(
+                    'encaisse', 'Le total en compte et majoration ne corresponds pas au tarif'
+                );
+
+                return false;
             }
         });
 
