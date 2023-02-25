@@ -66,13 +66,7 @@ Cordialement.";
         try {
             $this->reservation->statut = ReservationStatus::Confirmed;
 
-            $this->reservation->pilote()->associate(
-                Pilote::findOrFail($this->reservation->pilote_id)
-            );
-
-            $this->reservation->update([
-                'statut' => ReservationStatus::Confirmed,
-            ]);
+            $this->reservation->update();
 
             \Mail::to($this->reservation->pilote->email)
                 ->send(new PiloteAttached($this->reservation));

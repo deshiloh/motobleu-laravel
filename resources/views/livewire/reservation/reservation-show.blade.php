@@ -111,7 +111,7 @@
                         </div>
                     </div>
                 </div>
-                @if($reservation->pilote()->exists())
+                @if($reservation->pilote()->exists() && $reservation->statut >= \App\Enum\ReservationStatus::Confirmed)
                     <x-button label="Mettre à jour le pilote" primary sm wire:loading.attr="disabled" wire:click="updatePilote" spinner="updatePilote"/>
                 @else
                     <x-button label="Valider et envoyer le message" primary sm wire:click="confirmedAction" spinner="confirmedAction"/>

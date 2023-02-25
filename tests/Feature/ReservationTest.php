@@ -611,12 +611,17 @@ class ReservationTest extends TestCase
 
         $reservation = Reservation::find(1);
         $pilote = Pilote::find(1);
+        
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
             ->set('reservation.pilote_id', $pilote->id)
             ->call('confirmedAction')
             ->assertHasNoErrors()
         ;
-        $this->assertTrue(Reservation::where('statut', ReservationStatus::Confirmed)->exists());
+
+        $this->assertDatabaseHas('reservations', [
+            'id' => $reservation->id,
+            'statut' => ReservationStatus::Confirmed
+        ]);
 
         \Mail::assertSent(PiloteAttached::class);
     }
