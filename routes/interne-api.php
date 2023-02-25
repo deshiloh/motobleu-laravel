@@ -62,10 +62,7 @@ Route::get('/adresses', function (Request $request) {
     $selected = $request->input('selected');
     $user = $request->input('user', false);
 
-    return AdresseReservation::query()
-        ->select('id', 'adresse')
-        ->orderBy('adresse')
-        ->when($user, function(Builder $query, $search) {
+    return AdresseReservation::when($user, function(Builder $query, $search) {
             $query->where('user_id', $search);
         })
         ->when($search, function (Builder $query, $search) {
@@ -77,6 +74,9 @@ Route::get('/adresses', function (Request $request) {
                 $query->whereIn('id', $selected);
             }
         )
+        ->where('is_actif', true)
+        ->where('is_deleted', false)
+        ->orderBy('adresse')
         ->get();
 })->name('api.adresses');
 
@@ -84,12 +84,16 @@ Route::get('/adresses', function (Request $request) {
 Route::get('/user-entreprise', function (Request $request) {
     $search = $request->input('search');
     $selected = $request->input('selected');
+    $notIn = $request->input('notIn', false);
 
     return User::query()
         ->select('users.*')
         ->orderBy('users.nom')
         ->when($search, function (Builder $query, $search) {
             $query->where('users.nom', 'like', "%$search%");
+        })
+        ->when($notIn, function (Builder $query, $notIn) {
+            $query->whereNotIn('id', $notIn);
         })
         ->when(
             $selected,
@@ -109,6 +113,7 @@ Route::get('/entreprises_users', function (Request $request) {
         ->select('entreprises.id', 'entreprises.nom')
         ->join('entreprise_user', 'entreprise_id', '=', 'entreprises.id')
         ->where('entreprise_user.user_id', $userId)
+        ->where('is_actif', true)
         ->orderBy('entreprises.nom')
         ->when(
             $search, function (Builder $query, $search) {
@@ -136,12 +141,12 @@ Route::get('/users', function (Request $request){
         ->orderBy('nom')
         ->when(
             $search, function (Builder $query, $search) {
-            $query
-                ->where('nom', 'like', "%$search%")
-                ->orWhere('email', 'like', "%$search%")
-                ->orWhere('prenom', 'like', "%$search%")
-            ;
-        }
+            $query->where(function (Builder $query) use ($search) {
+                $query->where('nom', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('prenom', 'like', "%$search%");
+                });
+            }
         )
         ->when(
             $selected,
@@ -152,6 +157,7 @@ Route::get('/users', function (Request $request){
                 $query->limit(10);
             }
         )
+        ->where('is_actif', true)
         ->get();
 })->name('api.users');
 
@@ -208,13 +214,14 @@ Route::get('/pilotes', function (Request $request) {
     $selected = $request->input('selected');
 
     return Pilote::query()
-        ->select('id', 'nom', 'email', 'prenom')
+        ->select('id', 'nom', 'email', 'prenom', 'is_actif')
         ->orderBy('nom')
-        ->when(
-            $search, function (Builder $query, $search) {
-            $query->where('nom', 'like', "%$search%");
-            $query->orWhere('prenom', 'like', "%$search%");
-        }
+        ->when($search, function (Builder $query, $search) {
+                $query->where(function (Builder $query) use ($search) {
+                    $query->where('nom', 'like', "%$search%");
+                    $query->orWhere('prenom', 'like', "%$search%");
+                });
+            }
         )
         ->when(
             $selected,
@@ -225,6 +232,7 @@ Route::get('/pilotes', function (Request $request) {
                 $query->limit(10);
             }
         )
+        ->where('is_actif', true)
         ->get();
 })->name('api.pilotes');
 
@@ -236,6 +244,7 @@ Route::get('/entreprises', function (Request $request) {
     return Entreprise::query()
         ->select('id', 'nom')
         ->orderBy('nom')
+        ->where('is_actif', true)
         ->when($without, function (Builder $query, $excludes) {
             $query->whereNotIn('id', $excludes);
         })

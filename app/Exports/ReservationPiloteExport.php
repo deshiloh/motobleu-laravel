@@ -97,7 +97,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             'Passager',
             'Départ',
             'Arrivée',
-            'Tarif (€)',
+            'Tarif',
             'Commentaire',
             'Majoration',
             'Encaisse',
@@ -147,21 +147,24 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
         // Styles de la liste réservations
         for ($i = $this->indexDepart; $i <= $this->reservations->count() + $this->indexDepart; $i++) {
+            $styles[$i] = [
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => Color::COLOR_BLACK]
+                    ]
+                ]
+            ];
+
             if ($i % 2 == 0) {
                 $styles[$i] = [
                     'fill' => [
                         'fillType' => Fill::FILL_SOLID,
                         'startColor' => ['argb' => 'FFE0E0E0'],
-                    ],
-                    'alignment' => [
-                        'horizontal' => Alignment::HORIZONTAL_CENTER,
-                        'vertical' => Alignment::VERTICAL_CENTER,
-                    ],
-                    'borders' => [
-                        'allBorders' => [
-                            'borderStyle' => Border::BORDER_THIN,
-                            'color' => ['argb' => Color::COLOR_BLACK]
-                        ]
                     ]
                 ];
             }
@@ -213,8 +216,9 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
         $tarifs = sprintf('F%s:F%s', $this->indexDepart, $this->indexDepart + $this->reservations->count());
         return [
             $tarifs => NumberFormat::FORMAT_CURRENCY_EUR_SIMPLE,
-            $this->encompteColumns() => NumberFormat::FORMAT_NUMBER_0,
-            $this->encaisseColumns() => NumberFormat::FORMAT_NUMBER_0,
+            $this->majorationColumns() => NumberFormat::FORMAT_CURRENCY_EUR_SIMPLE,
+            $this->encompteColumns() => NumberFormat::FORMAT_CURRENCY_EUR_SIMPLE,
+            $this->encaisseColumns() => NumberFormat::FORMAT_CURRENCY_EUR_SIMPLE,
         ];
     }
 
@@ -224,7 +228,6 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             AfterSheet::class => function(AfterSheet $sheet) {
                 // Settings
                 $sheet->getDelegate()->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
-                $sheet->getSheet()->getProtection()->setSheet(true);
 
                 // Header
                 $sheet->getSheet()->getCell('E' . 9)
@@ -241,7 +244,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                     ->setValue(
                         sprintf(
                             '%s / %s / %s',
-                            $this->pilote->nom,
+                            $this->pilote->full_name,
                             $this->pilote->email,
                             $currentDate->isoFormat('MMMM') . ' ' . $currentDate->format('Y')
                         )
@@ -272,7 +275,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 // CA Cell
                 $index = $index + 1;
                 $sheet->getSheet()->getCell('A' . $index)->setValue(
-                    'Chiffre d\'affaire (en €)'
+                    'Chiffre d\'affaire'
                 );
                 $caValueCell = $sheet->getSheet()->getCell('A' . $index + 1);
                 $caValueCell->setValue(
@@ -288,7 +291,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 // COM Cell
                 $comCell = 'C' . $index + 1;
                 $sheet->getSheet()->getCell('C' . $index)->setValue(
-                    'COM 15% (en €)'
+                    'COM 15%'
                 );
                 $sheet->getSheet()->getCell('C' . $index + 1)->setValue(
                     '=(A'. $index + 1 .') * 0.15'
@@ -296,7 +299,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
                 // Encaisse Cell
                 $sheet->getSheet()->getCell('E' . $index)->setValue(
-                    'ENCAISSE (en €)'
+                    'ENCAISSE'
                 );
                 $encaisseValue = $sheet->getSheet()->getCell('E' . $index + 1);
                 $encaisseValue->setValue(
@@ -309,7 +312,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 // Encompte Cell
                 $encompteCell = 'G' . $index + 1;
                 $sheet->getSheet()->getCell('G' . $index)->setValue(
-                    'EN COMPTE (en €)'
+                    'EN COMPTE'
                 );
                 $encompteValue = $sheet->getSheet()->getCell('G' . $index + 1);
                 $encompteValue->setValue(
@@ -321,7 +324,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
                 // Total Cell
                 $sheet->getSheet()->getCell('I' . $index)->setValue(
-                    'TOTAL (en €)'
+                    'TOTAL'
                 );
                 $totalValue = $sheet->getSheet()->getCell('I' . $index + 1);
                 $totalValue->setValue(
@@ -364,6 +367,14 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 'vertical' => Alignment::VERTICAL_CENTER,
             ],
         ];
+    }
+
+    private function majorationColumns(): string
+    {
+        return sprintf('H%s:H%s',
+            $this->indexDepart,
+            $this->indexDepart + $this->reservations->count()
+        );
     }
 
     private function encompteColumns(): string

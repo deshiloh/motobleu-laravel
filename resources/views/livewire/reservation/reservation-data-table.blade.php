@@ -21,8 +21,20 @@
         </a>
     @endif
 
-    <x-datatable.search wire:model="search" />
-    <x-datatable>
+    <div class="grid grid-cols-4 gap-6 pb-5">
+        <div>
+            <x-input wire:model="search" label="Recherche" placeholder="Tapez votre recherche..." icon="search"/>
+        </div>
+        <div>
+            <x-native-select
+                label="Item par page"
+                :options="['20', '50', '100', '150', '200']"
+                wire:model="perPage"
+                class="col-span-1"
+            />
+        </div>
+    </div>
+    <x-datatable wire:loading.class="opacity-25">
         <x-slot name="headers">
             <tr>
                 <x-datatable.th sortable wire:click="sortBy('id')" :direction="$sortDirection">Référence</x-datatable.th>
@@ -58,10 +70,11 @@
                                 @break
                             @case(\App\Enum\ReservationStatus::CanceledToPay)
                                 <x-front.badge danger>
-                                    Annulée à payer
+                                    Annulée facturable
                                 </x-front.badge>
                                 @break
                             @case(\App\Enum\ReservationStatus::Confirmed)
+                            @case(\App\Enum\ReservationStatus::Billed)
                                 <x-front.badge success>
                                     Confirmée
                                 </x-front.badge>

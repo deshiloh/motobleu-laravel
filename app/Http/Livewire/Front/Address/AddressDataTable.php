@@ -27,6 +27,7 @@ class AddressDataTable extends Component
                 ->when($this->search, function (Builder $query, $search) {
                     $query->where('adresse', 'like', '%' . $search . '%');
                 })
+                ->orderBy('adresse')
                 ->paginate($this->perPage)
         ])
             ->layout('components.front-layout');
@@ -53,10 +54,17 @@ class AddressDataTable extends Component
                 title: "Erreur",
                 description: "Une erreur est survenue pendant l'opération"
             );
+
             if (App::environment(['local'])) {
                 ray()->exception($exception);
             }
-            // TODO Sentry
+
+            if (App::environment(['beta', 'prod'])) {
+                \Log::channel('sentry')->error("Erreur pendant l'activation ou désactivation d'une adresse", [
+                    'exception' => $exception,
+                    'adresse' => $adresseReservation
+                ]);
+            }
         }
     }
 

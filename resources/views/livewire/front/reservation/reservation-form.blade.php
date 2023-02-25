@@ -98,7 +98,7 @@
                 placeholder="{{ __('Choisir une date') }}"
                 display-format="DD/MM/YYYY HH:mm"
                 time-format="24"
-                interval="5"
+                interval="1"
                 wire:model="reservation.pickup_date"
                 :without-timezone="true"
                 min="{{ \Carbon\Carbon::now() }}"
@@ -123,7 +123,7 @@
                         <x-select
                             wire:key="from_place"
                             label="{{ __('Lieu') }}"
-                            placeholder="{{ __('Sélectionner un lieu existant') }}"
+                            placeholder="{{ __('Aéroport ou gares') }}"
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
@@ -141,7 +141,7 @@
                         label="{{ __('Adresse') }}"
                         placeholder="{{ __('Sélectionner une adresse') }}"
                         :async-data="route('api.adresses', ['user' => Auth::user()->id])"
-                        option-label="adresse"
+                        option-label="full_adresse"
                         option-value="id"
                         wire:model="reservation.adresse_reservation_from_id"
                     />
@@ -177,7 +177,7 @@
                         <x-select
                             wire:key="to_place"
                             label="{{ __('Lieu') }}"
-                            placeholder="{{ __('Sélectionner un lieu existant') }}"
+                            placeholder="{{ __('Aéroport ou gares') }}"
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
@@ -197,7 +197,7 @@
                         label="{{ __('Adresse') }}"
                         placeholder="{{ __('Sélectionner une adresse') }}"
                         :async-data="route('api.adresses', ['user' => Auth::user()->id])"
-                        option-label="adresse"
+                        option-label="full_adresse"
                         option-value="id"
                         wire:model="reservation.adresse_reservation_to_id"
                     />
@@ -226,7 +226,7 @@
                     placeholder="{{ __('Choisir une date') }}"
                     display-format="DD/MM/YYYY HH:mm"
                     time-format="24"
-                    interval="5"
+                    interval="1"
                     wire:model="reservation_back.pickup_date"
                     :without-timezone="true"
                     min="{{ \Carbon\Carbon::now() }}"
@@ -250,7 +250,7 @@
                         <x-select
                             wire:key="back_from_place"
                             label="{{ __('Lieu') }}"
-                            placeholder="{{ __('Sélectionner un lieu existant') }}"
+                            placeholder="{{ __('Aéroport ou gares') }}"
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
@@ -268,7 +268,7 @@
                             label="{{ __('Adresse') }}"
                             placeholder="{{ __('Sélectionner une adresse') }}"
                             :async-data="route('api.adresses', ['user' => Auth::user()->id])"
-                            option-label="adresse"
+                            option-label="full_adresse"
                             option-value="id"
                             wire:model="reservation_back.adresse_reservation_from_id"
                         />
@@ -302,7 +302,7 @@
                         <x-select
                             wire:key="back_to_place"
                             label="{{ __('Lieu') }}"
-                            placeholder="{{ __('Sélectionner un lieu existant') }}"
+                            placeholder="{{ __('Aéroport ou gares') }}"
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
@@ -320,7 +320,7 @@
                             label="{{ __('Adresse') }}"
                             placeholder="{{ __('Sélectionner une adresse') }}"
                             :async-data="route('api.adresses', ['user' => Auth::user()->id])"
-                            option-label="adresse"
+                            option-label="full_adresse"
                             option-value="id"
                             wire:model.defer="reservation_back.adresse_reservation_to_id"
                         />

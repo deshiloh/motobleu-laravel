@@ -1,6 +1,6 @@
 <div>
     <div class="pb-3 border-b border-gray-200 dark:border-gray-600 sm:flex sm:items-center sm:justify-between mb-4">
-        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Comptes rattachés à l'entreprise</h3>
+        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Comptes assistantes rattachés à l'entreprise</h3>
         <p class="text-white text-sm">Cliquez sur le bouton rouge pour détacher un utilisateur de l'entreprise.</p>
     </div>
     <div class="pb-3">
@@ -10,7 +10,7 @@
                     wire:key="user"
                     label="Comptes"
                     placeholder="Rechercher un compte"
-                    :async-data="route('api.user_in_entreprise')"
+                    :async-data="route('api.user_in_entreprise', ['notIn' => $exclude])"
                     option-label="full_name"
                     option-value="id"
                     wire:model="userId"
@@ -43,13 +43,7 @@
                 </x-datatable.tr>
             @endforeach
         </x-slot>
-        <x-slot name="tfoot">
-            <tr>
-                <x-datatable.td colspan="5">
-                    Pagination
-                </x-datatable.td>
-            </tr>
-        </x-slot>
     </x-datatable>
+
     <x-front.pagination :pagination="$users" :per-page="10" />
 </div>

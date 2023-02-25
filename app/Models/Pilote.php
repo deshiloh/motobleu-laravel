@@ -12,7 +12,7 @@ use Laravel\Scout\Searchable;
  */
 class Pilote extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -28,11 +28,16 @@ class Pilote extends Model
         'adresse',
         'adresse_complement',
         'code_postal',
+        'is_actif',
         'ville',
     ];
 
     protected $appends = [
         'full_name'
+    ];
+
+    protected $casts = [
+        'is_actif' => 'boolean'
     ];
 
     /**
@@ -41,21 +46,50 @@ class Pilote extends Model
     public function fullName(): Attribute
     {
         return Attribute::make(
-            get: function ($value) {
-                return implode(' ', [$this->nom, $this->prenom]);
-            },
-            set: function ($value) {
-                return $value;
+            get: function ($value, $attributes) {
+                $att = [];
+
+                if (isset($attributes['nom'])) {
+                    $att[] = $attributes['nom'];
+                }
+
+                if (isset($attributes['prenom'])) {
+                    $att[] = $attributes['prenom'];
+                }
+
+                return implode(' ', $att);
             }
         );
     }
 
-    public function toSearchableArray(): array
+    /**
+     * Permet d'afficher l'adresse en entière
+     * @return Attribute
+     */
+    public function fullAdresse(): Attribute
     {
-        return [
-            'nom' => $this->nom,
-            'prenom' => $this->prenom,
-            'email' => $this->email,
-        ];
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $attr = [];
+
+                if (isset($attributes['adresse'])) {
+                    $attr[] = $attributes['adresse'];
+                }
+
+                if (isset($attributes['adresse_complement'])) {
+                    $attr[] = $attributes['adresse_complement'];
+                }
+
+                if (isset($attributes['code_postal'])) {
+                    $attr[] = $attributes['code_postal'];
+                }
+
+                if (isset($attributes['ville'])) {
+                    $attr[] = $attributes['ville'];
+                }
+
+                return implode(' ', $attr);
+            }
+        );
     }
 }

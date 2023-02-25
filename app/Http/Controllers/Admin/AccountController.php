@@ -29,23 +29,6 @@ class AccountController extends Controller
      */
     public function index()
     {
-        return view('admin.account.index', [
-            'users' => User::all()
-        ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param User $account
-     * @return RedirectResponse
-     */
-    public function destroy(User $account)
-    {
-        $account->is_actif = false;
-        $account->save();
-        return redirect()
-            ->route('admin.accounts.index')
-            ->with('success', "L'utilisateur a bien été supprimé.");
+        return view('admin.account.index');
     }
 }

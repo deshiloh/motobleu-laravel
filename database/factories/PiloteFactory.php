@@ -25,6 +25,7 @@ class PiloteFactory extends Factory
             'adresse_complement' => $this->faker->secondaryAddress,
             'code_postal' => $this->faker->postcode,
             'ville' => $this->faker->city,
+            'is_actif' => true,
             'entreprise' => $this->faker->company
         ];
     }

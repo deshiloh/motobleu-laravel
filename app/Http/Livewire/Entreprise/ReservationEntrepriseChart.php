@@ -23,7 +23,7 @@ class ReservationEntrepriseChart extends Component
 
     private function getDatas(): array
     {
-        $period = now()->subMonths(6)->monthsUntil(now());
+        $period = \Carbon\CarbonPeriod::create(\Carbon\Carbon::now()->startOfYear(), '1 month', \Carbon\Carbon::now()->endOfMonth());
         $data = [];
 
         foreach ($period as $date)

@@ -2,15 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\Pilote\PiloteDataTable;
 use App\Http\Livewire\Pilote\PiloteForm;
 use App\Http\Livewire\Pilote\RecapReservationPilote;
 use App\Models\Pilote;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -72,7 +69,6 @@ class PiloteTest extends TestCase
             ->assertHasErrors([
                 'pilote.nom' => 'required',
                 'pilote.prenom' => 'required',
-                'pilote.telephone' => 'required',
                 'pilote.email' => 'required',
             ]);
     }
@@ -122,13 +118,35 @@ class PiloteTest extends TestCase
         ]);
     }
 
-    public function testCanDeletePilote()
+    public function testDisablePilote()
     {
-        $pilote = Pilote::factory()->create();
-        $response = $this->delete(route('admin.pilotes.destroy', ['pilote' => $pilote->id]));
+        $pilote = Pilote::find(1);
 
-        $response->assertStatus(302);
-        $this->assertModelMissing($pilote);
+        Livewire::test(PiloteDataTable::class)
+            ->call('disablePilote', $pilote)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('pilotes', [
+            'nom' => $pilote->nom,
+            'is_actif' => false
+        ]);
+    }
+
+    public function testEnablePilote()
+    {
+        $pilote = Pilote::factory([
+            'nom' => 'test',
+            'is_actif' => false
+        ])->create();
+
+        Livewire::test(PiloteDataTable::class)
+            ->call('enablePilote', $pilote)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('pilotes', [
+            'nom' => 'test',
+            'is_actif' => true
+        ]);
     }
 
     public function testUpdateReservationPiloteWithEmptyTarif()
@@ -136,7 +154,10 @@ class PiloteTest extends TestCase
         $pilote = Pilote::find(1);
         Livewire::test(RecapReservationPilote::class, ['pilote' => $pilote])
             ->call('editReservation', [
-                'tarif' => ''
+                'tarif' => '',
+                'majoration' => '200',
+                'encaisse' => '0',
+                'encompte' => '200',
             ])
             ->assertDispatchedBrowserEvent('wireui:notification')
         ;

@@ -144,7 +144,7 @@
         </style>
     </head>
 
-    <body>
+    <body style="border-bottom: 1px solid black;">
         {{-- Header --}}
         @if($invoice->logo)
             <img src="{{ $invoice->getLogo() }}" alt="logo" height="80">
@@ -336,19 +336,19 @@
                         </td>
                     </tr>
                 @endif
-                @if($invoice->tax_rate)
-                    <tr>
-                        <td colspan="{{ $invoice->table_columns - 2 }}" class="border-0"></td>
-                        <td class="text-right pl-0">{{ __('invoice.tax_rate') }}</td>
-                        <td class="text-right pr-0">
-                            {{ $invoice->tax_rate }}%
-                        </td>
-                    </tr>
-                @endif
+{{--                @if($invoice->tax_rate)--}}
+{{--                    <tr>--}}
+{{--                        <td colspan="{{ $invoice->table_columns - 2 }}" class="border-0"></td>--}}
+{{--                        <td class="text-right pl-0">{{ __('invoice.tax_rate') }}</td>--}}
+{{--                        <td class="text-right pr-0">--}}
+{{--                            {{ $invoice->tax_rate }}%--}}
+{{--                        </td>--}}
+{{--                    </tr>--}}
+{{--                @endif--}}
                 @if($invoice->hasItemOrInvoiceTax())
                     <tr>
                         <td colspan="{{ $invoice->table_columns - 2 }}" class="border-0"></td>
-                        <td class="text-right pl-0">{{ __('invoice.total_taxes') }}</td>
+                        <td class="text-right pl-0">{{ __('invoice.total_taxes') }} ({{ $invoice->tax_rate }} %)</td>
                         <td class="text-right pr-0">
                             {{ $invoice->formatCurrency($invoice->total_taxes) }}
                         </td>
@@ -373,25 +373,34 @@
             </tbody>
         </table>
 
-        @if($invoice->notes)
-            <p>
+        <p style="height: 270px">
+            @if($invoice->notes)
                 {{ trans('invoice.notes') }}: <br> {!! $invoice->notes !!}
-            </p>
-        @endif
+            @endif
+        </p>
+        <table>
+            <tr>
+                <td>
+                    <p>
+                        MOTOBLEU <br>
+                        26 - 28 RUE MARIUS AUFAN 92300 LEVALLOIS PERRET <br>
+                        SIRET : 82472195500014 - TVA intracommunautaire : FR69824721955 Tél : +33647938617 - contact@motobleu-paris.com
+                    </p>
+                </td>
+                <td>
+                    <p style="margin-bottom: -5;">
+                        CONDITIONS DE PAIEMENT :
+                    </p>
+                    <ul>
+                        <li>Pas d'escompte si règlement anticipé.</li>
+                        <li>Toute somme non payée dans les 30 jours est augmentée du taux d'intérêt légal majoré de 7 points.</li>
+                        <li>Indemnité forfaitaire de recouvrement : 40 euros</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
 
-        <p>
-            MOTOBLEU <br>
-            26 - 28 RUE MARIUS AUFAN 92300 LEVALLOIS PERRET <br>
-            SIRET : 82472195500014 - TVA intracommunautaire : FR69824721955 Tél : +33647938617 - contact@motobleu-paris.com
-        </p>
-        <p style="margin-bottom: -5;">
-            CONDITIONS DE PAIEMENT :
-        </p>
-        <ul>
-            <li>Pas d'escompte si règlement anticipé.</li>
-            <li>Toute somme non payée dans les 30 jours est augmentée du taux d'intérêt légal majoré de 7 points.</li>
-            <li>Indemnité forfaitaire de recouvrement : 40 euros</li>
-        </ul>
+
         {{--<p>
             {{ trans('invoice.amount_in_words') }}: {{ $invoice->getTotalAmountInWords() }}
         </p>--}}

@@ -167,7 +167,7 @@ class ImportOldData extends Command
                     }
 
                 } catch (Exception $exception) {
-                    ray()->exception($exception);
+                    echo $exception->getMessage();
                 }
             });
         });

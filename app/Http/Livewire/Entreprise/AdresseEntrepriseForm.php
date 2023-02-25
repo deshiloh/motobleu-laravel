@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Entreprise;
 
+use App\Enum\AdresseEntrepriseTypeEnum;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use Illuminate\Support\Facades\App;
@@ -19,6 +20,10 @@ class AdresseEntrepriseForm extends Component
     {
         $this->entreprise = $entreprise;
         $this->adresseEntreprise = $adress;
+
+        if (!$this->adresseEntreprise->exists) {
+            $this->adresseEntreprise->type = AdresseEntrepriseTypeEnum::FACTURATION->value;
+        }
     }
 
     public function render()
@@ -27,7 +32,7 @@ class AdresseEntrepriseForm extends Component
             ->layout('components.layout');
     }
 
-    protected function getRules()
+    protected function getRules(): array
     {
         return [
             'adresseEntreprise.nom' => 'required',

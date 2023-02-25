@@ -1,21 +1,23 @@
 <div>
     <x-header>
-        Formulaire de réservation
+        Formulaire de réservation {{ $reservation->reference ?? '' }}
     </x-header>
     <div class="container mx-auto sm:px-6 lg:px-8">
         <x-errors class="mb-3"/>
     </div>
     <form wire:submit.prevent="saveReservation" wire:loading.class="opacity-25" wire:key="form_reservation">
-        <x-bloc-content>
-            <div class="flex flex-col space-y-3">
-                <div class="dark:text-white block">
-                    Réservation avec retour :
+        @if(!$reservation->exists)
+            <x-bloc-content>
+                <div class="flex flex-col space-y-3">
+                    <div class="dark:text-white block">
+                        Réservation avec retour :
+                    </div>
+                    <div>
+                        <x-toggle wire:model="hasBack" left-label="Non" label="Oui" md/>
+                    </div>
                 </div>
-                <div>
-                    <x-toggle wire:model="hasBack" left-label="Non" label="Oui" md/>
-                </div>
-            </div>
-        </x-bloc-content>
+            </x-bloc-content>
+        @endif
         <x-bloc-content>
             <x-input label="Numéro de commande" class="mb-3" wire:model.defer="reservation.commande"/>
             <div class="space-y-3">
@@ -102,10 +104,9 @@
                 placeholder="Choisir une date"
                 display-format="DD/MM/YYYY HH:mm"
                 time-format="24"
-                interval="5"
+                interval="1"
                 wire:model="reservation.pickup_date"
                 :without-timezone="true"
-                min="{{ \Carbon\Carbon::now() }}"
             />
         </x-bloc-content>
 
@@ -128,7 +129,7 @@
                         <x-select
                             wire:key="from_place"
                             label="Lieu"
-                            placeholder="Sélectionner un lieu existant"
+                            placeholder="Aéroport ou gares"
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
@@ -145,8 +146,8 @@
                         wire:key="from_adresse"
                         label="Adresse"
                         placeholder="Sélectionner une adresse"
-                        :async-data="route('api.adresses')"
-                        option-label="adresse"
+                        :async-data="route('api.adresses', ['user' => $userId])"
+                        option-label="full_adresse"
                         option-value="id"
                         wire:model="reservation.adresse_reservation_from_id"
                     />
@@ -182,7 +183,7 @@
                         <x-select
                             wire:key="to_place"
                             label="Lieu"
-                            placeholder="Sélectionner un lieu existant"
+                            placeholder="Aéroport ou gares"
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
@@ -201,8 +202,8 @@
                         wire:key="to_adresse"
                         label="Adresse"
                         placeholder="Sélectionner une adresse"
-                        :async-data="route('api.adresses')"
-                        option-label="adresse"
+                        :async-data="route('api.adresses', ['user' => $userId])"
+                        option-label="full_adresse"
                         option-value="id"
                         wire:model="reservation.adresse_reservation_to_id"
                     />
@@ -225,23 +226,33 @@
         </x-bloc-content>
 
         @if($hasBack)
+            <div class="sm:px-6 lg:px-4 mb-4">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center">
+                        <span class="bg-gray-100 px-2 text-sm text-gray-500 text-2xl">Réservation retour</span>
+                    </div>
+                </div>
+            </div>
+
             <x-bloc-content>
                 <x-datetime-picker
                     wire:key="back_date_picker"
-                    label="Date de retour"
+                    label="Date"
                     placeholder="Choisir une date"
                     display-format="DD/MM/YYYY HH:mm"
                     time-format="24"
-                    interval="5"
+                    interval="1"
                     wire:model="reservation_back.pickup_date"
                     :without-timezone="true"
-                    min="{{ \Carbon\Carbon::now() }}"
                 />
             </x-bloc-content>
 
             <x-bloc-content>
                 <div class="space-y-3">
-                    <div class="dark:text-white text-xl">Départ du retour :</div>
+                    <div class="dark:text-white text-xl">Départ :</div>
                     <div class="flex mb-3 space-x-3">
                         <x-radio wire:model="backPickupMode"
                                  value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Lieu"/>
@@ -272,8 +283,8 @@
                             wire:key="back_from_adresse"
                             label="Adresse"
                             placeholder="Sélectionner une adresse"
-                            :async-data="route('api.adresses')"
-                            option-label="adresse"
+                            :async-data="route('api.adresses', ['user' => $userId])"
+                            option-label="full_adresse"
                             option-value="id"
                             wire:model="reservation_back.adresse_reservation_from_id"
                         />
@@ -292,7 +303,7 @@
 
             <x-bloc-content>
                 <div class="space-y-3">
-                    <div class="dark:text-white text-xl">Arrivée du retour :</div>
+                    <div class="dark:text-white text-xl">Arrivée :</div>
                     <div class="flex mb-3 space-x-3">
                         <x-radio wire:model="backDropMode"
                                  value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Lieu"/>
@@ -306,7 +317,7 @@
                         <x-select
                             wire:key="back_to_place"
                             label="Lieu"
-                            placeholder="Sélectionner un lieu existant"
+                            placeholder="Aéroport ou gares"
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
@@ -323,8 +334,8 @@
                             wire:key="back_to_adresse"
                             label="Adresse"
                             placeholder="Sélectionner une adresse"
-                            :async-data="route('api.adresses')"
-                            option-label="adresse"
+                            :async-data="route('api.adresses', ['user' => $userId])"
+                            option-label="full_adresse"
                             option-value="id"
                             wire:model.defer="reservation_back.adresse_reservation_to_id"
                         />
@@ -343,7 +354,7 @@
 
             <x-bloc-content>
                 <div class="mb-4">
-                    <x-textarea label="Commentaire du retour" placeholder="Votre commentaire..."
+                    <x-textarea label="Commentaire" placeholder="Votre commentaire..."
                                 wire:model="reservation_back.comment"/>
                 </div>
             </x-bloc-content>

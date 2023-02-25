@@ -1,5 +1,16 @@
 <div>
-    <x-datatable.search wire:model="search" />
+    <div class="grid grid-cols-6 gap-4 mb-4">
+        <div class="col-span-2">
+            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="search" wire:model="search"/>
+        </div>
+        <div class="col-span-1">
+            <x-native-select
+                label="Item par page"
+                :options="['20', '50', '100', '150', '200']"
+                wire:model="perPage"
+            />
+        </div>
+    </div>
     <x-datatable>
         <x-slot name="headers">
             <tr>
@@ -21,7 +32,12 @@
                         <div class="flex space-x-2">
                             <x-button.circle icon="eye" info href="{{ route('admin.entreprises.show', ['entreprise' => $entreprise->id]) }}" />
                             <x-button.circle icon="pencil" primary href="{{ route('admin.entreprises.edit', ['entreprise' => $entreprise->id]) }}" />
-                            <x-button.circle icon="trash" red route="{{ route('admin.entreprises.destroy', ['entreprise' => $entreprise->id]) }}" />
+                            @if($entreprise->is_actif)
+                                <x-button.circle icon="trash" red wire:click="disableEntreprise({{ $entreprise }})" />
+                                @else
+                                <x-button.circle icon="check" green wire:click="enableEntreprise({{ $entreprise }})" />
+                            @endif
+
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>

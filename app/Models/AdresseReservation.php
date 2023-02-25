@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +17,10 @@ class AdresseReservation extends Model
 
     protected $guarded = [];
 
+    protected $appends = [
+        'full_adresse'
+    ];
+
     /**
      * @return BelongsTo
      */
@@ -24,16 +29,31 @@ class AdresseReservation extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getFullAdresseAttribute(): string
+    /**
+     * Retourne l'adresse complète
+     * @return Attribute
+     */
+    public function fullAdresse(): Attribute
     {
-        return $this->adresse . ' ' . $this->adresse_complement . ' ' . $this->code_postal . ' ' . $this->ville;
-    }
+        return Attribute::make(
+            get: function ($value , $attribute) {
+                $text = "";
 
-    public function toSearchableArray(): array
-    {
-        return [
-            'adresse' => $this->adresse,
-            'ville' => $this->ville
-        ];
+                if (isset($attribute['adresse'])) {
+                    $text .= $attribute['adresse'] . ' ';
+                }
+                if (isset($attribute['adresse_complement'])) {
+                    $text .= $attribute['adresse_complement'] . ' ';
+                }
+                if (isset($attribute['code_postal'])) {
+                    $text .= $attribute['code_postal'] . ' ';
+                }
+                if (isset($attribute['ville'])) {
+                    $text .= $attribute['ville'] . ' ';
+                }
+
+                return $text;
+            }
+        );
     }
 }

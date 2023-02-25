@@ -21,7 +21,7 @@ class EntrepriseController extends Controller
     public function index(): Factory|View|Application
     {
         return view('admin.entreprise.index', [
-            'entreprises' => Entreprise::all()
+            'entreprises' => Entreprise::orderBy('nom')
         ]);
     }
 

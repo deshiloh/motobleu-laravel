@@ -27,6 +27,9 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, CanResetPassword, HasRoles;
 
     protected $appends = ['full_name'];
+    protected $with = [
+        'entreprises'
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -98,11 +101,22 @@ class User extends Authenticatable
         return $this->hasManyThrough(Reservation::class, Passager::class);
     }
 
-    /**
-     * @return string
-     */
-    public function getFullNameAttribute(): string
+    public function fullName(): Attribute
     {
-        return implode(' ', [$this->nom, $this->prenom]);
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $attr = [];
+
+                if (isset($attributes['nom'])) {
+                    $attr[] = $attributes['nom'];
+                }
+
+                if (isset($attributes['prenom'])) {
+                    $attr[] = $attributes['prenom'];
+                }
+
+                return implode(' ', $attr);
+            }
+        );
     }
 }

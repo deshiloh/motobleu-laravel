@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Http\Livewire\Entreprise\EntrepriseForm;
+use App\Http\Livewire\Entreprise\EntreprisesDataTable;
+use App\Http\Livewire\Entreprise\UsersEntrepriseDataTable;
 use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -62,8 +64,7 @@ class EntrepriseTest extends TestCase
             ->set('entreprise.responsable_name', '')
             ->call('save')
             ->assertHasErrors([
-                'entreprise.nom' => 'required',
-                'entreprise.responsable_name' => 'required'
+                'entreprise.nom' => 'required'
             ]);
     }
 
@@ -79,12 +80,58 @@ class EntrepriseTest extends TestCase
         $this->assertTrue(Entreprise::where('nom', 'test')->exists());
     }
 
-    public function testDeleteEntreprise(): void
+    public function testDisableEntreprise(): void
     {
-        $response = $this->delete(route('admin.entreprises.destroy', ['entreprise' => $this->entreprise]));
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
+        $entreprise = Entreprise::find(1);
 
-        $this->assertDatabaseMissing('entreprises', $this->entreprise->toArray());
+        Livewire::test(EntreprisesDataTable::class)
+            ->call('disableEntreprise', $entreprise)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('entreprises', [
+            'nom' => $entreprise->nom,
+            'is_actif' => false
+        ]);
+    }
+
+    public function testEnableEntreprise()
+    {
+        $entreprise = Entreprise::factory([
+            'nom' => 'test',
+            'is_actif' => false
+        ])->create();
+
+        Livewire::test(EntreprisesDataTable::class)
+            ->call('enableEntreprise', $entreprise)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('entreprises', [
+            'nom' => 'test',
+            'is_actif' => true
+        ]);
+    }
+
+    public function testAttachUserInEntreprise()
+    {
+        $entrepriseSelected = Entreprise::find(1);
+        $userSelected = User::find(10);
+
+        Livewire::test(UsersEntrepriseDataTable::class, ['entreprise' => $entrepriseSelected])
+            ->set('userId', $userSelected->id)
+            ->call('attach')
+            ->assertStatus(200)
+            ->assertHasNoErrors();
+    }
+
+    public function testDettachUserInEntreprise()
+    {
+        $entrepriseSelected = Entreprise::find(1);
+        $userSelected = User::find(10);
+
+        Livewire::test(UsersEntrepriseDataTable::class, ['entreprise' => $entrepriseSelected])
+            ->set('userId', $userSelected->id)
+            ->call('detach')
+            ->assertStatus(200)
+            ->assertHasNoErrors();
     }
 }

@@ -30,7 +30,9 @@
                         <x-datatable.td>{{ $entreprise->nom }}</x-datatable.td>
                         <x-datatable.td>
                             <div class="space-x-2">
-                                <x-button.circle primary icon="eye" />
+                                <x-button.circle primary icon="eye" href="{{ route('admin.entreprises.show', [
+                                    'entreprise' => $entreprise->id
+                                ]) }}"/>
                                 <x-button.circle red icon="x" wire:click="detach({{ $entreprise }})"/>
                             </div>
                         </x-datatable.td>

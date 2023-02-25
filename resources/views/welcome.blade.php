@@ -3,7 +3,7 @@
         <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
 
             <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
-                <div class="absolute">
+                <div class="absolute pointer-events-none">
                     <div class="flex">
                         <div class="flex flex-col ml-4">
                             <p class="text-xl font-medium text-gray-500 truncate">Total réservations</p>
@@ -37,7 +37,12 @@
                             <p class="text-xl font-medium text-gray-500 truncate">Total facturé</p>
                             <div class="text-5xl font-semibold text-gray-900 dark:text-gray-200" >
                                 @php
-                                    $ht = \App\Models\Facture::all()->sum('montant_ht');
+                                    $period = \Carbon\CarbonPeriod::create(\Carbon\Carbon::now()->startOfYear(), '1 month', \Carbon\Carbon::now()->endOfMonth());
+                                    $months = array_map(fn($item) => $item->month, $period->toArray());
+
+                                    $ht = \App\Models\Facture::whereIn('month', $months)
+                                    ->where('year', \Carbon\Carbon::now()->year)
+                                    ->sum('montant_ht');
                                     $ttc = $ht + ($ht * 0.1);
                                 @endphp
                                 {{ number_format($ttc, 2, '.', ' ') }} €

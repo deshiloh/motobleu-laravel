@@ -22,7 +22,7 @@ class AccountForm extends Component
         $this->user = $account;
 
         if (!$this->user->exists) {
-            $this->user->is_actif = false;
+            $this->user->is_actif = true;
             $this->user->is_admin_ardian = false;
         }
     }
@@ -30,13 +30,13 @@ class AccountForm extends Component
     protected function getRules(): array
     {
         $rules = [
-            'user.nom' => 'required',
-            'user.prenom' => 'required',
-            'user.telephone' => 'required',
-            'user.adresse' => 'required',
+            'user.nom' => 'nullable',
+            'user.prenom' => 'nullable',
+            'user.telephone' => 'nullable',
+            'user.adresse' => 'nullable',
             'user.adresse_bis' => 'nullable',
-            'user.code_postal' => 'required',
-            'user.ville' => 'required',
+            'user.code_postal' => 'nullable',
+            'user.ville' => 'nullable',
             'user.is_admin_ardian' => 'boolean',
             'user.is_actif' => 'boolean',
         ];

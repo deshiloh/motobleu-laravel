@@ -37,6 +37,8 @@
                     <x-datatable.th>Référence</x-datatable.th>
                     <x-datatable.th>Entreprise</x-datatable.th>
                     <x-datatable.th>Date</x-datatable.th>
+                    <x-datatable.th>Départ</x-datatable.th>
+                    <x-datatable.th>Arrivée</x-datatable.th>
                     <x-datatable.th>Client</x-datatable.th>
                     <x-datatable.th>Validation</x-datatable.th>
                     <x-datatable.th>Tarif</x-datatable.th>
@@ -80,6 +82,12 @@
                         </x-datatable.td>
                         <x-datatable.td>{{ $reservation->entreprise->nom }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
+                        <x-datatable.td>
+                            {{ $reservation->display_from }}
+                        </x-datatable.td>
+                        <x-datatable.td>
+                            {{ $reservation->display_to }}
+                        </x-datatable.td>
                         <x-datatable.td>{{ $reservation->passager->user->full_name }}</x-datatable.td>
                         <x-datatable.td>
                             <div class="text-left">

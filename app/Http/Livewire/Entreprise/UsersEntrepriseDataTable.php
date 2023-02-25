@@ -2,14 +2,18 @@
 
 namespace App\Http\Livewire\Entreprise;
 
+use App;
 use App\Models\Entreprise;
 use App\Models\User;
+use Exception;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Log;
 use WireUi\Traits\Actions;
 
 class UsersEntrepriseDataTable extends Component
@@ -18,13 +22,28 @@ class UsersEntrepriseDataTable extends Component
 
     public Entreprise $entreprise;
     public ?string $userId = '';
+    public array $exclude = [];
+
+    public function mount()
+    {
+        $this->exclude = $this->getExclude();
+    }
 
     public function render(): Factory|View|Application
     {
         return view('livewire.entreprise.users-entreprise-data-table', [
-            'users' => $this->entreprise->users()->paginate(10, ['*'], 'usersPage')
+            'users' => $this->entreprise
+                ->users()
+                ->orderBy('nom')
+                ->paginate(10, ['*'], 'usersPage')
         ]);
     }
+
+    private function getExclude(): array
+    {
+        return $this->entreprise->users()->pluck('id')->toArray();
+    }
+
 
     /**
      * @return string[]
@@ -49,7 +68,8 @@ class UsersEntrepriseDataTable extends Component
                 );
             } else {
                 $this->entreprise->users()->attach($user);
-                $this->users = $this->entreprise->users()->get();
+                $this->exclude = $this->getExclude();
+
                 $this->userId = '';
                 $this->notification()->success(
                     $title = 'Opération réussite',
@@ -69,19 +89,18 @@ class UsersEntrepriseDataTable extends Component
     {
         try {
             $this->entreprise->users()->detach($user);
-            $this->users = $this->entreprise->users()->get();
 
             $this->notification()->success(
                 $title = 'Opération réussite',
                 $description = 'Le compte a bien été détaché.'
             );
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->notification()->error(
                 $title = 'Erreur',
                 $description = 'Une erreur est survenue.'
             );
-            if (\App::environment(['prod', 'beta'])) {
-                \Log::channel("sentry")->error("Erreur pendant le détachement d'un user à une entreprise", [
+            if (App::environment(['prod', 'beta'])) {
+                Log::channel("sentry")->error("Erreur pendant le détachement d'un user à une entreprise", [
                     'exception' => $exception,
                     'entreprise' => $this->entreprise,
                     'user' => $user

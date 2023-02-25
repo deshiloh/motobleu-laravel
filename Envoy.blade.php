@@ -50,3 +50,9 @@
     cd /var/www/vhosts/motobleu-paris.com/test.motobleu-paris.com/www
     /opt/plesk/php/8.1/bin/php artisan storage:link
 @endtask
+
+@task('reloadBetaDatabase', ['confirm' => true])
+    cd /var/www/vhosts/motobleu-paris.com/test.motobleu-paris.com/www
+    /opt/plesk/php/8.1/bin/php artisan migrate:fresh
+    /opt/plesk/php/8.1/bin/php artisan app:import
+@endtask

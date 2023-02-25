@@ -58,7 +58,7 @@ class InvoiceService
         }
 
         if ($facture->is_acquitte) {
-            $invoice->status('ACQUITTE');
+            $invoice->status('ACQUITTÉE');
         }
 
         $invoice->template('motobleu');
