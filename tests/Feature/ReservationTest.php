@@ -611,15 +611,17 @@ class ReservationTest extends TestCase
 
         $reservation = Reservation::find(1);
         $pilote = Pilote::find(1);
-        
+
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
             ->set('reservation.pilote_id', $pilote->id)
             ->call('confirmedAction')
             ->assertHasNoErrors()
+            ->assertRedirect(route('admin.homepage'))
         ;
 
         $this->assertDatabaseHas('reservations', [
             'id' => $reservation->id,
+            'pilote_id' => $pilote->id,
             'statut' => ReservationStatus::Confirmed
         ]);
 

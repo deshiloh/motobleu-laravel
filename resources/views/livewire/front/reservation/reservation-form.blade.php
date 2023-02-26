@@ -110,7 +110,7 @@
 
                 <div class="flex mb-3 space-x-3">
                     <x-radio wire:model="pickupMode"
-                             value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="{{ __('Lieu') }}"/>
+                             value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="{{ __('Aéroport ou gares') }}"/>
                     <x-radio wire:model="pickupMode"
                              value="{{ \App\Services\ReservationService::WITH_ADRESSE }}" label="{{ __('Adresse') }}"/>
                     <x-radio wire:model="pickupMode"
@@ -122,8 +122,8 @@
                     <div class="space-y-4">
                         <x-select
                             wire:key="from_place"
-                            label="{{ __('Lieu') }}"
-                            placeholder="{{ __('Aéroport ou gares') }}"
+                            label="{{ __('Aéroport ou gares') }}"
+                            placeholder="{{ __('Sélectionnez une gare ou un aéroport') }}"
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
@@ -239,7 +239,7 @@
                     <div class="dark:text-white text-xl">{{ __('Départ du retour') }} :</div>
                     <div class="flex mb-3 space-x-3">
                         <x-radio wire:model="backPickupMode"
-                                 value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="{{ __('Lieu') }}"/>
+                                 value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="{{ __('Aéroport ou gares') }}"/>
                         <x-radio wire:model="backPickupMode"
                                  value="{{ \App\Services\ReservationService::WITH_ADRESSE }}" label="{{ __('Adresse') }}"/>
                         <x-radio wire:model="backPickupMode"
@@ -249,8 +249,8 @@
                     @if($backPickupMode == \App\Services\ReservationService::WITH_PLACE)
                         <x-select
                             wire:key="back_from_place"
-                            label="{{ __('Lieu') }}"
-                            placeholder="{{ __('Aéroport ou gares') }}"
+                            label="{{ __('Aéroport ou gares') }}"
+                            placeholder="{{ __('Sélectionnez une gare ou un aéroport') }}"
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
@@ -291,7 +291,7 @@
                     <div class="dark:text-white text-xl">{{ __('Arrivée du retour') }} :</div>
                     <div class="flex mb-3 space-x-3">
                         <x-radio wire:model="backDropMode"
-                                 value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="{{ __('Lieu') }}"/>
+                                 value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="{{ __('Aéroport ou gares') }}"/>
                         <x-radio wire:model="backDropMode"
                                  value="{{ \App\Services\ReservationService::WITH_ADRESSE }}" label="{{ __('Adresse') }}"/>
                         <x-radio wire:model="backDropMode"
@@ -301,8 +301,8 @@
                     @if($backDropMode == \App\Services\ReservationService::WITH_PLACE)
                         <x-select
                             wire:key="back_to_place"
-                            label="{{ __('Lieu') }}"
-                            placeholder="{{ __('Aéroport ou gares') }}"
+                            label="{{ __('Aéroport ou gares') }}"
+                            placeholder="{{ __('Sélectionnez une gare ou un aéroport') }}"
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"

@@ -16,21 +16,25 @@ class ReservationConfirmed extends Mailable
 
     private Reservation $reservation;
     private bool $sendToAdmin;
+    private string $message;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Reservation $reservation, bool $sendToAdmin = true)
-    {
+    public function __construct(
+        Reservation $reservation,
+        bool $sendToAdmin = true,
+        string $message = ''
+    ) {
         $this->reservation = $reservation;
         $this->sendToAdmin = $sendToAdmin;
+        $this->message = $message;
     }
 
     public function envelope(): Envelope
     {
-        // TODO Aller retour
         return new Envelope(
             subject: "MOTOBLEU / Réservation N° " . $this->reservation->reference . " confirmée"
         );
@@ -38,7 +42,6 @@ class ReservationConfirmed extends Mailable
 
     public function content(): Content
     {
-        // TODO Changer le contenu non admin
         if ($this->sendToAdmin) {
             return new Content(
                 markdown: 'emails.reservation.admin-confirmed',
@@ -50,7 +53,7 @@ class ReservationConfirmed extends Mailable
             return new Content(
                 markdown: 'emails.reservation.confirmed',
                 with: [
-                    'reservation' => $this->reservation
+                    'message' => $this->message
                 ]
             );
         }

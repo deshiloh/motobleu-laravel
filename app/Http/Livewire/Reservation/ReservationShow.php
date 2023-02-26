@@ -68,21 +68,26 @@ Cordialement.";
 
             $this->reservation->update();
 
+            $this->reservation->refresh();
+
             \Mail::to($this->reservation->pilote->email)
                 ->send(new PiloteAttached($this->reservation));
 
-            ReservationConfirmed::dispatch($this->reservation);
+            ReservationConfirmed::dispatch($this->reservation, $this->message);
 
             $this->notification()->success(
                 title: "Opération réussite",
                 description: "La réservation a bien été confirmée."
             );
+
+            return redirect()->to(route('admin.homepage'));
         } catch (\Exception $exception) {
             $this->notification()->error(
                 title: "Une erreur s'est produite",
                 description: "Une erreur s'est produite pendant la confirmation de la réservation"
             );
             if (\App::environment(['local'])) {
+                ray($this->reservation);
                 ray()->exception($exception);
             }
             if(\App::environment(['prod', 'beta'])) {

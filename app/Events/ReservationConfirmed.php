@@ -16,15 +16,17 @@ class ReservationConfirmed
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Reservation $reservation;
+    public string $message;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Reservation $reservation)
+    public function __construct(Reservation $reservation, string $message)
     {
         $this->reservation = $reservation;
+        $this->message = $message;
     }
 
     /**
