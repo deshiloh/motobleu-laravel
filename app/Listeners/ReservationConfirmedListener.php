@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class ReservationConfirmedListener
@@ -29,17 +30,17 @@ class ReservationConfirmedListener
      * @param ReservationConfirmed $event
      * @return void
      */
-    public function handle(ReservationConfirmed $event)
+    public function handle(ReservationConfirmed $event): void
     {
         try {
             if ($event->reservation->send_to_user) {
                 Mail::to($event->reservation->passager->user->email)
-                    ->send(new \App\Mail\ReservationConfirmed($event->reservation));
+                    ->send(new \App\Mail\ReservationConfirmed($event->reservation, false, $event->message));
             }
 
             if ($event->reservation->send_to_passager) {
                 Mail::to($event->reservation->passager->email)
-                    ->send(new \App\Mail\ReservationConfirmed($event->reservation));
+                    ->send(new \App\Mail\ReservationConfirmed($event->reservation, false, $event->message));
             }
 
             // Envoie à l'admin du site
@@ -51,7 +52,13 @@ class ReservationConfirmedListener
                     'reservation' => $event->reservation
                 ])->exception($exception);
             }
-            // TODO Sentry en production
+
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error("Erreur pendant l'envoi des emails de confirmation", [
+                    'exception' => $exception,
+                    'reservation' => $event->reservation
+                ]);
+            }
         }
     }
 }

@@ -30,7 +30,8 @@ class Reservation extends Model
         'localisationTo',
         'adresseReservationFrom',
         'adresseReservationTo',
-        'entreprise'
+        'entreprise',
+        'pilote'
     ];
 
     protected $casts = [

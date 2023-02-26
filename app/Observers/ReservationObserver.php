@@ -50,11 +50,6 @@ class ReservationObserver
 
             $this->calendarService->createEventForMotobleu($reservation);
             $this->calendarService->createEventForSecretary($reservation);
-
-            Log::channel('logtail')->info("Création d'une réservation", [
-                'utilisateur' => Auth::user(),
-                'reservation' => $reservation,
-            ]);
         }catch (\Exception $exception) {
             if (App::environment(['local'])) {
                 ray([
@@ -62,7 +57,12 @@ class ReservationObserver
                 ])->exception($exception);
             }
 
-            // TODO Sentry en production
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error("Erreur pendant la génération Google Calendar", [
+                    'exception' => $exception,
+                    'reservation' => $reservation
+                ]);
+            }
         }
     }
 
@@ -74,8 +74,21 @@ class ReservationObserver
      */
     public function updated(Reservation $reservation): void
     {
-        $this->calendarService->createEventForMotobleu($reservation);
-        $this->calendarService->createEventForSecretary($reservation);
+        try {
+            $this->calendarService->createEventForMotobleu($reservation);
+            $this->calendarService->createEventForSecretary($reservation);
+        } catch (\Exception $exception) {
+            if (App::environment(['local'])) {
+                ray()->exception($exception);
+            }
+
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error("Erreur pendant la génération Google Calendar", [
+                    'exception' => $exception,
+                    'reservation' => $reservation
+                ]);
+            }
+        }
     }
 
     /**
