@@ -108,6 +108,7 @@ class ReservationTest extends TestCase
             ->assertHasNoErrors()
             ->assertSet('selectedReservation', null)
             ->assertSet('askCancelCard', false)
+            ->assertStatus(200)
         ;
 
         Mail::assertSent(CancelReservationDemand::class);
