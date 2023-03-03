@@ -8,6 +8,7 @@ use App\Http\Livewire\Reservation\ReservationForm;
 use App\Http\Livewire\Reservation\ReservationShow;
 use App\Mail\PiloteAttached;
 use App\Mail\PiloteDetached;
+use App\Mail\ReservationCanceledPay;
 use App\Mail\ReservationUpdated;
 use App\Models\AdresseReservation;
 use App\Models\Localisation;
@@ -674,5 +675,26 @@ class ReservationTest extends TestCase
         ]);
 
         \Mail::assertSent(ReservationUpdated::class);
+    }
+
+    public function testCanceledPayReservation()
+    {
+        \Event::fake();
+
+        $reservation = Reservation::find(1);
+
+        Livewire::test(ReservationShow::class, [
+            'reservation' => $reservation
+        ])
+            ->call('cancelBilledAction')
+            ->assertStatus(200)
+            ->assertHasNoErrors();
+
+        \Event::assertDispatched(\App\Events\ReservationCanceledPay::class);
+
+        $this->assertDatabaseHas('reservations', [
+            'reference' => $reservation->reference,
+            'statut' => ReservationStatus::CanceledToPay->value
+        ]);
     }
 }

@@ -64,3 +64,9 @@ Route::get('/lang/{locale}', function (string $locale) {
 
     return redirect()->back();
 })->name('switch.local');
+
+Route::get('/mail-test', function () {
+    $reservation = Reservation::findOrFail(90);
+
+    return new \App\Mail\ReservationCanceledPay($reservation);
+});

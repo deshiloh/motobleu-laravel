@@ -34,7 +34,6 @@ class ReservationCanceledListener
     public function handle(ReservationCanceled $event): void
     {
         try {
-            // Suppression de l'évènement dans le calendrier
             $this->calendarService->deleteEvent($event->reservation);
         } catch (\Exception $exception) {
             if (App::environment(['local'])) {
@@ -42,7 +41,12 @@ class ReservationCanceledListener
                     'reservation' => $event->reservation
                 ])->exception($exception);
             }
-            // TODO Sentry en production
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error("Erreur pendant la suppression de l'évènement", [
+                    'exception' => $exception,
+                    'reservation' => $event->reservation
+                ]);
+            }
         }
 
         // Envois de l'email d'annulation de réservation.
@@ -65,16 +69,16 @@ class ReservationCanceledListener
                         'reservation' => $event->reservation
                     ])->exception($exception);
                 }
-                // TODO Sentry en prodduction
+                if (App::environment(['beta', 'prod'])) {
+                    Log::channel('sentry')->error("Erreur pendant l'envoi de mail d'annulation", [
+                        'exception' => $exception,
+                        'reservation' => $event->reservation
+                    ]);
+                }
             }
         }
 
         Mail::to($event->reservation->pilote->email)
             ->send(new PiloteDetached($event->reservation));
-
-        Log::channel('logtail')->info("Annulation d'une réservation", [
-            'utilisateur' => Auth::user(),
-            'reservation' => $event->reservation,
-        ]);
     }
 }

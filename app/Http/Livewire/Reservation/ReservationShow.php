@@ -5,11 +5,13 @@ namespace App\Http\Livewire\Reservation;
 use _PHPStan_446ead745\Nette\Neon\Exception;
 use App\Enum\ReservationStatus;
 use App\Events\ReservationCanceled;
+use App\Events\ReservationCanceledPay;
 use App\Events\ReservationConfirmed;
 use App\Mail\PiloteAttached;
 use App\Mail\PiloteDetached;
 use App\Models\Pilote;
 use App\Models\Reservation;
+use Illuminate\Validation\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -48,7 +50,11 @@ Cordialement.";
             'reservation.send_to_passager' => 'boolean',
             'reservation.calendar_passager_invitation' => 'boolean',
             'reservation.calendar_user_invitation' => 'boolean',
-            'message' => 'required|string',
+            'message' => 'nullable|string',
+            'reservation.tarif_pilote' => 'nullable|numeric',
+            'reservation.encaisse_pilote' => 'nullable|numeric',
+            'reservation.encompte_pilote' => 'nullable|numeric',
+            'reservation.comment_pilote' => 'nullable',
         ];
     }
 
@@ -102,7 +108,53 @@ Cordialement.";
 
     public function updatePilote()
     {
-        $this->validate();
+        $this->withValidator(function (Validator $validator) {
+            $validator->after(function ($validator) {
+                if (
+                    $this->reservation->tarif_pilote > 0 &&
+                    (is_null($this->reservation->encompte_pilote) || is_null($this->reservation->encaisse_pilote))
+                ) {
+                    $validator
+                        ->errors()->add(
+                            'reservation.encaisse_pilote', 'Le montant doit être renseigné.'
+                        );
+                    $validator->errors()
+                        ->add('reservation.encompte_pilote', 'Le montant doit être renseigné.');
+                }
+
+                if ($this->reservation->encaisse_pilote > 0 && $this->reservation->encompte_pilote > 0) {
+                    $validator
+                        ->errors()->add(
+                            'reservation.encaisse_pilote', 'Encaisse et en compte ne peuvent être renseignée en
+                            même temps.'
+                        );
+                    $validator->errors()
+                        ->add('reservation.encompte_pilote', 'Encaisse et en compte ne peuvent être renseignée en
+                            même temps.');
+                    return false;
+                }
+
+                if (
+                    $this->reservation->encompte_pilote > 0 &&
+                    $this->reservation->tarif_pilote != $this->reservation->encompte_pilote
+                ) {
+                    $validator->errors()
+                        ->add('reservation.encompte_pilote', "Le montant renseigné n'est pas correct.");
+
+                    return false;
+                }
+
+                if (
+                    $this->reservation->encaisse_pilote > 0 &&
+                    $this->reservation->tarif_pilote != $this->reservation->encaisse_pilote
+                ) {
+                    $validator->errors()
+                        ->add('reservation.encaisse_pilote', "Le montant renseigné n'est pas correct.");
+
+                    return false;
+                }
+            });
+        })->validate();
 
         if ($this->reservation->isDirty(['pilote_id'])) {
             /** @var Pilote $currentPilote */
@@ -120,6 +172,19 @@ Cordialement.";
                 title: "Opération réussite",
                 description: 'Pilote correctement modifié.'
             );
+
+            return redirect()->to(route('admin.homepage'));
+        }
+
+        if ($this->reservation->isDirty([
+            'tarif_pilote',
+            'encompte_pilote',
+            'encaisse_pilote',
+            'comment_pilote'
+        ])) {
+            $this->reservation->update();
+
+            return redirect()->to(route('admin.homepage'));
         }
     }
 
@@ -163,7 +228,7 @@ Cordialement.";
             'statut' => ReservationStatus::CanceledToPay,
         ]);
 
-        ReservationCanceled::dispatch($this->reservation);
+        ReservationCanceledPay::dispatch($this->reservation);
     }
 
     public function cancelAction()

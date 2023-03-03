@@ -30,7 +30,6 @@ return new class extends Migration
             $table->float('complement')->nullable();
 
             $table->float('tarif_pilote')->nullable();
-            $table->float('majoration_pilote')->nullable();
             $table->float('encompte_pilote')->nullable();
             $table->float('encaisse_pilote')->nullable();
 

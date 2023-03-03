@@ -44,7 +44,7 @@
                                     </x-front.badge>
                                     @break
                                 @case(\App\Enum\ReservationStatus::CanceledToPay)
-                                    <x-front.badge danger>
+                                    <x-front.badge warning-secondary>
                                         Annulée facturée
                                     </x-front.badge>
                                     @break
@@ -57,12 +57,17 @@
                         </x-datatable.td>
                         <x-datatable.td>
                             <div class="flex space-x-2">
-                                @can('edit reservation')
-                                    <x-button.circle icon="pencil" info sm wire:click="openAskEditModal({{ $reservation }})" />
-                                @endcan
-                                @can('delete reservation')
-                                    <x-button.circle icon="x" red sm wire:click="openAskCancelModal({{ $reservation }})" />
-                                @endcan
+                                @if(
+                                    $reservation->statut == \App\Enum\ReservationStatus::Created ||
+                                    $reservation->statut == \App\Enum\ReservationStatus::Confirmed
+                                )
+                                    @can('edit reservation')
+                                        <x-button.circle icon="pencil" info sm wire:click="openAskEditModal({{ $reservation }})" />
+                                    @endcan
+                                    @can('delete reservation')
+                                        <x-button.circle icon="x" red sm wire:click="openAskCancelModal({{ $reservation }})" />
+                                    @endcan
+                                @endif
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>

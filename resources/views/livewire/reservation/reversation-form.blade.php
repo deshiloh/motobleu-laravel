@@ -116,7 +116,7 @@
 
                 <div class="flex mb-3 space-x-3">
                     <x-radio wire:model="pickupMode"
-                             value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Aéroport ou gares"/>
+                             value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Aéroports ou gares"/>
                     <x-radio wire:model="pickupMode"
                              value="{{ \App\Services\ReservationService::WITH_ADRESSE }}" label="Adresse"/>
                     <x-radio wire:model="pickupMode"
@@ -128,7 +128,7 @@
                     <div class="space-y-4">
                         <x-select
                             wire:key="from_place"
-                            label="Aéroport ou gares"
+                            label="Aéroports ou gares"
                             placeholder="Sélectionnez une gare ou un aéroport"
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
@@ -170,7 +170,7 @@
 
                 <div class="flex mb-3 space-x-3">
                     <x-radio wire:model="dropMode"
-                             value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Aéroport ou gares"/>
+                             value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Aéroports ou gares"/>
                     <x-radio wire:model="dropMode"
                              value="{{ \App\Services\ReservationService::WITH_ADRESSE }}" label="Adresse"/>
                     <x-radio wire:model="dropMode"
@@ -182,8 +182,8 @@
                     <div class="space-y-4">
                         <x-select
                             wire:key="to_place"
-                            label="Lieu"
-                            placeholder="Aéroport ou gares"
+                            label="Aéroports ou gares"
+                            placeholder="Aéroports ou gares"
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
