@@ -42,7 +42,6 @@
                     <x-datatable.th>Client</x-datatable.th>
                     <x-datatable.th>Validation</x-datatable.th>
                     <x-datatable.th>Tarif</x-datatable.th>
-                    <x-datatable.th>Majoration</x-datatable.th>
                     <x-datatable.th>Encaisse</x-datatable.th>
                     <x-datatable.th>Encompte</x-datatable.th>
                     <x-datatable.th>Commentaire</x-datatable.th>
@@ -98,9 +97,6 @@
                             <x-input placeholder="Tarif" right-icon="currency-euro" x-model="formData.tarif" value="{{ $reservation->tarif_pilote }}"/>
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-input placeholder="Majoration" x-model="formData.majoration" right-icon="currency-euro"/>
-                        </x-datatable.td>
-                        <x-datatable.td>
                             <x-input placeholder="Encaisse" right-icon="currency-euro" x-model="formData.encaisse"/>
                         </x-datatable.td>
                         <x-datatable.td>
@@ -130,7 +126,6 @@
                 return {
                     formData : {
                         tarif: reservation.tarif_pilote,
-                        majoration: reservation.majoration_pilote,
                         encaisse: reservation.encaisse_pilote,
                         encompte: reservation.encompte_pilote,
                         comment: reservation.comment_pilote,

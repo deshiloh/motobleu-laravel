@@ -4,9 +4,11 @@ namespace App\Providers;
 
 use App\Events\BillCreated;
 use App\Events\ReservationCanceled;
+use App\Events\ReservationCanceledPay;
 use App\Events\ReservationConfirmed;
 use App\Listeners\BillCreatedListener;
 use App\Listeners\ReservationCanceledListener;
+use App\Listeners\ReservationCanceledPayListener;
 use App\Listeners\ReservationConfirmedListener;
 use App\Listeners\SendEmailNotification;
 use App\Models\Reservation;
@@ -36,6 +38,10 @@ class EventServiceProvider extends ServiceProvider
 
         ReservationCanceled::class => [
             ReservationCanceledListener::class
+        ],
+
+        ReservationCanceledPay::class => [
+            ReservationCanceledPayListener::class
         ],
 
         BillCreated::class => [

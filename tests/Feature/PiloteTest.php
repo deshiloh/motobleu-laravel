@@ -155,7 +155,6 @@ class PiloteTest extends TestCase
         Livewire::test(RecapReservationPilote::class, ['pilote' => $pilote])
             ->call('editReservation', [
                 'tarif' => '',
-                'majoration' => '200',
                 'encaisse' => '0',
                 'encompte' => '200',
             ])
@@ -172,7 +171,6 @@ class PiloteTest extends TestCase
         Livewire::test(RecapReservationPilote::class, ['pilote' => $pilote])
             ->call('editReservation', [
                 'tarif' => 100,
-                'majoration' => 0,
                 'encaisse' => 0,
                 'encompte' => 0,
                 'comment' => '',

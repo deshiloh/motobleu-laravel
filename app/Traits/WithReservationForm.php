@@ -141,7 +141,7 @@ trait WithReservationForm
         }
 
         try {
-            if ($this->reservation->isDirty()) {
+            if ($this->reservation->exists && $this->reservation->isDirty()) {
                 $contacts = [];
 
                 if ($this->reservation->send_to_user) {

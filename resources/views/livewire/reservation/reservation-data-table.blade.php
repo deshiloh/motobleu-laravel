@@ -69,7 +69,7 @@
                                 </x-front.badge>
                                 @break
                             @case(\App\Enum\ReservationStatus::CanceledToPay)
-                                <x-front.badge danger>
+                                <x-front.badge warning-secondary>
                                     Annulée facturable
                                 </x-front.badge>
                                 @break
