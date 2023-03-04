@@ -169,6 +169,7 @@ Route::get('/cost-center', function (Request $request){
     return CostCenter::query()
         ->select('id', 'nom')
         ->orderBy('nom')
+        ->where('is_actif', 1)
         ->when(
             $search, function (Builder $query, $search) {
             $query->where('nom', 'like', "%$search%");
@@ -193,6 +194,7 @@ Route::get('/type-facturation', function (Request $request){
     return TypeFacturation::query()
         ->select('id', 'nom')
         ->orderBy('nom')
+        ->where('is_actif', 1)
         ->when(
             $search, function (Builder $query, $search) {
             $query->where('nom', 'like', "%$search%");

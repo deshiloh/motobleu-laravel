@@ -21,30 +21,4 @@ class TypeFacturationController extends Controller
     {
         return view('admin.typefacturation.index');
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param TypeFacturation $typefacturation
-     * @return RedirectResponse
-     */
-    public function destroy(TypeFacturation $typefacturation)
-    {
-        $typefacturation->delete();
-        return to_route('admin.typefacturation.index')
-            ->with('success', "Le type de facturation a bien été supprimé.");
-    }
-
-    /**
-     * @return array
-     */
-    public function getEntreprisesSelectDatas(): array
-    {
-        $selectDatas = [];
-
-        foreach (Entreprise::all() as $data) {
-            $selectDatas[$data->id] = $data->nom;
-        }
-        return $selectDatas;
-    }
 }

@@ -111,7 +111,7 @@ Route::prefix('/admin')->name('admin.')->group(function () {
     Route::get('typefacturation/{typefacturation}/edit', TypeFacturationForm::class)
         ->name('typefacturation.edit');
     Route::resource('typefacturation', TypeFacturationController::class)
-        ->except(['show', 'create', 'store', 'edit', 'update']);
+        ->except(['show', 'create', 'store', 'edit', 'update', 'destroy']);
 
     // ADRESSE RESERVATION
     Route::get('adresse-reservation/create', AdresseReservationForm::class)

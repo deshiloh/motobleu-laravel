@@ -10,10 +10,11 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
+use WireUi\Traits\Actions;
 
 class TypeFacturationDataTable extends Component
 {
-    use WithPagination, WithSorting;
+    use WithPagination, WithSorting, Actions;
 
     public string $search = '';
     public string $sortField = 'nom';
@@ -31,5 +32,19 @@ class TypeFacturationDataTable extends Component
                 ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate($this->perPage)
         ]);
+    }
+
+    public function toggleEtatTypeFacturation(TypeFacturation $typeFacturation)
+    {
+        $typeFacturation->is_actif = !$typeFacturation->is_actif;
+
+        $typeFacturation->update();
+
+        $this->notification()->success(
+            "Opération réussite",
+            $typeFacturation->is_actif ?
+                "Type facturation " . $typeFacturation->nom . " activé." :
+                "Type facturation " . $typeFacturation->nom . " désactivé."
+        );
     }
 }
