@@ -5,15 +5,21 @@
         <x-slot:right>
             <div class="flex items-center justify-center space-x-2">
                 @if(!is_null($reservation->event_id))
-                    <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled"/>
+                    <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled" />
                 @endif
-                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled"/>
-                @if($reservation == \App\Enum\ReservationStatus::Canceled || $reservation == \App\Enum\ReservationStatus::CanceledToPay)
-                    <x-button warning label="Confirmer" icon="credit-card" wire:loading.attr="disabled" wire:click="confirmedStatusAction" spinner="confirmedStatusAction"/>
+
+                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled" />
+
+                @if($reservation->statut == \App\Enum\ReservationStatus::Canceled || $reservation->statut == \App\Enum\ReservationStatus::CanceledToPay)
+                    <x-button positive label="Confirmer" icon="check" wire:loading.attr="disabled" wire:click="confirmedStatusAction" spinner="confirmedStatusAction" />
                 @endif
+
+                @if($reservation->statut != \App\Enum\ReservationStatus::CanceledToPay)
+                    <x-button warning label="Annuler mais facturer" icon="credit-card" wire:loading.attr="disabled" wire:click="cancelToPayAskAction" spinner="cancelBilledAction" />
+                @endif
+
                 @if($reservation->statut != \App\Enum\ReservationStatus::Canceled)
-                    <x-button warning label="Annuler mais facturer" icon="credit-card" wire:loading.attr="disabled" wire:click="cancelToPayAskAction" spinner="cancelBilledAction"/>
-                    <x-button wire:click="cancelAskAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction" spinner="cancelAction"/>
+                    <x-button wire:click="cancelAskAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction" spinner="cancelAction" />
                 @endif
             </div>
         </x-slot:right>

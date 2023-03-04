@@ -67,7 +67,7 @@ Cordialement.";
 
     public function confirmedAction()
     {
-        $this->validate();
+        $this->handleConfirmedAndUpdateValidation();
 
         try {
             $this->reservation->statut = ReservationStatus::Confirmed;
@@ -108,53 +108,7 @@ Cordialement.";
 
     public function updatePilote()
     {
-        $this->withValidator(function (Validator $validator) {
-            $validator->after(function ($validator) {
-                if (
-                    $this->reservation->tarif_pilote > 0 &&
-                    (is_null($this->reservation->encompte_pilote) || is_null($this->reservation->encaisse_pilote))
-                ) {
-                    $validator
-                        ->errors()->add(
-                            'reservation.encaisse_pilote', 'Le montant doit être renseigné.'
-                        );
-                    $validator->errors()
-                        ->add('reservation.encompte_pilote', 'Le montant doit être renseigné.');
-                }
-
-                if ($this->reservation->encaisse_pilote > 0 && $this->reservation->encompte_pilote > 0) {
-                    $validator
-                        ->errors()->add(
-                            'reservation.encaisse_pilote', 'Encaisse et en compte ne peuvent être renseignée en
-                            même temps.'
-                        );
-                    $validator->errors()
-                        ->add('reservation.encompte_pilote', 'Encaisse et en compte ne peuvent être renseignée en
-                            même temps.');
-                    return false;
-                }
-
-                if (
-                    $this->reservation->encompte_pilote > 0 &&
-                    $this->reservation->tarif_pilote != $this->reservation->encompte_pilote
-                ) {
-                    $validator->errors()
-                        ->add('reservation.encompte_pilote', "Le montant renseigné n'est pas correct.");
-
-                    return false;
-                }
-
-                if (
-                    $this->reservation->encaisse_pilote > 0 &&
-                    $this->reservation->tarif_pilote != $this->reservation->encaisse_pilote
-                ) {
-                    $validator->errors()
-                        ->add('reservation.encaisse_pilote', "Le montant renseigné n'est pas correct.");
-
-                    return false;
-                }
-            });
-        })->validate();
+        $this->handleConfirmedAndUpdateValidation();
 
         if ($this->reservation->isDirty(['pilote_id'])) {
             /** @var Pilote $currentPilote */
@@ -244,10 +198,61 @@ Cordialement.";
 
     public function confirmedStatusAction()
     {
-        $this->reservation->statut = ReservationStatus::CanceledToPay;
+        $this->reservation->statut = ReservationStatus::Confirmed;
 
         $this->reservation->update([
-            'statut' => ReservationStatus::CanceledToPay,
+            'statut' => ReservationStatus::Confirmed,
         ]);
+    }
+
+    private function handleConfirmedAndUpdateValidation()
+    {
+        $this->withValidator(function (Validator $validator) {
+            $validator->after(function ($validator) {
+                if (
+                    $this->reservation->tarif_pilote > 0 &&
+                    (is_null($this->reservation->encompte_pilote) || is_null($this->reservation->encaisse_pilote))
+                ) {
+                    $validator
+                        ->errors()->add(
+                            'reservation.encaisse_pilote', 'Le montant doit être renseigné.'
+                        );
+                    $validator->errors()
+                        ->add('reservation.encompte_pilote', 'Le montant doit être renseigné.');
+                }
+
+                if ($this->reservation->encaisse_pilote > 0 && $this->reservation->encompte_pilote > 0) {
+                    $validator
+                        ->errors()->add(
+                            'reservation.encaisse_pilote', 'Encaisse et en compte ne peuvent être renseignée en
+                            même temps.'
+                        );
+                    $validator->errors()
+                        ->add('reservation.encompte_pilote', 'Encaisse et en compte ne peuvent être renseignée en
+                            même temps.');
+                    return false;
+                }
+
+                if (
+                    $this->reservation->encompte_pilote > 0 &&
+                    $this->reservation->tarif_pilote != $this->reservation->encompte_pilote
+                ) {
+                    $validator->errors()
+                        ->add('reservation.encompte_pilote', "Le montant renseigné n'est pas correct.");
+
+                    return false;
+                }
+
+                if (
+                    $this->reservation->encaisse_pilote > 0 &&
+                    $this->reservation->tarif_pilote != $this->reservation->encaisse_pilote
+                ) {
+                    $validator->errors()
+                        ->add('reservation.encaisse_pilote', "Le montant renseigné n'est pas correct.");
+
+                    return false;
+                }
+            });
+        })->validate();
     }
 }
