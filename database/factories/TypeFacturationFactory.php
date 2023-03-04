@@ -20,7 +20,8 @@ class TypeFacturationFactory extends Factory
     public function definition()
     {
         return [
-            'nom' => 'Ardian ' . Str::random(8)
+            'nom' => 'Ardian ' . Str::random(8),
+            'is_actif' => true
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\TypeFacturation\TypeFacturationDataTable;
 use App\Http\Livewire\TypeFacturation\TypeFacturationForm;
 use App\Models\Entreprise;
 use App\Models\TypeFacturation;
@@ -70,13 +71,35 @@ class TypeFacturationTest extends TestCase
         ]);
     }
 
-    public function testDeleteTypeFacturation()
+    public function testDisableTypeFacturation()
     {
-        $response = $this->delete(route('admin.typefacturation.destroy', [
-            'typefacturation' => $this->typeFacturation->id
-        ]));
-        $response->assertStatus(302);
-        $response->assertRedirect(route('admin.typefacturation.index'));
-        $this->assertDatabaseMissing('type_facturations', $this->typeFacturation->toArray());
+        $typeFacturation = TypeFacturation::factory()->create();
+
+        Livewire::test(TypeFacturationDataTable::class)
+            ->call('toggleEtatTypeFacturation', $typeFacturation)
+            ->assertStatus(200)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('type_facturations', [
+            'nom' => $typeFacturation->nom,
+            'is_actif' => 0
+        ]);
+    }
+
+    public function testEnableTypeFacturation()
+    {
+        $typeFacturation = TypeFacturation::factory([
+            'is_actif' => false
+        ])->create();
+
+        Livewire::test(TypeFacturationDataTable::class)
+            ->call('toggleEtatTypeFacturation', $typeFacturation)
+            ->assertStatus(200)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('type_facturations', [
+            'nom' => $typeFacturation->nom,
+            'is_actif' => 1
+        ]);
     }
 }

@@ -12,14 +12,7 @@ use Laravel\Scout\Searchable;
  */
 class TypeFacturation extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory;
 
     protected $guarded = [];
-
-    public function toSearchableArray(): array
-    {
-        return [
-            'nom' => $this->nom
-        ];
-    }
 }
