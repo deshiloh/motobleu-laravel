@@ -94,13 +94,13 @@
                             </div>
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-input placeholder="Tarif" right-icon="currency-euro" x-model="formData.tarif" value="{{ $reservation->tarif_pilote }}"/>
+                            <x-input placeholder="Tarif" x-model="formData.tarif" value="{{ $reservation->tarif_pilote }}"/>
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-input placeholder="Encaisse" right-icon="currency-euro" x-model="formData.encaisse"/>
+                            <x-input placeholder="Encaisse" x-model="formData.encaisse"/>
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-input placeholder="Encompte" right-icon="currency-euro" x-model="formData.encompte"/>
+                            <x-input placeholder="Encompte" x-model="formData.encompte"/>
                         </x-datatable.td>
                         <x-datatable.td>
                             <x-textarea placeholder="Commentaire pour le pilote" x-model="formData.comment"/>
