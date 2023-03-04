@@ -28,7 +28,7 @@ use Tests\TestCase;
 
 class ReservationTest extends TestCase
 {
-    use RefreshDatabase, WithoutEvents;
+    use RefreshDatabase;
 
     /**
      * Indicates whether the default seeder should run before each test.
@@ -46,6 +46,8 @@ class ReservationTest extends TestCase
         $user->assignRole('super admin');
 
         $this->actingAs($user);
+
+        \Event::fake();
     }
 
     public function testAcessListReservationPage()
