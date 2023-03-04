@@ -3,6 +3,7 @@
 namespace App\Services\EventCalendar;
 
 use App\Enum\ReservationStatus;
+use App\Models\Pilote;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\App;
 use Spatie\GoogleCalendar\Event;
@@ -30,6 +31,7 @@ class GoogleCalendarService
     public function createEventForSecretary(Reservation $reservation): bool
     {
         $this->reservation = $reservation;
+        $reservation->refresh();
         $this->forSecretary = true;
 
         if ($this->reservation->statut == ReservationStatus::Canceled) {
@@ -42,6 +44,26 @@ class GoogleCalendarService
         $event->description = $this->generateEventContent();
 
         $event = $this->generateCommunData($event);
+
+        if ($this->reservation->calendar_user_invitation) {
+            $email = App::environment(['local', 'beta']) ?
+                'm.alvarez.iglisias@gmail.com' :
+                $this->reservation->passager->user->email;
+
+            $event->addAttendee([
+                'email' => $email
+            ]);
+        }
+
+        if ($this->reservation->calendar_passager_invitation) {
+            $email = App::environment(['local', 'beta']) ?
+                'm.alvarez.iglisias@gmail.com' :
+                $this->reservation->passager->email;
+
+            $event->addAttendee([
+                'email' => $email
+            ]);
+        }
 
         $savedEvent = $event->save();
 
@@ -56,6 +78,7 @@ class GoogleCalendarService
     public function createEventForMotobleu(Reservation $reservation): bool
     {
         $this->reservation = $reservation;
+        $reservation->refresh();
 
         if ($this->reservation->statut == ReservationStatus::Canceled) {
             return false;
@@ -84,31 +107,13 @@ class GoogleCalendarService
         $event->startDateTime = $this->reservation->pickup_date;
         $event->endDateTime = $this->reservation->pickup_date->addHour();
 
-        if ($this->reservation->calendar_user_invitation) {
-            $email = App::environment(['local', 'testing']) ?
-                'm.alvarez.iglisias@gmail.com' :
-                $this->reservation->passager->user->email;
-
-            $event->addAttendee([
-                'email' => $email
-            ]);
-        }
-
-        if ($this->reservation->calendar_passager_invitation) {
-            $email = App::environment(['local', 'testing']) ?
-                'm.alvarez.iglisias@gmail.com' :
-                $this->reservation->passager->email;
-
-            $event->addAttendee([
-                'email' => $email
-            ]);
-        }
-
         return $event;
     }
 
     public function deleteEvent(Reservation $reservation): bool
     {
+        $reservation->refresh();
+
         try {
             if (App::environment(['local', 'prod'])) {
                 if (is_null($reservation->event_id)) {
@@ -245,8 +250,8 @@ class GoogleCalendarService
                 $this->reservation->pickup_origin,
                 $this->reservation->display_to,
                 $this->reservation->drop_off_origin,
-                $this->reservation->comment,
-                $this->reservation->total_ttc . ' €',
+                $this->reservation->comment_pilote,
+                $this->reservation->tarif_pilote . ' €',
                 route('admin.reservations.show', ['reservation' => $this->reservation->id])
             );
         }
@@ -254,6 +259,7 @@ class GoogleCalendarService
 
     private function generatePiloteLabel(): string
     {
-        return ($this->reservation->pilote()->exists()) ? $this->reservation->pilote->full_name : 'En attente';
+        $this->reservation->refresh();
+        return ($this->reservation->pilote instanceof Pilote) ? $this->reservation->pilote->full_name : 'En attente';
     }
 }

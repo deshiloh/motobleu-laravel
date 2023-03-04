@@ -4,10 +4,12 @@ namespace Tests\Feature;
 
 use App\Enum\ReservationStatus;
 use App\Events\ReservationCanceled;
+use App\Events\ReservationConfirmed;
 use App\Http\Livewire\Reservation\ReservationForm;
 use App\Http\Livewire\Reservation\ReservationShow;
 use App\Mail\PiloteAttached;
 use App\Mail\PiloteDetached;
+use App\Mail\ReservationCanceledPay;
 use App\Mail\ReservationUpdated;
 use App\Models\AdresseReservation;
 use App\Models\Localisation;
@@ -611,14 +613,119 @@ class ReservationTest extends TestCase
 
         $reservation = Reservation::find(1);
         $pilote = Pilote::find(1);
+
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
             ->set('reservation.pilote_id', $pilote->id)
             ->call('confirmedAction')
             ->assertHasNoErrors()
+            ->assertRedirect(route('admin.homepage'))
         ;
-        $this->assertTrue(Reservation::where('statut', ReservationStatus::Confirmed)->exists());
+
+        $this->assertDatabaseHas('reservations', [
+            'id' => $reservation->id,
+            'pilote_id' => $pilote->id,
+            'statut' => ReservationStatus::Confirmed
+        ]);
 
         \Mail::assertSent(PiloteAttached::class);
+    }
+
+    public function testConfirmeReservationWithTarifError()
+    {
+        \Event::fake();
+
+        $reservation = Reservation::find(1);
+        $pilote = Pilote::find(1);
+
+        Livewire::test(ReservationShow::class, ['reservation' => $reservation])
+            ->set('reservation.pilote_id', $pilote->id)
+            ->set('reservation.tarif_pilote', 20)
+            ->call('confirmedAction')
+            ->assertHasErrors([
+                'reservation.encaisse_pilote',
+                'reservation.encompte_pilote'
+            ]);
+
+        \Event::assertNotDispatched(ReservationConfirmed::class);
+    }
+
+    public function testConfirmedReservationErrorEncaisseEncompte()
+    {
+        \Event::fake();
+
+        $reservation = Reservation::find(1);
+        $pilote = Pilote::find(1);
+
+        Livewire::test(ReservationShow::class, ['reservation' => $reservation])
+            ->set('reservation.pilote_id', $pilote->id)
+            ->set('reservation.tarif_pilote', 200)
+            ->set('reservation.encaisse_pilote', 200)
+            ->set('reservation.encompte_pilote', 200)
+            ->call('confirmedAction')
+            ->assertHasErrors([
+                'reservation.encaisse_pilote',
+                'reservation.encompte_pilote'
+            ]);
+
+        \Event::assertNotDispatched(ReservationConfirmed::class);
+    }
+
+    public function testConfirmedReservationErrorTarifNotEqualToEncaisse()
+    {
+        \Event::fake();
+
+        $reservation = Reservation::find(1);
+        $pilote = Pilote::find(1);
+
+        Livewire::test(ReservationShow::class, ['reservation' => $reservation])
+            ->set('reservation.pilote_id', $pilote->id)
+            ->set('reservation.tarif_pilote', 200)
+            ->set('reservation.encaisse_pilote', 20000)
+            ->set('reservation.encompte_pilote', 0)
+            ->call('confirmedAction')
+            ->assertHasErrors([
+                'reservation.encaisse_pilote'
+            ]);
+
+        \Event::assertNotDispatched(ReservationConfirmed::class);
+    }
+
+    public function testConfirmedReservationErrorTarifNotEqualToEncompte()
+    {
+        \Event::fake();
+
+        $reservation = Reservation::find(1);
+        $pilote = Pilote::find(1);
+
+        Livewire::test(ReservationShow::class, ['reservation' => $reservation])
+            ->set('reservation.pilote_id', $pilote->id)
+            ->set('reservation.tarif_pilote', 200)
+            ->set('reservation.encaisse_pilote', 0)
+            ->set('reservation.encompte_pilote', 20000)
+            ->call('confirmedAction')
+            ->assertHasErrors([
+                'reservation.encompte_pilote'
+            ]);
+
+        \Event::assertNotDispatched(ReservationConfirmed::class);
+    }
+
+    public function testReservationWithTarifOk()
+    {
+        \Event::fake();
+
+        $reservation = Reservation::find(1);
+        $pilote = Pilote::find(1);
+
+        Livewire::test(ReservationShow::class, ['reservation' => $reservation])
+            ->set('reservation.pilote_id', $pilote->id)
+            ->set('reservation.tarif_pilote', 200)
+            ->set('reservation.encaisse_pilote', 0)
+            ->set('reservation.encompte_pilote', 200)
+            ->call('confirmedAction')
+            ->assertHasNoErrors();
+
+        \Event::assertDispatched(ReservationConfirmed::class);
     }
 
     public function testReservationCancelOk(): void
@@ -667,5 +774,57 @@ class ReservationTest extends TestCase
         ]);
 
         \Mail::assertSent(ReservationUpdated::class);
+    }
+
+    public function testCanceledPayReservation()
+    {
+        \Event::fake();
+
+        $reservation = Reservation::find(1);
+
+        Livewire::test(ReservationShow::class, [
+            'reservation' => $reservation
+        ])
+            ->call('cancelBilledAction')
+            ->assertStatus(200)
+            ->assertHasNoErrors();
+
+        \Event::assertDispatched(\App\Events\ReservationCanceledPay::class);
+
+        $this->assertDatabaseHas('reservations', [
+            'reference' => $reservation->reference,
+            'statut' => ReservationStatus::CanceledToPay->value
+        ]);
+    }
+
+    public function testUpdateTarifReservationOk()
+    {
+        $reservation = Reservation::factory([
+            'statut' => ReservationStatus::Confirmed,
+            'tarif_pilote' => 200,
+            'encaisse_pilote' => 0,
+            'encompte_pilote' => 200,
+            'pilote_id' => 1,
+            'entreprise_id' => 1,
+            'passager_id' => 1,
+            'localisation_from_id' => 1,
+            'localisation_to_id' => 2
+        ])->create();
+
+        Livewire::test(ReservationShow::class, ['reservation' => $reservation])
+            ->set('reservation.pilote_id', 1)
+            ->set('reservation.tarif_pilote', 300)
+            ->set('reservation.encaisse_pilote', 0)
+            ->set('reservation.encompte_pilote', 300)
+            ->set('reservation.calendar_passager_invitation', true)
+            ->set('reservation.calendar_user_invitation', true)
+            ->call('updatePilote')
+            ->assertHasNoErrors()
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('reservations', [
+            'reference' => $reservation->reference,
+            'tarif_pilote' => 300
+        ]);
     }
 }

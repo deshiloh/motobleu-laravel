@@ -65,7 +65,7 @@
                 </x-datatable.tr>
             @empty
                 <tr>
-                    <x-datatable.td class="text-center" colspan="5">
+                    <x-datatable.td class="text-center" colspan="6">
                         Aucune adresse de réservation
                     </x-datatable.td>
                 </tr>

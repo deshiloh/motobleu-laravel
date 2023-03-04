@@ -67,7 +67,6 @@ class RecapReservationPilote extends Component
     {
         $validator = Validator::make($datas, [
             'tarif' => 'required',
-            'majoration' => 'nullable',
             'encaisse' => 'nullable',
             'encompte' => 'nullable',
             'comment' => 'nullable',
@@ -76,6 +75,14 @@ class RecapReservationPilote extends Component
 
         $validator->after(function (\Illuminate\Validation\Validator $validator) {
             $datas = $validator->getData();
+
+            if (is_null($datas['encaisse']) && is_null($datas['encompte'])) {
+                $validator->errors()->add(
+                    'encompte', 'En compte et encaisse doivent être renseigné'
+                );
+                return false;
+            }
+
             if ($datas['encaisse'] > 0 && $datas['encompte'] > 0) {
                 $validator->errors()->add(
                     'encompte', 'Encompte et encaisse ne peuvent pas avoir de valeurs en même temps'
@@ -83,20 +90,17 @@ class RecapReservationPilote extends Component
                 return false;
             }
 
-            $totalWithEncaisse = $datas['majoration'] + $datas['encaisse'];
-            $totalWithEncompte = $datas['majoration'] + $datas['encompte'];
-
-            if ($datas['encaisse'] > 0 && $datas['tarif'] != $totalWithEncaisse) {
+            if ($datas['encaisse'] > 0 && $datas['tarif'] != $datas['encaisse']) {
                 $validator->errors()->add(
-                    'encaisse', 'Le total encaisse et majoration ne corresponds pas au tarif'
+                    'encaisse', "Le montant n'est pas correct"
                 );
 
                 return false;
             }
 
-            if ($datas['encompte'] > 0 && $datas['tarif'] != $totalWithEncompte) {
+            if ($datas['encompte'] > 0 && $datas['tarif'] != $datas['encompte']) {
                 $validator->errors()->add(
-                    'encaisse', 'Le total en compte et majoration ne corresponds pas au tarif'
+                    'encaisse', "Le montant n'est pas correct"
                 );
 
                 return false;
@@ -112,7 +116,6 @@ class RecapReservationPilote extends Component
         $reservation = Reservation::find($datas['reservation']);
         $reservation->updateQuietly([
             'tarif_pilote' => $datas['tarif'],
-            'majoration_pilote' => $datas['majoration'],
             'encaisse_pilote' => $datas['encaisse'],
             'encompte_pilote' => $datas['encompte'],
             'comment_pilote' => $datas['comment'],

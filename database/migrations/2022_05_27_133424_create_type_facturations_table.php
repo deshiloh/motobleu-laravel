@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('type_facturations', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
+            $table->boolean('is_actif')
+                ->default(true);
 
             $table->timestamps();
         });

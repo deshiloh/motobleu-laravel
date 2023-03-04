@@ -11,30 +11,28 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ReservationConfirmed
+class ReservationCanceledPay
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Reservation $reservation;
-    public string $message;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Reservation $reservation, string $message)
+    public function __construct(Reservation $reservation)
     {
         $this->reservation = $reservation;
-        $this->message = $message;
     }
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return Channel|array
+     * @return Channel|PrivateChannel
      */
-    public function broadcastOn()
+    public function broadcastOn(): Channel|PrivateChannel
     {
         return new PrivateChannel('channel-name');
     }

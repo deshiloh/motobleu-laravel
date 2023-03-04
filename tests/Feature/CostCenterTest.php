@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\CostCenter\CostCenterDataTable;
 use App\Http\Livewire\CostCenter\CostCenterForm;
 use App\Models\CostCenter;
 use App\Models\User;
@@ -85,12 +86,35 @@ class CostCenterTest extends TestCase
         $this->assertTrue(CostCenter::where('nom', 'test')->exists());
     }
 
-    public function testCanDeleteCostCenter()
+    public function testDisableCostCenter()
     {
-        $response = $this->delete(route('admin.costcenter.destroy', ['costcenter' => $this->costCenter->id]));
+        $costCenter = CostCenter::factory()->create();
 
-        $response->assertStatus(302);
-        $response->assertRedirect(route('admin.costcenter.index'));
-        $this->assertDatabaseMissing('cost_centers', $this->costCenter->toArray());
+        Livewire::test(CostCenterDataTable::class)
+            ->call('toggleStatutCostCenter', $costCenter)
+            ->assertStatus(200)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('cost_centers', [
+            'nom' => $costCenter->nom,
+            'is_actif' => 0
+        ]);
+    }
+
+    public function testEnableCostCenter()
+    {
+        $costCenter = CostCenter::factory([
+            'is_actif' => false
+        ])->create();
+
+        Livewire::test(CostCenterDataTable::class)
+            ->call('toggleStatutCostCenter', $costCenter)
+            ->assertStatus(200)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('cost_centers', [
+            'nom' => $costCenter->nom,
+            'is_actif' => 1
+        ]);
     }
 }

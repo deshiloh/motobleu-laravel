@@ -33,7 +33,7 @@
                     <x-datatable.td>
                         <div class="flex space-x-2">
                             <x-button.circle icon="pencil" info href="{{ route('admin.costcenter.edit', ['costCenter' => $costcenter->id]) }}" />
-                            <x-button.circle icon="trash" red route="{{ route('admin.costcenter.destroy', ['costcenter' => $costcenter->id]) }}" />
+                            <x-button.circle icon="trash" red wire:click="toggleStatutCostCenter({{ $costcenter }})" />
                          </div>
                     </x-datatable.td>
                 </x-datatable.tr>

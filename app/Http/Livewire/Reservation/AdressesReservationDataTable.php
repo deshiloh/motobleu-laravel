@@ -21,10 +21,10 @@ class AdressesReservationDataTable extends Component
     public function render(): Factory|View|Application
     {
         return view('livewire.reservation.adresses-reservation-data-table', [
-            'adresses' => AdresseReservation::when($this->search, function (Builder $query, $search) {
-                $query->where('adresse', 'LIKE', '%'.$search.'%');
+            'adresses' => AdresseReservation::whereHas('user', function (Builder $query) {
+                $query->where('nom', 'LIKE', '%'.$this->search.'%');
             })
-                ->with('user')
+                ->orWhere('adresse', 'LIKE', '%'.$this->search.'%')
                 ->orderBy('adresse')
                 ->paginate($this->perPage)
         ]);

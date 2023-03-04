@@ -38,7 +38,7 @@ class ReservationDataTable extends Component
     {
         $reservations = Reservation::query()
             ->when($this->search, function (Builder $query, $search) {
-                return $query->where('reference', 'like', $search . '%');
+                return $query->where('reference', 'like', '%'.$search . '%');
             })
             ->orderBy($this->sortField, $this->sortDirection);
 

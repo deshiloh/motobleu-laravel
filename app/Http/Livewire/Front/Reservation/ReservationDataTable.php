@@ -6,6 +6,7 @@ use App\Mail\CancelReservationDemand;
 use App\Mail\UpdateReservationDemand;
 use App\Models\Reservation;
 use App\Traits\WithSorting;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -76,10 +77,18 @@ class ReservationDataTable extends Component
     public function sendCancelReservationEmail()
     {
         try {
+            if (is_null($this->selectedReservation)) {
+                throw new \Exception("Erreur pendant l'envoi de l'annulation");
+            }
             Mail::to(config('mail.admin.address'))
                 ->send(new CancelReservationDemand($this->selectedReservation, \Auth::user()));
 
             $this->closeModal();
+
+            $this->notification()->success(
+                "Opération réussite",
+                "Votre envoi d'annulation a bien été envoyée."
+            );
         } catch (\Exception $exception) {
             $this->handleError($exception);
         }
@@ -110,11 +119,16 @@ class ReservationDataTable extends Component
             $description = 'Une erreur est survenue pendant votre demande, veuillez essayer ultérieurement'
         );
 
-        if (config('app.env') == 'local') {
+        if (\App::environment(['beta', 'prod'])) {
+            Log::channel('sentry')->error("Une erreur s'est produite", [
+                'exception' => $exception,
+                'selectedReservation' => $this->selectedReservation
+            ]);
+        }
+
+        if (\App::environment(['local'])) {
+            ray($this->selectedReservation);
             ray()->exception($exception);
-        } else {
-            // TODO Mettre en place Sentry
-            return false;
         }
     }
 }

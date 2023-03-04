@@ -4,6 +4,7 @@
         <x-slot name="headers">
             <tr>
                 <x-datatable.th sortable wire:click="sortBy('nom')" :direction="$sortDirection">Nom</x-datatable.th>
+                <x-datatable.th>État</x-datatable.th>
                 <x-datatable.th>Actions</x-datatable.th>
             </tr>
         </x-slot>
@@ -12,9 +13,14 @@
                 <x-datatable.tr>
                     <x-datatable.td>{{ $typefacturation->nom }}</x-datatable.td>
                     <x-datatable.td>
+                        <x-front.badge :success="$typefacturation->is_actif" :danger="!$typefacturation->is_actif">
+                            {{ $typefacturation->is_actif ? "Actif" : "Non actif" }}
+                        </x-front.badge>
+                    </x-datatable.td>
+                    <x-datatable.td>
                         <div class="flex space-x-2">
                             <x-button.circle icon="pencil" info href="{{ route('admin.typefacturation.edit',['typefacturation' => $typefacturation]) }}" />
-                            <x-button.circle icon="trash" red route="{{ route('admin.typefacturation.destroy', ['typefacturation' => $typefacturation->id]) }}" />
+                            <x-button.circle icon="trash" red wire:click="toggleEtatTypeFacturation({{ $typefacturation }})" />
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>

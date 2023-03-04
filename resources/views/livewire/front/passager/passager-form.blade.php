@@ -1,6 +1,5 @@
 @php
     $billSettings = app(\app\Settings\BillSettings::class);
-ray(Auth::user()->entreprises()->first())
 @endphp
 <div>
     <x-front.card>

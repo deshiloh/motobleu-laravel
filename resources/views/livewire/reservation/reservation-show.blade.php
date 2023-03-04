@@ -5,15 +5,21 @@
         <x-slot:right>
             <div class="flex items-center justify-center space-x-2">
                 @if(!is_null($reservation->event_id))
-                    <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled"/>
+                    <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled" />
                 @endif
-                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled"/>
-                @if($reservation == \App\Enum\ReservationStatus::Canceled || $reservation == \App\Enum\ReservationStatus::CanceledToPay)
-                    <x-button warning label="Confirmer" icon="credit-card" wire:loading.attr="disabled" wire:click="confirmedStatusAction" spinner="confirmedStatusAction"/>
+
+                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled" />
+
+                @if($reservation->statut == \App\Enum\ReservationStatus::Canceled || $reservation->statut == \App\Enum\ReservationStatus::CanceledToPay)
+                    <x-button positive label="Confirmer" icon="check" wire:loading.attr="disabled" wire:click="confirmedStatusAction" spinner="confirmedStatusAction" />
                 @endif
+
+                @if($reservation->statut != \App\Enum\ReservationStatus::CanceledToPay)
+                    <x-button warning label="Annuler mais facturer" icon="credit-card" wire:loading.attr="disabled" wire:click="cancelToPayAskAction" spinner="cancelBilledAction" />
+                @endif
+
                 @if($reservation->statut != \App\Enum\ReservationStatus::Canceled)
-                    <x-button warning label="Annuler mais facturer" icon="credit-card" wire:loading.attr="disabled" wire:click="cancelToPayAskAction" spinner="cancelBilledAction"/>
-                    <x-button wire:click="cancelAskAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction" spinner="cancelAction"/>
+                    <x-button wire:click="cancelAskAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction" spinner="cancelAction" />
                 @endif
             </div>
         </x-slot:right>
@@ -84,7 +90,6 @@
         <x-center-bloc>
             <div class="space-y-4 bg-white p-4 rounded-lg border border-gray-200">
                 <div class="block text-xl dark:text-white">Formulaire de confirmation</div>
-                @csrf
                 <x-select
                     label="Pilote"
                     placeholder="Sélectionner un pilote"
@@ -94,24 +99,32 @@
                     option-description="email"
                     wire:model.defer="reservation.pilote_id"
                 />
-                <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <div class="dark:text-white">Emails de confirmation</div>
-                        <div class="space-y-3 mt-3">
-                            <x-toggle wire:model="reservation.send_to_user" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
-                            <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
+                @if($reservation->statut == \App\Enum\ReservationStatus::Created)
+                    <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <div class="dark:text-white">Emails de confirmation</div>
+                            <div class="space-y-3 mt-3">
+                                <x-toggle wire:model="reservation.send_to_user" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
+                                <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
+                            </div>
+                        </div>
+                        <div>
+                            <div class="dark:text-white">Invitation Google Calendar</div>
+                            <div class="space-y-3 mt-3">
+                                <x-toggle wire:model.defer="reservation.calendar_user_invitation" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
+                                <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <div class="dark:text-white">Invitation Google Calendar</div>
-                        <div class="space-y-3 mt-3">
-                            <x-toggle wire:model.defer="reservation.calendar_user_invitation" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
-                            <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
-                        </div>
-                    </div>
-                </div>
-                @if($reservation->pilote()->exists())
+                @endif
+
+                <x-input label="Tarif pilote" wire:model.defer="reservation.tarif_pilote" type="number" />
+                <x-input label="Encaisse pilote" wire:model.defer="reservation.encaisse_pilote" type="number" />
+                <x-input label="En compte pilote" wire:model.defer="reservation.encompte_pilote" type="number" />
+                <x-textarea label="Commentaire" wire:model.defer="reservation.comment_pilote" />
+
+                @if($reservation->pilote()->exists() && $reservation->statut >= \App\Enum\ReservationStatus::Confirmed)
                     <x-button label="Mettre à jour le pilote" primary sm wire:loading.attr="disabled" wire:click="updatePilote" spinner="updatePilote"/>
                 @else
                     <x-button label="Valider et envoyer le message" primary sm wire:click="confirmedAction" spinner="confirmedAction"/>
