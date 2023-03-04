@@ -9,7 +9,7 @@
         <div class="pb-3 border-b border-gray-200 dark:border-gray-600 sm:flex sm:items-center sm:justify-between">
             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Liste des réservations</h3>
             <div class="mt-3 sm:mt-0 sm:ml-4">
-                <x-button label="Exporter" icon="download" sm primary wire:click="exportReservations" spinner="exportReservations"/>
+                <x-button label="Exporter" icon="download" sm primary wire:click="exportReservations" spinner="exportReservations" />
             </div>
         </div>
         <div class="py-3 grid grid-cols-3 gap-6">
@@ -28,7 +28,7 @@
                 wire:model.defer="dateFin"
             />
             <div class="flex items-end">
-                <x-button label="Rechercher" primary wire:click="searchReservations"/>
+                <x-button label="Rechercher" primary wire:click="searchReservations" />
             </div>
         </div>
         <x-datatable>

@@ -165,6 +165,12 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                     'fill' => [
                         'fillType' => Fill::FILL_SOLID,
                         'startColor' => ['argb' => 'FFE0E0E0'],
+                    ],
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['argb' => Color::COLOR_BLACK]
+                        ]
                     ]
                 ];
             }
