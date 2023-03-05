@@ -42,8 +42,6 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
      */
     private array|\Illuminate\Database\Eloquent\Collection $reservations;
 
-    private int $indexFooter;
-
     public function __construct(array $period, Pilote $pilote)
     {
         $this->period = $period;
@@ -59,8 +57,6 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             ->whereBetween('pickup_date', $period)
             ->orderBy('pickup_date', 'desc')
             ->get();
-
-        $this->indexFooter = $this->indexDepart + $this->reservations->count() + 2;
     }
 
     public function collection()
@@ -82,9 +78,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             $row->display_to,
             $row->tarif_pilote,
             $row->comment_pilote,
-            $row->majoration_pilote,
             $row->encaisse_pilote,
-            $row->encaisse_pilote,
+            $row->encompte_pilote,
             $row->reference
         ];
     }
@@ -99,7 +94,6 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             'Arrivée',
             'Tarif',
             'Commentaire',
-            'Majoration',
             'Encaisse',
             'Encompte',
             'Course N°'

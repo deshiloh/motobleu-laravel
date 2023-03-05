@@ -54,23 +54,14 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         $this->billSettings = app(BillSettings::class);
         $this->datePeriod = Carbon::create($year, $month, '1');
 
-        $htTextColumn = 'H';
-        $tvaTextColumn = 'H';
-        $ttcTextColumn = 'H';
+        $htTextColumn = 'I';
+        $tvaTextColumn = 'I';
+        $ttcTextColumn = 'I';
 
-        $this->priceColumn = 'I';
-        $this->lastColumn = 'I';
+        $this->priceColumn = 'J';
+        $this->lastColumn = 'J';
         $this->entreprise = $entreprise;
         $this->reservations = $this->getReservations();
-
-        if (in_array($this->entreprise->id, $this->billSettings->entreprises_command_field)) {
-            $this->priceColumn = 'J';
-            $this->lastColumn = 'J';
-
-            $htTextColumn = 'I';
-            $tvaTextColumn = 'I';
-            $ttcTextColumn = 'I';
-        }
 
         if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
             $this->lastColumn = 'K';
@@ -205,6 +196,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
     {
         $headers = [
             'Course N°',
+            'Code',
             'Secrétaire',
             'Date',
             'Client',
@@ -214,12 +206,6 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             'Commentaires',
             'Prix TTC (en €)',
         ];
-
-        if (in_array($this->entreprise->id, $this->billSettings->entreprises_command_field)) {
-            array_splice($headers, 1, 0, [
-                'Code'
-            ]);
-        }
 
         if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
             array_push($headers, 'Facturation', 'COST CENTER');
@@ -336,6 +322,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
     {
         $datas = [
             $row->reference,
+            $row->commande,
             $row->passager->user->full_name,
             $row->pickup_date->format('d/m/Y'),
             $row->passager->nom,
@@ -345,12 +332,6 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             $row->comment,
             $row->tarif,
         ];
-
-        if (in_array($this->entreprise->id, $this->billSettings->entreprises_command_field)) {
-            array_splice($datas, 1, 0, [
-                'CODE'
-            ]);
-        }
 
         if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
             array_push($datas, $row->passager->typeFacturation->nom ?? 'NC', $row->passager->costCenter->nom ?? 'NC');

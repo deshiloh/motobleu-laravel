@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\Console\Command\Command as CommandAlias;
@@ -131,7 +132,7 @@ class ImportOldData extends Command
                 );
         }
 
-        $prodConnecion = \Illuminate\Support\Facades\DB::connection('prod');
+        $prodConnecion = DB::connection('prod');
 
         // Création des entreprises
         $prodConnecion->table('entreprise')->orderBy('id', 'asc')->chunk(100, function ($entreprises) {
@@ -147,11 +148,11 @@ class ImportOldData extends Command
         $prodConnecion->table('user')->orderBy('id', 'asc')->select(['id', 'nom', 'email', 'prenom', 'entreprise_id'])->chunk(100, function ($users) {
             $users->map(function($user) {
                 try {
-                    $idInsert = \Illuminate\Support\Facades\DB::table('users')->insertGetId([
+                    $idInsert = DB::table('users')->insertGetId([
                         'id' => $user->id,
                         'nom' => $user->nom,
                         'prenom' => $user->prenom,
-                        'password' => \Illuminate\Support\Facades\Hash::make('test'),
+                        'password' => Hash::make('test'),
                         'email' => $user->email
                     ]);
 
@@ -159,6 +160,7 @@ class ImportOldData extends Command
                     $user = User::find($idInsert);
                     switch ($user->email) {
                         case 'm.alvarez.iglisias@gmail.com':
+                        case 'contact@motobleu-paris.com':
                             $user->assignRole('super admin');
                             break;
                         default :

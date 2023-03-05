@@ -66,35 +66,35 @@ class EmailSettingsForm extends Component
                 break;
             case $this->cleanClassName(ReservationCreated::class) :
                 \Mail::to($this->emailTest)
-                    ->send(new ReservationCreated(Reservation::find(1), $this->adminMode));
+                    ->send(new ReservationCreated(Reservation::take(1)->first(), $this->adminMode));
                 break;
             case $this->cleanClassName(ReservationUpdated::class) :
                 \Mail::to($this->emailTest)
-                    ->send(new ReservationUpdated(Reservation::find(1)));
+                    ->send(new ReservationUpdated(Reservation::take(1)->first()));
                 break;
             case $this->cleanClassName(ReservationConfirmed::class) :
                 Mail::to($this->emailTest)
-                    ->send(new ReservationConfirmed(Reservation::find(1)));
+                    ->send(new ReservationConfirmed(Reservation::take(1)->first()));
                 break;
             case $this->cleanClassName(ReservationCanceled::class) :
                 Mail::to($this->emailTest)
-                    ->send(new ReservationCanceled(Reservation::find(1)));
+                    ->send(new ReservationCanceled(Reservation::take(1)->first()));
                 break;
             case $this->cleanClassName(CancelReservationDemand::class) :
                 Mail::to($this->emailTest)
-                    ->send(new CancelReservationDemand(Reservation::find(1), \Auth::user()));
+                    ->send(new CancelReservationDemand(Reservation::take(1)->first(), \Auth::user()));
                 break;
             case $this->cleanClassName(UpdateReservationDemand::class) :
                 Mail::to($this->emailTest)
-                    ->send(new UpdateReservationDemand(Reservation::find(1), "Ici sera affiché le contenu du message renseigné par l'assistante."));
+                    ->send(new UpdateReservationDemand(Reservation::take(1)->first(), "Ici sera affiché le contenu du message renseigné par l'assistante."));
                 break;
             case $this->cleanClassName(PiloteAttached::class) :
                 Mail::to($this->emailTest)
-                    ->send(new PiloteAttached(Reservation::find(1)));
+                    ->send(new PiloteAttached(Reservation::take(1)->first()));
                 break;
             case $this->cleanClassName(PiloteDetached::class) :
                 Mail::to($this->emailTest)
-                    ->send(new PiloteDetached(Reservation::find(1)));
+                    ->send(new PiloteDetached(Reservation::take(1)->first()));
                 break;
         }
     }

@@ -32,19 +32,6 @@
                         placeholder="Sélectionnez une ou plusieurs entreprises"
                     />
                 </div>
-
-                <div class="col-span-12 sm:col-span-7">
-                    <x-select
-                        label="Entreprises éligible au champ numéro de commande"
-                        :async-data="route('api.entreprises')"
-                        multiselect
-                        option-label="nom"
-                        option-value="id"
-                        wire:model="entreprisesCode"
-                        hint="Pour les entreprises sélectionnées, le champ numéro de commande sera disponible sur le formulaire de réservation, qui sera représenté par la colonne CODE dans la facturations."
-                        placeholder="Sélectionnez une ou plusieurs entreprises"
-                    />
-                </div>
             </div>
         </div>
 
