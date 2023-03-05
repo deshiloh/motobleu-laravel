@@ -13,7 +13,7 @@ use Laravel\Scout\Searchable;
  */
 class AdresseReservation extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory;
 
     protected $guarded = [];
 

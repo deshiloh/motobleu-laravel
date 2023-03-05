@@ -18,7 +18,7 @@ use Spatie\GoogleCalendar\Event;
  */
 class Reservation extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory;
 
     protected $guarded = [];
 

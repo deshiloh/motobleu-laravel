@@ -13,7 +13,7 @@ use Laravel\Scout\Searchable;
  */
 class Passager extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory;
 
     protected $guarded = [];
 
@@ -47,12 +47,5 @@ class Passager extends Model
     public function typeFacturation(): BelongsTo
     {
         return $this->belongsTo(TypeFacturation::class);
-    }
-
-    public function toSearchableArray(): array
-    {
-        return [
-            'nom'
-        ];
     }
 }
