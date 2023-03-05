@@ -7,13 +7,12 @@ use App\Models\Pilote;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithDefaultStyles;
-use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -30,7 +29,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize, WithStyles, WithCustomStartCell, WithEvents, WithDefaultStyles, WithColumnFormatting
+class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize, WithStyles, WithCustomStartCell, WithEvents, WithColumnFormatting
 {
     private array $period;
     private Pilote $pilote;
@@ -39,9 +38,9 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
     private string $lastColumn;
 
     /**
-     * @var Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @var Builder[]|Collection
      */
-    private array|\Illuminate\Database\Eloquent\Collection $reservations;
+    private array|Collection $reservations;
 
     public function __construct(array $period, Pilote $pilote)
     {
@@ -157,6 +156,10 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
             if ($i % 2 == 0) {
                 $styles[$i] = [
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER,
+                    ],
                     'fill' => [
                         'fillType' => Fill::FILL_SOLID,
                         'startColor' => ['argb' => 'FFE0E0E0'],
@@ -300,17 +303,22 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
                 // COM Cell
                 $comCell = 'C' . $index + 1;
-                $sheet->getSheet()->getCell('C' . $index)->setValue(
+                $comLabelle = $sheet->getSheet()->getCell('C' . $index);
+                $comLabelle->setValue(
                     'COM 15%'
                 );
+                $comLabelle->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $sheet->getSheet()->getCell('C' . $index + 1)->setValue(
                     '=(A'. $index + 1 .') * 0.15'
                 );
 
                 // Encaisse Cell
-                $sheet->getSheet()->getCell('E' . $index)->setValue(
+                $enCaisseLabelle = $sheet->getSheet()->getCell('E' . $index);
+                $enCaisseLabelle->setValue(
                     'ENCAISSE'
                 );
+                $enCaisseLabelle->getStyle()->getAlignment()
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $encaisseValue = $sheet->getSheet()->getCell('E' . $index + 1);
                 $encaisseValue->setValue(
                     sprintf('=SUM(%s)', $this->encaisseColumns())
@@ -321,9 +329,12 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
                 // Encompte Cell
                 $encompteCell = 'G' . $index + 1;
-                $sheet->getSheet()->getCell('G' . $index)->setValue(
+                $enCompteLabelle = $sheet->getSheet()->getCell('G' . $index);
+                $enCompteLabelle->setValue(
                     'EN COMPTE'
                 );
+                $enCompteLabelle->getStyle()->getAlignment()
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $encompteValue = $sheet->getSheet()->getCell('G' . $index + 1);
                 $encompteValue->setValue(
                     sprintf('=SUM(%s)', $this->encompteColumns())
@@ -371,16 +382,6 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $drawing->setCoordinates('A' . $this->indexDepart + $this->reservations->count() + 7);
                 $drawing->setWorksheet($sheet->getSheet()->getDelegate());
             }
-        ];
-    }
-
-    public function defaultStyles(Style $defaultStyle): array
-    {
-        return [
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER,
-            ],
         ];
     }
 
