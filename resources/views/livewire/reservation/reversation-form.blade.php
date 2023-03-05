@@ -19,7 +19,7 @@
             </x-bloc-content>
         @endif
         <x-bloc-content>
-            <x-input label="Numéro de commande" class="mb-3" wire:model.defer="reservation.commande"/>
+            <x-input label="Numéro De commande / Case code" class="mb-3" wire:model.defer="reservation.commande"/>
             <div class="space-y-3">
                 <x-select
                     label="Secrétaire *"

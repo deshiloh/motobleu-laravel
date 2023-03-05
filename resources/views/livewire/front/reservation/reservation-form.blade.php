@@ -23,15 +23,17 @@
             </div>
         </x-front.card>
         <x-front.card>
-
-            <x-select
-                label="{{ __('Entreprise rattachée') }} *"
-                placeholder="{{ __('Sélectionner une entreprise') }}"
-                :async-data="route('api.entreprises_users', ['userId' => $userId])"
-                option-label="nom"
-                option-value="id"
-                wire:model="reservation.entreprise_id"
-            />
+            <div class="space-y-3">
+                <x-input label="{{ __('Numéro de commande / Case code') }}" wire:model="reservation.commande" />
+                <x-select
+                    label="{{ __('Entreprise rattachée') }} *"
+                    placeholder="{{ __('Sélectionner une entreprise') }}"
+                    :async-data="route('api.entreprises_users', ['userId' => $userId])"
+                    option-label="nom"
+                    option-value="id"
+                    wire:model="reservation.entreprise_id"
+                />
+            </div>
 
         </x-front.card>
         <x-front.card>

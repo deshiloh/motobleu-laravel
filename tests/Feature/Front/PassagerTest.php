@@ -32,8 +32,7 @@ class PassagerTest extends TestCase
 
         BillSettings::fake([
             'entreprises_xls_file' => [1],
-            'entreprises_cost_center_facturation' => [1],
-            'entreprises_command_field' => [1],
+            'entreprises_cost_center_facturation' => [1]
         ]);
     }
 
