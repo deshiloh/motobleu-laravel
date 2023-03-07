@@ -119,7 +119,6 @@
                     </div>
                 @endif
 
-                <x-input label="Tarif pilote" wire:model.defer="reservation.tarif_pilote" type="number" />
                 <x-input label="Encaisse pilote" wire:model.defer="reservation.encaisse_pilote" type="number" />
                 <x-input label="En compte pilote" wire:model.defer="reservation.encompte_pilote" type="number" />
                 <x-textarea label="Commentaire" wire:model.defer="reservation.comment_pilote" />

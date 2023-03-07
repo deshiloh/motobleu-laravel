@@ -63,7 +63,7 @@ class Reservation extends Model
 
     public function totalTarifPilote()
     {
-        return $this->tarif_pilote + $this->majoration_pilote;
+        return $this->encaisse_pilote + $this->encompte_pilote;
     }
 
     /**

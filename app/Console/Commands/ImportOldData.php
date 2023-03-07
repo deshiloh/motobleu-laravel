@@ -266,7 +266,7 @@ class ImportOldData extends Command
             DB::table('factures')->insertOrIgnore((array)json_decode(json_encode($factures->toArray()), true));
         });
 
-        $prodConnecion->table('reservation')->orderBy('id', 'asc')->chunk(100, function ($reservations) {
+        $prodConnecion->table('reservation')->orderBy('id')->chunk(100, function ($reservations) {
             $reservations = $reservations->map(fn($item) => [
                 'id' => $item->id,
                 'statut' => $this->getEtatValue($item),
@@ -275,6 +275,8 @@ class ImportOldData extends Command
                 'pickup_origin' => $item->pick_up_origin,
                 'drop_off_origin' => $item->dropp_of_origin,
                 'comment' => $item->comment,
+                'encaisse_pilote' => $item->encaisse_pilote ?? 0,
+                'encompte_pilote' => $item->encompte_pilote ?? 0,
                 'tarif' => $item->prix,
                 'majoration' => $item->majoration,
                 'complement' => $item->complement,

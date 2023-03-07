@@ -49,7 +49,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
         $this->indexDepart = 13;
 
-        $this->lastColumn = 'J';
+        $this->lastColumn = 'I';
 
         $this->reservations = Reservation::query()
             ->where('pilote_id', $pilote->id)
@@ -76,7 +76,6 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             $row->passager->nom,
             $row->display_from,
             $row->display_to,
-            $row->tarif_pilote,
             $row->comment_pilote,
             $row->encaisse_pilote,
             $row->encompte_pilote,
@@ -92,7 +91,6 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             'Passager',
             'Départ',
             'Arrivée',
-            'Tarif',
             'Commentaire',
             'Encaisse',
             'Encompte',
@@ -174,7 +172,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             }
         }
 
-        foreach (['B', 'D', 'F', 'H', 'J'] as $column) {
+        foreach (['B', 'D', 'F', 'H'] as $column) {
             $styles[$column . $this->indexDepart + $this->reservations->count() + 2] = [
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
@@ -183,7 +181,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             ];
         }
 
-        foreach (['B', 'D', 'F', 'H', 'J'] as $column) {
+        foreach (['B', 'D', 'F', 'H'] as $column) {
             $styles[$column . $this->indexDepart + $this->reservations->count() + 3] = [
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
@@ -196,7 +194,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
         for ($i = $start; $i <= $start + 4; $i++) {
             $index = sprintf('A%s:%s%s',
                 $i,
-                'J',
+                $this->lastColumn,
                 $i
             );
             $styles[$index] = [
@@ -268,7 +266,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
                 // Total Encaisse
                 $index = $this->indexDepart + $this->reservations->count() + 1;
-                $sheet->getSheet()->getCell('H' . $index)->setValue(
+                $sheet->getSheet()->getCell('G' . $index)->setValue(
                     sprintf(
                         '=SUM(%s)',
                         $this->encaisseColumns()
@@ -276,7 +274,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 );
 
                 // Total encompte
-                $sheet->getSheet()->getCell('I' . $index)->setValue(
+                $sheet->getSheet()->getCell('H' . $index)->setValue(
                     sprintf(
                         '=SUM(%s)',
                         $this->encompteColumns()
@@ -297,6 +295,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                         'E' . $index + 1 . ':G' . $index + 1
                     )
                 );
+                $caValueCell->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $caValueCell->getStyle()
                     ->getNumberFormat()
                     ->setFormatCode(NumberFormat::FORMAT_CURRENCY_EUR);
@@ -308,9 +307,11 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                     'COM 15%'
                 );
                 $comLabelle->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                $sheet->getSheet()->getCell('C' . $index + 1)->setValue(
+                $comValue = $sheet->getSheet()->getCell('C' . $index + 1);
+                $comValue->setValue(
                     '=(A'. $index + 1 .') * 0.15'
                 );
+                $comValue->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 // Encaisse Cell
                 $enCaisseLabelle = $sheet->getSheet()->getCell('E' . $index);
@@ -323,6 +324,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $encaisseValue->setValue(
                     sprintf('=SUM(%s)', $this->encaisseColumns())
                 );
+                $encaisseValue->getStyle()->getAlignment()
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $encaisseValue->getStyle()
                     ->getNumberFormat()
                     ->setFormatCode(NumberFormat::FORMAT_CURRENCY_EUR);
@@ -342,6 +345,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $encompteValue->getStyle()
                     ->getNumberFormat()
                     ->setFormatCode(NumberFormat::FORMAT_CURRENCY_EUR);
+                $encompteValue->getStyle()->getAlignment()
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 // Total Cell
                 $totalLabel = $sheet->getSheet()->getCell('I' . $index);
@@ -359,6 +364,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                     )
                 );
                 $style = $totalValue->getStyle();
+                $style->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $style->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_EUR);
                 $style->getFont()->getColor()->setRGB(Color::COLOR_RED);
                 $style->getFont()->setBold(true);
@@ -387,7 +393,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
     private function encompteColumns(): string
     {
-        return sprintf('I%s:I%s',
+        return sprintf('H%s:H%s',
             $this->indexDepart,
             $this->indexDepart + $this->reservations->count()
         );
@@ -395,7 +401,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
     private function encaisseColumns(): string
     {
-        return sprintf('H%s:H%s',
+        return sprintf('G%s:G%s',
             $this->indexDepart,
             $this->indexDepart + $this->reservations->count()
         );
