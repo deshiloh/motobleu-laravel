@@ -170,15 +170,14 @@ class PiloteTest extends TestCase
         $pilote = Pilote::find(1);
         Livewire::test(RecapReservationPilote::class, ['pilote' => $pilote])
             ->call('editReservation', [
-                'tarif' => 100,
-                'encaisse' => 0,
+                'encaisse' => 200,
                 'encompte' => 0,
                 'comment' => '',
                 'reservation' => 1
             ]);
 
         $this->assertDatabaseHas('reservations', [
-            'tarif_pilote' => 100
+            'encaisse_pilote' => 200
         ]);
     }
 }

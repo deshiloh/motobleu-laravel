@@ -632,25 +632,6 @@ class ReservationTest extends TestCase
         \Mail::assertSent(PiloteAttached::class);
     }
 
-    public function testConfirmeReservationWithTarifError()
-    {
-        \Event::fake();
-
-        $reservation = Reservation::find(1);
-        $pilote = Pilote::find(1);
-
-        Livewire::test(ReservationShow::class, ['reservation' => $reservation])
-            ->set('reservation.pilote_id', $pilote->id)
-            ->set('reservation.tarif_pilote', 20)
-            ->call('confirmedAction')
-            ->assertHasErrors([
-                'reservation.encaisse_pilote',
-                'reservation.encompte_pilote'
-            ]);
-
-        \Event::assertNotDispatched(ReservationConfirmed::class);
-    }
-
     public function testConfirmedReservationErrorEncaisseEncompte()
     {
         \Event::fake();
@@ -660,52 +641,11 @@ class ReservationTest extends TestCase
 
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
             ->set('reservation.pilote_id', $pilote->id)
-            ->set('reservation.tarif_pilote', 200)
             ->set('reservation.encaisse_pilote', 200)
             ->set('reservation.encompte_pilote', 200)
             ->call('confirmedAction')
             ->assertHasErrors([
                 'reservation.encaisse_pilote',
-                'reservation.encompte_pilote'
-            ]);
-
-        \Event::assertNotDispatched(ReservationConfirmed::class);
-    }
-
-    public function testConfirmedReservationErrorTarifNotEqualToEncaisse()
-    {
-        \Event::fake();
-
-        $reservation = Reservation::find(1);
-        $pilote = Pilote::find(1);
-
-        Livewire::test(ReservationShow::class, ['reservation' => $reservation])
-            ->set('reservation.pilote_id', $pilote->id)
-            ->set('reservation.tarif_pilote', 200)
-            ->set('reservation.encaisse_pilote', 20000)
-            ->set('reservation.encompte_pilote', 0)
-            ->call('confirmedAction')
-            ->assertHasErrors([
-                'reservation.encaisse_pilote'
-            ]);
-
-        \Event::assertNotDispatched(ReservationConfirmed::class);
-    }
-
-    public function testConfirmedReservationErrorTarifNotEqualToEncompte()
-    {
-        \Event::fake();
-
-        $reservation = Reservation::find(1);
-        $pilote = Pilote::find(1);
-
-        Livewire::test(ReservationShow::class, ['reservation' => $reservation])
-            ->set('reservation.pilote_id', $pilote->id)
-            ->set('reservation.tarif_pilote', 200)
-            ->set('reservation.encaisse_pilote', 0)
-            ->set('reservation.encompte_pilote', 20000)
-            ->call('confirmedAction')
-            ->assertHasErrors([
                 'reservation.encompte_pilote'
             ]);
 
@@ -721,7 +661,6 @@ class ReservationTest extends TestCase
 
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
             ->set('reservation.pilote_id', $pilote->id)
-            ->set('reservation.tarif_pilote', 200)
             ->set('reservation.encaisse_pilote', 0)
             ->set('reservation.encompte_pilote', 200)
             ->call('confirmedAction')
@@ -803,7 +742,6 @@ class ReservationTest extends TestCase
     {
         $reservation = Reservation::factory([
             'statut' => ReservationStatus::Confirmed,
-            'tarif_pilote' => 200,
             'encaisse_pilote' => 0,
             'encompte_pilote' => 200,
             'pilote_id' => 1,
@@ -815,7 +753,6 @@ class ReservationTest extends TestCase
 
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
             ->set('reservation.pilote_id', 1)
-            ->set('reservation.tarif_pilote', 300)
             ->set('reservation.encaisse_pilote', 0)
             ->set('reservation.encompte_pilote', 300)
             ->set('reservation.calendar_passager_invitation', true)
@@ -826,7 +763,7 @@ class ReservationTest extends TestCase
 
         $this->assertDatabaseHas('reservations', [
             'reference' => $reservation->reference,
-            'tarif_pilote' => 300
+            'encompte_pilote' => 300
         ]);
     }
 }

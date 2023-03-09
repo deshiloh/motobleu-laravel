@@ -39,9 +39,8 @@
                     <x-datatable.th>Date</x-datatable.th>
                     <x-datatable.th>Départ</x-datatable.th>
                     <x-datatable.th>Arrivée</x-datatable.th>
-                    <x-datatable.th>Client</x-datatable.th>
+                    <x-datatable.th>Passager</x-datatable.th>
                     <x-datatable.th>Validation</x-datatable.th>
-                    <x-datatable.th>Tarif</x-datatable.th>
                     <x-datatable.th>Encaisse</x-datatable.th>
                     <x-datatable.th>Encompte</x-datatable.th>
                     <x-datatable.th>Commentaire</x-datatable.th>
@@ -56,7 +55,7 @@
                     @php
                         $validationAmount = $validationAmount + $reservation->totalTarifPilote();
                     @endphp
-                    <x-datatable.tr :success="$reservation->tarif_pilote > 0"  x-data="formReservationPilote({{ json_encode($reservation) }})" wire:key="{{ $reservation->id }}">
+                    <x-datatable.tr :success="$reservation->totalTarifPilote() > 0"  x-data="formReservationPilote({{ json_encode($reservation) }})" wire:key="{{ $reservation->id }}">
                         <x-datatable.td>
                             <span class="text-blue-500" data-tooltip-target="tooltip-left{{ $reservation->id }}"
                                   data-tooltip-placement="top">{{ $reservation->reference }}</span>
@@ -87,20 +86,17 @@
                         <x-datatable.td>
                             {{ $reservation->display_to }}
                         </x-datatable.td>
-                        <x-datatable.td>{{ $reservation->passager->user->full_name }}</x-datatable.td>
+                        <x-datatable.td>{{ $reservation->passager->nom }}</x-datatable.td>
                         <x-datatable.td>
                             <div class="text-left">
-                                {{ $reservation->tarif_pilote ? number_format($validationAmount, 2, ',', ' ') : 0 }} €
+                                {{ number_format($validationAmount, 2, ',', ' ') }} €
                             </div>
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-input placeholder="Tarif" x-model="formData.tarif" value="{{ $reservation->tarif_pilote }}"/>
+                            <x-input placeholder="Encaisse" x-model="formData.encaisse" value="{{ $reservation->encaisse_pilote }}"/>
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-input placeholder="Encaisse" x-model="formData.encaisse"/>
-                        </x-datatable.td>
-                        <x-datatable.td>
-                            <x-input placeholder="Encompte" x-model="formData.encompte"/>
+                            <x-input placeholder="Encompte" x-model="formData.encompte" value="{{ $reservation->encompte_pilote }}" />
                         </x-datatable.td>
                         <x-datatable.td>
                             <x-textarea placeholder="Commentaire pour le pilote" x-model="formData.comment"/>
@@ -112,7 +108,7 @@
                     </x-datatable.tr>
                 @empty
                     <x-datatable.tr>
-                        <x-datatable.td class="text-center" colspan="10">Aucune réservation</x-datatable.td>
+                        <x-datatable.td class="text-center" colspan="11">Aucune réservation</x-datatable.td>
                     </x-datatable.tr>
                 @endforelse
             </x-slot>
@@ -125,7 +121,6 @@
             function formReservationPilote(reservation) {
                 return {
                     formData : {
-                        tarif: reservation.tarif_pilote,
                         encaisse: reservation.encaisse_pilote,
                         encompte: reservation.encompte_pilote,
                         comment: reservation.comment_pilote,

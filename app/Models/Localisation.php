@@ -12,7 +12,7 @@ use Laravel\Scout\Searchable;
  */
 class Localisation extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory;
 
     protected $guarded = [];
 
