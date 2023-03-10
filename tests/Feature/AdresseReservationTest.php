@@ -63,7 +63,7 @@ class AdresseReservationTest extends TestCase
 
         $this->assertDatabaseHas('adresse_reservations', [
             'adresse' => $address->adresse,
-            'is_actif' => false
+            'is_actif' => 0
         ]);
     }
 

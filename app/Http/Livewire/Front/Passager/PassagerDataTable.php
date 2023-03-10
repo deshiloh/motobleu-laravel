@@ -11,7 +11,7 @@ class PassagerDataTable extends Component
 {
     use Actions;
 
-    public int $perPage = 10;
+    public int $perPage = 20;
     public string $search = '';
 
     public function render()

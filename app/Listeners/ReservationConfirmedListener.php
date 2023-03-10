@@ -33,15 +33,14 @@ class ReservationConfirmedListener
     public function handle(ReservationConfirmed $event): void
     {
         try {
-            if ($event->reservation->send_to_user) {
-                Mail::to($event->reservation->passager->user->email)
-                    ->send(new \App\Mail\ReservationConfirmed($event->reservation, false, $event->message));
-            }
-
             if ($event->reservation->send_to_passager) {
                 Mail::to($event->reservation->passager->email)
                     ->send(new \App\Mail\ReservationConfirmed($event->reservation, false, $event->message));
             }
+
+            // Envoi de l'email à la secrétaire
+            Mail::to($event->reservation->passager->user->email)
+                ->send(new \App\Mail\ReservationConfirmed($event->reservation, false, $event->message));
 
             // Envoie à l'admin du site
             Mail::to(config('mail.admin.address'))

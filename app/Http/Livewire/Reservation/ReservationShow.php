@@ -46,12 +46,9 @@ Cordialement.";
     {
         return [
             'reservation.pilote_id' => 'required',
-            'reservation.send_to_user' => 'boolean',
             'reservation.send_to_passager' => 'boolean',
             'reservation.calendar_passager_invitation' => 'boolean',
-            'reservation.calendar_user_invitation' => 'boolean',
             'message' => 'nullable|string',
-            'reservation.tarif_pilote' => 'nullable|numeric',
             'reservation.encaisse_pilote' => 'nullable|numeric',
             'reservation.encompte_pilote' => 'nullable|numeric',
             'reservation.comment_pilote' => 'nullable',
@@ -131,7 +128,6 @@ Cordialement.";
         }
 
         if ($this->reservation->isDirty([
-            'tarif_pilote',
             'encompte_pilote',
             'encaisse_pilote',
             'comment_pilote'
@@ -146,7 +142,7 @@ Cordialement.";
     {
         $this->dialog()->confirm([
             'title'       => 'Attention !',
-            'description' => 'Êtes vous sur de vouloir annuler la réservation ?',
+            'description' => 'Êtes vous sûr de vouloir annuler la réservation ?',
             'icon'        => 'question',
             'accept'      => [
                 'label'  => 'Oui',
@@ -162,7 +158,7 @@ Cordialement.";
     {
         $this->dialog()->confirm([
             'title'       => 'Attention !',
-            'description' => 'Êtes vous sur de vouloir annuler la réservation ? Celle ci sera cependant facturable.',
+            'description' => 'Êtes vous sûr de vouloir annuler la réservation ? Celle ci sera cependant facturable.',
             'icon'        => 'question',
             'accept'      => [
                 'label'  => 'Oui',
@@ -209,17 +205,6 @@ Cordialement.";
     {
         $this->withValidator(function (Validator $validator) {
             $validator->after(function ($validator) {
-                if (
-                    $this->reservation->tarif_pilote > 0 &&
-                    (is_null($this->reservation->encompte_pilote) || is_null($this->reservation->encaisse_pilote))
-                ) {
-                    $validator
-                        ->errors()->add(
-                            'reservation.encaisse_pilote', 'Le montant doit être renseigné.'
-                        );
-                    $validator->errors()
-                        ->add('reservation.encompte_pilote', 'Le montant doit être renseigné.');
-                }
 
                 if ($this->reservation->encaisse_pilote > 0 && $this->reservation->encompte_pilote > 0) {
                     $validator
@@ -230,26 +215,6 @@ Cordialement.";
                     $validator->errors()
                         ->add('reservation.encompte_pilote', 'Encaisse et en compte ne peuvent être renseignée en
                             même temps.');
-                    return false;
-                }
-
-                if (
-                    $this->reservation->encompte_pilote > 0 &&
-                    $this->reservation->tarif_pilote != $this->reservation->encompte_pilote
-                ) {
-                    $validator->errors()
-                        ->add('reservation.encompte_pilote', "Le montant renseigné n'est pas correct.");
-
-                    return false;
-                }
-
-                if (
-                    $this->reservation->encaisse_pilote > 0 &&
-                    $this->reservation->tarif_pilote != $this->reservation->encaisse_pilote
-                ) {
-                    $validator->errors()
-                        ->add('reservation.encaisse_pilote', "Le montant renseigné n'est pas correct.");
-
                     return false;
                 }
             });

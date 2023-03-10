@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class AccountDataTable extends Component
 {
-    public int $perPage = 10;
+    public int $perPage = 20;
     private array $entreprises;
 
     public function mount()

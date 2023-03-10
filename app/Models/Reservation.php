@@ -18,7 +18,7 @@ use Spatie\GoogleCalendar\Event;
  */
 class Reservation extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory;
 
     protected $guarded = [];
 
@@ -40,7 +40,7 @@ class Reservation extends Model
         'drop_date' => 'datetime:Y-m-d H:i:s',
         'has_back' => 'boolean',
         'send_to_passager' => 'boolean',
-        'send_to_user' => 'boolean',
+        'calendar_passager_invitation' => 'boolean',
         'tarif' => 'float',
         'majoration' => 'float',
         'complement' => 'float'
@@ -63,7 +63,7 @@ class Reservation extends Model
 
     public function totalTarifPilote()
     {
-        return $this->tarif_pilote + $this->majoration_pilote;
+        return $this->encaisse_pilote + $this->encompte_pilote;
     }
 
     /**

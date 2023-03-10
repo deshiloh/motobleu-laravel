@@ -18,7 +18,7 @@ use Tests\TestCase;
 
 class FrontFormReservationTest extends TestCase
 {
-    use RefreshDatabase, WithoutEvents;
+    use RefreshDatabase;
 
     /**
      * Indicates whether the default seeder should run before each test.
@@ -32,6 +32,8 @@ class FrontFormReservationTest extends TestCase
         parent::setUp();
 
         $this->actingAs(User::find(1));
+
+        \Event::fake();
     }
 
     public function testCreateBackReservatonWithDateError()

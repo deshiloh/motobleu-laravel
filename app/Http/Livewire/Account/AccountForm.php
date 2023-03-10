@@ -30,8 +30,8 @@ class AccountForm extends Component
     protected function getRules(): array
     {
         $rules = [
-            'user.nom' => 'nullable',
-            'user.prenom' => 'nullable',
+            'user.nom' => 'required',
+            'user.prenom' => 'required',
             'user.telephone' => 'nullable',
             'user.adresse' => 'nullable',
             'user.adresse_bis' => 'nullable',

@@ -19,7 +19,6 @@
             </x-bloc-content>
         @endif
         <x-bloc-content>
-            <x-input label="Numéro de commande" class="mb-3" wire:model.defer="reservation.commande"/>
             <div class="space-y-3">
                 <x-select
                     label="Secrétaire *"
@@ -38,6 +37,9 @@
                     option-value="id"
                     wire:model="reservation.entreprise_id"
                 />
+                @if(!is_null($reservation->entreprise_id) && !in_array($reservation->entreprise_id, app(\app\Settings\BillSettings::class)->entreprise_without_command_field))
+                    <x-input label="Numéro De commande / Case code" class="mb-3" wire:model.defer="reservation.commande"/>
+                @endif
             </div>
         </x-bloc-content>
         <x-bloc-content>
@@ -361,10 +363,10 @@
         @endif
         <x-bloc-content>
             <div class="flex flex-col space-y-2 my-3">
+                <x-toggle wire:model="reservation.calendar_passager_invitation" md
+                          label="{{ __('Envoyer une invitation Google Calendar au passager') }}"/>
                 <x-toggle wire:model="reservation.send_to_passager" md
-                          label="Envoyer par mail une invitation d’agenda au passager"/>
-                <x-toggle wire:model="reservation.send_to_user" md
-                          label="Envoyer par mail une invitation d’agenda à l’assistante"/>
+                          label="{!! __('Envoyer l\'email de création de la réservation au passager') !!}"/>
             </div>
         </x-bloc-content>
         <x-bloc-content>

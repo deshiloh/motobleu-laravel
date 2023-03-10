@@ -16,7 +16,7 @@ class ReservationDataTable extends Component
 {
     use WithPagination, Actions;
 
-    public int $perPage = 10;
+    public int $perPage = 20;
     public bool $editAskCard = false;
     public bool $askCancelCard = false;
     public ?string $message = null;

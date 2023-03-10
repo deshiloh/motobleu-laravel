@@ -33,7 +33,7 @@ class ReservationFactory extends Factory
             'drop_off_origin' => 'vol num 4440',
             'comment' => 'lorem',
             'send_to_passager' => true,
-            'send_to_user' => true,
+            'calendar_passager_invitation' => true,
             'has_back' => false,
             'pickup_date' => $this->faker->dateTime,
             'localisation_from_id' => Localisation::factory(),

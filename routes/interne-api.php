@@ -33,7 +33,9 @@ Route::get('/passagers', function (Request $request){
         }
     );
 
-    return $result->get();
+    return $result
+        ->orderBy('nom')
+        ->get();
 })->name('api.passagers');
 
 // API LOCALISATION

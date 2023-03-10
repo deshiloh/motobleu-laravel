@@ -66,7 +66,6 @@ class RecapReservationPilote extends Component
     public function editReservation(array $datas): bool
     {
         $validator = Validator::make($datas, [
-            'tarif' => 'required',
             'encaisse' => 'nullable',
             'encompte' => 'nullable',
             'comment' => 'nullable',
@@ -89,22 +88,6 @@ class RecapReservationPilote extends Component
                 );
                 return false;
             }
-
-            if ($datas['encaisse'] > 0 && $datas['tarif'] != $datas['encaisse']) {
-                $validator->errors()->add(
-                    'encaisse', "Le montant n'est pas correct"
-                );
-
-                return false;
-            }
-
-            if ($datas['encompte'] > 0 && $datas['tarif'] != $datas['encompte']) {
-                $validator->errors()->add(
-                    'encaisse', "Le montant n'est pas correct"
-                );
-
-                return false;
-            }
         });
 
         if ($validator->fails()) {
@@ -115,7 +98,6 @@ class RecapReservationPilote extends Component
 
         $reservation = Reservation::find($datas['reservation']);
         $reservation->updateQuietly([
-            'tarif_pilote' => $datas['tarif'],
             'encaisse_pilote' => $datas['encaisse'],
             'encompte_pilote' => $datas['encompte'],
             'comment_pilote' => $datas['comment'],

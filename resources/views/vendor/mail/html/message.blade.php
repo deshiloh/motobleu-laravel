@@ -9,6 +9,8 @@
 {{-- Body --}}
 {{ $slot }}
 
+Cordialement,<br>
+{{ config('app.name') }}
 {{-- Subcopy --}}
 @isset($subcopy)
 @slot('subcopy')

@@ -8,7 +8,7 @@ class BillSettings extends Settings
 {
     public array $entreprises_xls_file = [];
     public array $entreprises_cost_center_facturation = [];
-    public array $entreprises_command_field = [];
+    public array $entreprise_without_command_field = [];
 
     public static function group(): string
     {

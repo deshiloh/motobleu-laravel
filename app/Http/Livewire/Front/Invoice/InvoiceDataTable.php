@@ -9,7 +9,7 @@ use Livewire\Component;
 class InvoiceDataTable extends Component
 {
     public string $search = "";
-    public int $perPage = 10;
+    public int $perPage = 20;
 
     public function render()
     {

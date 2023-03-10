@@ -35,11 +35,11 @@ class AccountForm extends Component
         $rules = [
             'user.nom' => 'required',
             'user.prenom' => 'required',
-            'user.telephone' => 'required',
-            'user.adresse' => 'required',
+            'user.telephone' => 'nullable',
+            'user.adresse' => 'nullable',
             'user.adresse_bis' => 'nullable',
-            'user.code_postal' => 'required',
-            'user.ville' => 'required',
+            'user.code_postal' => 'nullable',
+            'user.ville' => 'nullable',
             'user.is_admin_ardian' => 'boolean',
             'user.is_actif' => 'boolean',
         ];

@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\Console\Command\Command as CommandAlias;
@@ -131,7 +132,7 @@ class ImportOldData extends Command
                 );
         }
 
-        $prodConnecion = \Illuminate\Support\Facades\DB::connection('prod');
+        $prodConnecion = DB::connection('prod');
 
         // Création des entreprises
         $prodConnecion->table('entreprise')->orderBy('id', 'asc')->chunk(100, function ($entreprises) {
@@ -147,11 +148,11 @@ class ImportOldData extends Command
         $prodConnecion->table('user')->orderBy('id', 'asc')->select(['id', 'nom', 'email', 'prenom', 'entreprise_id'])->chunk(100, function ($users) {
             $users->map(function($user) {
                 try {
-                    $idInsert = \Illuminate\Support\Facades\DB::table('users')->insertGetId([
+                    $idInsert = DB::table('users')->insertGetId([
                         'id' => $user->id,
                         'nom' => $user->nom,
                         'prenom' => $user->prenom,
-                        'password' => \Illuminate\Support\Facades\Hash::make('test'),
+                        'password' => Hash::make('test'),
                         'email' => $user->email
                     ]);
 
@@ -159,6 +160,7 @@ class ImportOldData extends Command
                     $user = User::find($idInsert);
                     switch ($user->email) {
                         case 'm.alvarez.iglisias@gmail.com':
+                        case 'contact@motobleu-paris.com':
                             $user->assignRole('super admin');
                             break;
                         default :
@@ -264,7 +266,7 @@ class ImportOldData extends Command
             DB::table('factures')->insertOrIgnore((array)json_decode(json_encode($factures->toArray()), true));
         });
 
-        $prodConnecion->table('reservation')->orderBy('id', 'asc')->chunk(100, function ($reservations) {
+        $prodConnecion->table('reservation')->orderBy('id')->chunk(100, function ($reservations) {
             $reservations = $reservations->map(fn($item) => [
                 'id' => $item->id,
                 'statut' => $this->getEtatValue($item),
@@ -273,15 +275,15 @@ class ImportOldData extends Command
                 'pickup_origin' => $item->pick_up_origin,
                 'drop_off_origin' => $item->dropp_of_origin,
                 'comment' => $item->comment,
+                'encaisse_pilote' => $item->encaisse_pilote ?? 0,
+                'encompte_pilote' => $item->encompte_pilote ?? 0,
                 'tarif' => $item->prix,
                 'majoration' => $item->majoration,
                 'complement' => $item->complement,
                 'comment_facture' => $item->comment_facturation,
                 'send_to_passager' => $item->send_to_passager,
-                'send_to_user' => $item->send_to_client,
                 'has_back' => (int)$item->retour_id > 0,
                 'calendar_passager_invitation' => (int)$item->send_to_passager_invitation,
-                'calendar_user_invitation' => (int)$item->send_to_secretary_invitation,
                 'pickup_date' => $item->pickup_date,
                 'localisation_from_id' => $item->pickup_localisation_id,
                 'localisation_to_id' => $item->drop_off_localisation_id,

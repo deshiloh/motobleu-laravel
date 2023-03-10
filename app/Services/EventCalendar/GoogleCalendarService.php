@@ -45,15 +45,14 @@ class GoogleCalendarService
 
         $event = $this->generateCommunData($event);
 
-        if ($this->reservation->calendar_user_invitation) {
-            $email = App::environment(['local', 'beta']) ?
-                'm.alvarez.iglisias@gmail.com' :
-                $this->reservation->passager->user->email;
+        // Invitation secrétaire
+        $email = App::environment(['local', 'beta']) ?
+            'm.alvarez.iglisias@gmail.com' :
+            $this->reservation->passager->user->email;
 
-            $event->addAttendee([
-                'email' => $email
-            ]);
-        }
+        $event->addAttendee([
+            'email' => $email
+        ]);
 
         if ($this->reservation->calendar_passager_invitation) {
             $email = App::environment(['local', 'beta']) ?
@@ -229,11 +228,16 @@ class GoogleCalendarService
             $description .= "Adresse de destination: %s\n";
             $description .= "Destination / N°: %s\n\n";
             $description .= "Commentaires: %s\n\n";
-            $description .= "Tarif : %s\n\n";
+            $description .= "%s : %s € \n\n";
             $description .= "\nLien: %s\n";
             $description .= "\n\nMotobleu\n26-28 rue Marius Aufan\n92300 Levallois Perret\nTél: +33647938617\ncontact@motobleu-paris.com\nRCS 824 721 955 NANTERRE"; //company_details
 
             $phones = implode(' - ', [$this->reservation->passager->telephone, $this->reservation->passager->portable]);
+
+            $tarifLabelle = ($this->reservation->encompte_pilote > 0) ? "/com15 EN COMPTE" : "/com15 A ENCAISSER CB";
+            $tarifValue = ($this->reservation->encompte_pilote > 0) ?
+                $this->reservation->encompte_pilote :
+                $this->reservation->encaisse_pilote;
 
             return sprintf(
                 $description,
@@ -251,7 +255,8 @@ class GoogleCalendarService
                 $this->reservation->display_to,
                 $this->reservation->drop_off_origin,
                 $this->reservation->comment_pilote,
-                $this->reservation->tarif_pilote . ' €',
+                $tarifLabelle,
+                $tarifValue,
                 route('admin.reservations.show', ['reservation' => $this->reservation->id])
             );
         }

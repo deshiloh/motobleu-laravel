@@ -30,6 +30,4 @@ Votre réservation N° {{ $reservation->reference }} vient d'être modifiée.<br
 **Commentaire :** <br>
 {{ $reservation->comment }}
 
-Merci,<br>
-{{ config('app.name') }}
 </x-mail::message>
