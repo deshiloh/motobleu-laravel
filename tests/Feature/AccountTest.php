@@ -109,7 +109,9 @@ class AccountTest extends TestCase
             ->set('user.is_admin_ardian', false)
             ->call('save')
             ->assertHasErrors([
-                'user.email' => 'required'
+                'user.email' => 'required',
+                'user.nom' => 'required',
+                'user.prenom' => 'required'
             ]);
     }
 
