@@ -25,7 +25,7 @@ class ReservationService
             'reservation.pickup_date' => 'required',
             'reservation.commande' => 'nullable',
             'reservation.send_to_passager' => 'bool',
-            'reservation.send_to_user' => 'bool',
+            'reservation.calendar_passager_invitation' => 'bool',
             'reservation.comment' => 'nullable',
             'reservation_back.comment' => 'nullable',
         ];

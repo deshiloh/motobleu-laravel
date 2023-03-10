@@ -46,10 +46,8 @@ Cordialement.";
     {
         return [
             'reservation.pilote_id' => 'required',
-            'reservation.send_to_user' => 'boolean',
             'reservation.send_to_passager' => 'boolean',
             'reservation.calendar_passager_invitation' => 'boolean',
-            'reservation.calendar_user_invitation' => 'boolean',
             'message' => 'nullable|string',
             'reservation.encaisse_pilote' => 'nullable|numeric',
             'reservation.encompte_pilote' => 'nullable|numeric',

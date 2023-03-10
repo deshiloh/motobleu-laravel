@@ -24,7 +24,10 @@
         </x-front.card>
         <x-front.card>
             <div class="space-y-3">
-                <x-input label="{{ __('Numéro de commande / Case code') }}" wire:model="reservation.commande" />
+                @if(!in_array(Auth::user()->entreprises()->first()->id, app(\app\Settings\BillSettings::class)->entreprise_without_command_field))
+                    <x-input label="{{ __('Numéro de commande / Case code') }}" wire:model="reservation.commande" />
+                @endif
+
                 <x-select
                     label="{{ __('Entreprise rattachée') }} *"
                     placeholder="{{ __('Sélectionner une entreprise') }}"
@@ -350,10 +353,10 @@
         <x-front.card>
 
             <div class="flex flex-col space-y-2 my-3">
+                <x-toggle wire:model="reservation.calendar_passager_invitation" md
+                          label="{{ __('Envoyer une invitation Google Calendar au passager') }}"/>
                 <x-toggle wire:model="reservation.send_to_passager" md
-                          label="{{ __('Envoyer par mail une invitation agenda au passager') }}"/>
-                <x-toggle wire:model="reservation.send_to_user" md
-                          label="{!! __('Envoyer par mail une invitation agenda à l\'assistante') !!}"/>
+                          label="{!! __('Envoyer l\'email de création de la réservation au passager') !!}"/>
             </div>
         </x-front.card>
         <x-front.card>

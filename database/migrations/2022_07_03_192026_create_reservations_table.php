@@ -38,10 +38,8 @@ return new class extends Migration
             $table->longText('comment_pilote')->nullable();
 
             $table->boolean('send_to_passager')->default(true);
-            $table->boolean('send_to_user')->default(true);
-            $table->boolean('has_back')->default(false);
             $table->boolean('calendar_passager_invitation')->default(true);
-            $table->boolean('calendar_user_invitation')->default(true);
+            $table->boolean('has_back')->default(false);
 
             $table->dateTime('pickup_date');
 

@@ -55,10 +55,6 @@ class ReservationCanceledListener
             $recipients[] = $event->reservation->passager->email;
         }
 
-        if ($event->reservation->send_to_user) {
-            $recipients[] = $event->reservation->passager->user->email;
-        }
-
         foreach ($recipients as $recipient) {
             try {
                 Mail::to($recipient)

@@ -105,14 +105,12 @@
                         <div>
                             <div class="dark:text-white">Emails de confirmation</div>
                             <div class="space-y-3 mt-3">
-                                <x-toggle wire:model="reservation.send_to_user" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
                                 <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
                             </div>
                         </div>
                         <div>
                             <div class="dark:text-white">Invitation Google Calendar</div>
                             <div class="space-y-3 mt-3">
-                                <x-toggle wire:model.defer="reservation.calendar_user_invitation" label="Secrétaire : {{ $reservation->passager->user->full_name }}" md />
                                 <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
                             </div>
                         </div>

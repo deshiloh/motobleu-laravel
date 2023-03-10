@@ -40,7 +40,7 @@ class AdresseReservation extends Model
                 $text = "";
 
                 if (isset($attribute['adresse'])) {
-                    $text .= $attribute['adresse'] . ' ';
+                    $text .= ucfirst($attribute['adresse']) . ' ';
                 }
                 if (isset($attribute['adresse_complement'])) {
                     $text .= $attribute['adresse_complement'] . ' ';

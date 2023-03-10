@@ -30,14 +30,10 @@ class ReservationObserver
     public function created(Reservation $reservation): void
     {
         try {
-            $recipients = [];
+            $recipients[] = $reservation->passager->user->email;
 
             if ($reservation->send_to_passager) {
                 $recipients[] = $reservation->passager->email;
-            }
-
-            if ($reservation->send_to_user) {
-                $recipients[] = $reservation->passager->user->email;
             }
 
             foreach ($recipients as $recipient) {
