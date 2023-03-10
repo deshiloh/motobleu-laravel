@@ -28,7 +28,7 @@ L'assistant(e) **{{ $reservation->passager->user->full_name }}** a demandée de 
 
 **Commentaire :** <br>
 {{ $reservation->comment ?? 'Aucun commentaire' }}
-<x-mail::button :url="route('admin.reservations.show', ['reservation' => $reservation->id])">
+<x-mail::button :url="route('admin.reservations.edit', ['reservation' => $reservation->id])">
 Voir la réservation
 </x-mail::button>
 

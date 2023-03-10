@@ -10,7 +10,4 @@ Vous avez été retiré en tant que pilote pour la réservation N° {{ $reservat
 <strong>Heure de départ :</strong> {{ $reservation->pickup_date->format('H:i') }} <br>
 <strong>Lieu de destination :</strong> {{ $reservation->display_to }} <br>
 
-
-Merci,<br>
-{{ config('app.name') }}
 </x-mail::message>
