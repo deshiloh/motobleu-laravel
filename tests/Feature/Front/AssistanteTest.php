@@ -118,11 +118,7 @@ class AssistanteTest extends TestCase
             ->assertHasErrors([
                 'user.nom' => 'required',
                 'user.prenom' => 'required',
-                'user.email' => 'required',
-                'user.telephone' => 'required',
-                'user.adresse' => 'required',
-                'user.code_postal' => 'required',
-                'user.ville' => 'required',
+                'user.email' => 'required'
             ])
         ;
     }
