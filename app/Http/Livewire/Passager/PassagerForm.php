@@ -35,8 +35,8 @@ class PassagerForm extends Component
         $rules = [
             'passager.nom' => 'required',
             'passager.email' => 'required|email',
-            'passager.telephone' => 'required',
-            'passager.portable' => 'required',
+            'passager.telephone' => 'nullable',
+            'passager.portable' => 'nullable',
             'passager.user_id' => 'required',
             'passager.cost_center_id' => 'nullable',
             'passager.type_facturation_id' => 'nullable',
