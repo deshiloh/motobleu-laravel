@@ -27,6 +27,4 @@ Compte tenu du délai de votre demande, cette prestation vous sera facturée.
 **Commentaire :** <br>
 {{ $reservation->comment ?? 'Aucun commentaire' }}
 
-Merci,<br>
-{{ config('app.name') }}
 </x-mail::message>
