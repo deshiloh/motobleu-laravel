@@ -99,7 +99,10 @@ trait WithReservationForm
         $this->newAdresseReservationToBack = new AdresseReservation();
 
         $this->reservation->send_to_passager = true;
-        $this->reservation->send_to_user = true;
+        $this->reservation->calendar_passager_invitation = true;
+
+        $this->reservation_back->send_to_passager = true;
+        $this->reservation_back->calendar_passager_invitation = true;
     }
 
     /**
@@ -203,20 +206,22 @@ trait WithReservationForm
                 $this->reservation_back->adresseReservationTo()->associate($this->newAdresseReservationToBack);
             }
 
+            $this->reservation_back->send_to_passager = $this->reservation->send_to_passager;
+            $this->reservation_back->calendar_passager_invitation = $this->reservation->calendar_passager_invitation;
+
             try {
                 $this->reservation_back->save();
 
                 $this->reservation->reservationBack()
                     ->associate($this->reservation_back->id);
 
-                $this->reservation->update([
+                $this->reservation->updateQuietly([
                     'reservation_id' => $this->reservation_back->id
                 ]);
             } catch (\Exception $exception) {
-
                 $this->notification()->error(
-                    $title = 'Création impossible',
-                    $description = 'Une erreur est survenue pendant la création de la réservation de retour'
+                    'Création impossible',
+                    'Une erreur est survenue pendant la création de la réservation de retour'
                 );
 
                 if (App::environment(['prod', 'beta'])) {

@@ -679,7 +679,10 @@ class ReservationTest extends TestCase
             ->call('cancelAction')
             ->assertHasNoErrors()
         ;
-        $this->assertTrue(Reservation::where('statut', ReservationStatus::Canceled)->exists());
+        $this->assertDatabaseHas('reservations', [
+            'reference' => $reservation->reference,
+            'statut' => ReservationStatus::Canceled
+        ]);
 
         \Event::assertDispatched(ReservationCanceled::class);
     }
@@ -756,7 +759,6 @@ class ReservationTest extends TestCase
             ->set('reservation.encaisse_pilote', 0)
             ->set('reservation.encompte_pilote', 300)
             ->set('reservation.calendar_passager_invitation', true)
-            ->set('reservation.calendar_user_invitation', true)
             ->call('updatePilote')
             ->assertHasNoErrors()
             ->assertStatus(200);

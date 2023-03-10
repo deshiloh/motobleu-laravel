@@ -45,15 +45,14 @@ class GoogleCalendarService
 
         $event = $this->generateCommunData($event);
 
-        if ($this->reservation->calendar_user_invitation) {
-            $email = App::environment(['local', 'beta']) ?
-                'm.alvarez.iglisias@gmail.com' :
-                $this->reservation->passager->user->email;
+        // Invitation secrétaire
+        $email = App::environment(['local', 'beta']) ?
+            'm.alvarez.iglisias@gmail.com' :
+            $this->reservation->passager->user->email;
 
-            $event->addAttendee([
-                'email' => $email
-            ]);
-        }
+        $event->addAttendee([
+            'email' => $email
+        ]);
 
         if ($this->reservation->calendar_passager_invitation) {
             $email = App::environment(['local', 'beta']) ?

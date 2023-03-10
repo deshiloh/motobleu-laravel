@@ -7,7 +7,7 @@ return [
      * put them (manually) here.
      */
     'settings' => [
-        \app\Settings\MailSettings::class
+        \app\Settings\BillSettings::class
     ],
 
     /*
