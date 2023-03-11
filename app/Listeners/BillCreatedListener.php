@@ -11,24 +11,20 @@ use Illuminate\Support\Facades\Mail;
 class BillCreatedListener
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Handle the event.
      *
-     * @param  \App\Events\BillCreated  $event
+     * @param BillCreated $event
      * @return void
      */
-    public function handle(BillCreated $event)
+    public function handle(BillCreated $event): void
     {
-        Mail::to($event->emailData['address'])
-            ->send(new MailBillCreated($event->facture, $event->emailData['message']));
+        $recipients = explode(',', $event->emailData['address']);
+
+        foreach ($recipients as $recipient) {
+            $recipient = trim($recipient);
+
+            Mail::to($recipient)
+                ->send(new MailBillCreated($event->facture, $event->emailData['message']));
+        }
     }
 }
