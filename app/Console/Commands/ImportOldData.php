@@ -161,6 +161,7 @@ class ImportOldData extends Command
                     switch ($user->email) {
                         case 'm.alvarez.iglisias@gmail.com':
                         case 'contact@motobleu-paris.com':
+                        case 'contact@apc66.com':
                             $user->assignRole('super admin');
                             break;
                         default :
