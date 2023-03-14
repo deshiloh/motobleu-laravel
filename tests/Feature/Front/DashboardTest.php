@@ -22,6 +22,7 @@ class DashboardTest extends TestCase
 
         /** @var User $user */
         $user = User::factory()->create();
+        $user->entreprises()->attach(1);
         $user->assignRole('user');
 
         $this->actingAs($user);
