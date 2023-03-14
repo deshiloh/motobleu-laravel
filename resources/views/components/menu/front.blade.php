@@ -72,7 +72,7 @@
         </x-front.menu.item>
     @endcan
 
-    @can('see facture')
+    @if(!auth()->user()->entreprises->first->get()->nom == 'Ardian France' || (auth()->user()->entreprises->first->get()->nom == 'Ardian France' && auth()->user()->hasRole('admin')))
         <x-front.menu.item :active="in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['front.invoice.list', 'front.invoice.reservations'])" href="{{ route('front.invoice.list') }}">
             <x-slot:icon>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -81,5 +81,5 @@
             </x-slot:icon>
             {{ __('Factures') }}
         </x-front.menu.item>
-    @endcan
+    @endif
 @endauth
