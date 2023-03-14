@@ -17,6 +17,10 @@ class Passager extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'is_actif' => 'bool'
+    ];
+
     /**
      * @return BelongsTo
      */

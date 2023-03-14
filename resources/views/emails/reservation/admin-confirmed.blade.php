@@ -18,9 +18,9 @@ Votre réservation N° <strong>{{ $reservation->reference }}</strong> vient d'ê
 @endif
 <br><br>
 * <strong>Destination :</strong> <br>
-* <strong>Lieu de destination :</strong> {{ $reservation->display_to }}
+  * <strong>Lieu de destination :</strong> {{ $reservation->display_to }}
 @if($reservation->localisation_to)
-* <strong>Destination / N° :</strong> {{ $reservation->drop_off_origin }}
+  * <strong>Destination / N° :</strong> {{ $reservation->drop_off_origin }}
 @endif
 
 <strong>Commentaire :</strong>

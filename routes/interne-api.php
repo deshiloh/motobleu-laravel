@@ -34,6 +34,7 @@ Route::get('/passagers', function (Request $request){
     );
 
     return $result
+        ->where('is_actif', true)
         ->orderBy('nom')
         ->get();
 })->name('api.passagers');
