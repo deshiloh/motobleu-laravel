@@ -192,6 +192,7 @@ trait WithReservationForm
 
             $this->reservation_back->passager_id = $this->reservation->passager_id;
             $this->reservation_back->entreprise_id = $this->reservation->entreprise_id;
+            $this->reservation_back->commande = $this->reservation->commande;
 
             if ($this->backPickupMode == ReservationService::WITH_NEW_ADRESSE) {
                 $this->newAdresseReservationFromBack->user_id = $this->reservation->passager->user->id;

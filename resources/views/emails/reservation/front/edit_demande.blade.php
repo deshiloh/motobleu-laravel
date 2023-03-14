@@ -1,8 +1,8 @@
 <x-mail::message>
 Bonjour,<br>
-L'assistant(e) **{{ $reservation->passager->user->full_name }}** a demandée de modifier la réservation **{{ $reservation->reference }}** :
+L'assistant(e) **{{ $reservation->passager->user->full_name }}** a demandé de modifier la réservation **{{ $reservation->reference }}** :
 
-> {{ $message }}
+> {!! nl2br($message) !!}
 
 **Récapitulatif :** <br>
 **Passager :**
