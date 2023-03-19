@@ -30,6 +30,9 @@ class ReservationShow extends Component
 Votre réservation a bien été prise en compte
 Cordialement.";
 
+        $reservation->encaisse_pilote = $reservation->encaisse_pilote == 0 ? '' : $reservation->encaisse_pilote;
+        $reservation->encompte_pilote = $reservation->encompte_pilote == 0 ? '' : $reservation->encompte_pilote;
+
         if (is_null($reservation->pilote_id)) {
             $defaultPilote = Pilote::firstWhere('email', 'pilotes.motobleu@gmail.com');
             $reservation->pilote_id = $defaultPilote->id;
@@ -68,6 +71,13 @@ Cordialement.";
 
         try {
             $this->reservation->statut = ReservationStatus::Confirmed;
+
+            $this->reservation->encaisse_pilote = $this->reservation->encaisse_pilote == '' ?
+                0 :
+                $this->reservation->encaisse_pilote;
+            $this->reservation->encompte_pilote = $this->reservation->encompte_pilote == '' ?
+                0
+                : $this->reservation->encompte_pilote;
 
             $this->reservation->update();
 

@@ -1,5 +1,5 @@
 @component('mail::message')
 
-{{ $message }}
+{!! nl2br($message) !!}
 
 @endcomponent
