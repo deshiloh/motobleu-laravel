@@ -28,8 +28,9 @@ class LoginController extends Controller
     public function authenticate(LoginRequest $request)
     {
         $credentials = $request->validated();
+        $remember = $request->boolean('remember_me');
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $remember)) {
 
             if (!Auth::user()->is_actif) {
                 Auth::logout();
