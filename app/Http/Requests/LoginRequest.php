@@ -32,7 +32,8 @@ class LoginRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'password' => 'mot de passe'
+            'password' => 'mot de passe',
+            'remember_me' => 'Se souvenir de moi'
         ];
     }
 }
