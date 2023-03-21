@@ -176,14 +176,12 @@ trait WithReservationForm
             if (App::environment(['local'])) {
                 ray([
                     'reservation' => $this->reservation,
-                    'reservation_back' => $this->reservation_back
                 ])->exception($exception);
             }
 
             Log::channel("sentry")->error("Erreur pendant la création / édition d'une réservation retour", [
                 'exception' => $exception,
                 'reservation' => $this->reservation,
-                'reservation_back' => $this->reservation_back
             ]);
         }
 

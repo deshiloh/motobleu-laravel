@@ -136,23 +136,23 @@ class Reservation extends Model
         $text = '';
 
         if ($this->localisation_from_id) {
-            $text = $this->localisationFrom->full_adresse;
+            $text = $this->localisationFrom?->full_adresse;
         }
         if ($this->adresse_reservation_from_id) {
-            $text = $this->adresseReservationFrom->full_adresse;
+            $text = $this->adresseReservationFrom?->full_adresse;
         }
 
         return $text;
     }
-    public function getDisplayToAttribute(): string
+    public function getDisplayToAttribute(): ?string
     {
         $text = '';
 
         if ($this->localisation_to_id) {
-            $text = $this->localisationTo->full_adresse;
+            $text = $this->localisationTo?->full_adresse;
         }
         if ($this->adresse_reservation_to_id) {
-            $text = $this->adresseReservationTo->full_adresse;
+            $text = $this->adresseReservationTo?->full_adresse;
         }
 
         return $text;
