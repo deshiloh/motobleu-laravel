@@ -142,6 +142,14 @@ Cordialement.";
             'encaisse_pilote',
             'comment_pilote'
         ])) {
+
+            $this->reservation->encaisse_pilote = $this->reservation->encaisse_pilote == '' ?
+                0 :
+                $this->reservation->encaisse_pilote;
+            $this->reservation->encompte_pilote = $this->reservation->encompte_pilote == '' ?
+                0
+                : $this->reservation->encompte_pilote;
+            
             $this->reservation->update();
 
             return redirect()->to(route('admin.homepage'));
