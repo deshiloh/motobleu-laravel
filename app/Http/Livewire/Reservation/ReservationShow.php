@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire\Reservation;
 
-use _PHPStan_446ead745\Nette\Neon\Exception;
 use App\Enum\ReservationStatus;
 use App\Events\ReservationCanceled;
 use App\Events\ReservationCanceledPay;
@@ -29,9 +28,6 @@ class ReservationShow extends Component
         $this->message = "Bonjour,
 Votre réservation a bien été prise en compte
 Cordialement.";
-
-        $reservation->encaisse_pilote = $reservation->encaisse_pilote == 0 ? '' : $reservation->encaisse_pilote;
-        $reservation->encompte_pilote = $reservation->encompte_pilote == 0 ? '' : $reservation->encompte_pilote;
 
         if (is_null($reservation->pilote_id)) {
             $defaultPilote = Pilote::firstWhere('email', 'pilotes.motobleu@gmail.com');
@@ -71,13 +67,6 @@ Cordialement.";
 
         try {
             $this->reservation->statut = ReservationStatus::Confirmed;
-
-            $this->reservation->encaisse_pilote = $this->reservation->encaisse_pilote == '' ?
-                0 :
-                $this->reservation->encaisse_pilote;
-            $this->reservation->encompte_pilote = $this->reservation->encompte_pilote == '' ?
-                0
-                : $this->reservation->encompte_pilote;
 
             $this->reservation->update();
 
@@ -142,13 +131,6 @@ Cordialement.";
             'encaisse_pilote',
             'comment_pilote'
         ])) {
-            $this->reservation->encaisse_pilote = $this->reservation->encaisse_pilote == '' ?
-                0 :
-                $this->reservation->encaisse_pilote;
-            $this->reservation->encompte_pilote = $this->reservation->encompte_pilote == '' ?
-                0
-                : $this->reservation->encompte_pilote;
-
             $this->reservation->update();
 
             return redirect()->to(route('admin.homepage'));
