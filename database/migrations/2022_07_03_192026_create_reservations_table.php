@@ -30,9 +30,9 @@ return new class extends Migration
             $table->float('complement')->nullable();
 
             $table->float('encompte_pilote')
-                ->default(0);
+                ->nullable();
             $table->float('encaisse_pilote')
-                ->default(0);
+                ->nullable();
 
             $table->longText('comment_facture')->nullable();
             $table->longText('comment_pilote')->nullable();
