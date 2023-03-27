@@ -178,6 +178,8 @@ Cordialement.";
         ]);
 
         ReservationCanceledPay::dispatch($this->reservation);
+
+        return redirect()->to(route('admin.homepage'));
     }
 
     public function cancelAction()
@@ -189,6 +191,8 @@ Cordialement.";
         ]);
 
         ReservationCanceled::dispatch($this->reservation);
+
+        return redirect()->to(route('admin.homepage'));
     }
 
     public function confirmedStatusAction()
