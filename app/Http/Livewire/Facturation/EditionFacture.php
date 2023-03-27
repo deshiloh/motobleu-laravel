@@ -120,6 +120,7 @@ class EditionFacture extends Component
                     ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
                 ;
             })
+            ->orderBy('nom')
             ->get();
     }
 
@@ -139,7 +140,7 @@ class EditionFacture extends Component
                 function (Builder $query) {
                     return $query->where('statut', ReservationStatus::Billed->value);
                 },
-                function (Builder $query) {                 
+                function (Builder $query) {
                     return $query->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value]);
                 }
             )
