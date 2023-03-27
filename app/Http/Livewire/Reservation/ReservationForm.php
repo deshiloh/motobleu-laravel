@@ -32,20 +32,6 @@ class ReservationForm extends Component
             if ($this->reservation->adresseReservationTo()->exists()) {
                 $this->dropMode = ReservationService::WITH_ADRESSE;
             }
-
-            if ($this->reservation->reservationBack()->exists()) {
-                $this->hasBack = true;
-                $this->reservation_back = Reservation::find($this->reservation->reservationBack->id);
-
-                if ($this->reservation_back->adresseReservationFrom()->exists()) {
-                    $this->backPickupMode = ReservationService::WITH_ADRESSE;
-                }
-
-                if ($this->reservation_back->adresseReservationTo()->exists()) {
-                    $this->backPickupMode = ReservationService::WITH_ADRESSE;
-                }
-            }
-
         } else {
             $this->defaultReset();
         }
