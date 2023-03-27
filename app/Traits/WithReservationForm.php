@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Enum\ReservationStatus;
 use App\Mail\ReservationUpdated;
 use App\Models\AdresseReservation;
 use App\Models\Passager;
