@@ -237,7 +237,7 @@
                 {{ $reservation->total_ttc }} €
             </td>
             <td class="text-center" style="">
-                {{ $reservation->comment }}
+                {{ $reservation->comment_facture }}
             </td>
         </tr>
     @endforeach

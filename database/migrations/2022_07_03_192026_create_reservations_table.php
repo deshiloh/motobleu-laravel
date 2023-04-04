@@ -17,13 +17,13 @@ return new class extends Migration
             $table->id();
 
             $table->integer('statut')->default(\App\Enum\ReservationStatus::Created->value);
+
             $table->string('commande')->nullable();
             $table->string('reference')->nullable();
             $table->string('pickup_origin')->nullable();
             $table->string('drop_off_origin')->nullable();
             $table->string('event_id')->nullable();
             $table->string('event_secretary_id')->nullable();
-            $table->longText('comment')->nullable();
 
             $table->float('tarif')->nullable();
             $table->float('majoration')->nullable();
@@ -36,6 +36,7 @@ return new class extends Migration
 
             $table->longText('comment_facture')->nullable();
             $table->longText('comment_pilote')->nullable();
+            $table->longText('comment')->nullable();
 
             $table->boolean('send_to_passager')->default(true);
             $table->boolean('calendar_passager_invitation')->default(true);

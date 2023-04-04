@@ -421,7 +421,7 @@ class EditionFacture extends Component
             'tarif' => $datas['tarif'],
             'majoration' => $datas['majoration'],
             'complement' => $datas['complement'],
-            'comment' => $datas['comment'],
+            'comment_facture' => $datas['comment'],
         ]);
 
         $this->emit('reservationUpdated');

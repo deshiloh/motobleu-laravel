@@ -329,7 +329,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             $row->pickup_date->format('H:s'),
             $row->display_from,
             $row->display_to,
-            $row->comment,
+            $row->comment_facture,
             $row->tarif,
         ];
 
