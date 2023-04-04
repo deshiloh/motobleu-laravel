@@ -51,6 +51,14 @@
                             <option value="{{ $startedYear }}">{{ $startedYear }}</option>
                         @endfor
                     </x-native-select>
+                    <x-select
+                        label="Entreprise"
+                        placeholder="Sélectionner une entreprise"
+                        :async-data="route('api.entreprises')"
+                        option-label="nom"
+                        option-value="id"
+                        wire:model="entrepriseSearch"
+                    />
                 </div>
             </div>
             <div class="text-2xl mb-4 text-black dark:text-gray-200">
