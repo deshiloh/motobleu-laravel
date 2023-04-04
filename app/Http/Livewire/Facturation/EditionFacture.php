@@ -34,7 +34,7 @@ class EditionFacture extends Component
     public int|null $selectedMonth = null;
     public int|null $selectedYear = null;
     public int|null $entrepriseIdSelected = null;
-    public int|null $reservationSelected = null;
+    public int|null $entrepriseSearch = null;
     public string $uniqID;
 
     public float $montant_ttc = 0;
@@ -55,6 +55,7 @@ class EditionFacture extends Component
         'selectedMonth',
         'selectedYear',
         'entrepriseIdSelected',
+        'entrepriseSearch',
         'isBilled'
     ];
 
@@ -119,6 +120,9 @@ class EditionFacture extends Component
                     ->whereYear('pickup_date', $this->selectedYear)
                     ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
                 ;
+            })
+            ->when($this->entrepriseSearch != null, function(Builder $query) {
+                $query->where('id', $this->entrepriseSearch);
             })
             ->orderBy('nom')
             ->get();
