@@ -26,8 +26,7 @@ class ReservationShow extends Component
         $this->reservation = $reservation;
 
         $this->message = "Bonjour,
-Votre réservation a bien été prise en compte
-Cordialement.";
+Votre réservation a bien été prise en compte";
 
         if (is_null($reservation->pilote_id)) {
             $defaultPilote = Pilote::firstWhere('email', 'pilotes.motobleu@gmail.com');
