@@ -17,18 +17,24 @@ La réservation N° {{ $reservation->reference }} a bien été confirmée, vous 
 <div style="margin-top: 20px">
 
 * Prise en charge :
-    * <strong>Date :</strong> {{ $reservation->pickup_date->format('d/m/Y') }}
-    * <strong>Heure :</strong> {{ $reservation->pickup_date->format('H:i') }}
-    * <strong>Lieu de prise en charge :</strong> {{ $reservation->display_from }}
-    * <strong>Provenance / N° :</strong> {{ $reservation->pickup_origin }}
+  * <strong>Date :</strong> {{ $reservation->pickup_date->format('d/m/Y') }}
+  * <strong>Heure :</strong> {{ $reservation->pickup_date->format('H:i') }}
+  * <strong>Lieu de prise en charge :</strong> {{ $reservation->display_from }}
+@if($reservation->pickup_origin)
+  * <strong>Provenance / N° :</strong> {{ $reservation->pickup_origin }}
+@endif
+
 
 </div>
 
 <div style="margin-top: 20px">
 
 * Destination :
-  * <strong>Lieu de prise en charge :</strong> {{ $reservation->display_from }}
-  * <strong>Provenance / N° :</strong> {{ $reservation->pickup_origin }}
+  * <strong>Lieu de prise en charge :</strong> {{ $reservation->display_to }}
+@if($reservation->drop_off_origin)
+  * <strong>Provenance / N° :</strong> {{ $reservation->drop_off_origin }}
+@endif
+
 
 </div>
 
