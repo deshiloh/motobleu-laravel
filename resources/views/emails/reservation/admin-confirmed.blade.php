@@ -13,7 +13,7 @@ Votre réservation N° <strong>{{ $reservation->reference }}</strong> vient d'ê
   * <strong>Date :</strong> {{ $reservation->pickup_date->format('d/m/Y') }}
   * <strong>Heure :</strong> {{ $reservation->pickup_date->format('H:i') }}
   * <strong>Lieu de prise en charge :</strong> {{ $reservation->display_from }}
-@if($reservation->localisation_id)
+@if($reservation->localisation_from)
   * <strong>Provenance / N° :</strong> {{ $reservation->pickup_origin }}
 @endif
 <br><br>

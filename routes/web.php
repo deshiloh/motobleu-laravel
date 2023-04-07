@@ -65,8 +65,8 @@ Route::get('/lang/{locale}', function (string $locale) {
     return redirect()->back();
 })->name('switch.local');
 
-Route::get('/mail-test', function () {
-    $reservation = Reservation::findOrFail(90);
-
-    return new \App\Mail\ReservationCanceledPay($reservation);
-});
+//Route::get('/mail-test', function () {
+//    $reservation = Reservation::findOrFail(10478);
+//
+//    return new \App\Mail\AdminReservationConfirmed($reservation);
+//});
