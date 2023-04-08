@@ -6,6 +6,7 @@ use App\Enum\ReservationStatus;
 use App\Models\Pilote;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Spatie\GoogleCalendar\Event;
 
 class GoogleCalendarService
@@ -114,7 +115,7 @@ class GoogleCalendarService
         $reservation->refresh();
 
         try {
-            if (App::environment(['local', 'prod'])) {
+            if (App::environment(['local', 'prod', 'beta'])) {
                 if (is_null($reservation->event_id)) {
                     return false;
                 }
@@ -136,7 +137,10 @@ class GoogleCalendarService
                     'reservation' => $reservation
                 ])->exception($exception);
             }
-            // TODO Sentry en production
+            Log::channel('sentry')->error("Erreur pendant la suppression de l'évènement", [
+                'exception' => $exception,
+                'reservation' => $reservation
+            ]);
             return false;
         }
 
