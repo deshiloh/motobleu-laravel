@@ -43,7 +43,9 @@ class Reservation extends Model
         'calendar_passager_invitation' => 'boolean',
         'tarif' => 'float',
         'majoration' => 'float',
-        'complement' => 'float'
+        'complement' => 'float',
+        'encompte_pilote' => 'float',
+        'encaisse_pilote' => 'float'
     ];
 
     /**

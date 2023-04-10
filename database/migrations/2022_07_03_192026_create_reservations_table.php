@@ -29,10 +29,8 @@ return new class extends Migration
             $table->float('majoration')->nullable();
             $table->float('complement')->nullable();
 
-            $table->float('encompte_pilote')
-                ->nullable();
-            $table->float('encaisse_pilote')
-                ->nullable();
+            $table->float('encompte_pilote')->nullable();
+            $table->float('encaisse_pilote')->nullable();
 
             $table->longText('comment_facture')->nullable();
             $table->longText('comment_pilote')->nullable();
