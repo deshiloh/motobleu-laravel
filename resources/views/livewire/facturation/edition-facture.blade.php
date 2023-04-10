@@ -143,7 +143,7 @@
                                 <x-input x-model="formData.complement" type="number" step="0.01" placeholder="Complément de la course"/>
                             </x-datatable.td>
                             <x-datatable.td>
-                                <x-textarea x-model="formData.comment" placeholder="Votre commentaire" />
+                                <x-textarea x-model="formData.comment_facture" placeholder="Votre commentaire" />
                             </x-datatable.td>
                             <x-datatable.td>
                                 <x-button primary sm label="Valider" @click="submission"/>
@@ -213,7 +213,7 @@
                         tarif : reservationData.tarif,
                         majoration: reservationData.majoration,
                         complement: reservationData.complement,
-                        comment: reservationData.comment,
+                        comment_facture: reservationData.comment_facture,
                         reservation: reservationData.id
                     },
                     submission() {
