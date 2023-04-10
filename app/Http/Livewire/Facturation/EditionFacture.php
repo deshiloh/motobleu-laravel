@@ -412,7 +412,7 @@ class EditionFacture extends Component
             'tarif' => 'required',
             'majoration' => 'nullable',
             'complement' => 'nullable',
-            'comment' => 'nullable'
+            'comment_facture' => 'nullable'
         ]);
 
         if ($validator->fails()) {
@@ -424,8 +424,7 @@ class EditionFacture extends Component
         $reservation->updateQuietly([
             'tarif' => $datas['tarif'],
             'majoration' => $datas['majoration'],
-            'complement' => $datas['complement'],
-            'comment_facture' => $datas['comment'],
+            'comment_facture' => $datas['comment_facture'],
         ]);
 
         $this->emit('reservationUpdated');

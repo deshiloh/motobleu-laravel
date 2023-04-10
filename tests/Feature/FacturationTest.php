@@ -50,7 +50,7 @@ class FacturationTest extends TestCase
                 'tarif' => '',
                 'majoration' => 0,
                 'complement' => 0,
-                'comment' => '',
+                'comment_facture' => '',
                 'reservation' => 1
             ])
             ->assertNotEmitted('reservationUpdated')
@@ -73,7 +73,7 @@ class FacturationTest extends TestCase
                 'tarif' => 300,
                 'majoration' => 0,
                 'complement' => 0,
-                'comment' => '',
+                'comment_facture' => '',
                 'reservation' => 1
             ])
             ->assertEmitted('reservationUpdated')
@@ -117,7 +117,7 @@ class FacturationTest extends TestCase
                 'tarif' => 10,
                 'majoration' => 0,
                 'complement' => 0,
-                'comment' => ''
+                'comment_facture' => ''
             ]);
         }
 
