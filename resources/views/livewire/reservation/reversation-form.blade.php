@@ -126,7 +126,7 @@
 
         <x-bloc-content>
             <div class="space-y-3">
-                <div class="dark:text-white text-xl">Départ :</div>
+                <div class="dark:text-white text-xl">Lieu de prise en charge :</div>
 
                 <div class="flex mb-3 space-x-3">
                     <x-radio wire:model="pickupMode"
@@ -180,7 +180,7 @@
         </x-bloc-content>
         <x-bloc-content>
             <div class="space-y-3">
-                <div class="dark:text-white text-xl">Arrivée :</div>
+                <div class="dark:text-white text-xl">Lieu de destination :</div>
 
                 <div class="flex mb-3 space-x-3">
                     <x-radio wire:model="dropMode"
@@ -252,7 +252,7 @@
                 </div>
             </div>
 
-            <x-bloc-content>
+            <x-bloc-content-dark>
                 <x-datetime-picker
                     wire:key="back_date_picker"
                     label="Date"
@@ -263,11 +263,11 @@
                     wire:model="reservation_back.pickup_date"
                     :without-timezone="true"
                 />
-            </x-bloc-content>
+            </x-bloc-content-dark>
 
-            <x-bloc-content>
+            <x-bloc-content-dark>
                 <div class="space-y-3">
-                    <div class="dark:text-white text-xl">Départ :</div>
+                    <div class="dark:text-white text-xl">Lieu de prise en charge :</div>
                     <div class="flex mb-3 space-x-3">
                         <x-radio wire:model="backPickupMode"
                                  value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Aéroport ou gares"/>
@@ -314,11 +314,11 @@
                         </div>
                     @endif
                 </div>
-            </x-bloc-content>
+            </x-bloc-content-dark>
 
-            <x-bloc-content>
+            <x-bloc-content-dark>
                 <div class="space-y-3">
-                    <div class="dark:text-white text-xl">Arrivée :</div>
+                    <div class="dark:text-white text-xl">Lieu de destination :</div>
                     <div class="flex mb-3 space-x-3">
                         <x-radio wire:model="backDropMode"
                                  value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Aéroport ou gares"/>
@@ -365,14 +365,14 @@
                         </div>
                     @endif
                 </div>
-            </x-bloc-content>
+            </x-bloc-content-dark>
 
-            <x-bloc-content>
+            <x-bloc-content-dark>
                 <div class="mb-4">
                     <x-textarea label="Commentaire" placeholder="Votre commentaire..."
                                 wire:model="reservation_back.comment"/>
                 </div>
-            </x-bloc-content>
+            </x-bloc-content-dark>
         @endif
         <x-bloc-content>
             <div class="flex flex-col space-y-2 my-3">
