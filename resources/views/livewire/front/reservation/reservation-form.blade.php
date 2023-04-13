@@ -102,7 +102,7 @@
                 <div class="w-full border-t border-gray-300"></div>
             </div>
             <div class="relative flex justify-center">
-                <span class="bg-gray-200 px-3 font-semibold text-gray-900 text-2xl">Course aller</span>
+                <span class="bg-gray-200 px-3 font-semibold text-gray-900 text-2xl">{{ __('Course aller') }}</span>
             </div>
         </div>
 
@@ -121,7 +121,7 @@
         </x-front.card>
         <x-front.card>
             <div class="space-y-3">
-                <div class="dark:text-white text-xl">{{ __('Départ') }} :</div>
+                <div class="dark:text-white text-xl">{{ __('Lieu de prise en charge') }} :</div>
 
                 <div class="flex mb-3 space-x-3">
                     <x-radio wire:model="pickupMode"
@@ -175,7 +175,7 @@
         </x-front.card>
         <x-front.card>
             <div class="space-y-3">
-                <div class="dark:text-white text-xl">{{ __('Arrivée') }} :</div>
+                <div class="dark:text-white text-xl">{{ __('Lieu de destination') }} :</div>
 
                 <div class="flex mb-3 space-x-3">
                     <x-radio wire:model="dropMode"
@@ -230,7 +230,7 @@
             </div>
         </x-front.card>
         <x-front.card>
-            <x-textarea placeholder="{{ __('Votre commentaire') }}..." wire:model.defer="reservation.comment" label="Commentaire"/>
+            <x-textarea placeholder="{{ __('Votre commentaire') }}..." wire:model.defer="reservation.comment" label="{{ __('Commentaire') }}"/>
         </x-front.card>
 
         @if($hasBack)
@@ -239,7 +239,7 @@
                     <div class="w-full border-t border-gray-300"></div>
                 </div>
                 <div class="relative flex justify-center">
-                    <span class="bg-gray-200 px-3 font-semibold text-gray-900 text-2xl">Course retour</span>
+                    <span class="bg-gray-200 px-3 font-semibold text-gray-900 text-2xl">{{ __('Course retour') }}</span>
                 </div>
             </div>
             <x-front.card>
@@ -259,7 +259,7 @@
             <x-front.card>
 
                 <div class="space-y-3">
-                    <div class="dark:text-white text-xl">{{ __('Départ du retour') }} :</div>
+                    <div class="dark:text-white text-xl">{{ __('Lieu de prise en charge') }} :</div>
                     <div class="flex mb-3 space-x-3">
                         <x-radio wire:model="backPickupMode"
                                  value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="{{ __('Aéroport ou gares') }}"/>
@@ -311,7 +311,7 @@
             <x-front.card>
 
                 <div class="space-y-3">
-                    <div class="dark:text-white text-xl">{{ __('Arrivée du retour') }} :</div>
+                    <div class="dark:text-white text-xl">{{ __('Lieu de destination') }} :</div>
                     <div class="flex mb-3 space-x-3">
                         <x-radio wire:model="backDropMode"
                                  value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="{{ __('Aéroport ou gares') }}"/>
@@ -363,7 +363,7 @@
             <x-front.card>
 
                 <div class="mb-4">
-                    <x-textarea label="{{ __('Commentaire du retour') }}" placeholder="{{ __('Votre commentaire') }}..."
+                    <x-textarea label="{{ __('Commentaire course retour') }}" placeholder="{{ __('Votre commentaire') }}..."
                                 wire:model="reservation_back.comment"/>
                 </div>
             </x-front.card>
