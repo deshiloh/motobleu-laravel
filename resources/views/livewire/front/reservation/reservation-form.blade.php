@@ -242,7 +242,7 @@
                     <span class="bg-gray-200 px-3 font-semibold text-gray-900 text-2xl">{{ __('Course retour') }}</span>
                 </div>
             </div>
-            <x-front.card>
+            <x-front.card-dark>
                 <x-datetime-picker
                     wire:key="back_date_picker"
                     label="{{ __('Date de retour') }}"
@@ -254,9 +254,9 @@
                     :without-timezone="true"
                     min="{{ \Carbon\Carbon::now() }}"
                 />
-            </x-front.card>
+            </x-front.card-dark>
 
-            <x-front.card>
+            <x-front.card-dark>
 
                 <div class="space-y-3">
                     <div class="dark:text-white text-xl">{{ __('Lieu de prise en charge') }} :</div>
@@ -306,9 +306,9 @@
                         </div>
                     @endif
                 </div>
-            </x-front.card>
+            </x-front.card-dark>
 
-            <x-front.card>
+            <x-front.card-dark>
 
                 <div class="space-y-3">
                     <div class="dark:text-white text-xl">{{ __('Lieu de destination') }} :</div>
@@ -358,15 +358,15 @@
                         </div>
                     @endif
                 </div>
-            </x-front.card>
+            </x-front.card-dark>
 
-            <x-front.card>
+            <x-front.card-dark>
 
                 <div class="mb-4">
                     <x-textarea label="{{ __('Commentaire course retour') }}" placeholder="{{ __('Votre commentaire') }}..."
                                 wire:model="reservation_back.comment"/>
                 </div>
-            </x-front.card>
+            </x-front.card-dark>
         @endif
         <x-front.card>
 
