@@ -96,6 +96,16 @@
                 @endif
             </div>
         </x-front.card>
+
+        <div class="container mx-auto relative">
+            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                <div class="w-full border-t border-gray-300"></div>
+            </div>
+            <div class="relative flex justify-center">
+                <span class="bg-gray-200 px-3 font-semibold text-gray-900 text-2xl">Course aller</span>
+            </div>
+        </div>
+
         <x-front.card>
             <x-datetime-picker
                 wire:key="pickup_date"
@@ -224,6 +234,14 @@
         </x-front.card>
 
         @if($hasBack)
+            <div class="container mx-auto relative">
+                <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="relative flex justify-center">
+                    <span class="bg-gray-200 px-3 font-semibold text-gray-900 text-2xl">Course retour</span>
+                </div>
+            </div>
             <x-front.card>
                 <x-datetime-picker
                     wire:key="back_date_picker"

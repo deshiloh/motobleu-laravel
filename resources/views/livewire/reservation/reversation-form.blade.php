@@ -99,6 +99,18 @@
                 @endif
             </div>
         </x-bloc-content>
+
+        <div class="md:px-4">
+            <div class="relative mb-4">
+                <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="relative flex justify-center">
+                    <span class="bg-gray-100 px-3 font-semibold text-gray-900 text-2xl">Course aller</span>
+                </div>
+            </div>
+        </div>
+
         <x-bloc-content>
             <x-datetime-picker
                 wire:key="pickup_date"
@@ -228,13 +240,14 @@
         </x-bloc-content>
 
         @if($hasBack)
-            <div class="sm:px-6 lg:px-4 mb-4">
-                <div class="relative">
+
+            <div class="md:px-4">
+                <div class="relative mb-4">
                     <div class="absolute inset-0 flex items-center" aria-hidden="true">
                         <div class="w-full border-t border-gray-300"></div>
                     </div>
                     <div class="relative flex justify-center">
-                        <span class="bg-gray-100 px-2 text-sm text-gray-500 text-2xl">Réservation retour</span>
+                        <span class="bg-gray-100 px-3 font-semibold text-gray-900 text-2xl">Course retour</span>
                     </div>
                 </div>
             </div>
