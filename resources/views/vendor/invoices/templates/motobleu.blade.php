@@ -156,14 +156,14 @@
                     <td class="border-0 pl-0" width="70%">
                         <h4 class="text-uppercase">
                             <strong>{{ $invoice->name }}</strong>
+                            @if($invoice->status)
+                                <h4 class="text-uppercase cool-gray">
+                                    <strong>{{ $invoice->status }}</strong>
+                                </h4>
+                            @endif
                         </h4>
                     </td>
                     <td class="border-0 pl-0">
-                        @if($invoice->status)
-                            <h4 class="text-uppercase cool-gray">
-                                <strong>{{ $invoice->status }}</strong>
-                            </h4>
-                        @endif
 {{--                        <p>{{ __('invoice.serial') }} <strong>{{ $invoice->getSerialNumber() }}</strong></p>--}}
                         <p>{{ __('invoice.date') }}: <strong>{{ $invoice->getDate() }}</strong></p>
                     </td>
@@ -388,10 +388,10 @@
                     </p>
                 </td>
                 <td>
-                    <p style="margin-bottom: -5;">
+                    <p style="margin-bottom: -5; padding-left: 23">
                         CONDITIONS DE PAIEMENT :
                     </p>
-                    <ul>
+                    <ul >
                         <li>Pas d'escompte si règlement anticipé.</li>
                         <li>Toute somme non payée dans les 30 jours est augmentée du taux d'intérêt légal majoré de 7 points.</li>
                         <li>Indemnité forfaitaire de recouvrement : 40 euros</li>

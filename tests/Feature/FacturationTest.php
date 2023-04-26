@@ -97,6 +97,7 @@ class FacturationTest extends TestCase
             ->set('factureModal', true)
             ->set('email.address', 'test@test.com')
             ->set('email.message', 'Je suis un test')
+            ->set('email.complement', 'test')
             ->call('sendFactureAction')
             ->assertSet('factureModal', true)
             ->assertHasNoErrors([

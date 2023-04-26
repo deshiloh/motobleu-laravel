@@ -16,9 +16,11 @@ class FacturationDataTable extends Component
     public string $search = '';
     public ?int $entreprise = null;
     public int $perPage = 10;
+    public ?int $isAcquitte = null;
 
     protected $queryString = [
         'search' => ['except' => ''],
+        'isAcquitte' => ['except' => 0],
         'entreprise' => ['except' => null]
     ];
 
@@ -34,6 +36,12 @@ class FacturationDataTable extends Component
                     return $query->whereHas('reservations', function (Builder $query) {
                         return $query->where('entreprise_id', $this->entreprise);
                     });
+                })
+                ->when($this->isAcquitte > 0, function (Builder $query) {
+                    return match ($this->isAcquitte) {
+                        1 => $query->where('is_acquitte', false),
+                        2 => $query->where('is_acquitte', true)
+                    };
                 })
                 ->orderBy('factures.id', 'desc')
                 ->paginate($this->perPage)
