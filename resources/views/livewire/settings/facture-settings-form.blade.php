@@ -44,6 +44,9 @@
                         placeholder="Sélectionnez une ou plusieurs entreprises"
                     />
                 </div>
+                <div class="col-span-12 sm:col-span-7">
+                    <x-textarea wire:model="rib" label="Identifiants baancaire" placeholder="Renseignez vos informations bancaire" />
+                </div>
             </div>
         </div>
 

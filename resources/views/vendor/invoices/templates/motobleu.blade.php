@@ -1,3 +1,6 @@
+@php
+    $billSettings = app(\app\Settings\BillSettings::class);
+@endphp
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -373,7 +376,7 @@
             </tbody>
         </table>
 
-        <p style="height: 270px">
+        <p style="height: 200px">
             @if($invoice->notes)
                 {{ trans('invoice.notes') }}: <br> {!! $invoice->notes !!}
             @endif
@@ -396,6 +399,11 @@
                         <li>Toute somme non payée dans les 30 jours est augmentée du taux d'intérêt légal majoré de 7 points.</li>
                         <li>Indemnité forfaitaire de recouvrement : 40 euros</li>
                     </ul>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center;" colspan="2">
+                    {!! nl2br($billSettings->rib) !!}
                 </td>
             </tr>
         </table>
