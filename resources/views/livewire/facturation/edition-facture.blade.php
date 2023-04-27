@@ -115,21 +115,21 @@
                     @php
                         $validation = 0;
                     @endphp
-                    @foreach($this->reservations as $reservation)
+                    @forelse($this->reservations as $reservation)
                         @php
                             $currentAmount = 0;
                             $currentAmount = $this->calculTotal($reservation);
                             $montant_ttc += $currentAmount;
                             $validation += $this->calculTotal($reservation);
                         @endphp
-                        <x-datatable.tr :success="$currentAmount > 0" x-data="billDatas({{ json_encode($reservation) }})">
+                        <x-datatable.tr :success="$reservation->tarif !== null" x-data="billDatas({{ json_encode($reservation) }})">
                             <x-datatable.td>{{ $reservation->reference }}</x-datatable.td>
                             <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
                             <x-datatable.td>{{ $reservation->passager->nom }}</x-datatable.td>
                             <x-datatable.td>{{ $reservation->display_from }}</x-datatable.td>
                             <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
                             <x-datatable.td>
-                                @if($reservation->tarif > 0)
+                                @if($reservation->tarif !== null)
                                     {{ number_format($validation, 2, ',', ' ') }} €
                                 @endif
                             </x-datatable.td>
@@ -149,7 +149,16 @@
                                 <x-button primary sm label="Valider" @click="submission"/>
                             </x-datatable.td>
                         </x-datatable.tr>
-                    @endforeach
+                    @empty
+                        <x-datatable.tr>
+                            <x-datatable.td colspan="11">
+                                <div class="text-center">
+                                     <div class="block text-xl">Aucune réservation trouvée</div>
+                                    Seule les réservations qui sont facturées apparaissent içi
+                                </div>
+                            </x-datatable.td>
+                        </x-datatable.tr>
+                    @endforelse
                 </x-slot:body>
             </x-datatable>
             <div class="flex justify-end py-4">
