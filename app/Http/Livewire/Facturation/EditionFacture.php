@@ -42,7 +42,7 @@ class EditionFacture extends Component
     public bool $factureModal = false;
     public bool $isAcquitte = false;
     public bool $isFormFacture = false;
-    public int|null $isBilled = null;
+    public ?int $isBilled = null;
 
     public array $email;
     public array $months = [];
@@ -111,6 +111,7 @@ class EditionFacture extends Component
                     ->whereMonth('pickup_date', $this->selectedMonth)
                     ->whereYear('pickup_date', $this->selectedYear)
                     ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
+                    ->where('encompte_pilote', '>', 0)
                 ;
             }]
         )
@@ -119,6 +120,7 @@ class EditionFacture extends Component
                     ->whereMonth('pickup_date', $this->selectedMonth)
                     ->whereYear('pickup_date', $this->selectedYear)
                     ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
+                    ->where('encompte_pilote', '>', 0)
                 ;
             })
             ->when($this->entrepriseSearch != null, function(Builder $query) {
@@ -250,11 +252,7 @@ class EditionFacture extends Component
                 $this->adresseEntreprise->adresse_full;
 
             // Génération de la référence de la facture
-            $reference = sprintf('FA%s-%s-%s',
-                $this->selectedYear,
-                $this->selectedMonth,
-                Facture::where('month', $this->selectedMonth)->where('year', $this->selectedYear)->count() + 1
-            );
+            $reference = Facture::generateReference($this->selectedYear, $this->selectedMonth);
 
             // Création de la nouvelle facture
             $facture = Facture::create([
@@ -296,7 +294,7 @@ class EditionFacture extends Component
         $this->resetErrorBag();
 
         $this->email['address'] = $this->adresse_facturation_entreprise->email;
-        $this->email['message'] = sprintf("Bonjour, <br> <br> Veuillez trouver ci-joint la facture %s et le récapitulatif des courses pour la période de %s %s. <br> <br> Cordialement",
+        $this->email['message'] = sprintf("Bonjour, <br> <br> Veuillez trouver ci-joint la facture %s et le récapitulatif des courses pour la période de %s %s.",
             $this->facture->reference,
             $this->months[$this->facture->month],
             $this->facture->year
@@ -329,7 +327,7 @@ class EditionFacture extends Component
             $validator->after(function ($validator) {
                 /** @var Reservation $reservation */
                 foreach ($this->reservations as $reservation) {
-                    if ($reservation->tarif == 0) {
+                    if ($reservation->tarif === null) {
                         $validator->errors()->add('réservations', 'Vous devez éditer toutes les réservations');
                     }
                 }
@@ -376,12 +374,17 @@ class EditionFacture extends Component
 
     /**
      * @param Reservation $reservation
-     * @return float|int
+     * @return float|int|null
      */
-    public function calculTotal(Reservation $reservation): float|int
+    public function calculTotal(Reservation $reservation): float|int|null
     {
+        if ($reservation->tarif == null) {
+            return null;
+        }
+
         $total = floatval($reservation->tarif);
         $montantMajoration = $total * (floatval($reservation->majoration) / 100);
+
         return $total + $montantMajoration + floatval($reservation->complement);
     }
 
@@ -424,6 +427,7 @@ class EditionFacture extends Component
         $reservation->updateQuietly([
             'tarif' => $datas['tarif'],
             'majoration' => $datas['majoration'],
+            'complement' => $datas['complement'],
             'comment_facture' => $datas['comment_facture'],
         ]);
 

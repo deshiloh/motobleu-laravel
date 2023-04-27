@@ -29,6 +29,9 @@
     <x-menu.dropdown.item-link href="{{ route('admin.facturations.edition') }}">
         Edition des factures
     </x-menu.dropdown.item-link>
+    <x-menu.dropdown.item-link href="{{ route('admin.facturations.export') }}">
+        Export
+    </x-menu.dropdown.item-link>
 </x-menu.dropdown>
 <x-menu.dropdown title="Config.">
     <x-menu.dropdown.item-link href="{{ route('admin.carousel') }}">Carousel</x-menu.dropdown.item-link>

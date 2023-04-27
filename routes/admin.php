@@ -139,6 +139,8 @@ Route::prefix('/admin')->name('admin.')->group(function () {
         ->name('facturations.edition');
     Route::get('facturations/{facture}/show', [FacturationsController::class, 'show'])
         ->name('facturations.show');
+    Route::get('facturations/export', \App\Http\Livewire\Facturation\Export::class)
+        ->name('facturations.export');
 
     Route::get('carousel', \App\Http\Livewire\Carousel\CarouselDataTable::class)
         ->name('carousel');

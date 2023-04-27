@@ -59,13 +59,18 @@ class Facture extends Model
         );
     }
 
-    private function generateReference(): string
+    /**
+     * Génération de la référence d'une facture
+     * @param string $year
+     * @param string $month
+     * @return string
+     */
+    public static function generateReference(string $year, string $month): string
     {
-        $currentDate = Carbon::now();
-        return sprintf('FA%s-%s-%s',
-            $currentDate->year,
-            $currentDate->month,
-            Facture::where('month', $currentDate->month)->where('year', $currentDate->year)->count() + 1
+        return sprintf('FA%04d-%02d-%02d',
+            $year,
+            $month,
+            Facture::where('month', $month)->where('year', $year)->count() + 1
         );
     }
 

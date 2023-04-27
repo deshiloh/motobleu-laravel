@@ -1,21 +1,26 @@
 <div>
     <x-header>
-        Liste des factures
+        Export de factures
     </x-header>
     <x-bloc-content>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-3 mb-4">
             <div>
-                <x-input label="Rechercher" icon="search" wire:model="search" />
+                <x-datetime-picker
+                    label="Date de début"
+                    placeholder="Sélectionnez une date de début"
+                    :without-time="true"
+                    display-format="DD/MM/YYYY"
+                    wire:model="dateDebut"
+                />
             </div>
             <div>
-                <x-native-select
-                    label="Acquittée"
-                    wire:model="isAcquitte"
-                >
-                    <option value="0">Tout</option>
-                    <option value="1">Non acquittée</option>
-                    <option value="2">Acquittée</option>
-                </x-native-select>
+                <x-datetime-picker
+                    label="Date de fin"
+                    placeholder="Sélectionnez une date de fin"
+                    :without-time="true"
+                    display-format="DD/MM/YYYY"
+                    wire:model="dateFin"
+                />
             </div>
             <div>
                 <x-select
@@ -27,20 +32,29 @@
                     option-value="id"
                 />
             </div>
+            <div>
+                <x-native-select
+                    label="Factures par page"
+                    :options="[10, 20, 30, 100, 200]"
+                    wire:model="perPage"
+                />
+            </div>
+            <div class="flex items-end">
+                <x-button label="Exporter" primary wire:click="exportAction"/>
+            </div>
         </div>
         <x-datatable>
             <x-slot:headers>
-                <tr>
+                <x-datatable.tr>
                     <x-datatable.th>Référence</x-datatable.th>
-                    <x-datatable.th>Date</x-datatable.th>
+                    <x-datatable.th>Date création</x-datatable.th>
                     <x-datatable.th>Acquittée</x-datatable.th>
                     <x-datatable.th>Entreprise</x-datatable.th>
                     <x-datatable.th>Montant</x-datatable.th>
-                    <x-datatable.th>Actions</x-datatable.th>
-                </tr>
+                </x-datatable.tr>
             </x-slot:headers>
             <x-slot:body>
-                @forelse($facturations as $facture)
+                @forelse($factures as $facture)
                     <x-datatable.tr>
                         <x-datatable.td>{{ $facture->reference }}</x-datatable.td>
                         <x-datatable.td>{{ $facture->created_at->format('d/m/Y') }}</x-datatable.td>
@@ -52,31 +66,21 @@
                             @endif
                         </x-datatable.td>
                         <x-datatable.td>
-                            {{ $facture->reservations->first()->entreprise->nom }}
+                            {{ $facture->reservations->first()->entreprise->nom  ?? "Non disponible"}}
                         </x-datatable.td>
                         <x-datatable.td>
                             {{ number_format($facture->montant_ttc, 2, ',', ' ') }} €
                         </x-datatable.td>
-                        <x-datatable.td>
-                            <x-button label="Voir" href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank" icon="eye" info sm />
-
-                            <x-button label="Liste des courses" icon="view-list" primary sm href="{!! route('admin.facturations.edition', [
-                                    'selectedMonth' => $facture->month,
-                                    'selectedYear' => $facture->year,
-                                    'entrepriseIdSelected' => $facture->reservations->first()->entreprise->id,
-                                    'isBilled' => 1
-                                ]
-                            ) !!}" />
-
-                        </x-datatable.td>
                     </x-datatable.tr>
                 @empty
                     <x-datatable.tr>
-                        <x-datatable.td colspan="5" class="text-center">Aucune facture</x-datatable.td>
+                        <x-datatable.td colspan="5">
+                            <div class="text-center">Aucune factures trouvés</div>
+                        </x-datatable.td>
                     </x-datatable.tr>
                 @endforelse
             </x-slot:body>
         </x-datatable>
-        <x-front.pagination :pagination="$facturations" :per-page="$perPage"/>
+        <x-front.pagination :pagination="$factures" :per-page="$perPage"/>
     </x-bloc-content>
 </div>
