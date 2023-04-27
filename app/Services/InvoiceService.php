@@ -6,6 +6,7 @@ use App\Enum\AdresseEntrepriseTypeEnum;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use App\Models\Facture;
+use app\Settings\BillSettings;
 use Carbon\Carbon;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;

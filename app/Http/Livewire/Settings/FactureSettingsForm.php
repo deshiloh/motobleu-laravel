@@ -13,6 +13,7 @@ class FactureSettingsForm extends Component
     public array $entreprisesXls;
     public array $entreprisesCostCenterFacturation;
     public array $entreprisesWithoutCommandField;
+    public string $rib;
 
     protected array $rules = [
         'entreprisesXls' => 'nullable',
@@ -25,6 +26,7 @@ class FactureSettingsForm extends Component
         $this->entreprisesXls = $billSettings->entreprises_xls_file ?? [];
         $this->entreprisesCostCenterFacturation = $billSettings->entreprises_cost_center_facturation ?? [];
         $this->entreprisesWithoutCommandField = $billSettings->entreprise_without_command_field ?? [];
+        $this->rib = $billSettings->rib ?? '';
     }
 
     public function render()
@@ -40,6 +42,7 @@ class FactureSettingsForm extends Component
             $billSettings->entreprises_xls_file = $this->entreprisesXls;
             $billSettings->entreprises_cost_center_facturation = $this->entreprisesCostCenterFacturation;
             $billSettings->entreprise_without_command_field = $this->entreprisesWithoutCommandField;
+            $billSettings->rib = $this->rib;
             $billSettings->save();
 
             $this->notification()->success("Opération réussite", "Les paramètres de facturations ont bien été modifiés.");
