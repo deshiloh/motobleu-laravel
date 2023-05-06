@@ -49,10 +49,23 @@ class AdresseEntreprise extends Model
         return new Attribute(
             get: function ($value, $attributes) {
                 $text = '';
-                $text .= (isset($attributes['adresse'])) ? $attributes['adresse'] : '';
-                $text .= (isset($attributes['adresse_complement'])) ? ', ' . $attributes['adresse_complement'] : '';
-                $text .= (isset($attributes['code_postal'])) ? ', ' . $attributes['code_postal'] : '';
-                $text .= (isset($attributes['ville'])) ? ' ' . $attributes['ville'] : '';
+
+                $text .= (isset($attributes['adresse'])) ?
+                    $attributes['adresse']
+                    : '';
+
+                $text .= (isset($attributes['adresse_complement'])) ?
+                    ', ' . $attributes['adresse_complement']
+                    : '';
+
+                $text .= (isset($attributes['code_postal'])) ?
+                    ', ' . $attributes['code_postal']
+                    : '';
+
+                $text .= (isset($attributes['ville'])) ?
+                    ' ' . $attributes['ville']
+                    : '';
+
                 return $text;
             }
         );
@@ -62,10 +75,23 @@ class AdresseEntreprise extends Model
     {
         return new Attribute(
             get: function ($value, $attributes) {
-                $text = (isset($attributes['adresse_complement'])) ? $attributes['adresse_complement'] . '<br>' : '';
-                $text .= (isset($attributes['adresse'])) ? $attributes['adresse'] . '<br>' : '';
-                $text .= (isset($attributes['code_postal'])) ? $attributes['code_postal'] : '';
-                $text .= (isset($attributes['ville'])) ? ' ' . $attributes['ville'] : '';
+
+                $text = (isset($attributes['adresse'])) ?
+                    $attributes['adresse'] . '<br>'
+                    : '';
+
+                $text .= (isset($attributes['adresse_complement'])) ?
+                    nl2br($attributes['adresse_complement']) . '<br>'
+                    : '';
+
+                $text .= (isset($attributes['code_postal'])) ?
+                    $attributes['code_postal'] :
+                    '';
+
+                $text .= (isset($attributes['ville'])) ?
+                    ' ' . $attributes['ville']
+                    : '';
+
                 return $text;
             }
         );
