@@ -46,7 +46,7 @@ class Facture extends Model
     {
         return new Attribute(
             get: function ($value, $attributes) {
-                return str_replace('<br>', ', ', $attributes['adresse_facturation']);
+                return str_replace(['<br>', '<br />'], ', ', $attributes['adresse_facturation']);
             }
         );
     }
@@ -55,7 +55,7 @@ class Facture extends Model
     {
         return new Attribute(
             get: function ($value, $attributes) {
-                return str_replace('<br>', ', ', $attributes['adresse_client']);
+                return str_replace(['<br>', '<br />'], ', ', $attributes['adresse_client']);
             }
         );
     }

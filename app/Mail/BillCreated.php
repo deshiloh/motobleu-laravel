@@ -39,7 +39,7 @@ class BillCreated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "MOTOBLEU / Votre facturation (" . $this->facture->month . " / " . $this->facture->year . ")"
+            subject: "MOTOBLEU / Votre facturation (" . sprintf('%02d', $this->facture->month) . " / " . $this->facture->year . ")"
         );
     }
 

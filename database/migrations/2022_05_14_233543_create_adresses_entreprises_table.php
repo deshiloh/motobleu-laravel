@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('adresse_entreprises', function (Blueprint $table) {
             $table->id();
             $table->string('adresse');
-            $table->string('adresse_complement')->nullable();
+            $table->longText('adresse_complement')->nullable();
             $table->string('code_postal');
             $table->string('ville');
             $table->integer('type');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('tva')->nullable();
 
             $table->foreignId('entreprise_id')
-                ->nullable(true)
+                ->nullable()
                 ->constrained('entreprises');
 
             $table->timestamps();

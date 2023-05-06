@@ -23,6 +23,7 @@ class InvoiceReservationDataTable extends Component
                 ->when($this->search, function (Builder $query, $search) {
                     $query->where('reference', 'like', '%' . $search . '%');
                 })
+                ->where('encompte_pilote', '>', 0)
                 ->orderBy('pickup_date', 'desc')
                 ->paginate($this->perPage)
         ])
