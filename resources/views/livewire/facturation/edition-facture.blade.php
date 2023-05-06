@@ -29,6 +29,20 @@
             Édition de la facturation
         @endif
     </x-header>
+    @if($this->facture != null)
+        <x-bloc-content>
+            <h3 class="text-xl font-semibold">Informations de la facture</h3>
+            <div class="mb-3">Date de création : {{ $this->facture->created_at->format('d/m/Y H:i') }}</div>
+            <div>Référence : <span class="text-motobleu font-semibold">{{ $this->facture->reference }}</span></div>
+            <div>Période : {{ sprintf("%02d", $this->facture->month) }} / {{ $this->facture->year }}</div>
+
+            <div>Adresse de facturation : {!! $this->facture->adresse_facturation !!}</div>
+            <div>Adresse de client : {!! $this->facture->adresse_client !!}</div>
+            <div class="mt-3">
+                <x-toggle left-label="Facture acquittée" wire:model.defer="isAcquitte" wire:change="updateAcquitteBill"/>
+            </div>
+        </x-bloc-content>
+    @endif
     @if(!$entrepriseIdSelected)
         <x-bloc-content wire:key="entrepriseDataTable">
             <div class="border-b border-gray-200 pb-3 mb-4">
@@ -78,7 +92,25 @@
                             <x-datatable.td>{{ $entreprise->nom }}</x-datatable.td>
                             <x-datatable.td>{{ $entreprise->reservations_count }}</x-datatable.td>
                             <x-datatable.td>
-                                <x-button primary sm wire:click="goToEditPage('{{ $entreprise->id }}')" label="Éditer la facturation" />
+                                @if($entreprise->hasBilledAddress())
+                                    <x-button primary sm wire:click="goToEditPage('{{ $entreprise->id }}')" label="Éditer la facturation" />
+                                    @else
+                                    <a href="{{ route('admin.entreprises.show', ['entreprise' => $entreprise]) }}" class="rounded-md inline-block bg-yellow-100 p-3 hover:bg-yellow-200 transition duration-200">
+                                        <div class="flex space-x-3">
+                                            <div>
+                                                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm text-yellow-700">
+                                                    Adresse de facturation non renseignée.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                @endif
+
                             </x-datatable.td>
                         </x-datatable.tr>
                     @empty
@@ -134,13 +166,19 @@
                                 @endif
                             </x-datatable.td>
                             <x-datatable.td>
-                                <x-input x-model="formData.tarif" type="number" step="0.01" placeholder="Tarif de la course"/>
+                                <div class="w-24 xl:w-full">
+                                    <x-input x-model="formData.tarif" type="number" step="0.01" placeholder="Tarif de la course" />
+                                </div>
                             </x-datatable.td>
                             <x-datatable.td>
-                                <x-input type="number" step="0.01" x-model="formData.majoration" placeholder="Majoration de la course"/>
+                                <div class="w-24 xl:w-full">
+                                    <x-input type="number" step="0.01" x-model="formData.majoration" placeholder="Majoration de la course"/>
+                                </div>
                             </x-datatable.td>
                             <x-datatable.td>
-                                <x-input x-model="formData.complement" type="number" step="0.01" placeholder="Complément de la course"/>
+                                <div class="w-24 xl:w-full">
+                                    <x-input x-model="formData.complement" type="number" step="0.01" placeholder="Complément de la course"/>
+                                </div>
                             </x-datatable.td>
                             <x-datatable.td>
                                 <x-textarea x-model="formData.comment_facture" placeholder="Votre commentaire" />
@@ -168,13 +206,13 @@
                         $prixTVA = $prixHT * 0.10;
                     @endphp
                     <div>
-                        <strong>Montant H.T :</strong> {{ number_format($prixHT, 2, ',', ' ') }} €
+                        <strong>Montant H.T :</strong> {{ number_format(floor($prixHT * 100) / 100, 2, ',', ' ') }} €
                     </div>
                     <div>
-                        <strong>TVA 10% :</strong> {{ number_format($prixTVA, 2, ',', ' ') }} €
+                        <strong>TVA 10% :</strong> {{ number_format(floor($prixTVA * 100) / 100, 2, ',', ' ') }} €
                     </div>
                     <div>
-                        <strong>Montant TTC :</strong> {{ number_format($montant_ttc, 2, ',', ' ') }} €
+                        <strong>Montant TTC :</strong> {{ number_format(floor($montant_ttc * 100) / 100, 2, ',', ' ') }} €
                     </div>
                 </div>
             </div>

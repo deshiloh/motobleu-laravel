@@ -27,8 +27,7 @@ class FacturationDataTable extends Component
     public function render()
     {
         return view('livewire.facturation.facturation-data-table', [
-            'facturations' => Facture::query()
-                ->select('factures.*')
+            'facturations' => Facture::has('reservations')
                 ->when($this->search, function (Builder $query) {
                     return $query->where('reference', 'like', '%'.$this->search.'%');
                 })

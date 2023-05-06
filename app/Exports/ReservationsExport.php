@@ -9,10 +9,11 @@ use App\Models\Passager;
 use App\Models\Reservation;
 use app\Settings\BillSettings;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithDefaultStyles;
 use Maatwebsite\Excel\Concerns\WithDrawings;
@@ -31,7 +32,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 
-class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyles, WithCustomStartCell, WithHeadings, WithEvents, FromCollection, WithDrawings, WithMapping, WithColumnFormatting
+class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeadings, WithEvents, FromCollection, WithDrawings, WithMapping, WithColumnFormatting, WithColumnWidths, ShouldAutoSize
 {
     private Collection $reservations;
     private int $indexDepart = 23;
@@ -64,7 +65,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
         $this->reservations = $this->getReservations();
 
         if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
-            $this->lastColumn = 'K';
+            $this->lastColumn = 'L';
         }
 
         $this->coordinatePrices = sprintf(
@@ -85,16 +86,6 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
     public function collection()
     {
         return $this->reservations;
-    }
-
-    public function defaultStyles(Style $defaultStyle): array
-    {
-        return [
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER,
-            ],
-        ];
     }
 
     public function styles(Worksheet $sheet): array
@@ -135,12 +126,29 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             ];
         }
 
-        for ($i = $this->indexDepart; $i <= $this->reservations->count() + $this->indexDepart; $i++) {
-            if ($i % 2 == 0) {
-                $styles[$i] = [
+        for ($j = $this->indexDepart + 1; $j <= $this->reservations->count() + $this->indexDepart; $j++) {
+            if ($j % 2 == 0) {
+                $styles[$j] = [
                     'fill' => [
                         'fillType' => Fill::FILL_SOLID,
                         'startColor' => ['argb' => 'FFE0E0E0'],
+                    ],
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER,
+                    ],
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['argb' => Color::COLOR_BLACK]
+                        ]
+                    ]
+                ];
+            } else {
+                $styles[$j] = [
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER,
                     ],
                     'borders' => [
                         'allBorders' => [
@@ -343,7 +351,7 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
     public function columnFormats(): array
     {
         return [
-            $this->coordinatePrices => NumberFormat::FORMAT_CURRENCY_EUR_SIMPLE
+            $this->coordinatePrices => NumberFormat::FORMAT_NUMBER_00
         ];
     }
 
@@ -408,5 +416,13 @@ class ReservationsExport implements WithStyles, ShouldAutoSize, WithDefaultStyle
             $this->priceColumn,
             $position,
         );
+    }
+
+    public function columnWidths(): array
+    {
+        return [
+            'A' => 20,
+            'G' => 40,
+        ];
     }
 }

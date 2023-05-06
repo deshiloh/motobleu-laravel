@@ -89,6 +89,10 @@ class EditionFacture extends Component
         $this->email['message'] = '';
 
         $this->uniqID = uniqid('facture_');
+
+        if ($this->facture !== null) {
+            $this->isAcquitte = $this->facture->is_acquitte;
+        }
     }
 
     /**
@@ -142,6 +146,7 @@ class EditionFacture extends Component
         return Reservation::where('entreprise_id', $this->entrepriseIdSelected)
             ->whereMonth('pickup_date', $this->selectedMonth)
             ->whereYear('pickup_date', $this->selectedYear)
+            ->where('encompte_pilote', '>', 0)
             ->when($this->isBilled,
                 function (Builder $query) {
                     return $query->where('statut', ReservationStatus::Billed->value);
@@ -464,6 +469,19 @@ class EditionFacture extends Component
                     'month' => $this->facture->month
                 ])->output();
             }, 'recap_reservations_' . $this->selectedMonth . '_' . $this->selectedYear . '.pdf');
+        }
+    }
+
+    public function updateAcquitteBill(): void
+    {
+        if ($this->facture !== null) {
+            $this->facture->updateQuietly([
+                'is_acquitte' => $this->isAcquitte
+            ]);
+
+            $this->emit('reservationUpdated');
+
+            $this->notification()->success('Opération réussite', 'Modifications correctement effectuées');
         }
     }
 }
