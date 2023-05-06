@@ -57,7 +57,7 @@ class EmailTest extends TestCase
 
         $mailable = new BillCreated($facture, 'test');
 
-        $mailable->assertHasSubject("MOTOBLEU / Votre facturation (" . $facture->month . " / " . $facture->year . ")");
+        $mailable->assertHasSubject("MOTOBLEU / Votre facturation (" . sprintf('%02d', $facture->month) . " / " . $facture->year . ")");
     }
 
     public function  testReservationCreatedContent()
