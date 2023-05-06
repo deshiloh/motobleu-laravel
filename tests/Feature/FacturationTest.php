@@ -28,7 +28,7 @@ class FacturationTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testCanAcessReservationsList()
+    public function testCanAccessReservationsList()
     {
         $reservation = Reservation::where('entreprise_id', 1)->first();
         Livewire::test(EditionFacture::class)

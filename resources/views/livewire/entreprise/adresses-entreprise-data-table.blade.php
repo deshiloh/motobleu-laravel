@@ -48,7 +48,7 @@
                 </x-datatable.tr>
             @empty
                 <tr>
-                    <x-datatable.td class="text-center bg-gray-700" colspan="5">
+                    <x-datatable.td class="text-center" colspan="5">
                         Aucune entreprises
                     </x-datatable.td>
                 </tr>

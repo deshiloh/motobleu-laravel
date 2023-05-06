@@ -3,7 +3,7 @@
     <x-header>
         Réservation : <span class="text-blue-500">{{ $reservation->reference }}</span>
         <x-slot:right>
-            <div class="flex items-center justify-center space-x-2">
+            <div class="flex items-center justify-center lg:space-x-2 flex-col lg:flex-row space-y-3 lg:space-y-0">
                 @if(!is_null($reservation->event_id))
                     <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled" />
                 @endif
