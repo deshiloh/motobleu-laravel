@@ -36,8 +36,8 @@
             <div>Référence : <span class="text-motobleu font-semibold">{{ $this->facture->reference }}</span></div>
             <div>Période : {{ sprintf("%02d", $this->facture->month) }} / {{ $this->facture->year }}</div>
 
-            <div>Adresse de facturation : {!! $this->facture->adresse_facturation !!}</div>
-            <div>Adresse de client : {!! $this->facture->adresse_client !!}</div>
+            <div>Adresse de facturation : {!! $this->facture->address_bill_inline !!}</div>
+            <div>Adresse de client : {!! $this->facture->address_client_inline !!}</div>
             <div class="mt-3">
                 <x-toggle left-label="Facture acquittée" wire:model.defer="isAcquitte" wire:change="updateAcquitteBill"/>
             </div>

@@ -57,4 +57,17 @@ class AdresseEntreprise extends Model
             }
         );
     }
+
+    public function addressBillFormat(): Attribute
+    {
+        return new Attribute(
+            get: function ($value, $attributes) {
+                $text = (isset($attributes['adresse_complement'])) ? $attributes['adresse_complement'] . '<br>' : '';
+                $text .= (isset($attributes['adresse'])) ? $attributes['adresse'] . '<br>' : '';
+                $text .= (isset($attributes['code_postal'])) ? $attributes['code_postal'] : '';
+                $text .= (isset($attributes['ville'])) ? ' ' . $attributes['ville'] : '';
+                return $text;
+            }
+        );
+    }
 }
