@@ -32,6 +32,7 @@ class ReservationFactory extends Factory
             'pickup_origin' => 'vol num 4440',
             'drop_off_origin' => 'vol num 4440',
             'comment' => 'lorem',
+            'encompte_pilote' => 200,
             'send_to_passager' => true,
             'calendar_passager_invitation' => true,
             'has_back' => false,

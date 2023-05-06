@@ -13,13 +13,13 @@ class InvoiceDataTable extends Component
 
     public function render()
     {
-        $factures = Facture::query()
-            ->select('factures.*')
-            ->join('reservations', 'reservations.facture_id', '=', 'factures.id')
-            ->join('entreprises', 'reservations.entreprise_id', '=', 'entreprises.id')
-            ->whereIn('entreprises.id', \Auth::user()->entreprises()->pluck('id'))
-            ->when($this->search, function (Builder $query, $search) {
-                return $query->where('factures.reference', 'like' , '%' . $search . '%');
+        $factures = Facture::whereHas('reservations', function(Builder $query) {
+            $query->whereHas('entreprise', function(Builder $query) {
+                $query->whereIn('id', \Auth::user()->entreprises()->pluck('id')->toArray());
+            });
+        })
+            ->when($this->search, function (Builder $query) {
+                $query->where('reference', 'like', '%' . $this->search . '%');
             })
             ->orderBy('id', 'desc')
             ->paginate($this->perPage);

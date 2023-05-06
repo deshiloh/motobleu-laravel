@@ -158,6 +158,7 @@
                 <tr>
                     <td class="border-0 pl-0" width="70%">
                         <h4 class="text-uppercase">
+                            <span style="font-size: 10pt;">Numéro de facture :</span> <br>
                             <strong>{{ $invoice->name }}</strong>
                             @if($invoice->status)
                                 <h4 class="text-uppercase cool-gray">
@@ -349,11 +350,14 @@
 {{--                    </tr>--}}
 {{--                @endif--}}
                 @if($invoice->hasItemOrInvoiceTax())
+                    @php
+                        $prixTVA = $invoice->taxable_amount * ($invoice->tax_rate / 100)
+                    @endphp
                     <tr>
                         <td colspan="{{ $invoice->table_columns - 2 }}" class="border-0"></td>
                         <td class="text-right pl-0">{{ __('invoice.total_taxes') }} ({{ $invoice->tax_rate }} %)</td>
                         <td class="text-right pr-0">
-                            {{ $invoice->formatCurrency($invoice->total_taxes) }}
+                            {{ number_format(floor($prixTVA * 100) / 100, 2, ',', ' ') }} €
                         </td>
                     </tr>
                 @endif
@@ -370,13 +374,16 @@
                         <td colspan="{{ $invoice->table_columns - 2 }}" class="border-0"></td>
                         <td class="text-right pl-0">{{ __('invoice.total_amount') }}</td>
                         <td class="text-right pr-0 total-amount">
-                            {{ $invoice->formatCurrency($invoice->total_amount) }}
+                            @php
+                                $ttc = $invoice->taxable_amount + $prixTVA;
+                            @endphp
+                            {{ number_format(floor($ttc * 100) / 100, 2, ',', ' ')}}
                         </td>
                     </tr>
             </tbody>
         </table>
 
-        <p style="height: 200px">
+        <p style="height: 180px">
             @if($invoice->notes)
                 {{ trans('invoice.notes') }}: <br> {!! $invoice->notes !!}
             @endif

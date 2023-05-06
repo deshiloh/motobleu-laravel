@@ -64,6 +64,16 @@ class Entreprise extends Model
         }
     }
 
+    /**
+     * @return bool
+     */
+    public function hasBilledAddress(): bool
+    {
+        return $this->adresseEntreprises()
+            ->where('type', AdresseEntrepriseTypeEnum::FACTURATION->value)
+            ->exists();
+    }
+
     public function reservations(): HasMany
     {
         return $this->hasMany(Reservation::class);
