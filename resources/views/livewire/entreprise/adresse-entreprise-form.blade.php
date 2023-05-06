@@ -7,7 +7,7 @@
             <x-input label="Nom de l'adresse" wire:model.defer="adresseEntreprise.nom" />
             <x-input label="Adresse email de contact" wire:model.defer="adresseEntreprise.email" type="email" hint="En cas de type facturation, elle sera utilisée pour l'envoi de la facture"/>
             <x-input label="Adresse" wire:model.defer="adresseEntreprise.adresse" />
-            <x-input label="Adresse complémentaire" wire:model.defer="adresseEntreprise.adresse_complement" />
+            <x-textarea label="Adresse complémentaire" wire:model.defer="adresseEntreprise.adresse_complement"></x-textarea>
             <x-input label="Code postal" wire:model.defer="adresseEntreprise.code_postal" />
             <x-input label="Ville" wire:model.defer="adresseEntreprise.ville" />
             <x-input label="TVA" wire:model.defer="adresseEntreprise.tva" />

@@ -158,7 +158,7 @@
                 <tr>
                     <td class="border-0 pl-0" width="70%">
                         <h4 class="text-uppercase">
-                            <span style="font-size: 10pt;">Numéro de facture :</span> <br>
+                            <span style="font-size: 10pt;">Facture N° :</span> <br>
                             <strong>{{ $invoice->name }}</strong>
                             @if($invoice->status)
                                 <h4 class="text-uppercase cool-gray">
@@ -377,7 +377,7 @@
                             @php
                                 $ttc = $invoice->taxable_amount + $prixTVA;
                             @endphp
-                            {{ number_format(floor($ttc * 100) / 100, 2, ',', ' ')}}
+                            {{ number_format(floor($ttc * 100) / 100, 2, ',', ' ')}} €
                         </td>
                     </tr>
             </tbody>

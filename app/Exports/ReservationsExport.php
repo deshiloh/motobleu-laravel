@@ -195,6 +195,7 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
         return Reservation::whereMonth('pickup_date', $this->datePeriod->month)
             ->whereyear('pickup_date', $this->datePeriod->year)
             ->where('entreprise_id', $this->entreprise->id)
+            ->where('encompte_pilote', '>', 0)
             ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
             ->orderBy('pickup_date', 'desc')
             ->get();
@@ -228,7 +229,6 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
             AfterSheet::class => function (AfterSheet $sheet) {
                 // Settings
                 $sheet->getDelegate()->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
-                $sheet->getSheet()->getProtection()->setSheet(true);
                 $sheet->getDelegate()->getRowDimension(20)->setRowHeight(30);
 
                 // Header
@@ -265,32 +265,42 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
 
                 $title->getStyle()->getFont()->setBold(true);
                 $title->getStyle()->getFont()->setSize(20);
+                $title->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 // Affichage du total
                 $sheet->getSheet()->getCell($this->htTextCoordinate)->setValue(
                     'Montant HT (en €)'
                 );
-                $sheet->getSheet()->getCell($this->htValueCoordinate)->setValue(
+                $htValueCelle = $sheet->getSheet()->getCell($this->htValueCoordinate);
+                $htValueCelle->setValue(
                     sprintf(
                         '=%s/1.10',
                         $this->ttcValueCoordinate
                     )
                 );
+                $htValueCelle->getStyle()->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+
                 $sheet->getSheet()->getCell($this->tvaTextCoordinate)->setValue(
                     'Montant de la TVA '
                 );
-                $sheet->getSheet()->getCell($this->tvaValueCoordinate)->setValue(
+                $tvaValueCell = $sheet->getSheet()->getCell($this->tvaValueCoordinate);
+                $tvaValueCell->setValue(
                     sprintf('=%s*0.10', $this->htValueCoordinate)
                 );
+                $tvaValueCell->getStyle()->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+
+
                 $sheet->getSheet()->getCell($this->ttcTextCoordinate)->setValue(
                     'Montant TTC (en €)'
                 );
-                $sheet->getSheet()->getCell($this->ttcValueCoordinate)->setValue(
+                $ttcValueCell = $sheet->getSheet()->getCell($this->ttcValueCoordinate);
+                $ttcValueCell->setValue(
                     sprintf(
                         '=SUM(%s)',
                         $this->coordinatePrices
                     )
                 );
+                $ttcValueCell->getStyle()->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
 
                 // Footer values
                 $sheet->getSheet()->getCell('A' . $this->startFooterIndex + 1)->setValue(
