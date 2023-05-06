@@ -31,6 +31,7 @@ class FacturationTest extends TestCase
     public function testCanAccessReservationsList()
     {
         $reservation = Reservation::where('entreprise_id', 1)->first();
+
         Livewire::test(EditionFacture::class)
             ->set('selectedMonth', Carbon::now()->month)
             ->set('selectedYear', Carbon::now()->year)
