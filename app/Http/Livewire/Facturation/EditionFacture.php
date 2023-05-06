@@ -192,8 +192,7 @@ class EditionFacture extends Component
             return null;
         }
 
-        return AdresseEntreprise::query()
-            ->where('type', AdresseEntrepriseTypeEnum::FACTURATION)
+        return AdresseEntreprise::where('type', AdresseEntrepriseTypeEnum::FACTURATION)
             ->where('entreprise_id', $this->entreprise->id)
             ->first();
     }
@@ -207,8 +206,7 @@ class EditionFacture extends Component
             return null;
         }
 
-        return AdresseEntreprise::query()
-            ->where('type', AdresseEntrepriseTypeEnum::PHYSIQUE)
+        return AdresseEntreprise::where('type', AdresseEntrepriseTypeEnum::PHYSIQUE)
             ->where('entreprise_id', $this->entreprise->id)
             ->first();
     }
@@ -249,12 +247,12 @@ class EditionFacture extends Component
         } else {
             // Génération de l'adresse de la nouvelle facture
             $addressFacturation = (is_null($this->adresseFacturationEntreprise)) ?
-                $this->adresseEntreprise->adresse_full :
-                $this->adresseFacturationEntreprise->adresse_full;
+                $this->adresseEntreprise->address_bill_format :
+                $this->adresseFacturationEntreprise->address_bill_format;
 
             $addressLocalEntreprise = (is_null($this->adresseEntreprise)) ?
-                $this->adresseFacturationEntreprise->adresse_full :
-                $this->adresseEntreprise->adresse_full;
+                $this->adresseFacturationEntreprise->address_bill_format :
+                $this->adresseEntreprise->address_bill_format;
 
             // Génération de la référence de la facture
             $reference = Facture::generateReference($this->selectedYear, $this->selectedMonth);

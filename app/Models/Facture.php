@@ -42,6 +42,24 @@ class Facture extends Model
         );
     }
 
+    public function addressBillInline(): Attribute
+    {
+        return new Attribute(
+            get: function ($value, $attributes) {
+                return str_replace('<br>', ', ', $attributes['adresse_facturation']);
+            }
+        );
+    }
+
+    public function addressClientInline(): Attribute
+    {
+        return new Attribute(
+            get: function ($value, $attributes) {
+                return str_replace('<br>', ', ', $attributes['adresse_client']);
+            }
+        );
+    }
+
     /**
      * @return HasMany
      */

@@ -199,7 +199,7 @@
 
                         @if($invoice->seller->address)
                             <p class="seller-address">
-                                {{ __('invoice.address') }}: {!! $invoice->seller->address !!}
+                                {!! $invoice->seller->address !!}
                             </p>
                         @endif
 
@@ -237,7 +237,7 @@
 
                         @if($invoice->buyer->address)
                             <p class="buyer-address">
-                                {{ __('invoice.address') }}: {!! $invoice->buyer->address !!}
+                                {!! $invoice->buyer->address !!}
                             </p>
                         @endif
 
