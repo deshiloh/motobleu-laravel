@@ -204,15 +204,16 @@
                     @php
                         $prixHT = $montant_ttc / 1.10;
                         $prixTVA = $prixHT * 0.10;
+                        $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
                     @endphp
                     <div>
-                        <strong>Montant H.T :</strong> {{ number_format(floor($prixHT * 100) / 100, 2, ',', ' ') }} €
+                        <strong>Montant H.T :</strong> {{ $fmt->formatCurrency($prixHT, 'EUR') }}
                     </div>
                     <div>
-                        <strong>TVA 10% :</strong> {{ number_format(floor($prixTVA * 100) / 100, 2, ',', ' ') }} €
+                        <strong>TVA 10% :</strong> {{ $fmt->formatCurrency($prixTVA, 'EUR') }}
                     </div>
                     <div>
-                        <strong>Montant TTC :</strong> {{ number_format(floor($montant_ttc * 100) / 100, 2, ',', ' ') }} €
+                        <strong>Montant TTC :</strong> {{ $fmt->formatCurrency($montant_ttc, 'EUR') }}
                     </div>
                 </div>
             </div>
