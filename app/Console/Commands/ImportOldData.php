@@ -106,7 +106,10 @@ class ImportOldData extends Command
             'user' => array_merge(
                 $reservationPermissions,
                 $addressReservationPermissions,
-                $passengerPermissions
+                $passengerPermissions,
+                [
+                    'see facture'
+                ]
             ),
             'admin' => array_merge(
                 $reservationPermissions,

@@ -351,13 +351,14 @@
 {{--                @endif--}}
                 @if($invoice->hasItemOrInvoiceTax())
                     @php
-                        $prixTVA = $invoice->taxable_amount * ($invoice->tax_rate / 100)
+                        $prixTVA = $invoice->taxable_amount * ($invoice->tax_rate / 100);
+                        $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
                     @endphp
                     <tr>
                         <td colspan="{{ $invoice->table_columns - 2 }}" class="border-0"></td>
                         <td class="text-right pl-0">{{ __('invoice.total_taxes') }} ({{ $invoice->tax_rate }} %)</td>
                         <td class="text-right pr-0">
-                            {{ number_format(floor($prixTVA * 100) / 100, 2, ',', ' ') }} €
+                            {{ $fmt->formatCurrency($prixTVA, 'EUR') }}
                         </td>
                     </tr>
                 @endif
@@ -377,7 +378,7 @@
                             @php
                                 $ttc = $invoice->taxable_amount + $prixTVA;
                             @endphp
-                            {{ number_format(floor($ttc * 100) / 100, 2, ',', ' ')}} €
+                            {{ $fmt->formatCurrency($ttc, 'EUR') }}
                         </td>
                     </tr>
             </tbody>

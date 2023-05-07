@@ -17,7 +17,5 @@ class FacturationsController extends Controller
     public function show(Facture $facture)
     {
         return InvoiceService::generateInvoice($facture)->stream();
-
-        //Mail::to('test@test.com')->send(new BillCreated($facture, $invoice->stream()));
     }
 }
