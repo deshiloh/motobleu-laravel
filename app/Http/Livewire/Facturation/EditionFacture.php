@@ -55,8 +55,7 @@ class EditionFacture extends Component
         'selectedMonth',
         'selectedYear',
         'entrepriseIdSelected',
-        'entrepriseSearch',
-        'isBilled'
+        'entrepriseSearch'
     ];
 
     /**
@@ -147,14 +146,7 @@ class EditionFacture extends Component
             ->whereMonth('pickup_date', $this->selectedMonth)
             ->whereYear('pickup_date', $this->selectedYear)
             ->where('encompte_pilote', '>', 0)
-            ->when($this->isBilled,
-                function (Builder $query) {
-                    return $query->where('statut', ReservationStatus::Billed->value);
-                },
-                function (Builder $query) {
-                    return $query->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value]);
-                }
-            )
+            ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
             ->orderBy('pickup_date', 'desc')
             ->get();
     }

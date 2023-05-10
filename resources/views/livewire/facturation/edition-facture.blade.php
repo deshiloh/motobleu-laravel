@@ -192,7 +192,7 @@
                             <x-datatable.td colspan="11">
                                 <div class="text-center">
                                      <div class="block text-xl">Aucune réservation trouvée</div>
-                                    Seule les réservations qui sont facturées apparaissent içi
+                                    Seule les réservations qui sont facturées apparaissent ici
                                 </div>
                             </x-datatable.td>
                         </x-datatable.tr>

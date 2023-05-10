@@ -200,7 +200,8 @@
         $reservations = \App\Models\Reservation::whereMonth('pickup_date', $month)
             ->whereYear('pickup_date', $year)
             ->where('entreprise_id', $entreprise->id)
-            ->orderBy('pickup_date', 'desc')
+            ->where('encompte_pilote', '>', 0)
+            ->orderBy('pickup_date', 'asc')
             ->get();
     @endphp
     @foreach($reservations as $reservation)
