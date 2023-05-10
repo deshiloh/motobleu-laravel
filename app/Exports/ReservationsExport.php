@@ -55,17 +55,17 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
         $this->billSettings = app(BillSettings::class);
         $this->datePeriod = Carbon::create($year, $month, '1');
 
-        $htTextColumn = 'I';
-        $tvaTextColumn = 'I';
-        $ttcTextColumn = 'I';
+        $htTextColumn = in_array($entreprise->id, $this->billSettings->entreprise_without_command_field) ? 'H' : 'I';
+        $tvaTextColumn = in_array($entreprise->id, $this->billSettings->entreprise_without_command_field) ? 'H' : 'I';
+        $ttcTextColumn = in_array($entreprise->id, $this->billSettings->entreprise_without_command_field) ? 'H' : 'I';
 
-        $this->priceColumn = 'J';
-        $this->lastColumn = 'J';
+        $this->priceColumn = in_array($entreprise->id, $this->billSettings->entreprise_without_command_field) ? 'I' : 'J';
+        $this->lastColumn = in_array($entreprise->id, $this->billSettings->entreprise_without_command_field) ? 'K' : 'J';
         $this->entreprise = $entreprise;
         $this->reservations = $this->getReservations();
 
         if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
-            $this->lastColumn = 'L';
+            $this->lastColumn = 'K';
         }
 
         $this->coordinatePrices = sprintf(
@@ -197,24 +197,38 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
             ->where('entreprise_id', $this->entreprise->id)
             ->where('encompte_pilote', '>', 0)
             ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
-            ->orderBy('pickup_date', 'desc')
+            ->orderBy('pickup_date')
             ->get();
     }
 
     public function headings(): array
     {
-        $headers = [
-            'Course N°',
-            'Code',
-            'Secrétaire',
-            'Date',
-            'Client',
-            'Heure',
-            'Départ',
-            'Arrivée',
-            'Commentaires',
-            'Prix TTC (en €)',
-        ];
+        if (in_array($this->entreprise->id, $this->billSettings->entreprise_without_command_field)) {
+            $headers = [
+                'Course N°',
+                'Secrétaire',
+                'Date',
+                'Client',
+                'Heure',
+                'Départ',
+                'Arrivée',
+                'Commentaires',
+                'Prix TTC (en €)',
+            ];
+        } else  {
+            $headers = [
+                'Course N°',
+                'Code',
+                'Secrétaire',
+                'Date',
+                'Client',
+                'Heure',
+                'Départ',
+                'Arrivée',
+                'Commentaires',
+                'Prix TTC (en €)',
+            ];
+        }
 
         if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
             array_push($headers, 'Facturation', 'COST CENTER');
@@ -279,6 +293,7 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
                     )
                 );
                 $htValueCelle->getStyle()->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+                $htValueCelle->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 $sheet->getSheet()->getCell($this->tvaTextCoordinate)->setValue(
                     'Montant de la TVA '
@@ -288,6 +303,7 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
                     sprintf('=%s*0.10', $this->htValueCoordinate)
                 );
                 $tvaValueCell->getStyle()->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+                $tvaValueCell->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
 
                 $sheet->getSheet()->getCell($this->ttcTextCoordinate)->setValue(
@@ -301,6 +317,7 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
                     )
                 );
                 $ttcValueCell->getStyle()->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+                $ttcValueCell->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 // Footer values
                 $sheet->getSheet()->getCell('A' . $this->startFooterIndex + 1)->setValue(
@@ -338,18 +355,32 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
      */
     public function map($row): array
     {
-        $datas = [
-            $row->reference,
-            $row->commande,
-            $row->passager->user->full_name,
-            $row->pickup_date->format('d/m/Y'),
-            $row->passager->nom,
-            $row->pickup_date->format('H:s'),
-            $row->display_from,
-            $row->display_to,
-            $row->comment_facture,
-            $row->tarif,
-        ];
+        if (in_array($this->entreprise->id, $this->billSettings->entreprise_without_command_field)) {
+            $datas = [
+                $row->reference,
+                $row->passager->user->full_name,
+                $row->pickup_date->format('d/m/Y'),
+                $row->passager->nom,
+                $row->pickup_date->format('H:s'),
+                $row->display_from,
+                $row->display_to,
+                $row->comment_facture,
+                $row->total_ttc,
+            ];
+        } else {
+            $datas = [
+                $row->reference,
+                $row->commande,
+                $row->passager->user->full_name,
+                $row->pickup_date->format('d/m/Y'),
+                $row->passager->nom,
+                $row->pickup_date->format('H:s'),
+                $row->display_from,
+                $row->display_to,
+                $row->comment_facture,
+                $row->total_ttc,
+            ];
+        }
 
         if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
             array_push($datas, $row->passager->typeFacturation->nom ?? 'NC', $row->passager->costCenter->nom ?? 'NC');

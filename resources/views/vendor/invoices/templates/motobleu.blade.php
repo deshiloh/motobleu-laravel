@@ -384,7 +384,7 @@
             </tbody>
         </table>
 
-        <p style="height: 180px">
+        <p style="height: 150px">
             @if($invoice->notes)
                 {{ trans('invoice.notes') }}: <br> {!! $invoice->notes !!}
             @endif
