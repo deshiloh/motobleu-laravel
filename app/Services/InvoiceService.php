@@ -46,8 +46,8 @@ class InvoiceService
             ->currencyDecimalPoint(',')
             ->addItem(
                 (new InvoiceItem())
-                    ->title('Transports pour la période de ' . $invoiceDate->monthName . ' ' . $invoiceDate->year)
-                    ->description($facture->information ?? '')
+                    ->title('Transports pour la période :')
+                    ->description($invoiceDate->monthName . ' ' . $invoiceDate->year)
                     ->pricePerUnit($facture->montant_ht)
             )
             ->taxRate(10)

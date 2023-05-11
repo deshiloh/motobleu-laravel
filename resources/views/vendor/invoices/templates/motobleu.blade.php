@@ -147,7 +147,7 @@
         </style>
     </head>
 
-    <body style="border-bottom: 1px solid black;">
+    <body style="border-bottom: 1px solid black; position: relative;">
         {{-- Header --}}
         @if($invoice->logo)
             <img src="{{ $invoice->getLogo() }}" alt="logo" height="80">
@@ -284,7 +284,7 @@
                     @if($invoice->hasItemTax)
                         <th scope="col" class="text-right border-0">{{ __('invoice.tax') }}</th>
                     @endif
-                    <th scope="col" class="text-right border-0">{{ __('invoice.comment') }}</th>
+                    <th scope="col" class="text-right border-0">{{ __('invoice.period') }}</th>
                     <th scope="col" class="text-right border-0">{{ __('invoice.price') }}</th>
                 </tr>
             </thead>
@@ -311,7 +311,7 @@
                         </td>
                     @endif
 
-                    <td class="text-right pr-0">
+                    <td class="text-right">
                         @if($item->description)
                             <p>{{ $item->description }}</p>
                         @endif
@@ -373,7 +373,7 @@
                 @endif
                     <tr>
                         <td colspan="{{ $invoice->table_columns - 2 }}" class="border-0"></td>
-                        <td class="text-right pl-0">{{ __('invoice.total_amount') }}</td>
+                        <td class="text-right pl-0" style="font-weight: bold; font-size: 10pt;">{{ __('invoice.total_amount') }}</td>
                         <td class="text-right pr-0 total-amount">
                             @php
                                 $ttc = $invoice->taxable_amount + $prixTVA;
@@ -384,12 +384,14 @@
             </tbody>
         </table>
 
-        <p style="height: 150px">
+        <p style="margin-top: 70px;">
             @if($invoice->notes)
                 {{ trans('invoice.notes') }}: <br> {!! $invoice->notes !!}
             @endif
         </p>
-        <table>
+
+        {{-- Footer --}}
+        <table style="position: absolute; bottom: 110;">
             <tr>
                 <td>
                     <p>
@@ -415,7 +417,6 @@
                 </td>
             </tr>
         </table>
-
 
         {{--<p>
             {{ trans('invoice.amount_in_words') }}: {{ $invoice->getTotalAmountInWords() }}
