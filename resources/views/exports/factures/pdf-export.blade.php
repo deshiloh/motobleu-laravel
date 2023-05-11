@@ -194,6 +194,9 @@
     </tr>
     </thead>
     <tbody>
+    @php
+        $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
+    @endphp
     @foreach($factures as $facture)
         <tr>
             <td style="padding-left: 10px; text-align: center;">
@@ -213,7 +216,7 @@
                 {{ $facture->reservations->first()->entreprise->nom ?? "Non disponible"}}
             </td>
             <td>
-                {{ number_format($facture->montant_ttc, 2, ',', ' ') }} €
+                {{ $fmt->formatCurrency($facture->montant_ttc, 'EUR') }}
             </td>
         </tr>
     @endforeach
