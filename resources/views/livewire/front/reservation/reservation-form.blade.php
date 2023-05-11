@@ -62,7 +62,7 @@
                         option-label="nom"
                         option-value="id"
                         option-description="email"
-                        wire:model.defer="reservation.passager_id"
+                        wire:model="reservation.passager_id"
                     />
                 @endif
 
@@ -381,4 +381,39 @@
             <x-button type="submit" primary label="{{ __('Enregistrer') }}" wire:loading.attr="disabled" spinner="saveReservation"/>
         </x-front.card>
     </form>
+    <x-modal.card title="Édition du passanger" blur wire:model.defer="ardianPassengerCostFacError">
+        @if($passengerInError)
+            <form id="test" wire:submit.prevent="savePassenger" method="post">
+                <div class="space-y-3">
+                    <div>
+                        Passager : {{ $passengerInError->nom }}
+                    </div>
+                    <x-select
+                        wire:key="cost_center_exist_passenger"
+                        label="Cost Center"
+                        placeholder="Sélectionner un Cost Center"
+                        :async-data="route('api.cost_center')"
+                        option-label="nom"
+                        option-value="id"
+                        wire:model="passengerInError.cost_center_id"
+                    />
+                    <x-select
+                        wire:key="type_facturation_exist_passenger"
+                        label="Type de facturation"
+                        placeholder="Sélectionner un type de facturation"
+                        :async-data="route('api.type_facturation')"
+                        option-label="nom"
+                        option-value="id"
+                        wire:model="passengerInError.type_facturation_id"
+                    />
+                </div>
+            </form>
+        @endif
+        <x-slot name="footer">
+            <div class="flex justify-end gap-x-4">
+                <x-button flat label="Annuler" x-on:click="close" />
+                <x-button primary label="Enregistrer" type="submit" form="test"/>
+            </div>
+        </x-slot>
+    </x-modal.card>
 </div>

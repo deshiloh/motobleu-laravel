@@ -7,6 +7,7 @@ use App\Models\AdresseReservation;
 use App\Models\Passager;
 use App\Models\Reservation;
 use App\Services\ReservationService;
+use app\Settings\BillSettings;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
@@ -19,6 +20,7 @@ trait WithReservationForm
     public int $backPickupMode = ReservationService::WITH_PLACE;
     public int $backDropMode = ReservationService::WITH_PLACE;
     public bool $hasBack = false;
+    public bool $ardianPassengerCostFacError = false;
 
     public ?string $userId = '';
 
@@ -26,6 +28,7 @@ trait WithReservationForm
     public Reservation $reservation_back;
 
     public Passager $newPassager;
+    public ?Passager $passengerInError = null;
 
     public AdresseReservation $newAdresseReservationFrom;
     public AdresseReservation $newAdresseReservationTo;
@@ -37,6 +40,16 @@ trait WithReservationForm
 
     protected function rules(): array
     {
+        if ($this->ardianPassengerCostFacError) {
+            return [
+                'reservation.send_to_passager' => 'bool',
+                'reservation.calendar_passager_invitation' => 'bool',
+                'reservation.entreprise_id' => 'required',
+                'passengerInError.cost_center_id' => 'required',
+                'passengerInError.type_facturation_id' => 'required'
+            ];
+        }
+
         ReservationService::generateDefaultRules($this->generatedRules);
         ReservationService::generatePassagerFromRules($this->generatedRules, $this->passagerMode, $this->reservation->entreprise_id);
         ReservationService::generateFromLocalisationRules($this->generatedRules, $this->pickupMode);
@@ -102,6 +115,32 @@ trait WithReservationForm
 
         $this->reservation_back->send_to_passager = true;
         $this->reservation_back->calendar_passager_invitation = true;
+    }
+
+    public function updatedReservation(): void
+    {
+        $billSettings = \app(BillSettings::class);
+
+        if (
+            $this->reservation->passager_id &&
+            in_array($this->reservation->entreprise_id, $billSettings->entreprises_cost_center_facturation)
+        ) {
+            $passenger = $this->reservation->passager;
+            $this->passengerInError = $passenger;
+
+            $this->ardianPassengerCostFacError = !$passenger->costCenter()->exists() &&
+                !$passenger->typeFacturation()->exists();
+        }
+    }
+
+    public function savePassenger(): void
+    {
+        $this->validate();
+
+        $this->passengerInError->updateQuietly();
+
+        $this->reservation->passager_id = $this->passengerInError->id;
+        $this->ardianPassengerCostFacError = false;
     }
 
     /**
