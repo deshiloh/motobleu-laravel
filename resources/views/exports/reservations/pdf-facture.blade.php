@@ -203,6 +203,7 @@
             ->where('encompte_pilote', '>', 0)
             ->orderBy('pickup_date', 'asc')
             ->get();
+        $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
     @endphp
     @foreach($reservations as $reservation)
         @php
@@ -235,7 +236,7 @@
                 {{ $reservation->display_to }}
             </td>
             <td class="text-center" style="">
-                {{ $reservation->total_ttc }} €
+                {{ $fmt->formatCurrency($reservation->total_ttc, 'EUR') }}
             </td>
             <td class="text-center" style="">
                 {{ $reservation->comment_facture }}
@@ -251,18 +252,18 @@
                     @php
                         $prixHT = $prixTTC / 1.1;
                     @endphp
-                    <td style="text-align: right">{{ number_format($prixHT, 2, '.', ' ') }} €</td>
+                    <td style="text-align: right">{{ $fmt->formatCurrency($prixHT, 'EUR') }}</td>
                 </tr>
                 <tr>
                     <td>TVA (10%)</td>
                     @php
                         $prixTVA =  $prixTTC - $prixHT
                     @endphp
-                    <td style="text-align: right">{{ number_format($prixTVA, 2, '.', ' ') }} €</td>
+                    <td style="text-align: right">{{ $fmt->formatCurrency($prixTVA, 'EUR') }}</td>
                 </tr>
                 <tr class="end-last">
                     <td>Total à payer</td>
-                    <td style="text-align: right">{{ number_format($prixTTC, 2, '.', ' ') }} €</td>
+                    <td style="text-align: right">{{ $fmt->formatCurrency($prixTTC, 'EUR') }}</td>
                 </tr>
             </table>
         </td>
