@@ -2,15 +2,10 @@
 
 namespace App\Http\Livewire\Reservation;
 
-use App\Services\SentryService;
+use app\Settings\BillSettings;
 use App\Traits\WithReservationForm;
-use Illuminate\Support\Facades\App;
-use Illuminate\Validation\Validator;
-use App\Models\AdresseReservation;
-use App\Models\Passager;
 use App\Models\Reservation;
 use App\Services\ReservationService;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -35,7 +30,6 @@ class ReservationForm extends Component
         } else {
             $this->defaultReset();
         }
-
     }
 
     /**
