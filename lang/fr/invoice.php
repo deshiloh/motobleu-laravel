@@ -37,5 +37,5 @@ return [
     'shipping'               => 'Livraison',
     'paid'                   => 'Payé',
     'due'                    => 'Dû',
-    'comment'                => 'Commentaire',
+    'period'                => 'Période',
 ];
