@@ -19,6 +19,7 @@
                 label="Date de début"
                 placeholder="Date de début"
                 wire:model.defer="dateDebut"
+                :clearable="false"
             />
             <x-datetime-picker
                 without-time
@@ -26,6 +27,7 @@
                 label="Date de fin"
                 placeholder="Date de fin"
                 wire:model.defer="dateFin"
+                :clearable="false"
             />
             <div class="flex items-end">
                 <x-button label="Rechercher" primary wire:click="searchReservations" />
