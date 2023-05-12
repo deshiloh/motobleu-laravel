@@ -146,7 +146,11 @@ class EditionFacture extends Component
             ->whereMonth('pickup_date', $this->selectedMonth)
             ->whereYear('pickup_date', $this->selectedYear)
             ->where('encompte_pilote', '>', 0)
-            ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
+            ->whereIn('statut', [
+                ReservationStatus::Confirmed->value,
+                ReservationStatus::CanceledToPay->value,
+                ReservationStatus::Billed
+            ])
             ->orderBy('pickup_date', 'desc')
             ->get();
     }
