@@ -1,5 +1,6 @@
 <?php
 
+use App\Enum\BillStatut;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +16,7 @@ return new class extends Migration
     {
         Schema::create('factures', function (Blueprint $table) {
             $table->id();
+            $table->integer('statut')->default(BillStatut::CREATED->value);
             $table->string('reference')->nullable();
             $table->float('montant_ht')->default(0);
             $table->integer('tva')->default(10);

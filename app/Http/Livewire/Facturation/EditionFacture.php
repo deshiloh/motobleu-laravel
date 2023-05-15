@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Facturation;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
+use App\Enum\BillStatut;
 use App\Enum\ReservationStatus;
 use App\Events\BillCreated;
 use App\Exports\ReservationsExport;
@@ -31,22 +32,22 @@ class EditionFacture extends Component
 {
     use Actions;
 
-    public int|null $selectedMonth = null;
-    public int|null $selectedYear = null;
-    public int|null $entrepriseIdSelected = null;
-    public int|null $entrepriseSearch = null;
+    public ?int $selectedMonth = null;
+    public ?int $selectedYear = null;
+    public ?int $entrepriseSearch = null;
     public string $uniqID;
 
     public float $montant_ttc = 0;
 
-    public bool $factureModal = false;
-    public bool $isAcquitte = false;
-    public bool $isFormFacture = false;
-    public ?int $isBilled = null;
+    public bool $isSendFactureModalOpened = false;
 
     public array $email;
     public array $months = [];
     public array $reservationFormData = [];
+    public ?Facture $facture = null;
+    public ?int $factureSelected = null;
+    public ?Entreprise $entreprise = null;
+    public bool $isAcquitte = false;
 
     /**
      * @var string[]
@@ -54,14 +55,27 @@ class EditionFacture extends Component
     protected $queryString = [
         'selectedMonth',
         'selectedYear',
-        'entrepriseIdSelected',
-        'entrepriseSearch'
+        'entrepriseSearch',
+        'factureSelected' => ['except' => 0]
     ];
 
     /**
      * @var string[]
      */
     protected $listeners = ['reservationUpdated', 'editReservation'];
+
+    /**
+     * @return string[]
+     */
+    public function getRules(): array
+    {
+        return [
+            'email.address' => 'required|email',
+            'email.message' => 'required',
+            'email.complement' => 'nullable',
+            'isAcquitte' => 'bool'
+        ];
+    }
 
     public function mount()
     {
@@ -89,8 +103,10 @@ class EditionFacture extends Component
 
         $this->uniqID = uniqid('facture_');
 
-        if ($this->facture !== null) {
+        if ($this->factureSelected) {
+            $this->facture = Facture::findOrFail($this->factureSelected);
             $this->isAcquitte = $this->facture->is_acquitte;
+            $this->entreprise = $this->facture->reservations->first()->entreprise;
         }
     }
 
@@ -108,16 +124,7 @@ class EditionFacture extends Component
      */
     public function getEntreprisesProperty(): Collection|array
     {
-        return Entreprise::withCount([
-            'reservations' => function(Builder $query) {
-                $query
-                    ->whereMonth('pickup_date', $this->selectedMonth)
-                    ->whereYear('pickup_date', $this->selectedYear)
-                    ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
-                    ->where('encompte_pilote', '>', 0)
-                ;
-            }]
-        )
+        return Entreprise::orderBy('nom')
             ->whereHas('reservations', function (Builder $query) {
                 $query
                     ->whereMonth('pickup_date', $this->selectedMonth)
@@ -126,249 +133,123 @@ class EditionFacture extends Component
                     ->where('encompte_pilote', '>', 0)
                 ;
             })
-            ->when($this->entrepriseSearch != null, function(Builder $query) {
+            ->withCount([
+                'reservations' => function(Builder $query) {
+                    $query
+                        ->whereMonth('pickup_date', $this->selectedMonth)
+                        ->whereYear('pickup_date', $this->selectedYear)
+                        ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
+                        ->where('encompte_pilote', '>', 0)
+                    ;
+                }]
+            )
+            ->when($this->entrepriseSearch, function(Builder $query) {
                 $query->where('id', $this->entrepriseSearch);
             })
-            ->orderBy('nom')
             ->get();
     }
 
     /**
-     * @return Builder[]|Collection|null
-     */
-    public function getReservationsProperty(): Collection|array|null
-    {
-        if (!$this->entrepriseIdSelected) {
-            return null;
-        }
-
-        return Reservation::where('entreprise_id', $this->entrepriseIdSelected)
-            ->whereMonth('pickup_date', $this->selectedMonth)
-            ->whereYear('pickup_date', $this->selectedYear)
-            ->where('encompte_pilote', '>', 0)
-            ->whereIn('statut', [
-                ReservationStatus::Confirmed->value,
-                ReservationStatus::CanceledToPay->value,
-                ReservationStatus::Billed
-            ])
-            ->orderBy('pickup_date', 'desc')
-            ->get();
-    }
-
-    /**
+     * Permet de récupérer l'entreprise de la facture
      * @return Entreprise|null
      */
     public function getEntrepriseProperty(): ?Entreprise
     {
-        if (!$this->entrepriseIdSelected) {
+        if ($this->facture === null) {
             return null;
         }
 
-        return Entreprise::find($this->entrepriseIdSelected);
+        $entrepriseId = $this->facture->reservations->first()->entreprise_id;
+        return Entreprise::find($entrepriseId);
     }
 
-    /**
-     * @return Facture|null
-     */
-    public function getFactureProperty(): ?Facture
+    public function goToEditPage(int $entrepriseId): void
     {
-        if (!$this->entrepriseIdSelected) {
-            return null;
+        $reservations = Reservation::where('entreprise_id', $entrepriseId)
+            ->whereMonth('pickup_date', $this->selectedMonth)
+            ->whereYear('pickup_date', $this->selectedYear)
+            ->whereIn('statut', [
+                ReservationStatus::Confirmed->value,
+                ReservationStatus::CanceledToPay->value
+            ])
+            ->where('encompte_pilote', '>', 0)
+            ->get();
+
+        // Génère ou récupère une facture
+        $facture = $this->getExistFacture($entrepriseId);
+
+        if ($facture === null) {
+            $facture = $this->generateFacture($entrepriseId);
         }
 
-        return $this->getFactureFor($this->selectedMonth, $this->selectedYear, $this->entrepriseIdSelected);
-    }
-
-    /**
-     * @return AdresseEntreprise|null
-     */
-    public function getAdresseFacturationEntrepriseProperty(): Model|null
-    {
-        if ($this->entreprise === null) {
-            return null;
+        if ($facture && $facture->statut == BillStatut::COMPLETED) {
+            $facture = $this->generateFacture($entrepriseId);
         }
 
-        return AdresseEntreprise::where('type', AdresseEntrepriseTypeEnum::FACTURATION)
-            ->where('entreprise_id', $this->entreprise->id)
-            ->first();
-    }
-
-    /**
-     * @return Builder|Model|null
-     */
-    public function getAdresseEntrepriseProperty(): Builder|Model|null
-    {
-        if ($this->entreprise === null) {
-            return null;
-        }
-
-        return AdresseEntreprise::where('type', AdresseEntrepriseTypeEnum::PHYSIQUE)
-            ->where('entreprise_id', $this->entreprise->id)
-            ->first();
-    }
-
-    /**
-     * @param int $month
-     * @param int $year
-     * @param int $entrepriseId
-     * @return bool
-     */
-    public function isFactureExist(int $month, int $year, int $entrepriseId): bool
-    {
-        $query = Facture::where('month', $month)
-            ->where('year', $year)
-            ->whereHas('reservations', function (Builder $query) use ($entrepriseId) {
-                $query->where('entreprise_id', $entrepriseId);
-            })->count();
-
-        return $query > 0;
-    }
-
-    /**
-     * @param int $month
-     * @param int $year
-     * @param int $entrepriseId
-     * @return Facture
-     */
-    public function getFactureFor(int $month, int $year, int $entrepriseId): Facture
-    {
-        if ($this->isFactureExist($this->selectedMonth, $this->selectedYear, $this->entrepriseIdSelected)) {
-            // Récupération de la facture existante
-            $facture = Facture::where('month', $month)
-                ->where('year', $year)
-                ->whereHas('reservations', function (Builder $query) use ($entrepriseId){
-                    $query->where('entreprise_id', $entrepriseId);
-                })
-                ->first();
-        } else {
-            // Génération de l'adresse de la nouvelle facture
-            $addressFacturation = (is_null($this->adresseFacturationEntreprise)) ?
-                $this->adresseEntreprise->address_bill_format :
-                $this->adresseFacturationEntreprise->address_bill_format;
-
-            $addressLocalEntreprise = (is_null($this->adresseEntreprise)) ?
-                $this->adresseFacturationEntreprise->address_bill_format :
-                $this->adresseEntreprise->address_bill_format;
-
-            // Génération de la référence de la facture
-            $reference = Facture::generateReference($this->selectedYear, $this->selectedMonth);
-
-            // Création de la nouvelle facture
-            $facture = Facture::create([
-                'reference' => $reference,
-                'month' => $this->selectedMonth,
-                'year' => $this->selectedYear,
-                'adresse_client' => $addressLocalEntreprise,
-                'adresse_facturation' => $addressFacturation
-            ]);
-        }
-
-        if (!empty($this->reservations)) {
-            foreach ($this->reservations as $reservation) {
-                if (!$reservation->facture_id) {
-                    $reservation->updateQuietly([
-                        'facture_id' => $facture->id
-                    ]);
-                }
+        foreach ($reservations as $reservation) {
+            if ($reservation->facture_id === null) {
+                $reservation->updateQuietly([
+                    'facture_id' => $facture->id
+                ]);
             }
         }
 
-        return $facture;
+        $this->facture = $facture;
+        $this->isAcquitte = (boolean) $facture->is_acquitte;
+        $this->facture->refresh();
+        $this->factureSelected = $facture->id;
+        $this->entreprise = Entreprise::findOrFail($entrepriseId);
+    }
+
+    public function getExistFacture(int $entrepriseSelected): ?Facture
+    {
+        return Facture::where('month', $this->selectedMonth)
+            ->where('year', $this->selectedYear)
+            ->whereHas('reservations', function(Builder $query) use ($entrepriseSelected) {
+                return $query->where('entreprise_id', $entrepriseSelected);
+            })
+            ->where('is_acquitte', false)
+            ->where('statut', BillStatut::CREATED->value)
+            ->orderBy('id', 'desc')
+            ->first()
+        ;
     }
 
     /**
-     * @param int $entreprise
-     * @return void
+     * Génère une facture
+     * @param int $entrepriseId
+     * @return Facture
      */
-    public function goToEditPage(int $entreprise): void
+    public function generateFacture(int $entrepriseId): Facture
     {
-        $this->entrepriseIdSelected = $entreprise;
-    }
+        $addressBillEntreprise = AdresseEntreprise::where('type', AdresseEntrepriseTypeEnum::FACTURATION)
+            ->where('entreprise_id', $entrepriseId)
+            ->first();
 
-    /**
-     * @return void
-     */
-    public function sendFactureModal(): void
-    {
-        $this->resetErrorBag();
+        $addressLocalEntreprise = AdresseEntreprise::where('type', AdresseEntrepriseTypeEnum::PHYSIQUE)
+            ->where('entreprise_id', $entrepriseId)
+            ->first();
 
-        $this->email['address'] = $this->adresse_facturation_entreprise->email;
-        $this->email['message'] = sprintf("Bonjour, <br> <br> Veuillez trouver ci-joint la facture %s et le récapitulatif des courses pour la période de %s %s.",
-            $this->facture->reference,
-            $this->months[$this->facture->month],
-            $this->facture->year
-        );
-        $this->email['complement'] = $this->facture->information;
-        $this->isAcquitte = (int) $this->facture->is_acquitte;
+        // Génération de l'adresse de la nouvelle facture
+        $addressFacturation = (is_null($addressBillEntreprise)) ?
+            $addressLocalEntreprise->address_bill_format :
+            $addressBillEntreprise->address_bill_format;
 
-        $this->factureModal = true;
-    }
+        $addressLocalFacturation = (is_null($addressLocalEntreprise)) ?
+            $addressBillEntreprise->address_bill_format :
+            $addressLocalEntreprise->address_bill_format;
 
-    /**
-     * @return string[]
-     */
-    public function getRules(): array
-    {
-        return [
-            'email.address' => 'required|email',
-            'email.message' => 'required',
-            'email.complement' => 'nullable',
-            'isAcquitte' => 'bool'
-        ];
-    }
+        // Génération de la référence de la facture
+        $reference = Facture::generateReference($this->selectedYear, $this->selectedMonth);
 
-    /**
-     * @return void
-     */
-    public function sendFactureAction(): void
-    {
-        $this->withValidator(function (Validator $validator) {
-            $validator->after(function ($validator) {
-                /** @var Reservation $reservation */
-                foreach ($this->reservations as $reservation) {
-                    if ($reservation->tarif === null) {
-                        $validator->errors()->add('réservations', 'Vous devez éditer toutes les réservations');
-                    }
-                }
-            });
-        })->validate();
-
-        $this->facture->information = $this->email['complement'];
-
-        foreach ($this->reservations as $reservation) {
-            $reservation->statut = ReservationStatus::Billed;
-            $reservation->updateQuietly();
-        }
-
-        BillCreated::dispatch($this->facture, $this->email);
-
-        $this->notification([
-            'title' => 'Facture envoyée.',
-            'description' => 'Vous allez être redirigé vers la page de listing entreprises',
-            'icon' => 'success',
-            'onTimeout' => [
-                'method' => 'redirectEvent',
-            ],
+        // Création de la nouvelle facture
+        return Facture::create([
+            'reference' => $reference,
+            'month' => $this->selectedMonth,
+            'year' => $this->selectedYear,
+            'adresse_client' => $addressLocalFacturation,
+            'adresse_facturation' => $addressFacturation
         ]);
-
-        $this->factureModal = false;
-    }
-
-    public function redirectEvent()
-    {
-        return redirect()->to(route('admin.facturations.edition', [
-                'selectedMonth' => $this->selectedMonth,
-                '$selectedYear' => $this->selectedYear
-            ]
-        ));
-    }
-
-    public function sendEmailTestAction()
-    {
-        $this->facture->information = $this->email['complement'];
-
-        Mail::to(config('mail.admin.address'))
-            ->send(new \App\Mail\BillCreated($this->facture, $this->email['message']));
     }
 
     /**
@@ -387,27 +268,10 @@ class EditionFacture extends Component
         return $total + $montantMajoration + floatval($reservation->complement);
     }
 
-    public function reservationUpdated()
-    {
-        $total_ttc = 0;
-
-        foreach ($this->reservations as $reservation) {
-            $currentTotalTTC = $this->calculTotal($reservation);
-
-            if ($currentTotalTTC > 0) {
-                $total_ttc = $total_ttc + $currentTotalTTC;
-            }
-        }
-
-        $total_ht = $total_ttc / 1.10;
-
-        $this->facture->updateQuietly([
-            'montant_ht' => $total_ht
-        ]);
-
-        $this->uniqID = uniqid('facture_');
-    }
-
+    /**
+     * @param array $datas
+     * @return bool
+     */
     public function editReservation(array $datas): bool
     {
         $validator = \Illuminate\Support\Facades\Validator::make($datas, [
@@ -437,15 +301,51 @@ class EditionFacture extends Component
         return true;
     }
 
-    public function editFactureAction()
+    /**
+     * @return void
+     */
+    public function reservationUpdated(): void
     {
+        $total_ttc = 0;
+
+        foreach ($this->facture->reservations as $reservation) {
+            $currentTotalTTC = $this->calculTotal($reservation);
+
+            if ($currentTotalTTC > 0) {
+                $total_ttc = $total_ttc + $currentTotalTTC;
+            }
+        }
+
+        $total_ht = $total_ttc / 1.10;
+
         $this->facture->updateQuietly([
-            'is_acquitte' => $this->isAcquitte,
-            'information' => $this->email['complement']
+            'montant_ht' => $total_ht
         ]);
+
+        $this->uniqID = uniqid('facture_');
     }
 
     /**
+     * Permet d'ouvrir la modal pour l'envoi de la facture
+     * @return void
+     */
+    public function openSendFactureModal(): void
+    {
+        $addressBillEntreprise = $this->entreprise->getAdresse(AdresseEntrepriseTypeEnum::FACTURATION)->first();
+
+        $this->email['address'] = $addressBillEntreprise->email;
+        $this->email['message'] = sprintf("Bonjour, <br> <br> Veuillez trouver ci-joint la facture %s et le récapitulatif des courses pour la période de %s %s.",
+            $this->facture->reference,
+            $this->months[$this->facture->month],
+            $this->facture->year
+        );
+        $this->email['complement'] = $this->facture->information;
+
+        $this->isSendFactureModalOpened = true;
+    }
+
+    /**
+     * Export le récap des courses avant envoi
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
@@ -466,16 +366,136 @@ class EditionFacture extends Component
         }
     }
 
+    /**
+     * Finalise la facture sans l'envoyer
+     * @return void
+     */
+    public function completedBillAction(): void
+    {
+        foreach ($this->facture->reservations as $reservation) {
+            if ($reservation->tarif === null) {
+                $this->notification([
+                    'title' => 'Action non autorisée.',
+                    'description' => 'Vous devez renseigner le tarif de toutes les réservations',
+                    'icon' => 'error',
+                ]);
+                return;
+            }
+
+            $reservation->updateQuietly([
+                'statut' => ReservationStatus::Billed
+            ]);
+        }
+
+        $this->facture->updateQuietly([
+            'statut' => BillStatut::COMPLETED
+        ]);
+
+        $this->notification([
+            'title' => 'Facture finalisée',
+            'description' => 'La facture a bien été finalisée',
+            'icon' => 'success',
+            'onTimeout' => [
+                'method' => 'redirectEvent',
+            ],
+        ]);
+    }
+
+    /**
+     * Event de mise à jour du statut is_acquitte de la facture
+     * @return void
+     */
     public function updateAcquitteBill(): void
     {
-        if ($this->facture !== null) {
-            $this->facture->updateQuietly([
-                'is_acquitte' => $this->isAcquitte
-            ]);
+        $this->facture->updateQuietly([
+            'is_acquitte' => !$this->facture->is_acquitte
+        ]);
 
-            $this->emit('reservationUpdated');
+        $this->uniqID = uniqid('facture_');
 
-            $this->notification()->success('Opération réussite', 'Modifications correctement effectuées');
+        $this->notification()->success('Opération réussite', 'Modification correctement effectuée');
+    }
+
+    /**
+     * Change les informations issue du formulaire email
+     * @return void
+     */
+    public function editFactureAction(): void
+    {
+        $this->facture->updateQuietly([
+            'information' => $this->email['complement']
+        ]);
+
+        $this->uniqID = uniqid('facture_');
+    }
+
+    /**
+     * Redirect vers la liste des entreprises à facturer
+     */
+    public function redirectEvent()
+    {
+        if ($this->facture->statut == BillStatut::COMPLETED) {
+            return redirect()->to(route('admin.facturations.index'));
+
+        } else {
+            return redirect()->to(route('admin.facturations.edition', [
+                    'selectedMonth' => $this->selectedMonth,
+                    '$selectedYear' => $this->selectedYear
+                ]
+            ));
         }
+    }
+
+    /**
+     * Finalise et envoi la facture
+     * @return void
+     */
+    public function sendFactureAction(): void
+    {
+        if ($this->facture->statut != BillStatut::COMPLETED) {
+            $this->withValidator(function (Validator $validator) {
+                $validator->after(function ($validator) {
+                    /** @var Reservation $reservation */
+                    foreach ($this->facture->reservations as $reservation) {
+                        if ($reservation->tarif === null) {
+                            $validator->errors()->add('reservation', 'Vous devez éditer toutes les réservations');
+                        }
+                    }
+                });
+            })->validate();
+
+            foreach ($this->facture->reservations as $reservation) {
+                $reservation->statut = ReservationStatus::Billed;
+                $reservation->updateQuietly();
+            }
+        }
+
+
+        $this->facture->updateQuietly([
+            'statut' => BillStatut::COMPLETED->value
+        ]);
+
+        BillCreated::dispatch($this->facture, $this->email);
+
+        $this->notification([
+            'title' => 'Facture envoyée.',
+            'description' => 'Vous allez être redirigé vers la page de listing entreprises',
+            'icon' => 'success',
+            'onTimeout' => [
+                'method' => 'redirectEvent',
+            ],
+        ]);
+
+        $this->isSendFactureModalOpened = false;
+    }
+
+    /**
+     * Envoi d'un email de test pour vérifier le mail d'envoi de facture
+     * @return void
+     */
+    public function sendEmailTestAction(): void
+    {
+        Mail::to(config('mail.admin.address'))
+            ->send(new \App\Mail\BillCreated($this->facture, $this->email['message']));
     }
 }

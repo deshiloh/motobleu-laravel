@@ -232,7 +232,7 @@ class GoogleCalendarService
             $description .= "Adresse de destination: %s\n";
             $description .= "Destination / N°: %s\n\n";
             $description .= "Commentaires: %s\n\n";
-            $description .= "Tarif : %s : %s € \n\n";
+            $description .= "Tarif : %s€%s \n\n";
             $description .= "\nLien: %s\n";
             $description .= "\n\nMotobleu\n26-28 rue Marius Aufan\n92300 Levallois Perret\nTél: +33647938617\ncontact@motobleu-paris.com\nRCS 824 721 955 NANTERRE"; //company_details
 
@@ -259,8 +259,8 @@ class GoogleCalendarService
                 $this->reservation->display_to,
                 $this->reservation->drop_off_origin,
                 $this->reservation->comment_pilote,
-                $tarifLabelle,
                 $tarifValue,
+                $tarifLabelle,
                 route('admin.reservations.show', ['reservation' => $this->reservation->id])
             );
         }

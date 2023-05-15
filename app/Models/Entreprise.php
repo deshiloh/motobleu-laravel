@@ -51,9 +51,9 @@ class Entreprise extends Model
 
     /**
      * @param AdresseEntrepriseTypeEnum $adresseEntrepriseTypeEnum
-     * @return Model|HasMany|null
+     * @return AdresseEntreprise
      */
-    public function getAdresse(AdresseEntrepriseTypeEnum $adresseEntrepriseTypeEnum): Model|HasMany|null
+    public function getAdresse(AdresseEntrepriseTypeEnum $adresseEntrepriseTypeEnum): AdresseEntreprise
     {
         if ($address = $this->adresseEntreprises()->where('type', $adresseEntrepriseTypeEnum->value)->first()) {
             return $address;

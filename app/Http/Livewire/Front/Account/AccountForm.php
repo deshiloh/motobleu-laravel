@@ -26,7 +26,7 @@ class AccountForm extends Component
 
         if ($this->contextNewUser) {
             $this->user->is_actif = false;
-            $this->user->is_admin_ardian = false;
+            $this->user->is_admin = false;
         }
     }
 
@@ -40,7 +40,7 @@ class AccountForm extends Component
             'user.adresse_bis' => 'nullable',
             'user.code_postal' => 'nullable',
             'user.ville' => 'nullable',
-            'user.is_admin_ardian' => 'boolean',
+            'user.is_admin' => 'boolean',
             'user.is_actif' => 'boolean',
         ];
 

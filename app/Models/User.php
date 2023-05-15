@@ -46,7 +46,7 @@ class User extends Authenticatable
         'adresse_bis',
         'code_postal',
         'ville',
-        'is_admin_ardian',
+        'is_admin',
         'is_actif'
     ];
 

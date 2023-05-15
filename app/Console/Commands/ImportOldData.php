@@ -3,16 +3,19 @@
 namespace App\Console\Commands;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
+use App\Enum\BillStatut;
 use App\Enum\ReservationStatus;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\Console\Command\Command as CommandAlias;
+use function PHPUnit\Framework\matches;
 
 class ImportOldData extends Command
 {
@@ -106,10 +109,7 @@ class ImportOldData extends Command
             'user' => array_merge(
                 $reservationPermissions,
                 $addressReservationPermissions,
-                $passengerPermissions,
-                [
-                    'see facture'
-                ]
+                $passengerPermissions
             ),
             'admin' => array_merge(
                 $reservationPermissions,
@@ -138,17 +138,17 @@ class ImportOldData extends Command
         $prodConnecion = DB::connection('prod');
 
         // Création des entreprises
-        $prodConnecion->table('entreprise')->orderBy('id', 'asc')->chunk(100, function ($entreprises) {
+        $prodConnecion->table('entreprise')->orderBy('id')->chunk(100, function ($entreprises) {
             DB::table('entreprises')->insertOrIgnore((array)json_decode(json_encode($entreprises->toArray()), true));
         });
 
-        $prodConnecion->table('adresse_entreprise')->orderBy('id', 'asc')->chunk(200, function ($addressEntreprise) {
+        $prodConnecion->table('adresse_entreprise')->orderBy('id')->chunk(200, function ($addressEntreprise) {
             $addressEntreprise->map(fn($item) => $item->type = $item->type == 'facturation' ? AdresseEntrepriseTypeEnum::FACTURATION->value : AdresseEntrepriseTypeEnum::PHYSIQUE->value);
             DB::table('adresse_entreprises')->insertOrIgnore((array)json_decode(json_encode($addressEntreprise->toArray()), true));
         });
 
         // Création des utilisateurs
-        $prodConnecion->table('user')->orderBy('id', 'asc')->select(['id', 'nom', 'email', 'prenom', 'entreprise_id'])->chunk(100, function ($users) {
+        $prodConnecion->table('user')->orderBy('id')->select(['id', 'nom', 'email', 'prenom', 'roles'])->chunk(100, function ($users) {
             $users->map(function($user) {
                 try {
                     $idInsert = DB::table('users')->insertGetId([
@@ -156,20 +156,23 @@ class ImportOldData extends Command
                         'nom' => $user->nom,
                         'prenom' => $user->prenom,
                         'password' => Hash::make('test'),
-                        'email' => $user->email
+                        'email' => $user->email,
+                        'is_admin' => str_contains($user->roles, 'ROLE_ARDIAN_WATCHER')
                     ]);
 
                     /** @var User $user */
                     $user = User::find($idInsert);
+
                     switch ($user->email) {
                         case 'm.alvarez.iglisias@gmail.com':
                         case 'contact@motobleu-paris.com':
                         case 'contact@apc66.com':
                             $user->assignRole('super admin');
                             break;
-                        default :
-                            $user->assignRole('user');
-                            break;
+                    }
+
+                    if ($user->is_admin) {
+                        $user->assignRole('admin');
                     }
 
                 } catch (Exception $exception) {
@@ -178,17 +181,36 @@ class ImportOldData extends Command
             });
         });
 
-        $prodConnecion->table('entreprise_user')->orderBy('user_id', 'asc')->chunk(200, function ($entrepriseUser) {
+        $prodConnecion->table('entreprise_user')->orderBy('user_id')->chunk(200, function ($entrepriseUser) {
             DB::table('entreprise_user')->insertOrIgnore((array)json_decode(json_encode($entrepriseUser->toArray()), true));
         });
 
+        $userNotAdminArdian = User::whereHas('entreprises', function (Builder $query) {
+            return $query->where('nom', 'Ardian France');
+        })
+            ->where('is_admin', false)->get();
+
+        $userNotAdminArdian->map(function($user) {
+            $user->assignRole('user');
+        });
+
+        $users = User::whereDoesntHave('entreprises', function (Builder $query) {
+            return $query->where('nom', 'Ardian France');
+        })
+            ->where('is_admin', false)
+            ->get();
+
+        $users->map(function($user) {
+            $user->assignRole('admin');
+        });
+
         // Création des pilotes
-        $prodConnecion->table('pilote')->orderBy('id', 'asc')->chunk(100, function ($pilotes) {
+        $prodConnecion->table('pilote')->orderBy('id')->chunk(100, function ($pilotes) {
             DB::table('pilotes')->insertOrIgnore((array)json_decode(json_encode($pilotes->toArray()), true));
         });
 
         // Cost Center
-        $prodConnecion->table('cost_center')->orderBy('id', 'asc')->chunk(100, function ($costs) {
+        $prodConnecion->table('cost_center')->orderBy('id')->chunk(100, function ($costs) {
             $costs = $costs->map(fn($cost) => [
                 'id' => $cost->id,
                 'nom' => $cost->title,
@@ -199,7 +221,7 @@ class ImportOldData extends Command
         });
 
         // Type Facturation
-        $prodConnecion->table('facturation')->orderBy('id', 'asc')->chunk(100, function ($facturations) {
+        $prodConnecion->table('facturation')->orderBy('id')->chunk(100, function ($facturations) {
             $facturations = $facturations->map(fn($facturation) => [
                 'id' => $facturation->id,
                 'nom' => $facturation->titre,
@@ -208,7 +230,7 @@ class ImportOldData extends Command
         });
 
         // Création des passagers
-        $prodConnecion->table('passager')->orderBy('id', 'asc')->chunk(200, function ($passagers) {
+        $prodConnecion->table('passager')->orderBy('id')->chunk(200, function ($passagers) {
             $passagers = $passagers->map(fn($passager) => [
                 'id' => $passager->id,
                 'user_id' => $passager->user_id,
@@ -223,7 +245,7 @@ class ImportOldData extends Command
             DB::table('passagers')->insertOrIgnore((array)json_decode(json_encode($passagers->toArray()), true));
         });
 
-        $prodConnecion->table('localisation')->orderBy('id', 'asc')->chunk(200, function ($localisations) {
+        $prodConnecion->table('localisation')->orderBy('id')->chunk(200, function ($localisations) {
             $localisations = $localisations->map(fn ($item) => [
                 'id' => $item->id,
                 'nom' => $item->nom,
@@ -237,7 +259,7 @@ class ImportOldData extends Command
             DB::table('localisations')->insertOrIgnore((array)json_decode(json_encode($localisations->toArray()), true));
         });
 
-        $prodConnecion->table('adresse_reservation')->orderBy('id', 'asc')->chunk(200, function ($addresses) {
+        $prodConnecion->table('adresse_reservation')->orderBy('id')->chunk(200, function ($addresses) {
             $addresses = $addresses->map(fn($item) => [
                 'id' => $item->id,
                 'adresse' => $item->adresse,
@@ -252,9 +274,10 @@ class ImportOldData extends Command
             DB::table('adresse_reservations')->insertOrIgnore((array)json_decode(json_encode($addresses->toArray()), true));
         });
 
-        $prodConnecion->table('facture')->orderBy('id', 'asc')->chunk(200, function ($factures) {
+        $prodConnecion->table('facture')->orderBy('id')->chunk(200, function ($factures) {
             $factures = $factures->map(fn($item) => [
                 'id' => $item->id,
+                'statut' => BillStatut::COMPLETED->value,
                 'reference' => $item->reference,
                 'montant_ht' => $item->montant_ttc - $item->montant_tva,
                 'tva' => 10,

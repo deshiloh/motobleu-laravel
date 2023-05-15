@@ -3,16 +3,21 @@
 namespace App\Http\Livewire\Front\Invoice;
 
 use App\Models\Facture;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class InvoiceReservationDataTable extends Component
 {
+    use WithPagination;
+
     public Facture $facture;
     public int $perPage = 10;
     public string $search = "";
 
-    public function mount(Facture $invoice)
+    public function mount(Facture $invoice): void
     {
         $this->facture = $invoice;
     }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enum\BillStatut;
 use App\Models\Facture;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -23,6 +24,7 @@ class FactureFactory extends Factory
         $currentDate = Carbon::now();
         return [
             'reference' => 'FA'.$currentDate->year.'-'.$currentDate->month.'-' . self::$ref ++,
+            'statut' => BillStatut::CREATED->value,
             'montant_ht' => $this->faker->randomFloat('2', 10, 99999),
             'tva' => 10,
             'adresse_client' => $this->faker->address,

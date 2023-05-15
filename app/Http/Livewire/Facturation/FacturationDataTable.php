@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Facturation;
 
+use App\Enum\BillStatut;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use Illuminate\Database\Eloquent\Builder;
@@ -42,6 +43,7 @@ class FacturationDataTable extends Component
                         2 => $query->where('is_acquitte', true)
                     };
                 })
+                ->where('statut', BillStatut::COMPLETED->value)
                 ->orderBy('factures.id', 'desc')
                 ->paginate($this->perPage)
         ])
