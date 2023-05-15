@@ -316,18 +316,25 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
                 $ttcValueCell->getStyle()->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
                 $ttcValueCell->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
+                $paddingValues = [
+                    strlen('MOTOBLEU') + 10, // Add 5 spaces for padding to second cell
+                    strlen('26 - 28 rue Marius AUFAN 92300 LEVALLOIS PERRET') + 10, // Add 10 spaces for padding to third cell
+                    strlen('SIRET : 82472195500014 - TVA intracommunautaire : FR69824721955') + 10, // Add 10 spaces for padding to fourth cell
+                    strlen('Tél : +33 6 47 93 86 17 - contact@motobleu-paris.com') + 10// No additional padding needed for fifth cell
+                ];
+
                 // Footer values
-                $sheet->getSheet()->getCell('A' . $this->startFooterIndex + 1)->setValue(
-                    'MOTOBLEU'
+                $sheet->getSheet()->getCell('A' . ($this->startFooterIndex + 1))->setValue(
+                    str_pad('MOTOBLEU', $paddingValues[0], " ", STR_PAD_LEFT)
                 );
-                $sheet->getSheet()->getCell('A' . $this->startFooterIndex + 2)->setValue(
-                    '26 - 28 rue Marius AUFAN 92300 LEVALLOIS PERRET'
+                $sheet->getSheet()->getCell('A' . ($this->startFooterIndex + 2))->setValue(
+                    str_pad('26 - 28 rue Marius AUFAN 92300 LEVALLOIS PERRET', $paddingValues[1], " ", STR_PAD_LEFT)
                 );
-                $sheet->getSheet()->getCell('A' . $this->startFooterIndex + 3)->setValue(
-                    'SIRET : 82472195500014 - TVA intracommunautaire : FR69824721955'
+                $sheet->getSheet()->getCell('A' . ($this->startFooterIndex + 3))->setValue(
+                    str_pad('SIRET : 82472195500014 - TVA intracommunautaire : FR69824721955', $paddingValues[2], " ", STR_PAD_LEFT)
                 );
-                $sheet->getSheet()->getCell('A' . $this->startFooterIndex + 4)->setValue(
-                    'Tél : +33 6 47 93 86 17 - contact@motobleu-paris.com'
+                $sheet->getSheet()->getCell('A' . ($this->startFooterIndex + 4))->setValue(
+                    str_pad('Tél : +33 6 47 93 86 17 - contact@motobleu-paris.com', $paddingValues[3], " ", STR_PAD_LEFT)
                 );
             }
         ];

@@ -11,6 +11,7 @@
             <x-slot:headers>
                 <x-datatable.tr>
                     <x-datatable.th>{{ __('Référence') }}</x-datatable.th>
+                    <x-datatable.th>{{ __('Assistante') }}</x-datatable.th>
                     <x-datatable.th>{{ __('Date') }}</x-datatable.th>
                     <x-datatable.th>{{ __('Départ') }}</x-datatable.th>
                     <x-datatable.th>{{ __('Arrivée') }}</x-datatable.th>
@@ -21,6 +22,7 @@
                 @forelse($reservations as $reservation)
                     <x-datatable.tr>
                         <x-datatable.td>{{ $reservation->reference }}</x-datatable.td>
+                        <x-datatable.td>{{ $reservation->passager->user->full_name }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->display_from }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
@@ -37,5 +39,6 @@
                 @endforelse
             </x-slot:body>
         </x-datatable>
+        <x-front.pagination :pagination="$reservations" :per-page="$perPage"/>
     </x-front.card>
 </div>

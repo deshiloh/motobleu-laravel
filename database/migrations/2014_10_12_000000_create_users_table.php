@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('adresse_bis')->nullable();
             $table->string('code_postal')->nullable();
             $table->string('ville')->nullable();
-            $table->boolean('is_admin_ardian')->default(false);
+            $table->boolean('is_admin')->default(false);
             $table->boolean('is_actif')->default(true);
             $table->rememberToken();
             $table->timestamps();

@@ -21,7 +21,10 @@ class UsersDataTable extends Component
     public string $sortField = 'nom';
     public ?int $selectedEntreprise = null;
 
-
+    public $queryString = [
+        'search' => ['except' => ''],
+        'selectedEntreprise' => ['except' => null]
+    ];
 
     /**
      * @return Application|Factory|View

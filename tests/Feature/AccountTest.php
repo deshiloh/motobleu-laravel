@@ -106,7 +106,7 @@ class AccountTest extends TestCase
             ->set('user.code_postal', '')
             ->set('user.ville', '')
             ->set('user.is_actif', true)
-            ->set('user.is_admin_ardian', false)
+            ->set('user.is_admin', false)
             ->call('save')
             ->assertHasErrors([
                 'user.email' => 'required',
@@ -129,7 +129,7 @@ class AccountTest extends TestCase
             ->set('user.code_postal', $user->code_postal)
             ->set('user.ville', $user->ville)
             ->set('user.is_actif', true)
-            ->set('user.is_admin_ardian', false)
+            ->set('user.is_admin', false)
             ->call('save')
             ->assertHasNoErrors()
             ->assertStatus(200);
@@ -152,7 +152,7 @@ class AccountTest extends TestCase
             ->set('user.code_postal', $user->code_postal)
             ->set('user.ville', $user->ville)
             ->set('user.is_actif', true)
-            ->set('user.is_admin_ardian', false)
+            ->set('user.is_admin', false)
             ->call('save')
             ->assertHasNoErrors()
             ->assertStatus(200);

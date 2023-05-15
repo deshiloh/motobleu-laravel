@@ -37,7 +37,7 @@ class UserFactory extends Factory
             'code_postal' => '34000',
             'ville' => 'Montpellier',
             'telephone' => $this->faker->phoneNumber(),
-            'is_admin_ardian' => false,
+            'is_admin' => false,
             'is_actif' => true
         ];
     }

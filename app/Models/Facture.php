@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enum\BillStatut;
+use App\Enum\ReservationStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,6 +22,11 @@ class Facture extends Model
 
     protected $with = [
         'reservations.entreprise'
+    ];
+
+    protected $casts = [
+        'statut' => BillStatut::class,
+        'is_acquitte' => 'boolean'
     ];
 
     public function reference(): Attribute

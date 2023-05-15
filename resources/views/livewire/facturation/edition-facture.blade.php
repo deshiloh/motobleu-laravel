@@ -4,24 +4,31 @@
 @endphp
 <div>
     <x-header wire:key="header">
-        @if($this->entreprise)
-            Édition de la facturation <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
+        @if($this->facture)
+            Édition de la facture <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
             <x-slot:right>
                 <div>
-                    @if($entrepriseIdSelected && !$this->isBilled == 1)
+                    @if($facture->statut == \App\Enum\BillStatut::COMPLETED->value)
+                        <x-button href="{!! route('admin.facturations.index') !!}" label="Retourner à la liste" sm />
+                        @else
                         <x-button href="{!! route('admin.facturations.edition', [
-                                'selectedMonth' => $selectedMonth,
-                                'selectedYear' => $selectedYear,
-                            ]
+                            'selectedMonth' => $selectedMonth,
+                            'selectedYear' => $selectedYear,
+                        ]
                         ) !!}" label="Retourner à la liste" sm />
                     @endif
-                    @if(!$this->adresseFacturationEntreprise && $entrepriseIdSelected)
+
+                    @if(!$this->entreprise->hasBilledAddress())
                         <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">
                             <span class="font-medium">Attention</span> L'entreprise n'as pas d'adresse de facturation
                         </div>
                     @endif
-                    @if($this->facture && $this->adresseFacturationEntreprise)
-                        <x-button wire:click="sendFactureModal" label="Finaliser la facturation" positive sm />
+
+                    @if($facture->statut == \App\Enum\BillStatut::COMPLETED)
+                        <x-button wire:click="openSendFactureModal" label="Envoyer la facturation" positive sm />
+                        @else
+                        <x-button wire:click="openSendFactureModal" label="Finaliser et envoyer la facturation" positive sm />
+                        <x-button wire:click="completedBillAction" label="Finaliser la facturation" warning sm />
                     @endif
                 </div>
             </x-slot:right>
@@ -29,21 +36,8 @@
             Édition de la facturation
         @endif
     </x-header>
-    @if($this->facture != null)
-        <x-bloc-content>
-            <h3 class="text-xl font-semibold">Informations de la facture</h3>
-            <div class="mb-3">Date de création : {{ $this->facture->created_at->format('d/m/Y H:i') }}</div>
-            <div>Référence : <span class="text-motobleu font-semibold">{{ $this->facture->reference }}</span></div>
-            <div>Période : {{ sprintf("%02d", $this->facture->month) }} / {{ $this->facture->year }}</div>
 
-            <div>Adresse de facturation : {!! $this->facture->address_bill_inline !!}</div>
-            <div>Adresse de client : {!! $this->facture->address_client_inline !!}</div>
-            <div class="mt-3">
-                <x-toggle left-label="Facture acquittée" wire:model.defer="isAcquitte" wire:change="updateAcquitteBill"/>
-            </div>
-        </x-bloc-content>
-    @endif
-    @if(!$entrepriseIdSelected)
+    @if(!$facture)
         <x-bloc-content wire:key="entrepriseDataTable">
             <div class="border-b border-gray-200 pb-3 mb-4">
                 <div class="grid grid-cols-4 gap-6">
@@ -94,7 +88,7 @@
                             <x-datatable.td>
                                 @if($entreprise->hasBilledAddress())
                                     <x-button primary sm wire:click="goToEditPage('{{ $entreprise->id }}')" label="Éditer la facturation" />
-                                    @else
+                                @else
                                     <a href="{{ route('admin.entreprises.show', ['entreprise' => $entreprise]) }}" class="rounded-md inline-block bg-yellow-100 p-3 hover:bg-yellow-200 transition duration-200">
                                         <div class="flex space-x-3">
                                             <div>
@@ -124,7 +118,25 @@
             </x-datatable>
         </x-bloc-content>
     @endif
-    @if($this->reservations)
+
+    @if($facture)
+        <x-bloc-content>
+            <h3 class="text-xl font-semibold">Informations de la facture</h3>
+            <div class="mb-3">Date de création : {{ $this->facture->created_at->format('d/m/Y H:i') }}</div>
+            <div>Référence : <span class="text-motobleu font-semibold">{{ $this->facture->reference }}</span></div>
+            <div>Période : {{ sprintf("%02d", $this->facture->month) }} / {{ $this->facture->year }}</div>
+
+            <div>Adresse de facturation : {!! $this->facture->address_bill_inline !!}</div>
+            <div>Adresse de client : {!! $this->facture->address_client_inline !!}</div>
+            <div class="mt-3">
+                @if($facture->statut === \App\Enum\BillStatut::COMPLETED)
+                    <x-toggle left-label="Facture acquittée" wire:model.defer="isAcquitte" wire:change="updateAcquitteBill"/>
+                @else
+                    La facture pourra être acquittée qu'une fois finalisée
+                @endif
+            </div>
+        </x-bloc-content>
+
         <x-bloc-content>
             <div class="text-2xl mb-3 dark:text-white">Liste des réservations</div>
             <x-datatable>
@@ -147,7 +159,7 @@
                     @php
                         $validation = 0;
                     @endphp
-                    @forelse($this->reservations as $reservation)
+                    @forelse($facture->reservations as $reservation)
                         @php
                             $currentAmount = 0;
                             $currentAmount = $this->calculTotal($reservation);
@@ -220,19 +232,19 @@
         </x-bloc-content>
     @endif
 
-    <x-modal wire:model.defer="factureModal" max-width="6xl">
-        @if($this->facture)
+    <x-modal wire:model.defer="isSendFactureModalOpened" max-width="6xl">
+        @if($facture)
         <x-card title="Envoi de la facture" wire:key="facture">
             <x-errors class="mb-4"/>
             <div class="grid grid-cols-2 gap-6">
                 <div>
-                    <iframe src="/admin/facturations/{{ $this->facture->id }}/show?uniq={{ $uniqID }}#view=FitH&toolbar=1" class="w-full h-full"></iframe>
+                    <iframe src="/admin/facturations/{{ $facture->id }}/show?uniq={{ $uniqID }}#view=FitH&toolbar=1" class="w-full h-full"></iframe>
                 </div>
                 <div>
                     <form wire:submit.prevent="sendFactureAction" id="factureForm" class="space-y-4">
                         <x-input label="Email" wire:model.defer="email.address"/>
                         <x-tinymce wire:model="email.message"/>
-                        <x-toggle wire:model.defer="isAcquitte" wire:change="editFactureAction" label="Facture acquittée" md />
+                        <x-toggle wire:model.defer="isAcquitte" wire:change="updateAcquitteBill" label="Facture acquittée" md />
                         <x-textarea label="Texte information" hint="Ce texte apparaitra sur la facture" wire:model.defer="email.complement" wire:change.debounce="editFactureAction"/>
                         <x-button wire:click="sendEmailTestAction" primary sm type="button" icon="mail">Envoi d'un email de test</x-button>
                         <x-button wire:click="exportAction" info sm type="button" icon="download">Récap. des courses</x-button>
@@ -245,7 +257,12 @@
                         Annuler
                     </x-button>
                     <x-button type="submit" form="factureForm" primary sm >
-                        Finaliser et envoyer
+                        @if($facture->statut == \App\Enum\BillStatut::COMPLETED)
+                            Envoyer
+                            @else
+                            Finaliser et envoyer
+                        @endif
+
                     </x-button>
                 </div>
             </x-slot>

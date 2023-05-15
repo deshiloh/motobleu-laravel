@@ -23,7 +23,7 @@ class AccountForm extends Component
 
         if (!$this->user->exists) {
             $this->user->is_actif = true;
-            $this->user->is_admin_ardian = false;
+            $this->user->is_admin = true;
         }
     }
 
@@ -37,7 +37,7 @@ class AccountForm extends Component
             'user.adresse_bis' => 'nullable',
             'user.code_postal' => 'nullable',
             'user.ville' => 'nullable',
-            'user.is_admin_ardian' => 'boolean',
+            'user.is_admin' => 'boolean',
             'user.is_actif' => 'boolean',
         ];
 
@@ -106,7 +106,7 @@ class AccountForm extends Component
 
     private function handlePermission()
     {
-        if ($this->user->is_admin_ardian) {
+        if ($this->user->is_admin) {
             $this->user->removeRole('user');
             $this->user->assignRole('admin');
         } else {

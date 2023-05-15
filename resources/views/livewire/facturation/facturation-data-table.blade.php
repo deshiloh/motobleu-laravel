@@ -63,10 +63,9 @@
                             <x-button label="Liste des courses" icon="view-list" primary sm href="{!! route('admin.facturations.edition', [
                                     'selectedMonth' => $facture->month,
                                     'selectedYear' => $facture->year,
-                                    'entrepriseIdSelected' => $facture->reservations->first()->entreprise->id
+                                    'factureSelected' => $facture->id
                                 ]
                             ) !!}" />
-
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty

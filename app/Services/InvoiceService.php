@@ -54,7 +54,10 @@ class InvoiceService
             ->logo(public_path('storage/motobleu-dark.png'))
         ;
 
+        ray($facture->information);
+
         if ($notes = $facture->information) {
+
             $invoice->notes($notes);
         }
 
