@@ -7,7 +7,7 @@
         @if($this->facture)
             Édition de la facture <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
             <x-slot:right>
-                <div>
+                <div class="flex gap-4">
                     @if($facture->statut == \App\Enum\BillStatut::COMPLETED->value)
                         <x-button href="{!! route('admin.facturations.index') !!}" label="Retourner à la liste" sm />
                         @else
@@ -18,17 +18,17 @@
                         ) !!}" label="Retourner à la liste" sm />
                     @endif
 
-                    @if(!$this->entreprise->hasBilledAddress())
+                    @if($this->entreprise->hasBilledAddress())
+                        @if($facture->statut == \App\Enum\BillStatut::COMPLETED)
+                            <x-button wire:click="openSendFactureModal" label="Envoyer la facturation" positive sm />
+                        @else
+                            <x-button wire:click="openSendFactureModal" label="Finaliser et envoyer la facturation" positive sm />
+                            <x-button wire:click="completedBillAction" label="Finaliser la facturation" warning sm />
+                        @endif
+                        @else
                         <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">
                             <span class="font-medium">Attention</span> L'entreprise n'as pas d'adresse de facturation
                         </div>
-                    @endif
-
-                    @if($facture->statut == \App\Enum\BillStatut::COMPLETED)
-                        <x-button wire:click="openSendFactureModal" label="Envoyer la facturation" positive sm />
-                        @else
-                        <x-button wire:click="openSendFactureModal" label="Finaliser et envoyer la facturation" positive sm />
-                        <x-button wire:click="completedBillAction" label="Finaliser la facturation" warning sm />
                     @endif
                 </div>
             </x-slot:right>
