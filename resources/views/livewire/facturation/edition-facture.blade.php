@@ -8,7 +8,7 @@
             Édition de la facture <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
             <x-slot:right>
                 <div class="flex gap-4">
-                    @if($facture->statut == \App\Enum\BillStatut::COMPLETED->value)
+                    @if($facture->statut == \App\Enum\BillStatut::COMPLETED)
                         <x-button href="{!! route('admin.facturations.index') !!}" label="Retourner à la liste" sm />
                         @else
                         <x-button href="{!! route('admin.facturations.edition', [
