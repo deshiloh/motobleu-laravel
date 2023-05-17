@@ -8,8 +8,6 @@ class DashboardHome extends Component
 {
     public function render()
     {
-        ray(\Auth::user()->getAllPermissions()->toArray());
-
         return view('livewire.front.dashboard-home')
             ->layout('components.front-layout');
     }
