@@ -52,7 +52,7 @@ Route::get('/logout', [LoginController::class, 'logout'])
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return to_route('front.dashboard');
+        return to_route('front.reservation.list');
     }
 
     return view('front.home');

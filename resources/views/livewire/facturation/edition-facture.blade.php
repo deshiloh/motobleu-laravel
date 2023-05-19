@@ -23,7 +23,6 @@
                             <x-button wire:click="openSendFactureModal" label="Envoyer la facturation" positive sm />
                         @else
                             <x-button wire:click="openSendFactureModal" label="Finaliser et envoyer la facturation" positive sm />
-                            <x-button wire:click="completedBillAction" label="Finaliser la facturation" warning sm />
                         @endif
                         @else
                         <div class="p-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">

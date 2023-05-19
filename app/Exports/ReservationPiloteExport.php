@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
-use Maatwebsite\Excel\Concerns\WithDefaultStyles;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -24,12 +24,11 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use PhpOffice\PhpSpreadsheet\Style\Style;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize, WithStyles, WithCustomStartCell, WithEvents, WithColumnFormatting
+class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize, WithStyles, WithCustomStartCell, WithEvents, WithColumnFormatting, WithColumnWidths
 {
     private array $period;
     private Pilote $pilote;
@@ -238,6 +237,9 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 // Settings
                 $sheet->getDelegate()->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
 
+                $sheet->getDelegate()->getStyle("D")->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle("E")->getAlignment()->setWrapText(true);
+
                 // Header
                 $sheet->getSheet()->getCell('D' . 9)
                     ->setValue('Tableau recap courses');
@@ -413,6 +415,14 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             [
                 'image' => public_path('storage/motobleu.png')
             ]
+        ];
+    }
+
+    public function columnWidths(): array
+    {
+        return [
+            'D' => 40,
+            'E' => 40
         ];
     }
 }

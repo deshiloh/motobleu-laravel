@@ -1,13 +1,18 @@
 <div>
     <x-front.card>
+        <div class="flex justify-between">
+            <div class="text-2xl">Bonjour <span class="font-bold">{{ ucfirst(Auth::user()->prenom) }}</span></div>
+            @can('create reservation')
+                <x-button primary label="{{ __('Nouvelle réservation') }}" icon="plus" href="{{ route('front.reservation.create') }}" />
+            @endcan
+        </div>
+
+    </x-front.card>
+
+    <x-front.card>
 
         <x-front.title>
             {{ __('Historique des réservations') }}
-            <x-slot:button>
-                @can('create reservation')
-                    <x-button primary label="{{ __('Nouvelle réservation') }}" icon="plus" href="{{ route('front.reservation.create') }}"/>
-                @endcan
-            </x-slot:button>
         </x-front.title>
 
         <x-datatable.search wire:model="search" />

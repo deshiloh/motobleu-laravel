@@ -32,7 +32,7 @@ use PhpOffice\PhpSpreadsheet\Style\Color;
 class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeadings, WithEvents, FromCollection, WithDrawings, WithMapping, WithColumnFormatting, WithColumnWidths, ShouldAutoSize
 {
     private Collection $reservations;
-    private int $indexDepart = 23;
+    private int $indexDepart = 24;
     private int $startFooterIndex = 0;
     private string $lastColumn;
     private string $priceColumn;
@@ -189,13 +189,19 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
 
     private function getReservations(): Collection
     {
-        return Reservation::whereMonth('pickup_date', $this->datePeriod->month)
+        $reservations = Reservation::whereMonth('pickup_date', $this->datePeriod->month)
             ->whereyear('pickup_date', $this->datePeriod->year)
             ->where('entreprise_id', $this->entreprise->id)
             ->where('encompte_pilote', '>', 0)
-            ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
+            ->whereIn('statut', [
+                ReservationStatus::Confirmed->value,
+                ReservationStatus::CanceledToPay->value,
+                ReservationStatus::Billed
+            ])
             ->orderBy('pickup_date')
             ->get();
+
+        return $reservations;
     }
 
     public function headings(): array

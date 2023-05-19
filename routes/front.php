@@ -24,9 +24,6 @@ use App\Http\Livewire\Front\Reservation\ReservationForm;
 
 Route::prefix('dashboard')->name('front.')->group(function () {
 
-    Route::get('/', DashboardHome::class)
-        ->name('dashboard');
-
     Route::prefix('/reservation')->name('reservation.')->group(function () {
         Route::get('/', ReservationDataTable::class)
             ->middleware('can:see reservation')
