@@ -367,41 +367,6 @@ class EditionFacture extends Component
     }
 
     /**
-     * Finalise la facture sans l'envoyer
-     * @return void
-     */
-    public function completedBillAction(): void
-    {
-        foreach ($this->facture->reservations as $reservation) {
-            if ($reservation->tarif === null) {
-                $this->notification([
-                    'title' => 'Action non autorisée.',
-                    'description' => 'Vous devez renseigner le tarif de toutes les réservations',
-                    'icon' => 'error',
-                ]);
-                return;
-            }
-
-            $reservation->updateQuietly([
-                'statut' => ReservationStatus::Billed
-            ]);
-        }
-
-        $this->facture->updateQuietly([
-            'statut' => BillStatut::COMPLETED
-        ]);
-
-        $this->notification([
-            'title' => 'Facture finalisée',
-            'description' => 'La facture a bien été finalisée',
-            'icon' => 'success',
-            'onTimeout' => [
-                'method' => 'redirectEvent',
-            ],
-        ]);
-    }
-
-    /**
      * Event de mise à jour du statut is_acquitte de la facture
      * @return void
      */

@@ -104,37 +104,6 @@ class FacturationTest extends TestCase
         ;
     }
 
-    public function testComplitedFacture()
-    {
-        $facture = Facture::find(1);
-
-        $reservation = Reservation::find(1);
-        $reservation->updateQuietly([
-            'facture_id' => $facture->id,
-            'tarif' => 200
-        ]);
-        $entreprise = Entreprise::find(1);
-
-        Livewire::test(EditionFacture::class)
-            ->set('entreprise', $entreprise)
-            ->set('facture', $facture)
-            ->call('completedBillAction')
-            ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
-        ;
-
-        $this->assertDatabaseHas('reservations', [
-            'id' => 1,
-            'statut' => ReservationStatus::Billed->value,
-            'tarif' => 200
-        ]);
-
-        $this->assertDatabaseHas('factures', [
-            'reference' => $facture->reference,
-            'statut' => BillStatut::COMPLETED->value
-        ]);
-    }
-
     public function testAcquitteFacture()
     {
         $facture = Facture::find(1);

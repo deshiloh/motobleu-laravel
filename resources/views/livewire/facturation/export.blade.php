@@ -54,6 +54,9 @@
                 </x-datatable.tr>
             </x-slot:headers>
             <x-slot:body>
+                @php
+                    $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
+                @endphp
                 @forelse($factures as $facture)
                     <x-datatable.tr>
                         <x-datatable.td>{{ $facture->reference }}</x-datatable.td>
@@ -69,7 +72,7 @@
                             {{ $facture->reservations->first()->entreprise->nom  ?? "Non disponible"}}
                         </x-datatable.td>
                         <x-datatable.td>
-                            {{ number_format($facture->montant_ttc, 2, ',', ' ') }} €
+                            {{ $fmt->formatCurrency($facture->montant_ttc, 'EURO') }}
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty

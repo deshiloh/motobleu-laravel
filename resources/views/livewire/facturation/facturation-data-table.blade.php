@@ -40,6 +40,9 @@
                 </tr>
             </x-slot:headers>
             <x-slot:body>
+                @php
+                    $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
+                @endphp
                 @forelse($facturations as $facture)
                     <x-datatable.tr>
                         <x-datatable.td>{{ $facture->reference }}</x-datatable.td>
@@ -55,7 +58,7 @@
                             {{ $facture->reservations->first()->entreprise->nom }}
                         </x-datatable.td>
                         <x-datatable.td>
-                            {{ number_format($facture->montant_ttc, 2, ',', ' ') }} €
+                            {{ $fmt->formatCurrency($facture->montant_ttc, 'EUR') }}
                         </x-datatable.td>
                         <x-datatable.td>
                             <x-button label="Voir" href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank" icon="eye" info sm />
