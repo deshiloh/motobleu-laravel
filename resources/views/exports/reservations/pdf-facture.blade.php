@@ -190,8 +190,8 @@
         <th class="text-center">Heure</th>
         <th class="text-center" style="width: 150px;">Départ</th>
         <th class="text-center" style="width: 150px;">Arrivée</th>
-        <th class="text-center">Prix TTC</th>
         <th class="text-center">Commentaire</th>
+        <th class="text-center">Prix TTC</th>
     </tr>
     </thead>
     <tbody>
@@ -236,10 +236,10 @@
                 {{ $reservation->display_to }}
             </td>
             <td class="text-center" style="">
-                {{ $fmt->formatCurrency($reservation->total_ttc, 'EUR') }}
+                {{ $reservation->comment_facture }}
             </td>
             <td class="text-center" style="">
-                {{ $reservation->comment_facture }}
+                {{ $fmt->formatCurrency($reservation->total_ttc, 'EUR') }}
             </td>
         </tr>
     @endforeach

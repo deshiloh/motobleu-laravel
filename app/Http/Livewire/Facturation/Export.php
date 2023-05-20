@@ -48,9 +48,21 @@ class Export extends Component
                 $dateDebut = Carbon::createFromFormat("Y-m-d", $this->dateDebut);
                 $dateFin = Carbon::createFromFormat("Y-m-d", $this->dateFin);
 
+                $months = [];
+                $years = [];
+
+                for ($currentMonth = $dateDebut->month; $currentMonth <= $dateFin->month; $currentMonth ++) {
+                    $months[] = $currentMonth;
+                }
+
+                for ($currentYear = $dateDebut->year; $currentYear <= $dateFin->year; $currentYear ++) {
+                    $years[] = $currentYear;
+                }
+
+
                 return $query
-                    ->whereIn('year', [$dateDebut->year, $dateFin->year])
-                    ->whereIn('month', [$dateDebut->month, $dateFin->month]);
+                    ->whereIn('year', $years)
+                    ->whereIn('month', $months);
             })
             ->when($this->entreprise, function(Builder $query) {
                 return $query->whereHas('reservations', function (Builder $query) {
