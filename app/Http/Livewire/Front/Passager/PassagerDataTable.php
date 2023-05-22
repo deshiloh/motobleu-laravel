@@ -38,9 +38,10 @@ class PassagerDataTable extends Component
     public function deletePassenger(Passager $passager): void
     {
         $this->dialog()->confirm([
-            'title'       => 'Are you Sure?',
-            'description' => 'Save the information?',
-            'acceptLabel' => 'Yes, save it',
+            'title'       => 'Êtes-vous sûr ?',
+            'description' => 'Voulez-vous vraiment supprimer ce passager ?',
+            'acceptLabel' => 'Oui',
+            'rejectLabel' => 'Annuler',
             'method'      => 'confirmDeletePassenger',
             'params'      => $passager,
         ]);
