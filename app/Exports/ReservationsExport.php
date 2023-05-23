@@ -259,7 +259,10 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $sheet->getSheet()->getCell($this->lastColumn . 11)->setValue(
-                    $this->entreprise->getAdresse(AdresseEntrepriseTypeEnum::PHYSIQUE)->adresse_full
+                    $this->entreprise
+                        ->adresseEntreprises()
+                        ->where('type', AdresseEntrepriseTypeEnum::PHYSIQUE->value)
+                        ->first()->adresse_full
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $sheet->getSheet()->getCell('A14')->setValue(
@@ -271,9 +274,10 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $sheet->getSheet()->getCell('A16')->setValue(
-                    'Contact facturation : ' . $this->entreprise->getAdresse(
-                        AdresseEntrepriseTypeEnum::FACTURATION
-                    )->email
+                    'Contact facturation : ' . $this->entreprise
+                        ->adresseEntreprises()
+                        ->where('type', AdresseEntrepriseTypeEnum::FACTURATION->value)
+                        ->first()->email
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $title = $sheet->getSheet()->getCell('G20')->setValue(

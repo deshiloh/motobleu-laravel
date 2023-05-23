@@ -331,7 +331,7 @@ class EditionFacture extends Component
      */
     public function openSendFactureModal(): void
     {
-        $addressBillEntreprise = $this->entreprise->getAdresse(AdresseEntrepriseTypeEnum::FACTURATION)->first();
+        $addressBillEntreprise = $this->entreprise->getBilledAddress();
 
         $this->email['address'] = $addressBillEntreprise->email;
         $this->email['message'] = sprintf("Bonjour, <br> <br> Veuillez trouver ci-joint la facture %s et le récapitulatif des courses pour la période de %s %s.",
