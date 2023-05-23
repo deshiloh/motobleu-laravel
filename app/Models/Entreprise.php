@@ -50,18 +50,14 @@ class Entreprise extends Model
     }
 
     /**
-     * @param AdresseEntrepriseTypeEnum $adresseEntrepriseTypeEnum
-     * @return AdresseEntreprise
+     * Récupère l'adresse de facturation de l'entreprise
+     * @return Model|AdresseEntreprise
      */
-    public function getAdresse(AdresseEntrepriseTypeEnum $adresseEntrepriseTypeEnum): AdresseEntreprise
+    public function getBilledAddress(): Model|AdresseEntreprise
     {
-        if ($address = $this->adresseEntreprises()->where('type', $adresseEntrepriseTypeEnum->value)->first()) {
-            return $address;
-        } else {
-            return $this->adresseEntreprises()
-                ->where('type', AdresseEntrepriseTypeEnum::FACTURATION)
-                ->first();
-        }
+        return $this->adresseEntreprises()
+            ->where('type', AdresseEntrepriseTypeEnum::FACTURATION->value)
+            ->first();
     }
 
     /**
