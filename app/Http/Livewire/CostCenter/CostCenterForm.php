@@ -4,6 +4,7 @@ namespace App\Http\Livewire\CostCenter;
 
 use App\Models\CostCenter;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -52,12 +53,21 @@ class CostCenterForm extends Component
             $this->notification()->error(
                 "Erreur pendant le traitement",
                 "Une erreur est survenue pendant le traitement.");
+
             if (App::environment(['local'])) {
                 ray([
                     'cost_center' => $this->costCenter
                 ])->exception($exception);
             }
-            // TODO Sentry en production
+
+            if (App::environment('prod')) {
+                Log::channel("sentry")->error('Erreur pendant ajout cost center', [
+                    'user_id' => \Auth::user()->id,
+                    'email' => \Auth::user()->email,
+                    'exception' => $exception,
+                    'data' => $this->costCenter
+                ]);
+            }
         }
     }
 }

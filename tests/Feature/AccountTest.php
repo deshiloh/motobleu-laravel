@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -129,7 +128,7 @@ class AccountTest extends TestCase
             ->set('user.code_postal', $user->code_postal)
             ->set('user.ville', $user->ville)
             ->set('user.is_actif', true)
-            ->set('user.is_admin', false)
+            ->set('user.is_admin', true)
             ->call('save')
             ->assertHasNoErrors()
             ->assertStatus(200);
@@ -157,7 +156,10 @@ class AccountTest extends TestCase
             ->assertHasNoErrors()
             ->assertStatus(200);
 
-        $this->assertTrue(User::where('nom', 'test')->exists());
+        $this->assertDatabaseHas('users', [
+            'nom' => 'test',
+            'email' => $user->email
+        ]);
     }
 
     public function testAccessPasswordForm(): void
@@ -268,6 +270,15 @@ class AccountTest extends TestCase
 
         Livewire::test(UsersDataTable::class)
             ->set('search', 'test')
+            ->assertSee('test')
+            ->assertHasNoErrors()
+            ->assertStatus(200);
+    }
+
+    public function testSearchWithEntreprise()
+    {
+        Livewire::test(UsersDataTable::class)
+            ->set('selectedEntreprise', 1)
             ->assertSee('test')
             ->assertHasNoErrors()
             ->assertStatus(200);

@@ -186,4 +186,70 @@ class FacturationTest extends TestCase
 
         \Mail::assertSent(\App\Mail\BillCreated::class);
     }
+
+    public function testGetEntrepriseProperty()
+    {
+        $facture = Facture::find(1);
+        $entreprise = Entreprise::find(1);
+
+        Livewire::test(EditionFacture::class)
+            ->set('entreprise', $entreprise)
+            ->set('facture', $facture)
+            ->call('getEntrepriseProperty')
+            ->assertSet('entreprise', $entreprise)
+            ->assertStatus(200);
+    }
+
+    public function testGenerateFacture()
+    {
+        $entreprise = Entreprise::find(1);
+
+        Livewire::test(EditionFacture::class)
+            ->set('entreprise', $entreprise)
+            ->set('facture', null)
+            ->call('generateFacture', 1)
+            ->assertStatus(200);
+    }
+
+    public function testUpdateReservation()
+    {
+        $facture = Facture::find(1);
+        $entreprise = Entreprise::find(1);
+
+        Livewire::test(EditionFacture::class)
+            ->set('entreprise', $entreprise)
+            ->set('facture', $facture)
+            ->call('reservationUpdated')
+            ->assertStatus(200);
+    }
+
+    public function testOpenSendFactureModal()
+    {
+        $facture = Facture::find(1);
+        $entreprise = Entreprise::find(1);
+
+        Livewire::test(EditionFacture::class)
+            ->set('entreprise', $entreprise)
+            ->set('facture', $facture)
+            ->call('openSendFactureModal')
+            ->assertSet('isSendFactureModalOpened', true)
+            ->assertStatus(200);
+    }
+
+    public function testEditFactureAction()
+    {
+        $facture = Facture::find(1);
+        $entreprise = Entreprise::find(1);
+
+        Livewire::test(EditionFacture::class)
+            ->set('entreprise', $entreprise)
+            ->set('facture', $facture)
+            ->set('email.complement', 'test')
+            ->call('editFactureAction')
+            ->assertStatus(200);
+        $this->assertDatabaseHas('factures', [
+            'id' => $facture->id,
+            'information' => 'test'
+        ]);
+    }
 }

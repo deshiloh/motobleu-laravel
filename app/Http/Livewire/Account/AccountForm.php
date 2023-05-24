@@ -60,7 +60,7 @@ class AccountForm extends Component
         ;
     }
 
-    public function save()
+    public function save(): void
     {
         $this->validate();
 
@@ -93,7 +93,7 @@ class AccountForm extends Component
                 ])->exception($exception);
             }
 
-            if (App::environment('prod')) {
+            if (App::environment('prod', 'beta')) {
                 Log::channel("sentry")->error('Erreur formulaire utilisateur', [
                     'user_id' => \Auth::user()->id,
                     'email' => \Auth::user()->email,

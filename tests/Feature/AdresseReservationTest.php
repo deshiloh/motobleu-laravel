@@ -85,4 +85,23 @@ class AdresseReservationTest extends TestCase
             'is_actif' => true
         ]);
     }
+
+    public function testSoftDeleteAddressReservation()
+    {
+        $address = AdresseReservation::factory([
+            'adresse' => 'test',
+            'user_id' => 1,
+            'is_actif' => false
+        ])->create();
+
+        \Livewire::test(AdressesReservationDataTable::class)
+            ->call('toggleDeleteAddress', $address)
+            ->assertHasNoErrors()
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('adresse_reservations', [
+            'adresse' => 'test',
+            'is_deleted' => true
+        ]);
+    }
 }
