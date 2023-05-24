@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Facturation;
 use App\Models\Facture;
 use App\Services\ExportService;
 use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -41,9 +42,10 @@ class Export extends Component
         }, 'export_factures.pdf');
     }
 
-    private function getFactures()
+    private function getFactures(): LengthAwarePaginator
     {
-        return Facture::orderBy('id', 'DESC')
+        return Facture::has('reservations')
+            ->orderBy('id', 'DESC')
             ->when($this->dateDebut && $this->dateFin, function(Builder $query)  {
                 $dateDebut = Carbon::createFromFormat("Y-m-d", $this->dateDebut);
                 $dateFin = Carbon::createFromFormat("Y-m-d", $this->dateFin);

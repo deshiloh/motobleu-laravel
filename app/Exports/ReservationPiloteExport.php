@@ -52,9 +52,9 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
         $this->reservations = Reservation::query()
             ->where('pilote_id', $pilote->id)
-            ->where('statut', ReservationStatus::Confirmed->value)
+            ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::Billed])
             ->whereBetween('pickup_date', $period)
-            ->orderBy('pickup_date')
+            ->orderBy('pickup_date', 'DESC')
             ->get();
     }
 
@@ -382,7 +382,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $drawing->setWorksheet($sheet->getSheet()->getDelegate());
 
                 $drawing = new Drawing();
-                $drawing->setName('Logo');
+                $drawing->setName('LogoFooter');
                 $drawing->setDescription('Logo motobleu');
                 $drawing->setPath(public_path('storage/textfooter.png'));
                 $drawing->setHeight(60);
