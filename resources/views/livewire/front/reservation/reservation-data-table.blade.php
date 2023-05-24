@@ -1,7 +1,7 @@
 <div>
     <x-front.card>
         <div class="flex justify-between">
-            <div class="text-2xl">Bonjour <span class="font-bold">{{ ucfirst(Auth::user()->prenom) }}</span></div>
+            <div class="text-2xl">{{ __("Bonjour") }} <span class="font-bold">{{ ucfirst(Auth::user()->prenom) }}</span></div>
             @can('create reservation')
                 <x-button primary label="{{ __('Nouvelle réservation') }}" icon="plus" href="{{ route('front.reservation.create') }}" />
             @endcan
@@ -40,22 +40,23 @@
                             @switch($reservation->statut)
                                 @case(\App\Enum\ReservationStatus::Created)
                                     <x-front.badge warning>
-                                        à confirmer
+                                        {{ __("à confirmer") }}
                                     </x-front.badge>
                                     @break
                                 @case(\App\Enum\ReservationStatus::Canceled)
                                     <x-front.badge danger>
-                                        Annulée
+                                        {{ __("Annulée") }}
                                     </x-front.badge>
                                     @break
                                 @case(\App\Enum\ReservationStatus::CanceledToPay)
                                     <x-front.badge warning-secondary>
-                                        Annulée facturée
+                                        {{ __("Annulée facturée") }}
                                     </x-front.badge>
                                     @break
                                 @case(\App\Enum\ReservationStatus::Confirmed)
+                                @case(\App\Enum\ReservationStatus::Billed)
                                     <x-front.badge success>
-                                        Confirmée
+                                        {{ __("Confirmée") }}
                                     </x-front.badge>
                                     @break
                             @endswitch

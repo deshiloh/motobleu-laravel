@@ -79,5 +79,9 @@
     "Course aller" : "Depart",
     "Course retour" : "Return",
     "Réservation avec retour" : "Back-and-forth",
-    "Date de retour" : "Return date"
+    "Date de retour" : "Return date",
+    "Confirmée" : "Confirmed",
+    "à confirmer" : "to confirm",
+    "Annulée facturée" : "Canceled billed",
+    "Annulée" : "Canceled"
 }
