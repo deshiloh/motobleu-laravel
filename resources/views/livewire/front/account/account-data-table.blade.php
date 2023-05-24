@@ -40,7 +40,7 @@
                                 @endcan
                                 @can('delete user')
                                     @if($user->reservations()->exists())
-                                            <x-button red icon="trash" disabled label="Suppression impossible" />
+                                            <x-button red icon="trash" disabled label="{{ __('Suppression impossible') }}" />
                                         @else
                                             <x-button.circle red icon="trash" wire:click="deleteAccountAction('{{ $user->id }}')" wire:key="{{ $user->id }}" />
                                     @endif
