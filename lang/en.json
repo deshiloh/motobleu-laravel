@@ -31,7 +31,7 @@
     "Réservations" : "Reservations",
     "Adresses" : "Addresses",
     "Passagers" : "Passengers",
-    "Factures" : "Bills",
+    "Factures" : "Invoices",
     "Recherche" : "Search",
     "Tapez votre recherche" : "Type your search",
     "Nouvelle réservation" : "New reservation",
@@ -87,5 +87,6 @@
     "Liste des factures" : "List of invoices",
     "Montant" : "Amount",
     "Suppression impossible" : "Unable to delete",
-    "Liste des passagers" : "List of passengers"
+    "Liste des passagers" : "List of passengers",
+    "Liste des réservations pour la facture" : "List of reservations for the invoice"
 }
