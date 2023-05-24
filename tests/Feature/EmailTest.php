@@ -40,7 +40,6 @@ class EmailTest extends TestCase
      * A basic feature test example.
      *
      * @return void
-     * @throws BindingResolutionException
      */
     public function testEmailBilledCreateContent(): void
     {
