@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
 use App\Enum\ReservationStatus;
+use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use App\Models\Reservation;
 use app\Settings\BillSettings;
@@ -258,11 +259,20 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
                     $this->entreprise->nom
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
-                $sheet->getSheet()->getCell($this->lastColumn . 11)->setValue(
-                    $this->entreprise
+                $addressLocal = $this->entreprise
+                    ->adresseEntreprises()
+                    ->where('type', AdresseEntrepriseTypeEnum::PHYSIQUE->value)
+                    ->first();
+
+                if (!$addressLocal instanceof AdresseEntreprise) {
+                    $addressLocal = $this->entreprise
                         ->adresseEntreprises()
-                        ->where('type', AdresseEntrepriseTypeEnum::PHYSIQUE->value)
-                        ->first()->adresse_full
+                        ->where('type', AdresseEntrepriseTypeEnum::FACTURATION->value)
+                        ->first();
+                }
+
+                $sheet->getSheet()->getCell($this->lastColumn . 11)->setValue(
+                    $addressLocal->adresse_full
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $sheet->getSheet()->getCell('A14')->setValue(
