@@ -73,6 +73,10 @@
                                     @can('delete reservation')
                                         <x-button.circle icon="x" red sm wire:click="openAskCancelModal({{ $reservation }})" />
                                     @endcan
+                                    @else
+                                     <x-front.badge warning-secondary>
+                                         Aucune action possible
+                                     </x-front.badge>
                                 @endif
                             </div>
                         </x-datatable.td>
