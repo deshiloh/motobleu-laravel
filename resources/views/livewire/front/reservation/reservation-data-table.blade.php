@@ -111,7 +111,7 @@
             <div class="rounded-md bg-red-50 p-4">
                 <div class="flex">
                     <div class="ml-3">
-                        <h3 class="text-sm font-medium text-red-800">Attention !</h3>
+                        <h3 class="text-sm font-medium text-red-800">{{ __("Attention") }} !</h3>
                         <div class="mt-2 text-sm text-red-700">
                             {{ __('Vous êtes sur le point de demander une annulation de la réservation') }} : <span class="font-bold">{{ $selectedReservation->reference }}</span>
                         </div>

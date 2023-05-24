@@ -10,7 +10,7 @@
         <x-datatable>
             <x-slot:headers>
                 <x-datatable.tr>
-                    <x-datatable.th>{{ __('Nom') }}</x-datatable.th>
+                    <x-datatable.th>{{ __('Label') }}</x-datatable.th>
                     <x-datatable.th>{{ __('Actif') }}</x-datatable.th>
                     <x-datatable.th>{{ __('Actions') }}</x-datatable.th>
                 </x-datatable.tr>
