@@ -83,5 +83,9 @@
     "Confirmée" : "Confirmed",
     "à confirmer" : "to confirm",
     "Annulée facturée" : "Canceled billed",
-    "Annulée" : "Canceled"
+    "Annulée" : "Canceled",
+    "Liste des factures" : "List of invoices",
+    "Montant" : "Amount",
+    "Suppression impossible" : "Unable to delete",
+    "Liste des passagers" : "List of passengers"
 }
