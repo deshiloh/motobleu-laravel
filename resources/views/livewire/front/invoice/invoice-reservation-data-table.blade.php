@@ -30,7 +30,7 @@
                     </x-datatable.tr>
                     @empty
                     <x-datatable.tr>
-                        <x-datatable.td>
+                        <x-datatable.td colspan="6">
                             <div class="text-center">
                                 {{ __('Aucune réservation') }}
                             </div>

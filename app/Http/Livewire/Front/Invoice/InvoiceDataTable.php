@@ -5,9 +5,12 @@ namespace App\Http\Livewire\Front\Invoice;
 use App\Models\Facture;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class InvoiceDataTable extends Component
 {
+    use WithPagination;
+
     public string $search = "";
     public int $perPage = 20;
 

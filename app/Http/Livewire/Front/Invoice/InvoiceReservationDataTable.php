@@ -14,8 +14,12 @@ class InvoiceReservationDataTable extends Component
     use WithPagination;
 
     public Facture $facture;
-    public int $perPage = 10;
+    public int $perPage = 50;
     public string $search = "";
+
+    public $queryString = [
+        'search' => ['except' => '']
+    ];
 
     public function mount(Facture $invoice): void
     {
@@ -28,8 +32,7 @@ class InvoiceReservationDataTable extends Component
                 ->when($this->search, function (Builder $query, $search) {
                     $query->where('reference', 'like', '%' . $search . '%');
                 })
-                ->where('encompte_pilote', '>', 0)
-                ->orderBy('pickup_date', 'desc')
+                ->orderBy('pickup_date')
                 ->paginate($this->perPage)
         ])
             ->layout('components.front-layout');
