@@ -290,6 +290,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                     'Chiffre d\'affaire'
                 );
                 $CaLabelle->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $CaLabelle->getStyle()->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN)
+                    ->getColor()->setRGB('000000');
                 $caValueCell = $sheet->getSheet()->getCell('A' . $index + 1);
                 $caValueCell->setValue(
                     sprintf(
@@ -301,6 +303,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $caValueCell->getStyle()
                     ->getNumberFormat()
                     ->setFormatCode(NumberFormat::FORMAT_CURRENCY_EUR);
+                $caValueCell->getStyle()->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN)
+                    ->getColor()->setRGB('000000');
 
                 // COM Cell
                 $comCell = 'C' . $index + 1;
@@ -309,11 +313,15 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                     'COM 15%'
                 );
                 $comLabelle->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $comLabelle->getStyle()->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN)
+                    ->getColor()->setRGB('000000');
                 $comValue = $sheet->getSheet()->getCell('C' . $index + 1);
                 $comValue->setValue(
                     '=(A'. $index + 1 .') * 0.15'
                 );
                 $comValue->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $comValue->getStyle()->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN)
+                    ->getColor()->setRGB('000000');
 
                 // Encaisse Cell
                 $enCaisseLabelle = $sheet->getSheet()->getCell('E' . $index);
@@ -322,6 +330,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 );
                 $enCaisseLabelle->getStyle()->getAlignment()
                     ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $enCaisseLabelle->getStyle()->getBorders()->getAllBorders()
+                    ->setBorderStyle(Border::BORDER_THIN)->getColor()->setRGB('000000');
                 $encaisseValue = $sheet->getSheet()->getCell('E' . $index + 1);
                 $encaisseValue->setValue(
                     sprintf('=SUM(%s)', $this->encaisseColumns())
@@ -331,6 +341,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $encaisseValue->getStyle()
                     ->getNumberFormat()
                     ->setFormatCode(NumberFormat::FORMAT_CURRENCY_EUR);
+                $encaisseValue->getStyle()->getBorders()->getAllBorders()
+                    ->setBorderStyle(Border::BORDER_THIN)->getColor()->setRGB('000000');
 
                 // Encompte Cell
                 $encompteCell = 'G' . $index + 1;
@@ -340,6 +352,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 );
                 $enCompteLabelle->getStyle()->getAlignment()
                     ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $enCompteLabelle->getStyle()->getBorders()->getAllBorders()
+                    ->setBorderStyle(Border::BORDER_THIN)->getColor()->setRGB('000000');
                 $encompteValue = $sheet->getSheet()->getCell('G' . $index + 1);
                 $encompteValue->setValue(
                     sprintf('=SUM(%s)', $this->encompteColumns())
@@ -349,6 +363,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                     ->setFormatCode(NumberFormat::FORMAT_CURRENCY_EUR);
                 $encompteValue->getStyle()->getAlignment()
                     ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $encompteValue->getStyle()->getBorders()->getAllBorders()
+                    ->setBorderStyle(Border::BORDER_THIN)->getColor()->setRGB('000000');
 
                 // Total Cell
                 $totalLabel = $sheet->getSheet()->getCell('I' . $index);
@@ -358,6 +374,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $totalLabel->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $totalLabel->getStyle()->getFont()->getColor()->setRGB(Color::COLOR_RED);
                 $totalLabel->getStyle()->getFont()->setBold(true);
+                $totalLabel->getStyle()->getBorders()->getAllBorders()
+                    ->setBorderStyle(Border::BORDER_THIN)->getColor()->setRGB('000000');
                 $totalValue = $sheet->getSheet()->getCell('I' . $index + 1);
                 $totalValue->setValue(
                     sprintf('=(%s-%s)',
@@ -370,6 +388,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $style->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_EUR);
                 $style->getFont()->getColor()->setRGB(Color::COLOR_RED);
                 $style->getFont()->setBold(true);
+                $style->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN)
+                    ->getColor()->setRGB('000000');
 
                 // FOOTER
                 $drawing = new Drawing();

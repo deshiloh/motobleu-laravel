@@ -107,7 +107,6 @@ class EditionFacture extends Component
             $this->facture = Facture::findOrFail($this->factureSelected);
             $this->isAcquitte = $this->facture->is_acquitte;
             $this->entreprise = $this->facture->reservations->first()->entreprise ?? null;
-
         }
     }
 
