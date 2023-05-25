@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use App\Enum\AdresseEntrepriseTypeEnum;
 use App\Enum\BillStatut;
 use App\Enum\ReservationStatus;
+use App\Models\Facture;
+use App\Models\Reservation;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -38,7 +40,7 @@ class ImportOldData extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
 
         $reservationPermissions = [
@@ -176,7 +178,7 @@ class ImportOldData extends Command
                     }
 
                 } catch (Exception $exception) {
-                    echo $exception->getMessage();
+                    $this->error($exception->getMessage());
                 }
             });
         });
@@ -287,7 +289,7 @@ class ImportOldData extends Command
                 'month' => $item->month,
                 'year' => $item->year,
                 'is_acquitte' => $item->is_acquitte,
-                'created_at' => Carbon::now()
+                'created_at' => $item->created_at
             ]);
 
             DB::table('factures')->insertOrIgnore((array)json_decode(json_encode($factures->toArray()), true));
@@ -330,31 +332,79 @@ class ImportOldData extends Command
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         });
 
+        // Check réservations importées
+        $nbCreatedReservation = Reservation::where('statut', ReservationStatus::Created)->count();
+        $nbCreatedReservationProd = $prodConnecion->table('reservation')
+            ->where('is_factured', 0)
+            ->where('is_canceled', 0)
+            ->where('cancel_pay', 0)
+            ->where('is_confirmed', 0)
+            ->count();
+
+        if ($nbCreatedReservation === $nbCreatedReservationProd) {
+            $this->info("Réservations en statut créée correctement importées");
+        } else {
+            $this->error(sprintf(
+                "Le nombre de réservations en statut créée ne correspond pas à celui de la PROD %s contre %s en prod",
+                $nbCreatedReservation,
+                $nbCreatedReservationProd
+            ));
+        }
+
+        $nbBilledReservation = Reservation::where('statut', ReservationStatus::Billed)->count();
+        $nbBilledReservationProd = $prodConnecion->table('reservation')
+            ->where('is_factured', 1)
+            ->count();
+
+        if ($nbBilledReservation === $nbBilledReservationProd) {
+            $this->info("Réservations en statut facturée correctement importées");
+        } else {
+            $this->error(sprintf(
+                "Le nombre de réservations en statut facturée ne correspond pas à celui de la PROD %s contre %s en prod",
+                $nbBilledReservation,
+                $nbBilledReservationProd
+            ));
+        }
+
+        // Check des données de facturations
+        $facturesImported = Facture::all();
+
+        /** @var Facture $facture */
+        foreach ($facturesImported as $facture) {
+            $nbReservationFactureExported = $facture->reservations()->count();
+            $nbReservationFactureProd = $prodConnecion->table('reservation')
+                ->where('facture_id', $facture->id)->count();
+
+            if ($nbReservationFactureProd !== $nbReservationFactureExported) {
+                $this->error(
+                    sprintf("La facture %s avec ID %s n'est pas bonne.", $facture->reference, $facture->id)
+                );
+            }
+        }
+
+        $this->info("Factures correctement importées");
+
         return CommandAlias::SUCCESS;
     }
 
     private function getEtatValue($reservation): int
     {
-        $etat = 0;
-
-        switch (true) {
-            case !$reservation->is_canceled && !$reservation->cancel_pay && !$reservation->is_factured && !$reservation->is_confirmed:
-                $etat = ReservationStatus::Created->value;
-                break;
-            case $reservation->is_canceled :
-                $etat = ReservationStatus::Canceled->value;
-                break;
-            case $reservation->cancel_pay && !$reservation->is_factured:
-                $etat = ReservationStatus::CanceledToPay->value;
-                break;
-            case $reservation->is_confirmed && !$reservation->cancel_pay && is_null($reservation->facture_id):
-                $etat = ReservationStatus::Confirmed->value;
-                break;
-            case $reservation->is_factured && $reservation->facture_id > 0:
-                $etat = ReservationStatus::Billed->value;
-                break;
+        if ($reservation->is_factured === 1) {
+            return ReservationStatus::Billed->value;
         }
 
-        return $etat;
+        if ($reservation->is_canceled === 1) {
+            return ReservationStatus::Canceled->value;
+        }
+
+        if ($reservation->cancel_pay === 1) {
+            return ReservationStatus::CanceledToPay->value;
+        }
+
+        if ($reservation->is_confirmed === 1 && is_null($reservation->facture_id)) {
+            return ReservationStatus::Confirmed->value;
+        }
+
+        return ReservationStatus::Created->value;
     }
 }
