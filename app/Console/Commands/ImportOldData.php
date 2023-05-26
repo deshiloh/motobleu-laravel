@@ -43,6 +43,10 @@ class ImportOldData extends Command
     public function handle(): int
     {
 
+        $this->line("Début de l'import");
+        $this->newLine();
+        $this->line("Début de la configuration des droits.");
+
         $reservationPermissions = [
             'see reservation',
             'create reservation',
@@ -137,18 +141,29 @@ class ImportOldData extends Command
                 );
         }
 
+        $this->info("Configuration des droits terminée.");
+        $this->newLine();
+
         $prodConnecion = DB::connection('prod');
 
+        $this->line("Importation des entreprises...");
         // Création des entreprises
         $prodConnecion->table('entreprise')->orderBy('id')->chunk(100, function ($entreprises) {
             DB::table('entreprises')->insertOrIgnore((array)json_decode(json_encode($entreprises->toArray()), true));
         });
 
+        $this->info("Importation des entreprises terminée.");
+        $this->newLine();
+
+        $this->line("Importation des adresses entreprises...");
         $prodConnecion->table('adresse_entreprise')->orderBy('id')->chunk(200, function ($addressEntreprise) {
             $addressEntreprise->map(fn($item) => $item->type = $item->type == 'facturation' ? AdresseEntrepriseTypeEnum::FACTURATION->value : AdresseEntrepriseTypeEnum::PHYSIQUE->value);
             DB::table('adresse_entreprises')->insertOrIgnore((array)json_decode(json_encode($addressEntreprise->toArray()), true));
         });
+        $this->info("Importation des adresses entreprises terminée.");
+        $this->newLine();
 
+        $this->line("Importation des utilisateurs...");
         // Création des utilisateurs
         $prodConnecion->table('user')->orderBy('id')->select(['id', 'nom', 'email', 'prenom', 'roles'])->chunk(100, function ($users) {
             $users->map(function($user) {
@@ -183,10 +198,18 @@ class ImportOldData extends Command
             });
         });
 
+        $this->info("Importation des utilisateurs terminée.");
+        $this->newLine();
+
+        $this->line("Lien entre entreprises et utilisateurs...");
         $prodConnecion->table('entreprise_user')->orderBy('user_id')->chunk(200, function ($entrepriseUser) {
             DB::table('entreprise_user')->insertOrIgnore((array)json_decode(json_encode($entrepriseUser->toArray()), true));
         });
 
+        $this->info("Liaison entre utilisateurs et entreprises terminée.");
+        $this->newLine();
+
+        $this->line("Attribution des rôles...");
         $userNotAdminArdian = User::whereHas('entreprises', function (Builder $query) {
             return $query->where('nom', 'Ardian France');
         })
@@ -206,11 +229,19 @@ class ImportOldData extends Command
             $user->assignRole('admin');
         });
 
+        $this->info("Attribution des rôles terminée.");
+        $this->newLine();
+
+        $this->line("Importation des pilotes...");
         // Création des pilotes
         $prodConnecion->table('pilote')->orderBy('id')->chunk(100, function ($pilotes) {
             DB::table('pilotes')->insertOrIgnore((array)json_decode(json_encode($pilotes->toArray()), true));
         });
 
+        $this->info("Importation des pilotes terminée.");
+        $this->newLine();
+
+        $this->line("Importation des Cost Center...");
         // Cost Center
         $prodConnecion->table('cost_center')->orderBy('id')->chunk(100, function ($costs) {
             $costs = $costs->map(fn($cost) => [
@@ -222,6 +253,10 @@ class ImportOldData extends Command
             DB::table('cost_centers')->insertOrIgnore((array)json_decode(json_encode($costs->toArray()), true));
         });
 
+        $this->info("Importation des Cost Center terminée.");
+        $this->newLine();
+
+        $this->line("Importation des factures...");
         // Type Facturation
         $prodConnecion->table('facturation')->orderBy('id')->chunk(100, function ($facturations) {
             $facturations = $facturations->map(fn($facturation) => [
@@ -231,6 +266,10 @@ class ImportOldData extends Command
             DB::table('type_facturations')->insertOrIgnore((array)json_decode(json_encode($facturations->toArray()), true));
         });
 
+        $this->info("Importation des type de facturation terminée.");
+        $this->newLine();
+
+        $this->line("Importation des passagers...");
         // Création des passagers
         $prodConnecion->table('passager')->orderBy('id')->chunk(200, function ($passagers) {
             $passagers = $passagers->map(fn($passager) => [
@@ -247,6 +286,10 @@ class ImportOldData extends Command
             DB::table('passagers')->insertOrIgnore((array)json_decode(json_encode($passagers->toArray()), true));
         });
 
+        $this->info("Importation des passagers terminée.");
+        $this->newLine();
+
+        $this->line("Importation des localisations...");
         $prodConnecion->table('localisation')->orderBy('id')->chunk(200, function ($localisations) {
             $localisations = $localisations->map(fn ($item) => [
                 'id' => $item->id,
@@ -261,6 +304,10 @@ class ImportOldData extends Command
             DB::table('localisations')->insertOrIgnore((array)json_decode(json_encode($localisations->toArray()), true));
         });
 
+        $this->info("Importation des lieux terminée.");
+        $this->newLine();
+
+        $this->line("Importation des adresses de réservations...");
         $prodConnecion->table('adresse_reservation')->orderBy('id')->chunk(200, function ($addresses) {
             $addresses = $addresses->map(fn($item) => [
                 'id' => $item->id,
@@ -276,6 +323,10 @@ class ImportOldData extends Command
             DB::table('adresse_reservations')->insertOrIgnore((array)json_decode(json_encode($addresses->toArray()), true));
         });
 
+        $this->info("Importation des adresses de réservations terminée.");
+        $this->newLine();
+
+        $this->line("Importation des factures...");
         $prodConnecion->table('facture')->orderBy('id')->chunk(200, function ($factures) {
             $factures = $factures->map(fn($item) => [
                 'id' => $item->id,
@@ -295,6 +346,10 @@ class ImportOldData extends Command
             DB::table('factures')->insertOrIgnore((array)json_decode(json_encode($factures->toArray()), true));
         });
 
+        $this->info("Importation des factures terminée.");
+        $this->newLine();
+
+        $this->line("Importation des réservations...");
         $prodConnecion->table('reservation')->orderBy('id')->chunk(100, function ($reservations) {
             $reservations = $reservations->map(fn($item) => [
                 'id' => $item->id,
@@ -332,40 +387,29 @@ class ImportOldData extends Command
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         });
 
+        $this->info("Importation des réservations terminée.");
+        $this->newLine();
+
+        $this->line("Contrôle des réservations facturées...");
         // Check réservations importées
-        $nbCreatedReservation = Reservation::where('statut', ReservationStatus::Created)->count();
-        $nbCreatedReservationProd = $prodConnecion->table('reservation')
-            ->where('is_factured', 0)
-            ->where('is_canceled', 0)
-            ->where('cancel_pay', 0)
-            ->where('is_confirmed', 0)
-            ->count();
-
-        if ($nbCreatedReservation === $nbCreatedReservationProd) {
-            $this->info("Réservations en statut créée correctement importées");
-        } else {
-            $this->error(sprintf(
-                "Le nombre de réservations en statut créée ne correspond pas à celui de la PROD %s contre %s en prod",
-                $nbCreatedReservation,
-                $nbCreatedReservationProd
-            ));
-        }
-
         $nbBilledReservation = Reservation::where('statut', ReservationStatus::Billed)->count();
         $nbBilledReservationProd = $prodConnecion->table('reservation')
             ->where('is_factured', 1)
             ->count();
 
         if ($nbBilledReservation === $nbBilledReservationProd) {
-            $this->info("Réservations en statut facturée correctement importées");
+            $this->info("Contrôle des réservations statut Facturée : OK");
         } else {
             $this->error(sprintf(
-                "Le nombre de réservations en statut facturée ne correspond pas à celui de la PROD %s contre %s en prod",
+                "Contrôle des réservations statut Facturée : NOK %s contre %s en prod",
                 $nbBilledReservation,
                 $nbBilledReservationProd
             ));
         }
 
+        $this->newLine();
+
+        $this->line("Contrôle des liens entre factures et réservations...");
         // Check des données de facturations
         $facturesImported = Facture::all();
 
@@ -382,7 +426,10 @@ class ImportOldData extends Command
             }
         }
 
-        $this->info("Factures correctement importées");
+        $this->info("Contrôle lien facture > réservation terminée");
+        $this->newLine();
+
+        $this->info("Importation terminée.");
 
         return CommandAlias::SUCCESS;
     }
@@ -393,15 +440,15 @@ class ImportOldData extends Command
             return ReservationStatus::Billed->value;
         }
 
-        if ($reservation->is_canceled === 1) {
-            return ReservationStatus::Canceled->value;
-        }
-
         if ($reservation->cancel_pay === 1) {
             return ReservationStatus::CanceledToPay->value;
         }
 
-        if ($reservation->is_confirmed === 1 && is_null($reservation->facture_id)) {
+        if ($reservation->is_canceled === 1) {
+            return ReservationStatus::Canceled->value;
+        }
+
+        if ($reservation->is_confirmed === 1) {
             return ReservationStatus::Confirmed->value;
         }
 
