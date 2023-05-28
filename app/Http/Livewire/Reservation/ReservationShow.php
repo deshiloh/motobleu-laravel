@@ -194,7 +194,7 @@ Votre réservation a bien été prise en compte";
         return redirect()->to(route('admin.homepage'));
     }
 
-    public function confirmedStatusAction()
+    public function confirmedStatusAction(): void
     {
         $this->reservation->statut = ReservationStatus::Confirmed;
 
@@ -203,7 +203,7 @@ Votre réservation a bien été prise en compte";
         ]);
     }
 
-    private function handleConfirmedAndUpdateValidation()
+    private function handleConfirmedAndUpdateValidation(): void
     {
         $this->withValidator(function (Validator $validator) {
             $validator->after(function ($validator) {
@@ -219,6 +219,8 @@ Votre réservation a bien été prise en compte";
                             même temps.');
                     return false;
                 }
+
+                return true;
             });
         })->validate();
     }

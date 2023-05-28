@@ -8,17 +8,19 @@
                     <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled" />
                 @endif
 
-                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled" />
+                @if(is_null($reservation->facture_id))
+                    <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled" />
+                @endif
 
                 @if($reservation->statut == \App\Enum\ReservationStatus::Canceled || $reservation->statut == \App\Enum\ReservationStatus::CanceledToPay)
                     <x-button positive label="Confirmer" icon="check" wire:loading.attr="disabled" wire:click="confirmedStatusAction" spinner="confirmedStatusAction" />
                 @endif
 
-                @if($reservation->statut != \App\Enum\ReservationStatus::CanceledToPay)
+                @if($reservation->statut != \App\Enum\ReservationStatus::CanceledToPay && is_null($reservation->facture_id))
                     <x-button warning label="Annuler mais facturer" icon="credit-card" wire:loading.attr="disabled" wire:click="cancelToPayAskAction" spinner="cancelBilledAction" />
                 @endif
 
-                @if($reservation->statut != \App\Enum\ReservationStatus::Canceled)
+                @if($reservation->statut != \App\Enum\ReservationStatus::Canceled && is_null($reservation->facture_id))
                     <x-button wire:click="cancelAskAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction" spinner="cancelAction" />
                 @endif
             </div>
@@ -71,60 +73,75 @@
                 </div>
             </div>
         @endif
-            @if($reservation->statut == \App\Enum\ReservationStatus::CanceledToPay)
-                <div class="rounded-md bg-red-100 p-4 mb-4">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <div class="ml-3">
-                            <p class="text-sm font-medium text-red-800">Cette réservation est annulée mais facturée</p>
-                        </div>
+        @if($reservation->statut == \App\Enum\ReservationStatus::CanceledToPay)
+            <div class="rounded-md bg-red-100 p-4 mb-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-red-800">Cette réservation est annulée mais facturée</p>
                     </div>
                 </div>
-            @endif
+            </div>
+        @endif
     </x-center-bloc>
     <div class="space-y-4">
         <x-center-bloc>
             <div class="space-y-4 bg-white p-4 rounded-lg border border-gray-200">
-                <div class="block text-xl dark:text-white">Formulaire de confirmation</div>
-                <x-select
-                    label="Pilote"
-                    placeholder="Sélectionner un pilote"
-                    :async-data="route('api.pilotes')"
-                    option-label="full_name"
-                    option-value="id"
-                    option-description="email"
-                    wire:model.defer="reservation.pilote_id"
-                />
-                @if($reservation->statut == \App\Enum\ReservationStatus::Created)
-                    <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <div class="dark:text-white">Emails de confirmation</div>
-                            <div class="space-y-3 mt-3">
-                                <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
+                @if(!is_null($reservation->facture_id) || $reservation->statut === \App\Enum\ReservationStatus::Billed)
+                    <div class="rounded-md bg-yellow-50 p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <!-- Heroicon name: solid/exclamation -->
+                                <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
                             </div>
-                        </div>
-                        <div>
-                            <div class="dark:text-white">Invitation Google Calendar</div>
-                            <div class="space-y-3 mt-3">
-                                <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-yellow-800">Réservation facturée il n'est donc plus possible de la modifier</h3>
                             </div>
                         </div>
                     </div>
-                @endif
+                    @else
+                    <x-select
+                        label="Pilote"
+                        placeholder="Sélectionner un pilote"
+                        :async-data="route('api.pilotes')"
+                        option-label="full_name"
+                        option-value="id"
+                        option-description="email"
+                        wire:model.defer="reservation.pilote_id"
+                    />
+                    @if($reservation->statut == \App\Enum\ReservationStatus::Created)
+                        <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <div class="dark:text-white">Emails de confirmation</div>
+                                <div class="space-y-3 mt-3">
+                                    <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
+                                </div>
+                            </div>
+                            <div>
+                                <div class="dark:text-white">Invitation Google Calendar</div>
+                                <div class="space-y-3 mt-3">
+                                    <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
-                <x-input label="Encaisse pilote" wire:model.defer="reservation.encaisse_pilote" type="number" />
-                <x-input label="En compte pilote" wire:model.defer="reservation.encompte_pilote" type="number" />
-                <x-textarea label="Commentaire" wire:model.defer="reservation.comment_pilote" />
+                    <x-input label="Encaisse pilote" wire:model.defer="reservation.encaisse_pilote" type="number" />
+                    <x-input label="En compte pilote" wire:model.defer="reservation.encompte_pilote" type="number" />
+                    <x-textarea label="Commentaire" wire:model.defer="reservation.comment_pilote" />
 
-                @if($reservation->pilote()->exists() && $reservation->statut >= \App\Enum\ReservationStatus::Confirmed)
-                    <x-button label="Mettre à jour le pilote" primary sm wire:loading.attr="disabled" wire:click="updatePilote" spinner="updatePilote"/>
-                @else
-                    <x-button label="Valider et envoyer le message" primary sm wire:click="confirmedAction" spinner="confirmedAction"/>
+                    @if($reservation->pilote()->exists() && $reservation->statut >= \App\Enum\ReservationStatus::Confirmed)
+                        <x-button label="Mettre à jour le pilote" primary sm wire:loading.attr="disabled" wire:click="updatePilote" spinner="updatePilote"/>
+                    @else
+                        <x-button label="Valider et envoyer le message" primary sm wire:click="confirmedAction" spinner="confirmedAction"/>
+                    @endif
                 @endif
             </div>
         </x-center-bloc>
