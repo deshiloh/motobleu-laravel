@@ -158,7 +158,7 @@
                     @php
                         $validation = 0;
                     @endphp
-                    @forelse($facture->reservations()->orderBy('pickup_date', 'desc')->get() as $reservation)
+                    @forelse($facture->reservations()->orderBy('pickup_date')->get() as $reservation)
                         @php
                             $currentAmount = 0;
                             $currentAmount = $this->calculTotal($reservation);
