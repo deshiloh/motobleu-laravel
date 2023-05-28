@@ -14,6 +14,10 @@ class InvoiceDataTable extends Component
     public string $search = "";
     public int $perPage = 20;
 
+    public  $queryString = [
+        'search' => ['exception' => '']
+    ];
+
     public function render()
     {
         $factures = Facture::whereHas('reservations', function(Builder $query) {

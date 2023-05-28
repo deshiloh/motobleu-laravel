@@ -38,6 +38,8 @@ class InvoiceService
         $invoiceDate = Carbon::create($facture->year, $facture->month, 1, 0, 0, 0, 'Europe/Paris');
 
         $invoice = Invoice::make($facture->reference)
+            ->date($facture->created_at)
+            ->dateFormat('d/m/Y')
             ->seller($physique)
             ->buyer($facturation)
             ->currencySymbol('€')
