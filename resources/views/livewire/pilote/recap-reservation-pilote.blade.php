@@ -54,6 +54,7 @@
             <x-slot name="body">
                 @php
                     $validationAmount = 0;
+                    $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
                 @endphp
                 @forelse($reservations as $reservation)
                     @php
@@ -61,26 +62,9 @@
                     @endphp
                     <x-datatable.tr :success="$reservation->totalTarifPilote() > 0"  x-data="formReservationPilote({{ json_encode($reservation) }})" wire:key="{{ $reservation->id }}">
                         <x-datatable.td>
-                            <span class="text-blue-500" data-tooltip-target="tooltip-left{{ $reservation->id }}"
-                                  data-tooltip-placement="top">{{ $reservation->reference }}</span>
-                            <div id="tooltip-left{{ $reservation->id }}" role="tooltip"
-                                 class="shadow-xl transition-opacity duration-300 inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                                <dl>
-                                    <dt>Départ</dt>
-                                    <dd>{{ $reservation->display_from }}</dd>
-
-                                    <div class="mt-3">
-                                        <dt>Arrivée</dt>
-                                        <dd>{{ $reservation->display_to }}</dd>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <dt>Commentaire</dt>
-                                        <dd>{{ $reservation->comment }}</dd>
-                                    </div>
-                                </dl>
-                                <div class="tooltip-arrow" data-popper-arrow></div>
-                            </div>
+                            <a href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" class="text-motobleu hover:underline">
+                                {{ $reservation->reference }}
+                            </a>
                         </x-datatable.td>
                         <x-datatable.td>{{ $reservation->entreprise->nom }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->pickup_date->format('d/m/Y H:i') }}</x-datatable.td>
@@ -97,17 +81,36 @@
                             </div>
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-input placeholder="Encaisse" x-model="formData.encaisse" value="{{ $reservation->encaisse_pilote }}"/>
+                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed || !is_null($reservation->facture_id))
+                                {{ $fmt->formatCurrency($reservation->encaisse_pilote, 'EUR') }}
+                                @else
+                                <x-input placeholder="Encaisse" x-model="formData.encaisse" value="{{ $reservation->encaisse_pilote }}" />
+                            @endif
+
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-input placeholder="Encompte" x-model="formData.encompte" value="{{ $reservation->encompte_pilote }}" />
+                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed || !is_null($reservation->facture_id))
+                                {{ $fmt->formatCurrency($reservation->encompte_pilote, 'EUR') }}
+                            @else
+                                <x-input placeholder="Encompte" x-model="formData.encompte" value="{{ $reservation->encompte_pilote }}" />
+                            @endif
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-textarea placeholder="Commentaire pour le pilote" x-model="formData.comment"/>
+                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed || !is_null($reservation->facture_id))
+                                {{ $reservation->comment_pilote }}
+                            @else
+                                <x-textarea placeholder="Commentaire pour le pilote" x-model="formData.comment" />
+                            @endif
                         </x-datatable.td>
                         <x-datatable.td>
                             <input type="hidden">
-                            <x-button label="Valider" primary sm @click="toto({{ $reservation->id }})" wire:loading.attr="disabled"/>
+                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed || !is_null($reservation->facture_id))
+                                <x-front.badge :warning-secondary="true">
+                                    facturée
+                                </x-front.badge>
+                            @else
+                                <x-button label="Valider" primary sm @click="toto({{ $reservation->id }})" wire:loading.attr="disabled" />
+                            @endif
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty

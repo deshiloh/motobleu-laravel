@@ -202,20 +202,20 @@
             <td style="padding-left: 10px; text-align: center;">
                 {{ $facture->reference }}
             </td>
-            <td>
+            <td style="text-align: center">
                 {{ $facture->created_at->format('d/m/Y') }}
             </td>
-            <td>
+            <td style="text-align: center">
                 @if($facture->is_acquitte)
                     Oui
                 @else
                     Non
                 @endif
             </td>
-            <td>
+            <td style="text-align: center">
                 {{ $facture->reservations->first()->entreprise->nom ?? "Non disponible"}}
             </td>
-            <td>
+            <td style="text-align: center">
                 {{ $fmt->formatCurrency($facture->montant_ttc, 'EUR') }}
             </td>
         </tr>

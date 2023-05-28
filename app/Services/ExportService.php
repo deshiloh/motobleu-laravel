@@ -61,14 +61,12 @@ class ExportService
                     ->whereIn('month', [$dateDebut->month, $dateFin->month]);
             })->get();
 
-        $pdf = Pdf::loadView('exports.factures.pdf-export', [
+        return Pdf::loadView('exports.factures.pdf-export', [
             'entreprise' => $entreprise ? Entreprise::find($entreprise) : false,
             'debut' => $dateDebut,
             'fin' => $dateFin,
             'factures' => $factures
         ]);
-
-        return $pdf;
     }
 
     /**

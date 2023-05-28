@@ -11,6 +11,7 @@
                     :without-time="true"
                     display-format="DD/MM/YYYY"
                     wire:model="dateDebut"
+                    :clearable="false"
                 />
             </div>
             <div>
@@ -20,6 +21,7 @@
                     :without-time="true"
                     display-format="DD/MM/YYYY"
                     wire:model="dateFin"
+                    :clearable="false"
                 />
             </div>
             <div>
@@ -59,7 +61,16 @@
                 @endphp
                 @forelse($factures as $facture)
                     <x-datatable.tr>
-                        <x-datatable.td>{{ $facture->reference }}</x-datatable.td>
+                        <x-datatable.td>
+                            <a href="{!! route('admin.facturations.edition', [
+                                    'selectedMonth' => $facture->month,
+                                    'selectedYear' => $facture->year,
+                                    'factureSelected' => $facture->id
+                                ]
+                            ) !!}" class="text-motobleu hover:underline">
+                                {{ $facture->reference }}
+                            </a>
+                        </x-datatable.td>
                         <x-datatable.td>{{ $facture->created_at->format('d/m/Y') }}</x-datatable.td>
                         <x-datatable.td>
                             @if($facture->is_acquitte)

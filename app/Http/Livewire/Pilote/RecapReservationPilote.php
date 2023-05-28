@@ -37,7 +37,6 @@ class RecapReservationPilote extends Component
         $this->dateDebut = $this->dateDebut ?? Carbon::now("Europe/Paris")->startOfMonth()->addHours(3);
         $this->dateFin = $this->dateFin ?? Carbon::today()->endOfMonth();
         $this->reservations = $this->handleQuery();
-        $this->reservationSelected = null;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Facturation;
 
+use App\Enum\BillStatut;
 use App\Models\Facture;
 use App\Services\ExportService;
 use Carbon\Carbon;
@@ -27,6 +28,12 @@ class Export extends Component
         'perPage',
     ];
 
+    public function mount(): void
+    {
+        $this->dateDebut = now()->startOfMonth()->format('Y-m-d');
+        $this->dateFin = now()->endOfMonth()->format('Y-m-d');
+    }
+
     public function render()
     {
         return view('livewire.facturation.export', [
@@ -45,6 +52,7 @@ class Export extends Component
     private function getFactures(): LengthAwarePaginator
     {
         return Facture::has('reservations')
+            ->where('statut', BillStatut::COMPLETED)
             ->orderBy('id', 'DESC')
             ->when($this->dateDebut && $this->dateFin, function(Builder $query)  {
                 $dateDebut = Carbon::createFromFormat("Y-m-d", $this->dateDebut);
