@@ -174,6 +174,11 @@ class ImportOldData extends Command
                         'prenom' => $user->prenom,
                         'password' => Hash::make('test'),
                         'email' => $user->email,
+                        'telephone' => $user->telephone,
+                        'adresse' => $user->adresse,
+                        'adresse_bis' => $user->adresse_bis,
+                        'code_postal' => $user->code_postal,
+                        'ville' => $user->ville,
                         'is_admin' => str_contains($user->roles, 'ROLE_ARDIAN_WATCHER')
                     ]);
 
