@@ -165,7 +165,7 @@ class ImportOldData extends Command
 
         $this->line("Importation des utilisateurs...");
         // Création des utilisateurs
-        $prodConnecion->table('user')->orderBy('id')->select(['id', 'nom', 'email', 'prenom', 'roles'])->chunk(100, function ($users) {
+        $prodConnecion->table('user')->orderBy('id')->chunk(100, function ($users) {
             $users->map(function($user) {
                 try {
                     $idInsert = DB::table('users')->insertGetId([
@@ -174,11 +174,11 @@ class ImportOldData extends Command
                         'prenom' => $user->prenom,
                         'password' => Hash::make('test'),
                         'email' => $user->email,
-                        'telephone' => $user->telephone,
-                        'adresse' => $user->adresse,
-                        'adresse_bis' => $user->adresse_bis,
-                        'code_postal' => $user->code_postal,
-                        'ville' => $user->ville,
+                        'telephone' => $user->telephone ?? null,
+                        'adresse' => $user->adresse ?? null,
+                        'adresse_bis' => $user->adresse_bis ?? null,
+                        'code_postal' => $user->code_postal ?? null,
+                        'ville' => $user->ville ?? null,
                         'is_admin' => str_contains($user->roles, 'ROLE_ARDIAN_WATCHER')
                     ]);
 
