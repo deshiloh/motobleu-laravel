@@ -89,7 +89,7 @@
 
                         </x-datatable.td>
                         <x-datatable.td>
-                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed))
+                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed)
                                 {{ $fmt->formatCurrency($reservation->encompte_pilote, 'EUR') }}
                             @else
                                 <x-input placeholder="Encompte" x-model="formData.encompte" value="{{ $reservation->encompte_pilote }}" />
