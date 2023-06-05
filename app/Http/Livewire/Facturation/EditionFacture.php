@@ -131,7 +131,6 @@ class EditionFacture extends Component
                     ->whereYear('pickup_date', $this->selectedYear)
                     ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
                     ->where('encompte_pilote', '>', 0)
-                    ->whereNull('facture_id')
                 ;
             })
             ->withCount([
@@ -141,7 +140,6 @@ class EditionFacture extends Component
                         ->whereYear('pickup_date', $this->selectedYear)
                         ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
                         ->where('encompte_pilote', '>', 0)
-                        ->whereNull('facture_id')
                     ;
                 }]
             )
