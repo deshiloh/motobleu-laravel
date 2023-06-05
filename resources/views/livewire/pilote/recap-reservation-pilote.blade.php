@@ -104,7 +104,7 @@
                         </x-datatable.td>
                         <x-datatable.td>
                             <input type="hidden">
-                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed || !is_null($reservation->facture_id))
+                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed)
                                 <x-front.badge :warning-secondary="true">
                                     facturée
                                 </x-front.badge>
