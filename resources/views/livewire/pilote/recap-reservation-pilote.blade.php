@@ -81,7 +81,7 @@
                             </div>
                         </x-datatable.td>
                         <x-datatable.td>
-                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed || !is_null($reservation->facture_id))
+                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed)
                                 {{ $fmt->formatCurrency($reservation->encaisse_pilote, 'EUR') }}
                                 @else
                                 <x-input placeholder="Encaisse" x-model="formData.encaisse" value="{{ $reservation->encaisse_pilote }}" />
@@ -89,14 +89,14 @@
 
                         </x-datatable.td>
                         <x-datatable.td>
-                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed || !is_null($reservation->facture_id))
+                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed))
                                 {{ $fmt->formatCurrency($reservation->encompte_pilote, 'EUR') }}
                             @else
                                 <x-input placeholder="Encompte" x-model="formData.encompte" value="{{ $reservation->encompte_pilote }}" />
                             @endif
                         </x-datatable.td>
                         <x-datatable.td>
-                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed || !is_null($reservation->facture_id))
+                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed)
                                 {{ $reservation->comment_pilote }}
                             @else
                                 <x-textarea placeholder="Commentaire pour le pilote" x-model="formData.comment" />
