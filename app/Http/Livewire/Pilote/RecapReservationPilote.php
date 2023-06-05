@@ -115,6 +115,14 @@ class RecapReservationPilote extends Component
      */
     public function exportReservations(ExportService $exportService): BinaryFileResponse
     {
+        if (!$this->dateDebut instanceof Carbon) {
+            $this->dateDebut = Carbon::createFromFormat("Y-m-d", $this->dateDebut);
+        }
+
+        if (!$this->dateFin instanceof Carbon) {
+            $this->dateFin = Carbon::createFromFormat("Y-m-d", $this->dateFin);
+        }
+        
         return $exportService->exportForPilote([$this->dateDebut, $this->dateFin], $this->pilote);
     }
 }
