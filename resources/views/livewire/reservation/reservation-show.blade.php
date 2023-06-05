@@ -91,7 +91,7 @@
     <div class="space-y-4">
         <x-center-bloc>
             <div class="space-y-4 bg-white p-4 rounded-lg border border-gray-200">
-                @if(!is_null($reservation->facture_id) || $reservation->statut === \App\Enum\ReservationStatus::Billed)
+                @if($reservation->statut === \App\Enum\ReservationStatus::Billed)
                     <div class="rounded-md bg-yellow-50 p-4">
                         <div class="flex">
                             <div class="flex-shrink-0">
