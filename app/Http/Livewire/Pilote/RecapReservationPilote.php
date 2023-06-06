@@ -96,7 +96,7 @@ class RecapReservationPilote extends Component
         }
 
         $reservation = Reservation::find($datas['reservation']);
-        $reservation->updateQuietly([
+        $reservation->update([
             'encaisse_pilote' => $datas['encaisse'],
             'encompte_pilote' => $datas['encompte'],
             'comment_pilote' => $datas['comment'],
@@ -122,7 +122,7 @@ class RecapReservationPilote extends Component
         if (!$this->dateFin instanceof Carbon) {
             $this->dateFin = Carbon::createFromFormat("Y-m-d", $this->dateFin);
         }
-        
+
         return $exportService->exportForPilote([$this->dateDebut, $this->dateFin], $this->pilote);
     }
 }
