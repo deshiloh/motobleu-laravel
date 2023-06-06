@@ -81,36 +81,17 @@
                             </div>
                         </x-datatable.td>
                         <x-datatable.td>
-                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed)
-                                {{ $fmt->formatCurrency($reservation->encaisse_pilote, 'EUR') }}
-                                @else
-                                <x-input placeholder="Encaisse" x-model="formData.encaisse" value="{{ $reservation->encaisse_pilote }}" />
-                            @endif
-
+                            <x-input placeholder="Encaisse" x-model="formData.encaisse" value="{{ $reservation->encaisse_pilote }}" />
                         </x-datatable.td>
                         <x-datatable.td>
-                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed)
-                                {{ $fmt->formatCurrency($reservation->encompte_pilote, 'EUR') }}
-                            @else
-                                <x-input placeholder="Encompte" x-model="formData.encompte" value="{{ $reservation->encompte_pilote }}" />
-                            @endif
+                            <x-input placeholder="Encompte" x-model="formData.encompte" value="{{ $reservation->encompte_pilote }}" />
                         </x-datatable.td>
                         <x-datatable.td>
-                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed)
-                                {{ $reservation->comment_pilote }}
-                            @else
-                                <x-textarea placeholder="Commentaire pour le pilote" x-model="formData.comment" />
-                            @endif
+                            <x-textarea placeholder="Commentaire pour le pilote" x-model="formData.comment" />
                         </x-datatable.td>
                         <x-datatable.td>
                             <input type="hidden">
-                            @if($reservation->statut === \App\Enum\ReservationStatus::Billed)
-                                <x-front.badge :warning-secondary="true">
-                                    facturée
-                                </x-front.badge>
-                            @else
-                                <x-button label="Valider" primary sm @click="toto({{ $reservation->id }})" wire:loading.attr="disabled" />
-                            @endif
+                            <x-button label="Valider" primary sm @click="toto({{ $reservation->id }})" wire:loading.attr="disabled" />
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty

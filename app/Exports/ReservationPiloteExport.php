@@ -268,20 +268,24 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
                 // Total Encaisse
                 $index = $this->indexDepart + $this->reservations->count() + 1;
-                $sheet->getSheet()->getCell('G' . $index)->setValue(
+                $sumEncaisse = $sheet->getSheet()->getCell('G' . $index);
+                $sumEncaisse->setValue(
                     sprintf(
                         '=SUM(%s)',
                         $this->encaisseColumns()
                     )
                 );
+                $sumEncaisse->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 // Total encompte
-                $sheet->getSheet()->getCell('H' . $index)->setValue(
+                $sumEncompte = $sheet->getSheet()->getCell('H' . $index);
+                $sumEncompte->setValue(
                     sprintf(
                         '=SUM(%s)',
                         $this->encompteColumns()
                     )
                 );
+                $sumEncompte->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 // CA Cell
                 $index = $index + 1;
