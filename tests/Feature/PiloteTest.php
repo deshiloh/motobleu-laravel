@@ -167,6 +167,8 @@ class PiloteTest extends TestCase
 
     public function testUpdateReservationPiloteSuccessful()
     {
+        \Event::fake();
+        
         $pilote = Pilote::find(1);
         Livewire::test(RecapReservationPilote::class, ['pilote' => $pilote])
             ->call('editReservation', [
