@@ -54,7 +54,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             ->where('pilote_id', $pilote->id)
             ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::Billed])
             ->whereBetween('pickup_date', $period)
-            ->orderBy('pickup_date', 'DESC')
+            ->orderBy('pickup_date')
             ->get();
     }
 
