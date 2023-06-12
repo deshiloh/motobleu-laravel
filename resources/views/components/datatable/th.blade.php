@@ -4,7 +4,7 @@
     'active' => false
 ])
 
-<th scope="col" {{ $attributes->merge(['class' => 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6']) }}>
+<th scope="col" {{ $attributes->merge(['class' => 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-2']) }}>
     @unless($sortable)
         {{ $slot }}
         @else
