@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ReservationsExport;
 use App\Models\Entreprise;
-use App\Models\Reservation;
 use App\Services\ExportService;
 use App\Services\SentryService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ReservationController extends Controller
 {

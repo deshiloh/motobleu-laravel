@@ -130,7 +130,11 @@ class EditionFacture extends Component
                     ->whereMonth('pickup_date', $this->selectedMonth)
                     ->whereYear('pickup_date', $this->selectedYear)
                     ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
-                    ->where('encompte_pilote', '>', 0)
+                    ->where(function(Builder $query) {
+                        $query
+                            ->whereNull('encaisse_pilote')
+                            ->orWhere('encaisse_pilote', 0);
+                    })
                 ;
             })
             ->withCount([
@@ -139,7 +143,11 @@ class EditionFacture extends Component
                         ->whereMonth('pickup_date', $this->selectedMonth)
                         ->whereYear('pickup_date', $this->selectedYear)
                         ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
-                        ->where('encompte_pilote', '>', 0)
+                        ->where(function(Builder $query) {
+                            $query
+                                ->whereNull('encaisse_pilote')
+                                ->orWhere('encaisse_pilote', 0);
+                        })
                     ;
                 }]
             )
@@ -172,7 +180,11 @@ class EditionFacture extends Component
                 ReservationStatus::Confirmed->value,
                 ReservationStatus::CanceledToPay->value
             ])
-            ->where('encompte_pilote', '>', 0)
+            ->where(function(Builder $query) {
+                $query
+                    ->whereNull('encaisse_pilote')
+                    ->orWhere('encaisse_pilote', 0);
+            })
             ->get();
 
         // Génère ou récupère une facture
@@ -352,14 +364,24 @@ class EditionFacture extends Component
     {
         if (in_array($this->entreprise->id, $billSettings->entreprises_xls_file)) {
             // Export en XLS
-            return Excel::download(new ReservationsExport($this->selectedYear, $this->selectedMonth, $this->entreprise), 'reservations.xlsx');
+            return Excel::download(
+                new ReservationsExport(
+                    $this->selectedYear,
+                    $this->selectedMonth,
+                    $this->entreprise,
+                    $this->factureSelected
+                ),
+                'reservations.xlsx');
         } else {
             // Export PDF
             return response()->streamDownload(function () {
+                $facture = Facture::find($this->factureSelected);
+
                 echo Pdf::loadView('exports.reservations.pdf-facture', [
                     'entreprise' => $this->entreprise,
                     'year' => $this->facture->year,
-                    'month' => $this->facture->month
+                    'month' => $this->facture->month,
+                    'factureSelected' => $facture
                 ])->output();
             }, 'recap_reservations_' . $this->selectedMonth . '_' . $this->selectedYear . '.pdf');
         }

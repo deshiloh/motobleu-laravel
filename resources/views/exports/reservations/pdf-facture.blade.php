@@ -197,12 +197,7 @@
     <tbody>
     @php
         $prixTTC = 0;
-        $reservations = \App\Models\Reservation::whereMonth('pickup_date', $month)
-            ->whereYear('pickup_date', $year)
-            ->where('entreprise_id', $entreprise->id)
-            ->where('encompte_pilote', '>', 0)
-            ->orderBy('pickup_date', 'asc')
-            ->get();
+        $reservations = $factureSelected->reservations()->get();
         $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
     @endphp
     @foreach($reservations as $reservation)
