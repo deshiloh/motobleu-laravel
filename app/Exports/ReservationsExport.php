@@ -3,15 +3,12 @@
 namespace App\Exports;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
-use App\Enum\ReservationStatus;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Reservation;
 use app\Settings\BillSettings;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;

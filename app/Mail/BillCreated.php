@@ -63,7 +63,8 @@ class BillCreated extends Mailable
             $excel = Excel::raw(new ReservationsExport(
                 $this->facture->year,
                 $this->facture->month,
-                $entreprise
+                $entreprise,
+                $this->facture->id
             ), \Maatwebsite\Excel\Excel::XLSX);
 
             $attachments[] = Attachment::fromData(fn() => $excel, $this->getFileName() . '.xlsx')
