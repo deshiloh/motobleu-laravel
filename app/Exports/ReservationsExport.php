@@ -6,9 +6,12 @@ use App\Enum\AdresseEntrepriseTypeEnum;
 use App\Enum\ReservationStatus;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
+use App\Models\Facture;
 use App\Models\Reservation;
 use app\Settings\BillSettings;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -47,9 +50,12 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
     private Entreprise $entreprise;
     private Carbon|false $datePeriod;
     private BillSettings $billSettings;
+    private Facture $facture;
 
-    public function __construct(int $year, int $month, Entreprise $entreprise)
+    public function __construct(int $year, int $month, Entreprise $entreprise, int $factureId)
     {
+        $this->facture = Facture::find($factureId);
+
         $this->billSettings = app(BillSettings::class);
         $this->datePeriod = Carbon::create($year, $month, '1');
 
@@ -190,19 +196,7 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
 
     private function getReservations(): Collection
     {
-        $reservations = Reservation::whereMonth('pickup_date', $this->datePeriod->month)
-            ->whereyear('pickup_date', $this->datePeriod->year)
-            ->where('entreprise_id', $this->entreprise->id)
-            ->where('encompte_pilote', '>', 0)
-            ->whereIn('statut', [
-                ReservationStatus::Confirmed->value,
-                ReservationStatus::CanceledToPay->value,
-                ReservationStatus::Billed
-            ])
-            ->orderBy('pickup_date')
-            ->get();
-
-        return $reservations;
+        return $this->facture->reservations()->get();
     }
 
     public function headings(): array
