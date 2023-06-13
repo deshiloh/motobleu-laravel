@@ -27,7 +27,7 @@ class ExportService
         $dateDebut = Carbon::createFromFormat("Y-m-d", $dateDebut);
         $dateFin = Carbon::createFromFormat("Y-m-d", $dateFin);
 
-        $factures = Facture::orderBy('id', 'DESC')
+        $factures = Facture::orderBy('id')
             ->when($entreprise, function(Builder $query) use ($entreprise) {
                 return $query->whereHas('reservations', function (Builder $query) use ($entreprise) {
                     return $query->where('entreprise_id', $entreprise);
