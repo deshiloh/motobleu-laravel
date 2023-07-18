@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Resources\ReservationResource;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
@@ -26,8 +27,10 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
+        ReservationResource::withoutWrapping();
+
         if (App::environment(['testing'])) {
             ini_set('memory_limit', '2G');
         }
