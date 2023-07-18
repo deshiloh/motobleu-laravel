@@ -74,7 +74,8 @@ class BillCreated extends Mailable
             $pdfData = Pdf::loadView('exports.reservations.pdf-facture', [
                 'entreprise' => $entreprise,
                 'year' => $this->facture->year,
-                'month' => $this->facture->month
+                'month' => $this->facture->month,
+                'factureSelected' => $this->facture,
             ])->output();
 
             $attachments[] = Attachment::fromData(fn() => $pdfData, $this->getFileName() . '.pdf')
