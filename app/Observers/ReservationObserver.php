@@ -2,11 +2,11 @@
 
 namespace App\Observers;
 
+use App\Enum\ReservationStatus;
 use App\Mail\ReservationCreated;
 use App\Models\Reservation;
 use App\Services\EventCalendar\GoogleCalendarService;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -70,6 +70,27 @@ class ReservationObserver
      */
     public function updated(Reservation $reservation): void
     {
+        if ($reservation->statut->value < ReservationStatus::Billed->value &&
+            $reservation->encaisse_pilote > 0 &&
+            $reservation->facture_id > 0
+        ) {
+            $facture = $reservation->facture;
+
+            $reservation->facture()->disassociate();
+
+            $reservation->tarif = null;
+            $reservation->majoration = null;
+            $reservation->complement = null;
+
+            $reservation->updateQuietly();
+
+            $facture->refresh();
+
+            if($facture->reservations->isEmpty()) {
+                $facture->delete();
+            }
+        }
+
         try {
             $this->calendarService->createEventForMotobleu($reservation);
             $this->calendarService->createEventForSecretary($reservation);
