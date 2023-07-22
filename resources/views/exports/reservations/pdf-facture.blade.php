@@ -222,7 +222,7 @@
                 {{ $reservation->passager->nom }}
             </td>
             <td class="text-center" style="">
-                {{ $reservation->pickup_date->format('H:m') }}
+                {{ $reservation->pickup_date->format('H:i') }}
             </td>
             <td class="text-center" style="">
                 {{ $reservation->display_from }}
@@ -252,7 +252,7 @@
                 <tr>
                     <td>TVA (10%)</td>
                     @php
-                        $prixTVA =  $prixTTC - $prixHT
+                        $prixTVA =  $prixTTC - $prixHT;
                     @endphp
                     <td style="text-align: right">{{ $fmt->formatCurrency($prixTVA, 'EUR') }}</td>
                 </tr>
