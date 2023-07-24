@@ -157,6 +157,7 @@
                 <x-slot:body>
                     @php
                         $validation = 0;
+                        $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
                     @endphp
                     @forelse($facture->reservations()->orderBy('pickup_date')->get() as $reservation)
                         @php
@@ -173,7 +174,7 @@
                             <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
                             <x-datatable.td>
                                 @if($reservation->tarif !== null)
-                                    {{ number_format($validation, 2, ',', ' ') }} €
+                                    {{ $fmt->formatCurrency($validation, 'EUR') }}
                                 @endif
                             </x-datatable.td>
                             <x-datatable.td>
@@ -214,8 +215,9 @@
                 <div class="flex flex-col space-y-3 text-right dark:text-white">
                     @php
                         $prixHT = $montant_ttc / 1.10;
-                        $prixTVA = $prixHT * 0.10;
-                        $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
+                        $prixHT = substr($prixHT, 0, strpos($prixHT, '.') + 3);
+                        $prixTVA = $montant_ttc - $prixHT;
+                        $prixTVA = substr($prixTVA, 0, strpos($prixTVA, '.') + 3);
                     @endphp
                     <div>
                         <strong>Montant H.T :</strong> {{ $fmt->formatCurrency($prixHT, 'EUR') }}

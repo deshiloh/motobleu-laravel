@@ -18,7 +18,8 @@ return new class extends Migration
             $table->id();
             $table->integer('statut')->default(BillStatut::CREATED->value);
             $table->string('reference')->nullable();
-            $table->float('montant_ht')->default(0);
+            $table->float('montant_ttc')->default(0);
+            $table->float('montant_tva')->default(0);
             $table->integer('tva')->default(10);
             $table->string('adresse_client')->nullable();
             $table->string('adresse_facturation')->nullable();

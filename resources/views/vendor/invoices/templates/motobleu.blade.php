@@ -353,7 +353,6 @@
                     @php
                         $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
                         $prixTVA = $invoice->taxable_amount * ($invoice->tax_rate / 100);
-                        $prixTVA = substr($prixTVA, 0, strpos($prixTVA, '.') + 3);
                     @endphp
                     <tr>
                         <td colspan="{{ $invoice->table_columns - 2 }}" class="border-0"></td>
@@ -378,7 +377,6 @@
                         <td class="text-right pr-0 total-amount">
                             @php
                                 $ttc = $invoice->taxable_amount + $prixTVA;
-                                $ttc = substr($ttc, 0, strpos($ttc, '.') + 3);
                             @endphp
                             {{ $fmt->formatCurrency($ttc, 'EUR') }}
                         </td>

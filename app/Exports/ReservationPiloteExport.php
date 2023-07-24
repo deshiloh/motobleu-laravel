@@ -241,17 +241,17 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $sheet->getDelegate()->getStyle("E")->getAlignment()->setWrapText(true);
 
                 // Header
-                $sheet->getSheet()->getCell('D' . 9)
+                $sheet->getSheet()->getCell('E' . 9)
                     ->setValue('Tableau recap courses');
 
-                $titleStyles = $sheet->getSheet()->getCell('D' . 9)->getStyle();
+                $titleStyles = $sheet->getSheet()->getCell('E' . 9)->getStyle();
                 $titleStyles->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $titleStyles->getFont()->setSize(14);
                 $titleStyles->getFont()->setBold(true);
 
                 /** @var Carbon $currentDate */
                 $currentDate = $this->period[1];
-                $sheet->getSheet()->getCell('D' . 10)
+                $sheet->getSheet()->getCell('E' . 10)
                     ->setValue(
                         sprintf(
                             '%s / %s / %s',
@@ -261,7 +261,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                         )
                     );
 
-                $titleStyles = $sheet->getSheet()->getCell('D' . 10)->getStyle();
+                $titleStyles = $sheet->getSheet()->getCell('E' . 10)->getStyle();
                 $titleStyles->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $titleStyles->getFont()->setSize(14);
                 $titleStyles->getFont()->setBold(true);
