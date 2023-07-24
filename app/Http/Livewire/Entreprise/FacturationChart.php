@@ -39,7 +39,7 @@ class FacturationChart extends Component
             })
                 ->where('month', $date->month)
                 ->where('year', $date->year)
-                ->sum('montant_ht');
+                ->sum('montant_ttc');
 
             $data[] = [
                 'date' => $date->shortMonthName . ' ' .$date->year,

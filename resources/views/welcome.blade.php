@@ -40,10 +40,9 @@
                                     $period = \Carbon\CarbonPeriod::create(\Carbon\Carbon::now()->startOfYear(), '1 month', \Carbon\Carbon::now()->endOfMonth());
                                     $months = array_map(fn($item) => $item->month, $period->toArray());
 
-                                    $ht = \App\Models\Facture::whereIn('month', $months)
+                                    $ttc = \App\Models\Facture::whereIn('month', $months)
                                     ->where('year', \Carbon\Carbon::now()->year)
-                                    ->sum('montant_ht');
-                                    $ttc = $ht + ($ht * 0.1);
+                                    ->sum('montant_ttc');
                                 @endphp
                                 {{ number_format($ttc, 2, '.', ' ') }} €
                             </div>
@@ -76,8 +75,8 @@
                 <tr>
                     <x-datatable.th>Référence</x-datatable.th>
                     <x-datatable.th>Date</x-datatable.th>
-                    <x-datatable.th>Arrivée</x-datatable.th>
                     <x-datatable.th>Départ</x-datatable.th>
+                    <x-datatable.th>Arrivée</x-datatable.th>
                     <x-datatable.th>Entreprise</x-datatable.th>
                     <x-datatable.th>Actions</x-datatable.th>
                 </tr>

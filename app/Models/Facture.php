@@ -75,11 +75,11 @@ class Facture extends Model
         return $this->hasMany(Reservation::class);
     }
 
-    public function montantTtc(): Attribute
+    public function montantHt(): Attribute
     {
-        return Attribute::make(
-            get: function ($value) {
-                return $this->generateMontantTtc();
+        return new Attribute(
+            get: function($value, $attributes) {
+                return $attributes['montant_ttc'] / 1.10;
             }
         );
     }
@@ -97,11 +97,5 @@ class Facture extends Model
             $month,
             Facture::where('month', $month)->where('year', $year)->count() + 1
         );
-    }
-
-    private function generateMontantTtc(): float
-    {
-        $ttc = $this->montant_ht + ($this->montant_ht * 0.1);
-        return $ttc;
     }
 }

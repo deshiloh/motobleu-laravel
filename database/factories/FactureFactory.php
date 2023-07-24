@@ -25,7 +25,8 @@ class FactureFactory extends Factory
         return [
             'reference' => 'FA'.$currentDate->year.'-'.$currentDate->month.'-' . self::$ref ++,
             'statut' => BillStatut::CREATED->value,
-            'montant_ht' => $this->faker->randomFloat('2', 10, 99999),
+            'montant_ttc' => $this->faker->randomFloat('2', 10, 99999),
+            'montant_tva' => $this->faker->randomFloat('2', 10, 99999),
             'tva' => 10,
             'adresse_client' => $this->faker->address,
             'adresse_facturation' => $this->faker->address,

@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
                 'statut' => ReservationStatus::Confirmed,
                 'entreprise_id' => $user->entreprises()->first()->id,
             ])
-                ->for(Facture::factory(['montant_ht' => 0])->create())
+                ->for(Facture::factory(['montant_ttc' => 0])->create())
                 ->for($passager)
                 ->for(Pilote::factory()->create())
                 ->create()

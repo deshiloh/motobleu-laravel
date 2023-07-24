@@ -322,10 +322,8 @@ class EditionFacture extends Component
             }
         }
 
-        $total_ht = $total_ttc / 1.10;
-
         $this->facture->updateQuietly([
-            'montant_ht' => $total_ht
+            'montant_ttc' => $total_ttc
         ]);
 
         $this->uniqID = uniqid('facture_');

@@ -51,15 +51,14 @@
                             @php
                                 $period = \Carbon\CarbonPeriod::create(\Carbon\Carbon::now()->startOfYear(), '1 month', \Carbon\Carbon::now()->endOfMonth());
                                 $months = array_map(fn($item) => $item->month, $period->toArray());
-                                    $ht = \App\Models\Facture::whereHas(
+                                    $ttc = \App\Models\Facture::whereHas(
                                         'reservations',
                                         function (\Illuminate\Database\Eloquent\Builder $builder) use ($entreprise) {
                                             $builder->where('entreprise_id', $entreprise->id);
                                         })
                                         ->whereIn('month', $months)
                                         ->where('year', \Carbon\Carbon::now()->year)
-                                        ->sum('montant_ht');
-                                    $ttc = $ht + ($ht * 0.1);
+                                        ->sum('montant_ttc');
                             @endphp
                             {{ number_format($ttc, 2, '.', ' ') }} €
                         </div>
