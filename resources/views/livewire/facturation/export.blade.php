@@ -83,7 +83,7 @@
                             {{ $facture->reservations->first()->entreprise->nom  ?? "Non disponible"}}
                         </x-datatable.td>
                         <x-datatable.td>
-                            {{ $fmt->formatCurrency($facture->montant_ttc, 'EURO') }}
+                            {{ number_format($facture->montant_ttc, 2, ',', ' ') }} €
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty
