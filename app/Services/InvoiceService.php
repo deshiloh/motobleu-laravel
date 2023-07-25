@@ -56,8 +56,11 @@ class InvoiceService
             ->logo(public_path('storage/motobleu-dark.png'))
         ;
 
-        if ($notes = $facture->information) {
+        $invoice->setCustomData([
+            'montant_ttc' => $facture->montant_ttc
+        ]);
 
+        if ($notes = $facture->information) {
             $invoice->notes($notes);
         }
 
