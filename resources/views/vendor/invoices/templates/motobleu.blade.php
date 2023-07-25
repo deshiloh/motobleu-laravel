@@ -269,6 +269,15 @@
             </tbody>
         </table>
 
+        @php
+            $data = $invoice->getCustomData();
+            $ttc = $data['montant_ttc'];
+            $prixHT = $ttc / 1.10;
+            $prixHT = substr($prixHT, 0, strpos($prixHT, '.') + 3);
+            $prixTVA = $ttc - $prixHT;
+            $prixTVA = substr($prixTVA, 0, strpos($prixTVA, '.') + 3);
+        @endphp
+
         {{-- Table --}}
         <table class="table table-items" border="0">
             <thead>
@@ -291,35 +300,35 @@
             <tbody>
                 {{-- Items --}}
                 @foreach($invoice->items as $item)
-                <tr class="invoice-item">
-                    <td class="pl-0">
-                        {{ $item->title }}
-                    </td>
-                    @if($invoice->hasItemUnits)
-                        <td class="text-center">{{ $item->units }}</td>
-                    @endif
-                    {{--<td class="text-center">{{ $item->quantity }}</td>--}}
-
-                    @if($invoice->hasItemDiscount)
-                        <td class="text-right">
-                            {{ $invoice->formatCurrency($item->discount) }}
+                    <tr class="invoice-item">
+                        <td class="pl-0">
+                            {{ $item->title }}
                         </td>
-                    @endif
-                    @if($invoice->hasItemTax)
-                        <td class="text-right">
-                            {{ $invoice->formatCurrency($item->tax) }}
-                        </td>
-                    @endif
-
-                    <td class="text-right">
-                        @if($item->description)
-                            <p>{{ $item->description }}</p>
+                        @if($invoice->hasItemUnits)
+                            <td class="text-center">{{ $item->units }}</td>
                         @endif
-                    </td>
-                    <td class="text-right">
-                        {{ $invoice->formatCurrency($item->price_per_unit) }}
-                    </td>
-                </tr>
+                        {{--<td class="text-center">{{ $item->quantity }}</td>--}}
+
+                        @if($invoice->hasItemDiscount)
+                            <td class="text-right">
+                                {{ $invoice->formatCurrency($item->discount) }}
+                            </td>
+                        @endif
+                        @if($invoice->hasItemTax)
+                            <td class="text-right">
+                                {{ $invoice->formatCurrency($item->tax) }}
+                            </td>
+                        @endif
+
+                        <td class="text-right">
+                            @if($item->description)
+                                <p>{{ $item->description }}</p>
+                            @endif
+                        </td>
+                        <td class="text-right">
+                            {{ substr($item->price_per_unit, 0, strpos($item->price_per_unit, '.') + 3) }}
+                        </td>
+                    </tr>
                 @endforeach
                 {{-- Summary --}}
                 @if($invoice->hasItemOrInvoiceDiscount())
@@ -336,7 +345,7 @@
                         <td colspan="{{ $invoice->table_columns - 2 }}" class="border-0"></td>
                         <td class="text-right pl-0">{{ __('invoice.taxable_amount') }}</td>
                         <td class="text-right pr-0">
-                            {{ $invoice->formatCurrency($invoice->taxable_amount) }}
+                            {{ number_format($prixHT, 2, ',', ' ') }} €
                         </td>
                     </tr>
                 @endif
@@ -350,15 +359,11 @@
 {{--                    </tr>--}}
 {{--                @endif--}}
                 @if($invoice->hasItemOrInvoiceTax())
-                    @php
-                        $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
-                        $prixTVA = $invoice->taxable_amount * ($invoice->tax_rate / 100);
-                    @endphp
                     <tr>
                         <td colspan="{{ $invoice->table_columns - 2 }}" class="border-0"></td>
                         <td class="text-right pl-0">{{ __('invoice.total_taxes') }} ({{ $invoice->tax_rate }} %)</td>
                         <td class="text-right pr-0">
-                            {{ $fmt->formatCurrency($prixTVA, 'EUR') }}
+                            {{ number_format($prixTVA, 2, ',', ' ') }} €
                         </td>
                     </tr>
                 @endif
@@ -375,10 +380,7 @@
                         <td colspan="{{ $invoice->table_columns - 2 }}" class="border-0"></td>
                         <td class="text-right pl-0" style="font-weight: bold; font-size: 10pt;">{{ __('invoice.total_amount') }}</td>
                         <td class="text-right pr-0 total-amount">
-                            @php
-                                $ttc = $invoice->taxable_amount + $prixTVA;
-                            @endphp
-                            {{ $fmt->formatCurrency($ttc, 'EUR') }}
+                            {{ number_format($ttc, 2, ',', ' ') }} €
                         </td>
                     </tr>
             </tbody>

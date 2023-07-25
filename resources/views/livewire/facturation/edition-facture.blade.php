@@ -220,13 +220,13 @@
                         $prixTVA = substr($prixTVA, 0, strpos($prixTVA, '.') + 3);
                     @endphp
                     <div>
-                        <strong>Montant H.T :</strong> {{ $fmt->formatCurrency($prixHT, 'EUR') }}
+                        <strong>Montant H.T :</strong> {{ number_format($prixHT, 2, ',', ' ') }} €
                     </div>
                     <div>
-                        <strong>TVA 10% :</strong> {{ $fmt->formatCurrency($prixTVA, 'EUR') }}
+                        <strong>TVA 10% :</strong> {{ number_format($prixTVA, 2, ',', ' ') }} €
                     </div>
                     <div>
-                        <strong>Montant TTC :</strong> {{ $fmt->formatCurrency($montant_ttc, 'EUR') }}
+                        <strong>Montant TTC :</strong> {{ number_format($montant_ttc, 2, ',', ' ') }} €
                     </div>
                 </div>
             </div>
