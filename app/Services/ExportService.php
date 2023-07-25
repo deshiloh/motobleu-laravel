@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enum\BillStatut;
 use App\Exports\ReservationPiloteExport;
 use App\Models\Entreprise;
 use App\Models\Facture;
@@ -28,6 +29,7 @@ class ExportService
         $dateFin = Carbon::createFromFormat("Y-m-d", $dateFin);
 
         $factures = Facture::orderBy('id')
+            ->where('statut', BillStatut::COMPLETED)
             ->when($entreprise, function(Builder $query) use ($entreprise) {
                 return $query->whereHas('reservations', function (Builder $query) use ($entreprise) {
                     return $query->where('entreprise_id', $entreprise);
