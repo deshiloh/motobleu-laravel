@@ -88,5 +88,10 @@
     "Montant" : "Amount",
     "Suppression impossible" : "Unable to delete",
     "Liste des passagers" : "List of passengers",
-    "Liste des réservations pour la facture" : "List of reservations for the invoice"
+    "Liste des réservations pour la facture" : "List of reservations for the invoice",
+    "Formulaire de création d'adresse" : "Address creation form",
+    "Formulaire d'édition d'adresse" : "Address edition form",
+    "Adresse complémentaire" : "Additional address",
+    "Code postal" : "Postal code",
+    "Ville" : "City"
 }

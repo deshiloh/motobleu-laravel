@@ -196,8 +196,12 @@
     <tbody>
     @php
         $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
+        $totalTTC = 0;
     @endphp
     @foreach($factures as $facture)
+        @php
+            $totalTTC = $totalTTC + $facture->montant_ttc;
+        @endphp
         <tr>
             <td style="padding-left: 10px; text-align: center;">
                 {{ $facture->reference }}
@@ -220,31 +224,31 @@
             </td>
         </tr>
     @endforeach
-{{--    <tr class="end">--}}
-{{--        <td colspan="7" style="background-color: white; border-top: 10px solid #293275; border-bottom: none;"></td>--}}
-{{--        <td colspan="3" class="end-content" style="border-top: 10px solid #293275;">--}}
-{{--            <table>--}}
-{{--                <tr>--}}
-{{--                    <td>Sous total</td>--}}
-{{--                    @php--}}
-{{--                        $prixHT = $prixTTC / 1.1;--}}
-{{--                    @endphp--}}
-{{--                    <td style="text-align: right">{{ number_format($prixHT, 2, '.', ' ') }} €</td>--}}
-{{--                </tr>--}}
-{{--                <tr>--}}
-{{--                    <td>TVA (10%)</td>--}}
-{{--                    @php--}}
-{{--                        $prixTVA =  $prixTTC - $prixHT--}}
-{{--                    @endphp--}}
-{{--                    <td style="text-align: right">{{ number_format($prixTVA, 2, '.', ' ') }} €</td>--}}
-{{--                </tr>--}}
-{{--                <tr class="end-last">--}}
-{{--                    <td>Total à payer</td>--}}
-{{--                    <td style="text-align: right">{{ number_format($prixTTC, 2, '.', ' ') }} €</td>--}}
-{{--                </tr>--}}
-{{--            </table>--}}
-{{--        </td>--}}
-{{--    </tr>--}}
+    <tr class="end">
+        <td colspan="4" style="background-color: white; border-top: 10px solid #293275; border-bottom: none;"></td>
+        <td colspan="1" class="end-content" style="border-top: 10px solid #293275;">
+            <table>
+                <tr>
+                    <td style="text-align: right;">Sous total</td>
+                    @php
+                        $prixHT = $totalTTC / 1.1;
+                    @endphp
+                    <td style="text-align: right">{{ number_format($prixHT, 2, '.', ' ') }} €</td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">TVA (10%)</td>
+                    @php
+                        $prixTVA =  $totalTTC - $prixHT
+                    @endphp
+                    <td style="text-align: right">{{ number_format($prixTVA, 2, '.', ' ') }} €</td>
+                </tr>
+                <tr class="end-last">
+                    <td style="text-align: right;">Total à payer</td>
+                    <td style="text-align: right">{{ number_format($totalTTC, 2, '.', ' ') }} €</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
 </body>
 </html>
