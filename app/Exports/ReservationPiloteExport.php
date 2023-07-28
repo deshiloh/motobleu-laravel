@@ -271,29 +271,9 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $titleStyles->getFont()->setSize(14);
                 $titleStyles->getFont()->setBold(true);
 
-                // Total Encaisse
-                $index = $this->indexDepart + $this->reservations->count() + 1;
-                $sumEncaisse = $sheet->getSheet()->getCell('G' . $index);
-                $sumEncaisse->setValue(
-                    sprintf(
-                        '=SUM(%s)',
-                        $this->encaisseColumns()
-                    )
-                );
-                $sumEncaisse->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-                // Total encompte
-                $sumEncompte = $sheet->getSheet()->getCell('H' . $index);
-                $sumEncompte->setValue(
-                    sprintf(
-                        '=SUM(%s)',
-                        $this->encompteColumns()
-                    )
-                );
-                $sumEncompte->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 // CA Cell
-                $index = $index + 1;
+                $index = $this->indexDepart + $this->reservations->count() + 2;
                 $CaLabelle = $sheet->getSheet()->getCell('A' . $index);
                 $CaLabelle->setValue(
                     'Chiffre d\'affaire'
