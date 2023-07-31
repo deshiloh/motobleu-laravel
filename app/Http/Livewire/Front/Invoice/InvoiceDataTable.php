@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Front\Invoice;
 
+use App\Enum\BillStatut;
 use App\Models\Facture;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
@@ -28,6 +29,7 @@ class InvoiceDataTable extends Component
             ->when($this->search, function (Builder $query) {
                 $query->where('reference', 'like', '%' . $this->search . '%');
             })
+            ->where('is_acquitte', true)
             ->orderBy('created_at', 'desc')
             ->paginate($this->perPage);
 
