@@ -104,7 +104,7 @@ class ImportOldData extends Command
 
         Permission::insert($permissions->toArray());
 
-        $arrayOfRoles = ['user', 'admin', 'super admin'];
+        $arrayOfRoles = ['user', 'user_ardian', 'admin', 'super admin'];
         $roles = collect($arrayOfRoles)->map(function ($role) {
             return ['name' => $role, 'guard_name' => 'web'];
         });
@@ -113,6 +113,12 @@ class ImportOldData extends Command
 
         $roleHasPermission = [
             'user' => array_merge(
+                $reservationPermissions,
+                $addressReservationPermissions,
+                $passengerPermissions,
+                $facturePermissions,
+            ),
+            'user_ardian' => array_merge(
                 $reservationPermissions,
                 $addressReservationPermissions,
                 $passengerPermissions
@@ -185,18 +191,24 @@ class ImportOldData extends Command
                     /** @var User $user */
                     $user = User::find($idInsert);
 
-                    switch ($user->email) {
+                    $isArdianUser = strpos($user->email, 'ardian') > 0;
+
+                    switch (true) {
+                        case $isArdianUser && !$user->is_admin :
+                            $user->assignRole('user_ardian');
+                            break;
+                        case $isArdianUser && $user->is_admin :
+                            $user->assignRole('admin');
+                            break;
                         case 'm.alvarez.iglisias@gmail.com':
                         case 'contact@motobleu-paris.com':
                         case 'contact@apc66.com':
                             $user->assignRole('super admin');
                             break;
+                        default :
+                            $user->assignRole('user');
+                            break;
                     }
-
-                    if ($user->is_admin) {
-                        $user->assignRole('admin');
-                    }
-
                 } catch (Exception $exception) {
                     $this->error($exception->getMessage());
                 }
@@ -212,29 +224,6 @@ class ImportOldData extends Command
         });
 
         $this->info("Liaison entre utilisateurs et entreprises terminée.");
-        $this->newLine();
-
-        $this->line("Attribution des rôles...");
-        $userNotAdminArdian = User::whereHas('entreprises', function (Builder $query) {
-            return $query->where('nom', 'Ardian France');
-        })
-            ->where('is_admin', false)->get();
-
-        $userNotAdminArdian->map(function($user) {
-            $user->assignRole('user');
-        });
-
-        $users = User::whereDoesntHave('entreprises', function (Builder $query) {
-            return $query->where('nom', 'Ardian France');
-        })
-            ->where('is_admin', false)
-            ->get();
-
-        $users->map(function($user) {
-            $user->assignRole('admin');
-        });
-
-        $this->info("Attribution des rôles terminée.");
         $this->newLine();
 
         $this->line("Importation des pilotes...");

@@ -67,7 +67,6 @@
         @endcan
     @endif
 
-
     @can('see facture')
         <x-front.menu.item :active="in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['front.invoice.list', 'front.invoice.reservations'])" href="{{ route('front.invoice.list') }}">
             <x-slot:icon>
