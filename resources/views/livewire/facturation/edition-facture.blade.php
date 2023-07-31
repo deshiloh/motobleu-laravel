@@ -215,9 +215,7 @@
                 <div class="flex flex-col space-y-3 text-right dark:text-white">
                     @php
                         $prixHT = $montant_ttc / 1.10;
-                        $prixHT = substr($prixHT, 0, strpos($prixHT, '.') + 3);
                         $prixTVA = $montant_ttc - $prixHT;
-                        $prixTVA = substr($prixTVA, 0, strpos($prixTVA, '.') + 3);
                     @endphp
                     <div>
                         <strong>Montant H.T :</strong> {{ number_format($prixHT, 2, ',', ' ') }} €

@@ -273,9 +273,7 @@
             $data = $invoice->getCustomData();
             $ttc = $data['montant_ttc'];
             $prixHT = $ttc / 1.10;
-            $prixHT = substr($prixHT, 0, strpos($prixHT, '.') + 3);
             $prixTVA = $ttc - $prixHT;
-            $prixTVA = substr($prixTVA, 0, strpos($prixTVA, '.') + 3);
         @endphp
 
         {{-- Table --}}
@@ -326,7 +324,7 @@
                             @endif
                         </td>
                         <td class="text-right">
-                            {{ substr($item->price_per_unit, 0, strpos($item->price_per_unit, '.') + 3) }}
+                            {{ number_format($item->price_per_unit, 2, ',', ' ') }}
                         </td>
                     </tr>
                 @endforeach
