@@ -84,10 +84,13 @@ Route::prefix('dashboard')->name('front.')->group(function () {
 
     Route::prefix('/invoice')->name('invoice.')->group(function () {
         Route::get('/list', InvoiceDataTable::class)
+            ->middleware('can:see facture')
             ->name('list');
         Route::get('/{facture}/show', [FacturationsController::class, 'show'])
+            ->middleware('can:see facture')
             ->name('show');
         Route::get('/{invoice}/reservations', InvoiceReservationDataTable::class)
+            ->middleware('can:see facture')
             ->name('reservations');
     });
 });
