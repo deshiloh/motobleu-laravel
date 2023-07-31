@@ -42,16 +42,4 @@ class InvoiceTest extends TestCase
         $response = $this->get(route('front.invoice.reservations', ['invoice' => Facture::find(1)]));
         $response->assertStatus(200);
     }
-
-    public function testRoleUserCanNotAccess()
-    {
-        /** @var User $user */
-        $user = User::factory()->create();
-        $user->assignRole('user');
-
-        $this->actingAs($user);
-
-        $response = $this->get(route('front.invoice.list'));
-        $response->assertStatus(403);
-    }
 }

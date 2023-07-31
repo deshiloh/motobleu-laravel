@@ -200,9 +200,9 @@ class ImportOldData extends Command
                         case $isArdianUser && $user->is_admin :
                             $user->assignRole('admin');
                             break;
-                        case 'm.alvarez.iglisias@gmail.com':
-                        case 'contact@motobleu-paris.com':
-                        case 'contact@apc66.com':
+                        case $user->email === 'm.alvarez.iglisias@gmail.com':
+                        case $user->email === 'contact@motobleu-paris.com':
+                        case $user->email === 'contact@apc66.com':
                             $user->assignRole('super admin');
                             break;
                         default :
