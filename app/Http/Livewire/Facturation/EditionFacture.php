@@ -294,9 +294,9 @@ class EditionFacture extends Component
 
         $reservation = Reservation::find($datas['reservation']);
         $reservation->updateQuietly([
-            'tarif' => $datas['tarif'],
-            'majoration' => $datas['majoration'],
-            'complement' => $datas['complement'],
+            'tarif' => (float) $datas['tarif'],
+            'majoration' => (float) $datas['majoration'],
+            'complement' => (float) $datas['complement'],
             'comment_facture' => $datas['comment_facture'],
         ]);
 

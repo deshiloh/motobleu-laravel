@@ -97,8 +97,8 @@ class RecapReservationPilote extends Component
 
         $reservation = Reservation::find($datas['reservation']);
         $reservation->update([
-            'encaisse_pilote' => $datas['encaisse'],
-            'encompte_pilote' => empty($datas['encompte']) ? 0 : $datas['encompte'],
+            'encaisse_pilote' => (float) $datas['encaisse'],
+            'encompte_pilote' => empty($datas['encompte']) ? 0 : (float) $datas['encompte'],
             'comment_pilote' => $datas['comment'],
         ]);
 
