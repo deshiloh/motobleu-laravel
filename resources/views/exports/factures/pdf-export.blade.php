@@ -219,7 +219,7 @@
             <td style="text-align: center">
                 {{ $facture->reservations->first()->entreprise->nom ?? "Non disponible"}}
             </td>
-            <td style="text-align: center">
+            <td style="text-align: right; padding-right: 17px">
                 {{ $fmt->formatCurrency($facture->montant_ttc, 'EUR') }}
             </td>
         </tr>
