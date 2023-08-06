@@ -190,7 +190,7 @@
         <th class="text-center">Date création</th>
         <th class="text-center">Acquittée</th>
         <th class="text-center">Entreprise</th>
-        <th class="text-center">Montant</th>
+        <th class="text-right" style="padding-right: 15px;">Montant</th>
     </tr>
     </thead>
     <tbody>
