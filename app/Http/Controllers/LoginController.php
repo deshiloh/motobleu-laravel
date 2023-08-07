@@ -42,7 +42,7 @@ class LoginController extends Controller
             }
 
             $request->session()->regenerate();
-            ;
+
             return (Auth::user()->hasRole('super admin')) ?
                 redirect()->intended(route('admin.homepage')) :
                 redirect()->intended(route('front.home'));
