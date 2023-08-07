@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Livewire\Auth\ForgotPasswordForm;
 use App\Models\User;
+use App\Notifications\ResetPasswordNotification;
 use Database\Factories\UserFactory;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -134,6 +135,6 @@ class LoginTest extends TestCase
             ->call('resetAction')
             ->assertHasNoErrors();
 
-        Notification::assertSentTo($user, ResetPassword::class);
+        Notification::assertSentTo($user, ResetPasswordNotification::class);
     }
 }
