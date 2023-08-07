@@ -67,6 +67,9 @@ Votre réservation a bien été prise en compte";
         try {
             $this->reservation->statut = ReservationStatus::Confirmed;
 
+            $this->reservation->encaisse_pilote = (float) $this->reservation->encaisse_pilote;
+            $this->reservation->encompte_pilote = (float) $this->reservation->encompte_pilote;
+
             $this->reservation->update();
 
             $this->reservation->refresh();
@@ -104,6 +107,9 @@ Votre réservation a bien été prise en compte";
     public function updatePilote()
     {
         $this->handleConfirmedAndUpdateValidation();
+
+        $this->reservation->encaisse_pilote = (float) $this->reservation->encaisse_pilote;
+        $this->reservation->encompte_pilote = (float) $this->reservation->encompte_pilote;
 
         if ($this->reservation->isDirty(['pilote_id'])) {
             /** @var Pilote $currentPilote */
