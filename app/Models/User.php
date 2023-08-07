@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
 use Carbon\Carbon;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -118,5 +119,16 @@ class User extends Authenticatable
                 return implode(' ', $attr);
             }
         );
+    }
+
+    /**
+     * Envoi l'email de reset mot de passe
+     * @param $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $url = route('password.reset', ['token' => $token]);
+        $this->notify(new ResetPasswordNotification($url));
     }
 }
