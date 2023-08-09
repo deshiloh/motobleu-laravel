@@ -178,7 +178,7 @@ class ImportOldData extends Command
                         'id' => $user->id,
                         'nom' => $user->nom,
                         'prenom' => $user->prenom,
-                        'password' => Hash::make('test'),
+                        'password' => Hash::make(uniqid()),
                         'email' => $user->email,
                         'telephone' => $user->telephone ?? null,
                         'adresse' => $user->adresse ?? null,
