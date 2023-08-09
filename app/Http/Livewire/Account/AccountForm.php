@@ -110,11 +110,21 @@ class AccountForm extends Component
     private function handlePermission()
     {
         if ($this->isAdmin) {
-            $this->user->removeRole('user_ardian');
+            if (strpos('ardian.com', $this->user->email) > 0) {
+                $this->user->removeRole('user_ardian');
+            } else {
+                $this->user->removeRole('user');
+            }
+
             $this->user->assignRole('admin');
         } else {
             $this->user->removeRole('admin');
-            $this->user->assignRole('user_ardian');
+
+            if (strpos('ardian.com', $this->user->email) > 0) {
+                $this->user->assignRole('user_ardian');
+            } else {
+                $this->user->assignRole('user');
+            }
         }
     }
 }
