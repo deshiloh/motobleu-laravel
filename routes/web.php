@@ -4,6 +4,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Livewire\Auth\ForgotPasswordForm;
 use App\Mail\AdminReservationConfirmed;
 use App\Models\Reservation;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -64,6 +65,14 @@ Route::get('/lang/{locale}', function (string $locale) {
 
     return redirect()->back();
 })->name('switch.local');
+
+Route::get('/oauth', function(Request $request) {
+    $code =  $request->get('code');
+
+    return new \Illuminate\Http\JsonResponse([
+        'code' => $code
+    ]);
+});
 
 //Route::get('/mail-test', function () {
 //    $reservation = Reservation::findOrFail(10478);
