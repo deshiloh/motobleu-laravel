@@ -121,6 +121,15 @@ class User extends Authenticatable
         );
     }
 
+    public function isAdminRole(): Attribute
+    {
+        return Attribute::make(
+            get: function($value, $attributes) {
+                return $this->hasAnyRole(['admin', 'super admin']);
+            }
+        );
+    }
+
     /**
      * Envoi l'email de reset mot de passe
      * @param $token

@@ -12,7 +12,7 @@
             <x-input label="Adresse Bis" wire:model.defer="user.adresse_bis" />
             <x-input label="Code postal" wire:model.defer="user.code_postal"/>
             <x-input label="Ville" wire:model.defer="user.ville"/>
-            <x-toggle md label="Compte admin (Un compte admin peut consulter ses factures)" wire:model.defer="user.is_admin"/>
+            <x-toggle md label="Compte admin (Un compte admin peut consulter ses factures)" wire:model.defer="isAdmin"/>
             <x-toggle md label="Compte actif" wire:model.defer="user.is_actif" />
             <x-button type="submit" label="Enregistrer" wire:loading.class="disabled" primary sm />
         </form>
