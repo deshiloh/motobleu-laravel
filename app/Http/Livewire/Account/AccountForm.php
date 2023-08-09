@@ -16,6 +16,7 @@ class AccountForm extends Component
     use Actions;
 
     public User $user;
+    public bool $isAdmin = false;
 
     public function mount(User $account): void
     {
@@ -24,6 +25,8 @@ class AccountForm extends Component
         if (!$this->user->exists) {
             $this->user->is_actif = true;
             $this->user->is_admin = true;
+        } else {
+            $this->isAdmin = $this->user->is_admin_role;
         }
     }
 
@@ -37,8 +40,8 @@ class AccountForm extends Component
             'user.adresse_bis' => 'nullable',
             'user.code_postal' => 'nullable',
             'user.ville' => 'nullable',
-            'user.is_admin' => 'boolean',
             'user.is_actif' => 'boolean',
+            'isAdmin' => 'boolean'
         ];
 
         if ($this->user->exists) {
@@ -106,12 +109,12 @@ class AccountForm extends Component
 
     private function handlePermission()
     {
-        if ($this->user->is_admin) {
-            $this->user->removeRole('user');
+        if ($this->isAdmin) {
+            $this->user->removeRole('user_ardian');
             $this->user->assignRole('admin');
         } else {
             $this->user->removeRole('admin');
-            $this->user->assignRole('user');
+            $this->user->assignRole('user_ardian');
         }
     }
 }
