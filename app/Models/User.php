@@ -130,6 +130,28 @@ class User extends Authenticatable
         );
     }
 
+    public function isArdian(): Attribute
+    {
+        return Attribute::make(
+            get: function($value, $attributes) {
+                return strpos($attributes['email'], 'ardian') > 0;
+            }
+        );
+    }
+
+    public function isAdminArdian(): Attribute
+    {
+        return Attribute::make(
+            get: function($value, $attributes) {
+                if ($this->hasRole('super admin')) {
+                    return true;
+                }
+
+                return strpos($attributes['email'], 'ardian') > 0 && $this->hasAnyRole(['admin']);
+            }
+        );
+    }
+
     /**
      * Envoi l'email de reset mot de passe
      * @param $token
