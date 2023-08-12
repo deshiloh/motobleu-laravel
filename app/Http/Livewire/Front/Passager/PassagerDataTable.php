@@ -17,10 +17,14 @@ class PassagerDataTable extends Component
     public function render()
     {
         return view('livewire.front.passager.passager-data-table', [
-            'passagers' => Passager::where([
-                'user_id' => \Auth::user()->id,
-                'is_actif' => true
-            ])
+            'passagers' => Passager::where('is_actif', true)
+                ->when(\Auth::user()->is_admin_ardian, function (Builder $query) {
+                    $query->whereHas('user.entreprises', function (Builder $query) {
+                        $query->whereIn('id', \Auth::user()->entreprises()->pluck('id'));
+                    });
+                }, function (Builder $query) {
+                    $query->where('user_id', \Auth::user()->id);
+                })
                 ->when($this->search, function (Builder $query, $search) {
                     $query->where('nom', 'LIKE', '%'.$search.'%');
                 })

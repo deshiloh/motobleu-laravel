@@ -21,15 +21,19 @@ class InvoiceDataTable extends Component
 
     public function render()
     {
-        $factures = Facture::whereHas('reservations', function(Builder $query) {
-            $query->whereHas('entreprise', function(Builder $query) {
-                $query->whereIn('id', \Auth::user()->entreprises()->pluck('id')->toArray());
-            });
-        })
+        $factures = Facture::where('is_acquitte', true)
+            ->when(\Auth::user()->is_admin_ardian, function (Builder $query) {
+                $query->whereHas('entreprise', function(Builder $query) {
+                    $query->whereIn('id', \Auth::user()->entreprises()->pluck('id')->toArray());
+                });
+            }, function(Builder $query) {
+                $query->whereHas('reservations.passager.user', function(Builder $query) {
+                    $query->where('id', \Auth::user()->id);
+                });
+            })
             ->when($this->search, function (Builder $query) {
                 $query->where('reference', 'like', '%' . $this->search . '%');
             })
-            ->where('is_acquitte', true)
             ->orderBy('created_at', 'desc')
             ->paginate($this->perPage);
 

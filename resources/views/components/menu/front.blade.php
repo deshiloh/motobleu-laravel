@@ -43,7 +43,7 @@
         </x-front.menu.item>
     @endcan
 
-    @can('see user')
+    @if(Auth::user()->is_admin_ardian)
         <x-front.menu.item :active="in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['front.user.list', 'front.user.create', 'front.user.edit'])" href="{{ route('front.user.list') }}">
             <x-slot:icon>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -52,7 +52,7 @@
             </x-slot:icon>
             {{ __('Assistantes') }}
         </x-front.menu.item>
-    @endcan
+    @endif
 
     @if(in_array(Auth::user()->entreprises()->first()->id, app(\app\Settings\BillSettings::class)->entreprise_without_command_field))
         @can('see cost center')
