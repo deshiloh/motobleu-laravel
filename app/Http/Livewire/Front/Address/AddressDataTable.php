@@ -20,10 +20,14 @@ class AddressDataTable extends Component
     public function render()
     {
         return view('livewire.front.address.address-data-table', [
-            'addresses' => AdresseReservation::where([
-                'user_id' => Auth::user()->id,
-                'is_deleted' => false,
-            ])
+            'addresses' => AdresseReservation::where('is_deleted', false)
+                ->when(Auth::user()->is_admin_ardian, function (Builder $query) {
+                    $query->whereHas('user.entreprises', function(Builder $query) {
+                        $query->whereIn('id', Auth::user()->entreprises()->pluck('id'));
+                    });
+                }, function(Builder $query) {
+                    $query->where('user_id', Auth::user()->id);
+                })
                 ->when($this->search, function (Builder $query, $search) {
                     $query->where('adresse', 'like', '%' . $search . '%');
                 })
