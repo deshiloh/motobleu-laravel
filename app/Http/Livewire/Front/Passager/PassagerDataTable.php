@@ -20,7 +20,7 @@ class PassagerDataTable extends Component
             'passagers' => Passager::where('is_actif', true)
                 ->when(\Auth::user()->is_admin_ardian, function (Builder $query) {
                     $query->whereHas('user.entreprises', function (Builder $query) {
-                        $query->whereIn('id', \Auth::user()->entreprises()->pluck('id'));
+                        $query->whereIn('id', \Auth::user()->entreprises()->pluck('id')->toArray());
                     });
                 }, function (Builder $query) {
                     $query->where('user_id', \Auth::user()->id);
