@@ -41,13 +41,13 @@ class AccountForm extends Component
             'user.code_postal' => 'nullable',
             'user.ville' => 'nullable',
             'user.is_actif' => 'boolean',
-            'isAdmin' => 'boolean'
+            'isAdmin' => 'boolean',
+            'user.email' => 'required|email|unique:users,email'
+
         ];
 
         if ($this->user->exists) {
             $rules['user.email'] = 'required|email';
-        } else {
-            $rules['user.email'] = 'required|email|unique:users,email';
         }
 
         return $rules;
@@ -78,7 +78,7 @@ class AccountForm extends Component
                 );
 
             } else {
-                $this->user->password = Hash::make('test');
+                $this->user->password = Hash::make(uniqid());
 
                 $this->user->save();
 

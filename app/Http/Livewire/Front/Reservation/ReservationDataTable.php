@@ -5,7 +5,7 @@ namespace App\Http\Livewire\Front\Reservation;
 use App\Mail\CancelReservationDemand;
 use App\Mail\UpdateReservationDemand;
 use App\Models\Reservation;
-use App\Traits\WithSorting;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
@@ -37,6 +37,11 @@ class ReservationDataTable extends Component
     {
         return view('livewire.front.reservation.reservation-data-table', [
             'reservations' => Reservation::where('reference', 'like', $this->search . '%')
+                ->when(!\Auth::user()->is_admin_ardian, function(Builder $query) {
+                    $query->whereHas('passager.user', function (Builder $query) {
+                        $query->where('id', \Auth::user()->id);
+                    });
+                })
                 ->whereIn('entreprise_id', \Auth::user()->entreprises()->pluck('id')->toArray())
                 ->orderBy('pickup_date', 'desc')
                 ->paginate($this->perPage)
