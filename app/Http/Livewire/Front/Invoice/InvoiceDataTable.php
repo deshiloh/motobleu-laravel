@@ -23,8 +23,8 @@ class InvoiceDataTable extends Component
     {
         $factures = Facture::where('is_acquitte', true)
             ->when(\Auth::user()->is_admin_ardian, function (Builder $query) {
-                $query->whereHas('entreprise', function(Builder $query) {
-                    $query->whereIn('id', \Auth::user()->entreprises()->pluck('id')->toArray());
+                $query->whereHas('reservations', function(Builder $query) {
+                    $query->whereIn('entreprise_id', \Auth::user()->entreprises()->pluck('id')->toArray());
                 });
             }, function(Builder $query) {
                 $query->whereHas('reservations.passager.user', function(Builder $query) {
