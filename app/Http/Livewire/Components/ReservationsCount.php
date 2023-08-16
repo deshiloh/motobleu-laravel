@@ -2,8 +2,10 @@
 
 namespace App\Http\Livewire\Components;
 
+use App\Enum\ReservationStatus;
 use App\Models\Reservation;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 
 class ReservationsCount extends Component
@@ -34,6 +36,16 @@ class ReservationsCount extends Component
         return Reservation::whereBetween('pickup_date', [
             Carbon::now()->startOfYear(),
             Carbon::now()->endOfMonth()
-        ])->count();
+        ])
+            ->where(function(Builder $query) {
+                $query
+                    ->whereNull('encaisse_pilote')
+                    ->orWhere('encaisse_pilote', 0);
+            })
+            ->whereIn('statut', [
+                ReservationStatus::Billed,
+                ReservationStatus::CanceledToPay
+            ])
+            ->count();
     }
 }

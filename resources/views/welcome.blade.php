@@ -2,13 +2,14 @@
     <div class="my-4 px-4">
         <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
 
-            <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+            <div
+                class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
                 <div class="absolute pointer-events-none">
                     <div class="flex">
                         <div class="flex flex-col ml-4">
                             <p class="text-xl font-medium text-gray-500 truncate">Total réservations</p>
-                            <div class="text-5xl font-semibold text-gray-900 dark:text-gray-200" >
-                                <livewire:components.reservations-count />
+                            <div class="text-5xl font-semibold text-gray-900 dark:text-gray-200">
+                                <livewire:components.reservations-count/>
                             </div>
                         </div>
                     </div>
@@ -17,7 +18,7 @@
                     <div class="absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-slate-700 px-4 py-4 sm:px-6">
                         <div class="grid grid-cols-2">
                             <div>
-                                <livewire:home.company-reservation-stats />
+                                <livewire:home.company-reservation-stats/>
                             </div>
                             <div class="flex justify-end">
                                 <livewire:home.company-reservation-stats :is-last="true"/>
@@ -26,22 +27,24 @@
                     </div>
                 </dd>
                 <div class="mb-6">
-                    <livewire:home.reservations-chart />
+                    <livewire:home.reservations-chart/>
                 </div>
             </div>
 
-            <div class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+            <div
+                class="relative bg-white dark:bg-slate-800 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
                 <div class="absolute">
                     <div class="flex">
                         <div class="flex flex-col ml-4">
                             <p class="text-xl font-medium text-gray-500 truncate">Total facturé</p>
-                            <div class="text-5xl font-semibold text-gray-900 dark:text-gray-200" >
+                            <div class="text-5xl font-semibold text-gray-900 dark:text-gray-200">
                                 @php
                                     $period = \Carbon\CarbonPeriod::create(\Carbon\Carbon::now()->startOfYear(), '1 month', \Carbon\Carbon::now()->endOfMonth());
                                     $months = array_map(fn($item) => $item->month, $period->toArray());
 
                                     $ttc = \App\Models\Facture::whereIn('month', $months)
                                     ->where('year', \Carbon\Carbon::now()->year)
+                                    ->where('statut', \App\Enum\BillStatut::COMPLETED)
                                     ->sum('montant_ttc');
                                 @endphp
                                 {{ number_format($ttc, 2, '.', ' ') }} €
@@ -62,7 +65,7 @@
                     </div>
                 </dd>
                 <div class="mb-6">
-                    <livewire:home.home-facturation-chart />
+                    <livewire:home.home-facturation-chart/>
                 </div>
             </div>
         </dl>
@@ -90,7 +93,9 @@
                         <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->entreprise->nom }}</x-datatable.td>
                         <x-datatable.td>
-                            <x-button.circle href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" icon="eye" primary />
+                            <x-button.circle
+                                href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}"
+                                icon="eye" primary/>
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty
