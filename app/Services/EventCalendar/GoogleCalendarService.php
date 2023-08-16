@@ -52,7 +52,7 @@ class GoogleCalendarService
             $this->reservation->passager->user->email;
 
         $event->addAttendee([
-            'email' => $email
+            'email' => trim($email)
         ]);
 
         if ($this->reservation->calendar_passager_invitation) {
@@ -61,7 +61,7 @@ class GoogleCalendarService
                 $this->reservation->passager->email;
 
             $event->addAttendee([
-                'email' => $email
+                'email' => trim($email)
             ]);
         }
 
