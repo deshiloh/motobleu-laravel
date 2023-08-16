@@ -49,8 +49,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
         $this->indexDepart = 13;
 
         $this->lastColumn = 'I';
-
-        ray()->showQueries();
+        
         $this->reservations = Reservation::where('pilote_id', $pilote->id)
             ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::Billed])
             ->whereDate('pickup_date', '>=', $this->period[0]->format('Y-m-d'))
