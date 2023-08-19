@@ -93,5 +93,11 @@
     "Formulaire d'édition d'adresse" : "Address edition form",
     "Adresse complémentaire" : "Additional address",
     "Code postal" : "Postal code",
-    "Ville" : "City"
+    "Ville" : "City",
+    "Formulaire de demande de création de compte" : "Account creation request form",
+    "Informations Professionnelles" : "Professional informations",
+    "Tous les champs avec * sont obligatoires" : "All fields with * are required",
+    "Téléphone" : "Phone",
+    "Nom de l'Entreprise" : "Company Name",
+    "Complément adresse" : "Additional address"
 }
