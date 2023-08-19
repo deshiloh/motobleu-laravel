@@ -108,4 +108,32 @@ class PageForm extends Component
             }
         }
     }
+
+    public function deletePage(Page $page): void
+    {
+        try {
+            $page->delete();
+
+            $this->notification()->success(
+                title: "Opération réussite",
+                description: "La page a bien été supprimée."
+            );
+        } catch (\Exception $exception) {
+            $this->notification()->error(
+                title: "Une erreur est survenue", description: "Erreur pendant la suppression de la page."
+            );
+
+            if (\App::environment(['local'])) {
+                ray()->exception($exception);
+            }
+
+            if (\App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant la suppression de la page", [
+                    'exception' => $exception,
+                    'Page' => $this->selectedPage
+                ]);
+            }
+        }
+
+    }
 }

@@ -20,7 +20,7 @@
                         <x-datatable.td>
                             <div class="space-x-2">
                                 <x-button.circle primary icon="eye" wire:click="selectedPage({{ $page }})"/>
-                                <x-button.circle red icon="trash" />
+                                <x-button.circle red icon="trash" wire:click="deletePage({{ $page }})"/>
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>
