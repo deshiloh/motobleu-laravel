@@ -73,6 +73,7 @@ class ReservationCanceledListener
                         'reservation' => $event->reservation
                     ]);
                 }
+                continue;
             }
         }
 

@@ -23,8 +23,12 @@ class BillCreatedListener
         foreach ($recipients as $recipient) {
             $recipient = trim($recipient);
 
-            Mail::to($recipient)
-                ->send(new MailBillCreated($event->facture, $event->emailData['message']));
+            try {
+                Mail::to($recipient)
+                    ->send(new MailBillCreated($event->facture, $event->emailData['message']));
+            }catch (\Exception $exception) {
+                continue;
+            }
         }
     }
 }
