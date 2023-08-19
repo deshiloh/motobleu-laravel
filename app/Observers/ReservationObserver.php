@@ -30,14 +30,17 @@ class ReservationObserver
     public function created(Reservation $reservation): void
     {
         try {
-            $recipients[] = $reservation->passager->user->email;
+            $recipients = [];
 
-            if ($reservation->send_to_passager) {
+            if (!empty($reservation->passager->user->email)) {
+                $recipients[] = $reservation->passager->user->email;
+            }
+
+            if ($reservation->send_to_passager && !empty($reservation->passager->email)) {
                 $recipients[] = $reservation->passager->email;
             }
 
             foreach ($recipients as $recipient) {
-                // Envois au passager et secrétaire si sélectionnés
                 Mail::to($recipient)->send(new ReservationCreated($reservation, false));
             }
 
