@@ -37,7 +37,7 @@ Route::middleware('guest')->group(function () {
         ->name('password.update');
 
     Route::get('/pages/{slug}', function (string $slug) {
-        $page = \App\Models\Page::where('slug->'.App::getLocale(), $slug)->firstOrFail();
+        $page = \App\Models\Page::whereLocale('slug', App::getLocale())->firstOrFail();
         return view('front.pages', [
             'page' => $page
         ]);
