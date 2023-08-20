@@ -46,16 +46,26 @@ class PiloteForm extends Component
         try {
             if ($this->pilote->exists) {
                 $this->pilote->update();
-                $this->notification()->success(
-                    "Pilote modifé.",
-                    "Le pilote a bien été modifié."
-                );
+                $this->notification([
+                    'title' => 'Pilote modifié.',
+                    'description' => 'Le pilote a bien été modifié',
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
             } else {
                 $this->pilote->save();
-                $this->notification()->success(
-                    "Pilote créé.",
-                    "Le pilote a bien été créé."
-                );
+                $this->notification([
+                    'title' => 'Pilote créé.',
+                    'description' => 'Le pilote a bien été créé',
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
             }
         } catch (\Exception $exception) {
             $this->notification()->error(
@@ -75,5 +85,10 @@ class PiloteForm extends Component
                 ]);
             }
         }
+    }
+
+    public function redirectToList(): void
+    {
+        $this->redirect(route('admin.pilotes.index'));
     }
 }

@@ -392,7 +392,20 @@ class EditionFacture extends Component
 
         $this->uniqID = uniqid('facture_');
 
-        $this->notification()->success('Opération réussite', 'Modification correctement effectuée');
+        $this->notification([
+            'title' => 'Opération réussite',
+            'description' => 'Modification correctement effectuée',
+            'icon' => 'success',
+            'onClose' => [
+                'method' => 'redirectFacturationList'
+            ],
+            'timeout' => 3000
+        ]);
+    }
+
+    public function redirectFacturationList()
+    {
+        $this->redirect(route('admin.facturations.index'));
     }
 
     /**

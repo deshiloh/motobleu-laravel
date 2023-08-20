@@ -28,11 +28,11 @@ class LocalisationForm extends Component
     {
         return [
             'localisation.nom' => 'required',
-            'localisation.telephone' => 'required',
-            'localisation.adresse' => 'required',
+            'localisation.telephone' => 'nullable',
+            'localisation.adresse' => 'nullable',
             'localisation.adresse_complement' => 'nullable',
-            'localisation.code_postal' => 'required',
-            'localisation.ville' => 'required',
+            'localisation.code_postal' => 'nullable',
+            'localisation.ville' => 'nullable',
             'localisation.is_actif' => 'boolean',
         ];
     }
@@ -44,16 +44,29 @@ class LocalisationForm extends Component
         try {
             if ($this->localisation->exists) {
                 $this->localisation->update();
-                $this->notification()->success(
-                    $title = "Localisation modifée.",
-                    $description = "La localisation a bien été modifiée."
-                );
+
+                $this->notification([
+                    'title' => 'Localisation modifée.',
+                    'description' => 'La localisation a bien été modifiée',
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
             } else {
                 $this->localisation->save();
-                $this->notification()->success(
-                    $title = "Localisation créée.",
-                    $description = "La localisation a bien été créée."
-                );
+
+                $this->notification([
+                    'title' => 'Localisation créée.',
+                    'description' => 'La localisation a bien été créée',
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
+
                 $this->localisation = new Localisation();
             }
         } catch (\Exception $exception) {
@@ -73,6 +86,10 @@ class LocalisationForm extends Component
                 ]);
             }
         }
+    }
 
+    public function redirectToList(): void
+    {
+        $this->redirect(route('admin.localisations.index'));
     }
 }

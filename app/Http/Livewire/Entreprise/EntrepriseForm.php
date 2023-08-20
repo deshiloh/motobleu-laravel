@@ -51,16 +51,26 @@ class EntrepriseForm extends Component
         try {
             if ($this->entreprise->exists) {
                 $this->entreprise->update();
-                $this->notification()->success(
-                    "Entreprise modifiée.",
-                    "L'entreprise a bien été modifiée."
-                );
+                $this->notification([
+                    'title' => 'Entreprise modifiée.',
+                    'description' => "L'entreprise a bien été modifiée.",
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
             } else {
                 $this->entreprise->save();
-                $this->notification()->success(
-                    "Entreprise créée.",
-                    "L'entreprise a bien été créée."
-                );
+                $this->notification([
+                    'title' => 'Entreprise créée.',
+                    'description' => "L'entreprise a bien été créée.",
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
             }
         } catch (\Exception $exception) {
             $this->notification()->error(
@@ -79,5 +89,10 @@ class EntrepriseForm extends Component
                 ]);
             }
         }
+    }
+
+    public function redirectToList(): void
+    {
+        $this->redirect(route('admin.entreprises.index'));
     }
 }
