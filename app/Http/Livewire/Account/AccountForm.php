@@ -72,20 +72,30 @@ class AccountForm extends Component
 
                 $this->user->update();
 
-                $this->notification()->success(
-                    $title = 'Compte modifié',
-                    $description = 'Le compte a bien été modifié'
-                );
+                $this->notification([
+                    'title' => 'Compte modifié',
+                    'description' => 'Le compte a bien été modifié',
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
 
             } else {
                 $this->user->password = Hash::make(uniqid());
 
                 $this->user->save();
 
-                $this->notification()->success(
-                    $title = 'Compte créé',
-                    $description = 'Le compte a bien été créé'
-                );
+                $this->notification([
+                    'title' => 'Compte créé',
+                    'description' => 'Le compte a bien été créé',
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
             }
 
             $this->handlePermission();
@@ -107,7 +117,12 @@ class AccountForm extends Component
         }
     }
 
-    private function handlePermission()
+    public function redirectToList(): void
+    {
+        $this->redirect(route('admin.accounts.index'));
+    }
+
+    private function handlePermission(): void
     {
         $this->user->removeRole('user_ardian');
         $this->user->removeRole('admin');

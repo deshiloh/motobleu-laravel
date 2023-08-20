@@ -54,16 +54,29 @@ class PassagerForm extends Component
         try {
             if ($this->passager->exists) {
                 $this->passager->update();
-                $this->notification()->success(
-                    $title = 'Passager modifié',
-                    $description = 'Le passager a bien été modifié'
-                );
+
+                $this->notification([
+                    'title' => 'Passager modifié.',
+                    'description' => 'Le passager a bien été modifié',
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
             } else {
                 $this->passager->save();
-                $this->notification()->success(
-                    $title = 'Passager créé',
-                    $description = 'Le passager a bien été créé'
-                );
+
+                $this->notification([
+                    'title' => 'Passager créé.',
+                    'description' => 'Le passager a bien été créé',
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
+
                 $this->passager = new Passager();
             }
         } catch (\Exception $exception) {
@@ -80,5 +93,10 @@ class PassagerForm extends Component
                 ]);
             }
         }
+    }
+
+    public function redirectToList(): void
+    {
+        $this->redirect(route('admin.passagers.index'));
     }
 }

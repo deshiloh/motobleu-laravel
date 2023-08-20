@@ -39,7 +39,14 @@ class EntrepriseForm extends Component
             $this->user->entreprises()->attach($this->entreprises);
             $this->refreshData();
             $this->reset('entreprises');
-            $this->notification()->success(
+            $this->notification([
+                'title' => 'Opération réussite.',
+                'description' => "Tout s'est bien passé.",
+                'icon' => "success",
+                'onClose' => [
+                    'method' => 'redirectToList'
+                ]
+            ])->success(
                 title: "Opération réussite.",
                 description: "Tout s'est bien passé."
             );

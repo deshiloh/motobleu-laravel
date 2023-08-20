@@ -42,10 +42,29 @@ class AdresseReservationForm extends Component
         try {
             if ($this->adresseReservation->exists) {
                 $this->adresseReservation->update();
-                $this->notification()->success("Adresse modifiée", "L'adresse a bien été modifée.");
+
+                $this->notification([
+                    'title' => 'Adresse modifiée.',
+                    'description' => "L'adresse a bien été modifée.",
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
             } else {
                 $this->adresseReservation->save();
-                $this->notification()->success("Adresse créée", "L'adresse a bien été créée.");
+
+                $this->notification([
+                    'title' => 'Adresse créée.',
+                    'description' => "L'adresse a bien été modifiée.",
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
+
                 $this->adresseReservation = new AdresseReservation();
             }
         }catch (\Exception $exception) {
@@ -65,5 +84,10 @@ class AdresseReservationForm extends Component
                 ]);
             }
         }
+    }
+
+    public function redirectToList(): void
+    {
+        $this->redirect(route('admin.adresse-reservation.index'));
     }
 }
