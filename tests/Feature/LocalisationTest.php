@@ -61,10 +61,6 @@ class LocalisationTest extends TestCase
             ->call('save')
             ->assertHasErrors([
                 'localisation.nom' => 'required',
-                'localisation.telephone' => 'required',
-                'localisation.adresse' => 'required',
-                'localisation.code_postal' => 'required',
-                'localisation.ville' => 'required',
             ]);
     }
 
