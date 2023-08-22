@@ -7,12 +7,14 @@ use App\Models\Entreprise;
 use App\Models\Facture;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use Livewire\Component;
 use Livewire\WithPagination;
+use WireUi\Traits\Actions;
 
 class FacturationDataTable extends Component
 {
-    use WithPagination;
+    use WithPagination, Actions;
 
     public string $search = '';
     public ?int $entreprise = null;
@@ -58,5 +60,37 @@ class FacturationDataTable extends Component
             ->join('reservations', 'reservations.entreprise_id', '=', 'entreprise_user.entreprise_id')
             ->where('reservations.facture_id', $facture->id)
             ->first();
+    }
+
+    public function toggleAcquitte(Facture $facture): void
+    {
+        try {
+            $facture->updateQuietly([
+                'is_acquitte' => !$facture->is_acquitte
+            ]);
+
+            $this->notification([
+                'title' => 'Opération réussite',
+                'description' => 'L\'état a bien été changé.',
+                'timeout' => config('wireui.timeout'),
+                'icon' => 'success'
+            ]);
+        } catch (\Exception $exception) {
+            $this->notification()->error(
+                "Erreur pendant le traitement",
+                "Une erreur est survenue pendant le traitement"
+            );
+            if (App::environment(['local'])) {
+                ray([
+                    'facture' => $facture,
+                ])->exception($exception);
+            }
+            if (App::environment(['prod', 'beta'])) {
+                \Log::channel("sentry")->error("Erreur pendant le changement acquitte de la facture", [
+                    'exception' => $exception,
+                    'facture' => $facture,
+                ]);
+            }
+        }
     }
 }

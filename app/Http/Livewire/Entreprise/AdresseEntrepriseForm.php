@@ -53,16 +53,27 @@ class AdresseEntrepriseForm extends Component
         try {
             if ($this->adresseEntreprise->exists) {
                 $this->adresseEntreprise->update();
-                $this->notification()->success(
-                    "Adresse modifiée",
-                    "L'adresse a bien été modifiée."
-                );
+
+                $this->notification([
+                    'title' => 'Adresse modifiée.',
+                    'description' => "L'adresse a bien été modifiée..",
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
             } else {
                 $this->entreprise->adresseEntreprises()->save($this->adresseEntreprise);
-                $this->notification()->success(
-                    "Adresse crééé.",
-                    "L'adresse a bien été créée."
-                );
+                $this->notification([
+                    'title' => 'Adresse crééé.',
+                    'description' => "L'adresse a bien été créée.",
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
             }
         } catch (\Exception $exception) {
             $this->notification()->error(
@@ -83,5 +94,10 @@ class AdresseEntrepriseForm extends Component
                 ]);
             }
         }
+    }
+
+    public function redirectToList(): void
+    {
+        $this->redirect(route('admin.entreprises.show', ['entreprise' => $this->entreprise]));
     }
 }
