@@ -91,6 +91,8 @@ class GoogleCalendarService
 
         $event = $this->generateCommunData($event);
 
+        $event->location = $this->reservation->display_from;
+
         $savedEvent = $event->save();
 
         if (is_null($this->reservation->event_id)) {
