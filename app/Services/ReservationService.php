@@ -45,7 +45,7 @@ class ReservationService
 
         if ($mode == ReservationService::NEW_PASSAGER) {
             $rules['newPassager.nom'] = 'required';
-            $rules['newPassager.telephone'] = 'required';
+            $rules['newPassager.telephone'] = 'nullable';
             $rules['newPassager.email'] = 'required|email';
             $rules['newPassager.portable'] = 'nullable';
             $rules['userId'] = 'required';
