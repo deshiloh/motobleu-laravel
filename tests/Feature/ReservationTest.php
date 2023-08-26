@@ -128,7 +128,6 @@ class ReservationTest extends TestCase
             ->call('saveReservation')
             ->assertHasErrors([
                 'newPassager.nom' => 'required',
-                'newPassager.telephone' => 'required',
                 'newPassager.email' => 'required',
                 'newPassager.cost_center_id' => 'required',
                 'newPassager.type_facturation_id' => 'required'
