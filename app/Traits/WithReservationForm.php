@@ -162,23 +162,59 @@ trait WithReservationForm
         })->validate();
 
         if ($this->passagerMode == ReservationService::NEW_PASSAGER) {
+            if ($this->reservation->passager()->exists()) {
+                $this->reservation->passager()->disassociate();
+            }
+
             $this->newPassager->user_id = $this->userId;
             $this->newPassager->save();
             $this->reservation->passager_id = $this->newPassager->id;
         }
 
-        if ($this->pickupMode == ReservationService::WITH_NEW_ADRESSE) {
-            $this->newAdresseReservationFrom->user_id = $this->reservation->passager->user->id;
-            $this->newAdresseReservationFrom->save();
-            $this->reservation->adresseReservationFrom()->associate($this->newAdresseReservationFrom);
+        switch ($this->pickupMode) {
+            case ReservationService::WITH_PLACE:
+                if ($this->reservation->adresseReservationFrom()->exists()) {
+                    $this->reservation->adresseReservationFrom()->disassociate();
+                }
+                break;
+            case ReservationService::WITH_ADRESSE:
+                if ($this->reservation->localisationFrom()->exists()) {
+                    $this->reservation->localisationFrom()->disassociate();
+                }
+                break;
+            case ReservationService::WITH_NEW_ADRESSE:
+                if (null !== $this->reservation->localisationFrom()->exists()) {
+                    $this->reservation->localisationFrom()->disassociate();
+                }
 
+                $this->newAdresseReservationFrom->user_id = $this->reservation->passager->user->id;
+                $this->newAdresseReservationFrom->save();
+                $this->reservation->adresseReservationFrom()->associate($this->newAdresseReservationFrom);
+
+                break;
         }
 
-        if ($this->dropMode == ReservationService::WITH_NEW_ADRESSE) {
-            $this->newAdresseReservationTo->user_id = $this->reservation->passager->user->id;
-            $this->newAdresseReservationTo->save();
-            $this->reservation->adresseReservationTo()->associate($this->newAdresseReservationTo);
+        switch ($this->dropMode) {
+            case ReservationService::WITH_PLACE:
+                if ($this->reservation->adresseReservationTo()->exists()) {
+                    $this->reservation->adresseReservationTo()->disassociate();
+                }
+                break;
+            case ReservationService::WITH_ADRESSE:
+                if ($this->reservation->localisationTo()->exists()) {
+                    $this->reservation->localisationTo()->disassociate();
+                }
+                break;
+            case ReservationService::WITH_NEW_ADRESSE:
+                if (null !== $this->reservation->localisationTo()->exists()) {
+                    $this->reservation->localisationTo()->disassociate();
+                }
 
+                $this->newAdresseReservationTo->user_id = $this->reservation->passager->user->id;
+                $this->newAdresseReservationTo->save();
+                $this->reservation->adresseReservationFrom()->associate($this->newAdresseReservationTo);
+
+                break;
         }
 
         try {
@@ -197,6 +233,7 @@ trait WithReservationForm
                     \Mail::to($contact)
                         ->send(new ReservationUpdated($this->reservation));
                 }
+
             }
 
             $this->reservation->save();

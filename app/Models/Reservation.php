@@ -133,7 +133,7 @@ class Reservation extends Model
         return $event;
     }
 
-    public function getDisplayFromAttribute(): string
+    public function getDisplayFromAttribute(): ?string
     {
         $text = '';
 
