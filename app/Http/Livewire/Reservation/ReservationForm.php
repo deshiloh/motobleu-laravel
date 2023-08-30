@@ -23,18 +23,14 @@ class ReservationForm extends Component
 
             if ($this->reservation->adresseReservationFrom()->exists()) {
                 $this->pickupMode = ReservationService::WITH_ADRESSE;
-            } else {
-                $this->newAdresseReservationFrom = new AdresseReservation();
             }
 
             if ($this->reservation->adresseReservationTo()->exists()) {
                 $this->dropMode = ReservationService::WITH_ADRESSE;
-            } else {
-                $this->newAdresseReservationTo = new AdresseReservation();
             }
-        } else {
-            $this->defaultReset();
         }
+
+        $this->defaultReset();
     }
 
     /**
