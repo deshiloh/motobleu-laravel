@@ -364,6 +364,7 @@ class ReservationTest extends TestCase
             ->set('passagerMode', ReservationService::NEW_PASSAGER)
             ->set('newPassager.nom', 'passager test')
             ->set('newPassager.telephone')
+            ->set('newPassager.portable', '8887788')
             ->set('newPassager.email', 'passager@passager.local')
             ->set('reservation.pickup_date', $pickupDate)
             ->set('pickupMode', ReservationService::WITH_PLACE)

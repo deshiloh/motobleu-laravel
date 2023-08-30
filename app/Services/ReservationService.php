@@ -47,7 +47,7 @@ class ReservationService
             $rules['newPassager.nom'] = 'required';
             $rules['newPassager.telephone'] = 'nullable';
             $rules['newPassager.email'] = 'required|email';
-            $rules['newPassager.portable'] = 'nullable';
+            $rules['newPassager.portable'] = 'required';
             $rules['userId'] = 'required';
 
             if (!is_null($companySelected) && in_array($companySelected, app(BillSettings::class)->entreprises_cost_center_facturation)) {

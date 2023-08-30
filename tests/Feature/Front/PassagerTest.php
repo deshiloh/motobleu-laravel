@@ -93,7 +93,6 @@ class PassagerTest extends TestCase
             ->assertHasErrors([
                 'passager.nom' => 'required',
                 'passager.email' => 'required',
-                'passager.telephone' => 'required',
                 'passager.portable' => 'required'
             ]);
     }
