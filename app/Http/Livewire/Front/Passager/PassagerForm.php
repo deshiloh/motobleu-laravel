@@ -29,16 +29,14 @@ class PassagerForm extends Component
      */
     protected function getRules(): array
     {
-        $rules = [
+        return [
             'passager.nom' => 'required',
             'passager.email' => 'required|email',
-            'passager.telephone' => 'required',
+            'passager.telephone' => 'nullable',
             'passager.portable' => 'required',
             'passager.cost_center_id' => 'nullable',
             'passager.type_facturation_id' => 'nullable',
         ];
-
-        return $rules;
     }
 
     /**
