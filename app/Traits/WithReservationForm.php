@@ -212,7 +212,7 @@ trait WithReservationForm
 
                 $this->newAdresseReservationTo->user_id = $this->reservation->passager->user->id;
                 $this->newAdresseReservationTo->save();
-                $this->reservation->adresseReservationFrom()->associate($this->newAdresseReservationTo);
+                $this->reservation->adresseReservationTo()->associate($this->newAdresseReservationTo);
 
                 break;
         }
