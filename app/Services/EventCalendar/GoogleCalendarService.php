@@ -260,7 +260,7 @@ class GoogleCalendarService
                 $this->reservation->pickup_origin,
                 $this->reservation->display_to,
                 $this->reservation->drop_off_origin,
-                $this->reservation->comment_pilote,
+                $this->reservation->comment,
                 $tarifValue,
                 $tarifLabelle,
                 route('admin.reservations.show', ['reservation' => $this->reservation->id])
