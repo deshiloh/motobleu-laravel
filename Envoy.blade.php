@@ -57,6 +57,4 @@ cp -R ./google-calendar ./www/storage/app/
 
 cd /var/www/vhosts/motobleu-paris.com/new/www
 /opt/plesk/php/8.1/bin/php artisan storage:link
-
-/opt/plesk/php/8.1/bin/php artisan migrate --force
 @endtask
