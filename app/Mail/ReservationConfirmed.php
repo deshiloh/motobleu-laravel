@@ -53,7 +53,8 @@ class ReservationConfirmed extends Mailable
             return new Content(
                 markdown: 'emails.reservation.confirmed',
                 with: [
-                    'message' => $this->message
+                    'message' => $this->message,
+                    'reservation' => $this->reservation
                 ]
             );
         }
