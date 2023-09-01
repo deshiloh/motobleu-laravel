@@ -34,7 +34,7 @@ class EmailSettingsForm extends Component
         return view('livewire.settings.email-settings-form');
     }
 
-    public function sendEmailTest($email)
+    public function sendEmailTest($email): void
     {
         $this->validate([
             'emailTest' => 'required|email',
@@ -74,7 +74,7 @@ class EmailSettingsForm extends Component
                 break;
             case $this->cleanClassName(ReservationConfirmed::class) :
                 Mail::to($this->emailTest)
-                    ->send(new ReservationConfirmed(Reservation::take(1)->first()));
+                    ->send(new ReservationConfirmed(Reservation::take(1)->first(), $this->adminMode));
                 break;
             case $this->cleanClassName(ReservationCanceled::class) :
                 Mail::to($this->emailTest)
