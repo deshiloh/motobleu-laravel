@@ -221,9 +221,7 @@ trait WithReservationForm
             if ($this->reservation->exists && $this->reservation->isDirty()) {
                 $contacts = [];
 
-                if ($this->reservation->send_to_user) {
-                    $contacts[] = $this->reservation->passager->user->email;
-                }
+                $contacts[] = $this->reservation->passager->user->email;
 
                 if ($this->reservation->send_to_passager) {
                     $contacts[] = $this->reservation->passager->email;
