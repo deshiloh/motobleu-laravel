@@ -57,7 +57,7 @@ class GoogleCalendar extends Command
 
         // Save the token to a file.
         if (!Storage::exists(config('google-calendar.auth_profiles.oauth.token_json'))) {
-            Storage::disk('local')->put('google-calendar/oauth-token.json',
+            Storage::put(config('google-calendar.auth_profiles.oauth.token_json'),
                 json_encode($client->getAccessToken())
             );
         }
