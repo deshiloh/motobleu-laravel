@@ -144,6 +144,16 @@
             .invoice-item td {
                 padding-left: 10px !important;
             }
+
+            .invoice-note-content {
+                margin-top: 15px;
+            }
+
+            .invoice-note-content p {
+                margin: 0;
+                padding: 0;
+                line-height: 2px;
+            }
         </style>
     </head>
 
@@ -384,11 +394,14 @@
             </tbody>
         </table>
 
-        <p style="margin-top: 70px;">
+        <div style="margin-top: 70px;" class="invoice-note">
             @if($invoice->notes)
-                {{ trans('invoice.notes') }}: <br> {!! $invoice->notes !!}
+                <span style="font-weight: bold">{{ trans('invoice.notes') }}:</span>
+                <div class="invoice-note-content">
+                    {!! nl2br($invoice->notes) !!}
+                </div>
             @endif
-        </p>
+        </div>
 
         {{-- Footer --}}
         <table style="position: absolute; bottom: 110;">

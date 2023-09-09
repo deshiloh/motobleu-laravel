@@ -64,12 +64,19 @@ class EditionFacture extends Component
      */
     public function getRules(): array
     {
-        return [
+        $rules = [
             'email.address' => 'required|email',
             'email.message' => 'required',
             'email.complement' => 'nullable',
             'isAcquitte' => 'bool'
         ];
+
+        if (null !== $this->facture) {
+            $rules['facture.is_acquitte'] = 'boolean';
+            $rules['facture.information'] = 'nullable';
+        }
+
+        return $rules;
     }
 
     public function mount()
@@ -487,6 +494,7 @@ class EditionFacture extends Component
      */
     public function sendEmailTestAction(): void
     {
+        ray($this->facture);
         Mail::to(config('mail.admin.address'))
             ->send(new \App\Mail\BillCreated($this->facture, $this->email['message']));
     }
