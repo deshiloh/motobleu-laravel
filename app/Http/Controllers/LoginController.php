@@ -44,7 +44,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             if (Auth::user()->email === 'contact@motobleu-paris.com') {
-                return redirect()->intended(route('front.reservation.list'));
+                return redirect()->intended(route('admin.reservations.index'));
             }
 
             return (Auth::user()->hasRole('super admin')) ?
