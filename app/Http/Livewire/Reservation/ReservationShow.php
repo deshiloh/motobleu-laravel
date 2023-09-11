@@ -84,7 +84,7 @@ Votre réservation a bien été prise en compte";
                 description: "La réservation a bien été confirmée."
             );
 
-            return redirect()->to(route('admin.homepage'));
+            return redirect()->to(route('admin.reservations.index'));
         } catch (\Exception $exception) {
             $this->notification()->error(
                 title: "Une erreur s'est produite",
@@ -128,7 +128,7 @@ Votre réservation a bien été prise en compte";
                 description: 'Pilote correctement modifié.'
             );
 
-            return redirect()->to(route('admin.homepage'));
+            return redirect()->to(route('admin.reservations.index'));
         }
 
         if ($this->reservation->isDirty([
@@ -138,7 +138,7 @@ Votre réservation a bien été prise en compte";
         ])) {
             $this->reservation->update();
 
-            return redirect()->to(route('admin.homepage'));
+            return redirect()->to(route('admin.reservations.index'));
         }
     }
 
@@ -184,7 +184,7 @@ Votre réservation a bien été prise en compte";
 
         ReservationCanceledPay::dispatch($this->reservation);
 
-        return redirect()->to(route('admin.homepage'));
+        return redirect()->to(route('admin.reservations.index'));
     }
 
     public function cancelAction()
@@ -197,7 +197,7 @@ Votre réservation a bien été prise en compte";
 
         ReservationCanceled::dispatch($this->reservation);
 
-        return redirect()->to(route('admin.homepage'));
+        return redirect()->to(route('admin.reservations.index'));
     }
 
     public function confirmedStatusAction(): void
