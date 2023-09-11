@@ -31,7 +31,9 @@ trait WithReservationForm
     public ?Passager $passengerInError = null;
 
     public AdresseReservation $newAdresseReservationFrom;
+    public ?int $addressReservationFrom = null;
     public AdresseReservation $newAdresseReservationTo;
+    public ?int $addressReservationTo = null;
 
     public AdresseReservation $newAdresseReservationFromBack;
     public AdresseReservation $newAdresseReservationToBack;
@@ -52,8 +54,8 @@ trait WithReservationForm
 
         ReservationService::generateDefaultRules($this->generatedRules);
         ReservationService::generatePassagerFromRules($this->generatedRules, $this->passagerMode, $this->reservation->entreprise_id);
-        ReservationService::generateFromLocalisationRules($this->generatedRules, $this->pickupMode);
-        ReservationService::generateToLocalisationRules($this->generatedRules, $this->dropMode);
+        ReservationService::generateFromLocalisationRules($this->generatedRules, $this->pickupMode, $this->reservation);
+        ReservationService::generateToLocalisationRules($this->generatedRules, $this->dropMode, $this->reservation);
 
         if ($this->hasBack) {
             ReservationService::generateFromLocalisationBackRules($this->generatedRules, $this->backPickupMode);
@@ -181,6 +183,16 @@ trait WithReservationForm
                 if ($this->reservation->localisationFrom()->exists()) {
                     $this->reservation->localisationFrom()->disassociate();
                 }
+
+                if ($this->addressReservationFrom !== null) {
+                    if ($this->reservation->adresseReservationFrom()->exists()) {
+                        $this->reservation->adresseReservationFrom()->disassociate();
+                    }
+
+                    $addressReservationFrom = AdresseReservation::find($this->addressReservationFrom);
+                    $this->reservation->adresseReservationFrom()->associate($addressReservationFrom);
+                }
+
                 break;
             case ReservationService::WITH_NEW_ADRESSE:
                 if (null !== $this->reservation->localisationFrom()->exists()) {
@@ -204,6 +216,16 @@ trait WithReservationForm
                 if ($this->reservation->localisationTo()->exists()) {
                     $this->reservation->localisationTo()->disassociate();
                 }
+
+                if ($this->addressReservationTo !== null) {
+                    if ($this->reservation->adresseReservationTo()->exists()) {
+                        $this->reservation->adresseReservationTo()->disassociate();
+                    }
+
+                    $addressReservationTo = AdresseReservation::find($this->addressReservationTo);
+                    $this->reservation->adresseReservationTo()->associate($addressReservationTo);
+                }
+                
                 break;
             case ReservationService::WITH_NEW_ADRESSE:
                 if (null !== $this->reservation->localisationTo()->exists()) {
@@ -221,7 +243,9 @@ trait WithReservationForm
             if ($this->reservation->exists && $this->reservation->isDirty()) {
                 $contacts = [];
 
-                $contacts[] = $this->reservation->passager->user->email;
+                if (null !== $this->reservation->passager) {
+                    $contacts[] = $this->reservation->passager->user->email;
+                }
 
                 if ($this->reservation->send_to_passager) {
                     $contacts[] = $this->reservation->passager->email;

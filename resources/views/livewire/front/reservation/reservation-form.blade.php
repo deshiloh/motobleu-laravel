@@ -158,7 +158,7 @@
                         :async-data="route('api.adresses', ['user' => Auth::user()->id])"
                         option-label="full_adresse"
                         option-value="id"
-                        wire:model="reservation.adresse_reservation_from_id"
+                        wire:model="addressReservationFrom"
                     />
                 @endif
 
@@ -214,7 +214,7 @@
                         :async-data="route('api.adresses', ['user' => Auth::user()->id])"
                         option-label="full_adresse"
                         option-value="id"
-                        wire:model="reservation.adresse_reservation_to_id"
+                        wire:model="addressReservationTo"
                     />
                 @endif
 

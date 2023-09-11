@@ -156,6 +156,14 @@
                 @endif
 
                 @if($pickupMode == \App\Services\ReservationService::WITH_ADRESSE)
+                    @if($reservation->exists())
+                        <div class="border border-gray-300 p-2 rounded">
+                            <span class="bold text-xl block">Adresse actuelle :</span>
+                            <span>
+                                {{ $reservation->display_from }}
+                            </span>
+                        </div>
+                    @endif
                     <x-select
                         wire:key="from_adresse"
                         label="Adresse"
@@ -163,7 +171,7 @@
                         :async-data="route('api.adresses', ['user' => $userId])"
                         option-label="full_adresse"
                         option-value="id"
-                        wire:model="reservation.adresse_reservation_from_id"
+                        wire:model="addressReservationFrom"
                     />
                 @endif
 
@@ -212,6 +220,15 @@
                 @endif
 
                 @if($dropMode == \App\Services\ReservationService::WITH_ADRESSE)
+                    @if($reservation->exists())
+                        <div class="border border-gray-300 p-2 rounded">
+                            <span class="bold text-xl block">Adresse actuelle :</span>
+                            <span>
+                                {{ $reservation->display_to }}
+                            </span>
+                        </div>
+                    @endif
+
                     <x-select
                         wire:key="to_adresse"
                         label="Adresse"
@@ -219,7 +236,7 @@
                         :async-data="route('api.adresses', ['user' => $userId])"
                         option-label="full_adresse"
                         option-value="id"
-                        wire:model="reservation.adresse_reservation_to_id"
+                        wire:model="addressReservationTo"
                     />
                 @endif
 
