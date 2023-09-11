@@ -1,4 +1,4 @@
-<div wire:poll="refreshCount">
+<div>
     <p wire:key="reservationCount">
         {{ $nbTotalReservation }}
     </p>
