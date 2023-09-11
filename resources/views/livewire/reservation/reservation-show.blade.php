@@ -8,19 +8,17 @@
                     <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled" />
                 @endif
 
-                @if(is_null($reservation->facture_id))
-                    <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled" />
-                @endif
+                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled" />
 
                 @if($reservation->statut == \App\Enum\ReservationStatus::Canceled || $reservation->statut == \App\Enum\ReservationStatus::CanceledToPay)
                     <x-button positive label="Confirmer" icon="check" wire:loading.attr="disabled" wire:click="confirmedStatusAction" spinner="confirmedStatusAction" />
                 @endif
 
-                @if($reservation->statut != \App\Enum\ReservationStatus::CanceledToPay && is_null($reservation->facture_id))
+                @if($reservation->statut != \App\Enum\ReservationStatus::CanceledToPay)
                     <x-button warning label="Annuler mais facturer" icon="credit-card" wire:loading.attr="disabled" wire:click="cancelToPayAskAction" spinner="cancelBilledAction" />
                 @endif
 
-                @if($reservation->statut != \App\Enum\ReservationStatus::Canceled && is_null($reservation->facture_id))
+                @if($reservation->statut != \App\Enum\ReservationStatus::Canceled)
                     <x-button wire:click="cancelAskAction" negative label="Annuler" icon="x-circle" wire:key="cancelAction" spinner="cancelAction" />
                 @endif
             </div>
