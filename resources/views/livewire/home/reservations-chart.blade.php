@@ -1,4 +1,4 @@
-<div wire:poll="reloadData" wire:key="homeReservationChart">
+<div wire:key="homeReservationChart">
     @once
         @push('scripts')
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.1.1/chart.umd.js"></script>

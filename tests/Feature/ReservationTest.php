@@ -620,7 +620,7 @@ class ReservationTest extends TestCase
             ->set('reservation.pilote_id', $pilote->id)
             ->call('confirmedAction')
             ->assertHasNoErrors()
-            ->assertRedirect(route('admin.homepage'))
+            ->assertRedirect(route('admin.reservations.index'))
         ;
 
         $this->assertDatabaseHas('reservations', [

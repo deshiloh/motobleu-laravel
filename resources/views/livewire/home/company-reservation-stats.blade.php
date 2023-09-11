@@ -1,5 +1,4 @@
-<div wire:poll="reloadEntreprise">
-
+<div>
     @if($isLast)
         <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-lg text-sm font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
 
@@ -16,7 +15,6 @@
             </svg>
 
             <a href="{!! route('admin.entreprises.show', ['entreprise' => $entreprise->id]) !!}">{{ $entreprise->nom }}</a>
-
         </div>
     @endif
 </div>
