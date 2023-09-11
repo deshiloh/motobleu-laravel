@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Reservation;
 use app\Settings\BillSettings;
 
 class ReservationService
@@ -60,17 +61,21 @@ class ReservationService
     /**
      * @param array $rules
      * @param int $mode
+     * @param Reservation $reservation
      * @return void
      */
-    public static function generateFromLocalisationRules(array &$rules, int $mode)
+    public static function generateFromLocalisationRules(array &$rules, int $mode, Reservation $reservation)
     {
         if ($mode == ReservationService::WITH_PLACE) {
             $rules['reservation.localisation_from_id'] = 'required';
             $rules['reservation.pickup_origin'] = 'nullable';
         }
 
-        if ($mode == ReservationService::WITH_ADRESSE) {
-            $rules['reservation.adresse_reservation_from_id'] = 'required';
+        if ($mode == ReservationService::WITH_ADRESSE &&
+            $reservation->exists() &&
+            $reservation->adresse_reservation_from_id === null
+        ) {
+            $rules['addressReservationFrom'] = 'required';
         }
 
         if ($mode == ReservationService::WITH_NEW_ADRESSE) {
@@ -84,17 +89,21 @@ class ReservationService
     /**
      * @param array $rules
      * @param int $mode
+     * @param Reservation $reservation
      * @return void
      */
-    public static function generateToLocalisationRules(array &$rules, int $mode)
+    public static function generateToLocalisationRules(array &$rules, int $mode, Reservation $reservation)
     {
         if ($mode == ReservationService::WITH_PLACE) {
             $rules['reservation.localisation_to_id'] = 'required';
             $rules['reservation.drop_off_origin'] = 'nullable';
         }
 
-        if ($mode == ReservationService::WITH_ADRESSE) {
-            $rules['reservation.adresse_reservation_to_id'] = 'required';
+        if ($mode == ReservationService::WITH_ADRESSE &&
+            $reservation->exists() &&
+            $reservation->adresse_reservation_to_id === null
+        ) {
+            $rules['addressReservationTo'] = 'required';
         }
 
         if ($mode == ReservationService::WITH_NEW_ADRESSE) {

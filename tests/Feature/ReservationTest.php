@@ -161,10 +161,10 @@ class ReservationTest extends TestCase
     {
         Livewire::test(ReservationForm::class)
             ->set('pickupMode', ReservationService::WITH_ADRESSE)
-            ->set('reservation.adresse_reservation_from_id', '')
+            ->set('addressReservationFrom')
             ->call('saveReservation')
             ->assertHasErrors([
-                'reservation.adresse_reservation_from_id' => 'required',
+                'addressReservationFrom' => 'required',
             ])
         ;
     }
@@ -201,10 +201,10 @@ class ReservationTest extends TestCase
     {
         Livewire::test(ReservationForm::class)
             ->set('dropMode', ReservationService::WITH_ADRESSE)
-            ->set('reservation.adresse_reservation_to_id', '')
+            ->set('addressReservationTo')
             ->call('saveReservation')
             ->assertHasErrors([
-                'reservation.adresse_reservation_to_id' => 'required',
+                'addressReservationTo' => 'required',
             ])
         ;
     }
@@ -396,8 +396,8 @@ class ReservationTest extends TestCase
             ->set('reservation.pickup_date', $pickupDate)
             ->set('pickupMode', ReservationService::WITH_ADRESSE)
             ->set('dropMode', ReservationService::WITH_ADRESSE)
-            ->set('reservation.adresse_reservation_from_id', AdresseReservation::find(1)->id)
-            ->set('reservation.adresse_reservation_to_id' , AdresseReservation::find(2)->id)
+            ->set('addressReservationFrom', AdresseReservation::find(1)->id)
+            ->set('addressReservationTo' , AdresseReservation::find(2)->id)
             ->set('hasBack', false)
             ->call('saveReservation')
             ->assertHasNoErrors()
