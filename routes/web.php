@@ -74,8 +74,8 @@ Route::get('/oauth', function(Request $request) {
     ]);
 });
 
-//Route::get('/mail-test', function () {
-//    $reservation = Reservation::findOrFail(10478);
-//
-//    return new \App\Mail\AdminReservationConfirmed($reservation);
-//});
+Route::get('/mail-test', function () {
+    $reservation = Reservation::take(1)->first();
+
+    return new \App\Mail\UpdateReservationDemand($reservation, 'test');
+});

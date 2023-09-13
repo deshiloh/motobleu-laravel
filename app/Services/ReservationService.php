@@ -28,6 +28,10 @@ class ReservationService
             'reservation.send_to_passager' => 'bool',
             'reservation.calendar_passager_invitation' => 'bool',
             'reservation.comment' => 'nullable',
+            'reservation.has_steps' => 'bool',
+            'reservation.steps' => 'nullable',
+            'reservation_back.has_steps' => 'bool',
+            'reservation_back.steps' => 'nullable',
             'reservation_back.comment' => 'nullable',
         ];
     }

@@ -91,6 +91,9 @@ Une nouvelle réservation vient d'être créée N° <strong>{{ $reservation->ref
 
 </div>
 
+* <strong>Destinations intermédiaires :</strong> <br>
+{!! nl2br($reservation->steps) !!}
+
 <div style="margin-top: 20px;">
 
 * <strong>Destination : </strong>

@@ -19,6 +19,9 @@ L'assistant(e) **{{ $reservation->passager->user->full_name }}** a demandé de m
 * **Provenance / N°** : {{ $reservation->pickup_origin }}
 @endif
 
+**Destinations intermédiaires :** <br>
+    {!! nl2br($reservation->steps) !!}
+
 **Destination :** <br>
 
 * **Lieu de destination** : {{ $reservation->display_to }}

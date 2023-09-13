@@ -225,7 +225,7 @@ trait WithReservationForm
                     $addressReservationTo = AdresseReservation::find($this->addressReservationTo);
                     $this->reservation->adresseReservationTo()->associate($addressReservationTo);
                 }
-                
+
                 break;
             case ReservationService::WITH_NEW_ADRESSE:
                 if (null !== $this->reservation->localisationTo()->exists()) {

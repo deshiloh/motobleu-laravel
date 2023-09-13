@@ -29,6 +29,13 @@ La réservation N° {{ $reservation->reference }} a bien été confirmée, vous 
 
 <div style="margin-top: 20px">
 
+* <strong>Destinations intermédiaires : </strong> <br>
+{!! nl2br($reservation->steps) !!}
+
+</div>
+
+<div style="margin-top: 20px">
+
 * Destination :
   * <strong>Lieu de prise en charge :</strong> {{ $reservation->display_to }}
 @if($reservation->drop_off_origin)

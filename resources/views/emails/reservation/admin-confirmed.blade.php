@@ -17,6 +17,9 @@ Votre réservation N° <strong>{{ $reservation->reference }}</strong> vient d'ê
   * <strong>Provenance / N° :</strong> {{ $reservation->pickup_origin }}
 @endif
 <br><br>
+* **Destinations intermédiaires :** <br>
+{!! nl2br($reservation->steps) !!}
+<br><br>
 * <strong>Destination :</strong> <br>
   * <strong>Lieu de destination :</strong> {{ $reservation->display_to }}
 @if($reservation->localisation_to)
