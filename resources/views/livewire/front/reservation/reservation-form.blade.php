@@ -119,6 +119,7 @@
                 min="{{ \Carbon\Carbon::now() }}"
             />
         </x-front.card>
+
         <x-front.card>
             <div class="space-y-3">
                 <div class="dark:text-white text-xl">{{ __('Lieu de prise en charge') }} :</div>
@@ -173,6 +174,11 @@
                 @endif
             </div>
         </x-front.card>
+
+        <x-front.card>
+            @include('components.reservation-form.other-steps')
+        </x-front.card>
+
         <x-front.card>
             <div class="space-y-3">
                 <div class="dark:text-white text-xl">{{ __('Lieu de destination') }} :</div>
@@ -229,6 +235,7 @@
                 @endif
             </div>
         </x-front.card>
+
         <x-front.card>
             <x-textarea placeholder="{{ __('Votre commentaire') }}..." wire:model.defer="reservation.comment" label="{{ __('Commentaire') }}"/>
         </x-front.card>
@@ -307,6 +314,10 @@
                     @endif
                 </div>
             </x-front.card-dark>
+
+        <x-front.card-dark>
+            @include('components.reservation-form.back-other-steps')
+        </x-front.card-dark>
 
             <x-front.card-dark>
 

@@ -186,6 +186,11 @@
                 @endif
             </div>
         </x-bloc-content>
+
+        <x-bloc-content>
+            @include('components.reservation-form.other-steps')
+        </x-bloc-content>
+
         <x-bloc-content>
             <div class="space-y-3">
                 <div class="dark:text-white text-xl">Lieu de destination :</div>
@@ -253,7 +258,7 @@
         </x-bloc-content>
 
         <x-bloc-content>
-            <x-textarea placeholder="Votre commentaire..." wire:model.defer="reservation.comment" label="Commentaire"/>
+            <x-textarea placeholder="Votre commentaire..." wire:model.defer="reservation.comment" label="Commentaire" />
         </x-bloc-content>
 
         @if($hasBack)
@@ -331,6 +336,10 @@
                         </div>
                     @endif
                 </div>
+            </x-bloc-content-dark>
+
+            <x-bloc-content-dark>
+                @include('components.reservation-form.back-other-steps')
             </x-bloc-content-dark>
 
             <x-bloc-content-dark>

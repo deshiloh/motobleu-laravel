@@ -4,9 +4,9 @@
 Bonjour, <br>
 Votre réservation N° {{ $reservation->reference }} vient d'être modifiée.<br>
 
-**Récapitulatif :** <br> <br>
+## Récapitulatif :
 
-**Passager :**
+**Passager** : <br>
 * **Nom et prénom** : {{ $reservation->passager->nom }}
 * **Email** : {{ $reservation->passager->email }}
 * **Téléphone portable** : {{ $reservation->passager->portable }}
@@ -19,6 +19,9 @@ Votre réservation N° {{ $reservation->reference }} vient d'être modifiée.<br
 @if($reservation->pickup_origin)
 * **Provenance / N°** : {{ $reservation->pickup_origin }}
 @endif
+
+**Destinations intermédiaires :** <br>
+    {!! nl2br($reservation->steps) !!}
 
 **Destination :** <br>
 

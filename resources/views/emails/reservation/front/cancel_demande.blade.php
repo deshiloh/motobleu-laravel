@@ -18,6 +18,13 @@ L'assistant(e) **{{ $user->full_name }}** a demandé l'annulation de la réserva
 * **Provenance / N°** : {{ $reservation->pickup_origin }}
 @endif
 
+<div style="margin-top: 20px">
+
+**Destinations intermédiaires :** <br>
+    {!! nl2br($reservation->steps) !!}
+
+</div>
+
 **Destination :** <br>
 
 * **Lieu de destination** : {{ $reservation->display_to }}

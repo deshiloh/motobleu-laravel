@@ -18,6 +18,10 @@ Compte tenu du délai de votre demande, cette prestation vous sera facturée.
 - **Provenance / N° :** {{ $reservation->pickup_origin }}
 @endif
 
+**Destinations intermédiaires :** <br>
+
+{!! nl2br($reservation->steps) !!}
+
 ## Destination :
 - **Lieu de destination :** {{ $reservation->display_to }}
 @if($reservation->drop_off_origin)

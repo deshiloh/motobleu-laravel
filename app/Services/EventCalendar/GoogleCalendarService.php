@@ -194,6 +194,7 @@ class GoogleCalendarService
             $description .= "Date de la course: %s\n";
             $description .= "Adresse de départ: %s\n";
             $description .= "Provenance / N°: %s\n\n";
+            $description .= "Destinations intermédiaires : %s\n\n";
             $description .= "Adresse de destination: %s\n";
             $description .= "Destination / N°: %s\n\n";
             $description .= "Commentaires: %s\n\n";
@@ -213,6 +214,7 @@ class GoogleCalendarService
                 $this->reservation->passager->user->email,
                 $this->reservation->pickup_date->format('d/m/Y à H\hi'),
                 $this->reservation->display_from,
+                $this->reservation->steps,
                 $this->reservation->pickup_origin,
                 $this->reservation->display_to,
                 $this->reservation->drop_off_origin,
@@ -233,6 +235,7 @@ class GoogleCalendarService
             $description .= "Date de la course: %s\n";
             $description .= "Adresse de départ: %s\n";
             $description .= "Provenance / N°: %s\n\n";
+            $description .= "Destinations intermédiaires : %s\n\n";
             $description .= "Adresse de destination: %s\n";
             $description .= "Destination / N°: %s\n\n";
             $description .= "Commentaires: %s\n\n";
@@ -260,6 +263,7 @@ class GoogleCalendarService
                 $this->reservation->pickup_date->format('d/m/Y à H\hi'),
                 $this->reservation->display_from,
                 $this->reservation->pickup_origin,
+                $this->reservation->steps,
                 $this->reservation->display_to,
                 $this->reservation->drop_off_origin,
                 $this->reservation->comment,
