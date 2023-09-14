@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Enum\BillStatut;
+use App\Enum\ReservationStatus;
 use App\Exports\ReservationPiloteExport;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Pilote;
+use App\Models\Reservation;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -61,5 +63,21 @@ class ExportService
     {
         $name = sprintf(\Str::slug($pilote->full_name) . '-%s-%s.xlsx', $period[1]->format('m'), $period[1]->format("Y"));
         return Excel::download(new ReservationPiloteExport($period, $pilote), $name);
+    }
+
+    public function exportRecapForPilote(array $period, Pilote $pilote)
+    {
+        $reservations = Reservation::where('pilote_id', $pilote->id)
+            ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::Billed])
+            ->whereDate('pickup_date', '>=', $period[0]->format('Y-m-d'))
+            ->whereDate('pickup_date', '<=', $period[1]->format('Y-m-d'))
+            ->orderBy('pickup_date')
+            ->get();
+
+        return Pdf::loadView('exports.pilote.pdf-recap-reservation', [
+            'pilote' => $pilote,
+            'period' => $period,
+            'reservations' => $reservations
+        ]);
     }
 }

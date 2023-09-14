@@ -12,6 +12,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use PhpOffice\PhpSpreadsheet\Exception;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use WireUi\Traits\Actions;
 
 class RecapReservationPilote extends Component
@@ -124,5 +125,28 @@ class RecapReservationPilote extends Component
         }
 
         return $exportService->exportForPilote([$this->dateDebut, $this->dateFin], $this->pilote);
+    }
+
+    /**
+     * Export du récap des courses pilotes en PDF
+     * @param ExportService $exportService
+     * @return StreamedResponse
+     */
+    public function exportRecapPdf(ExportService $exportService): StreamedResponse
+    {
+        if (!$this->dateDebut instanceof Carbon) {
+            $this->dateDebut = Carbon::createFromFormat("Y-m-d", $this->dateDebut);
+        }
+
+        if (!$this->dateFin instanceof Carbon) {
+            $this->dateFin = Carbon::createFromFormat("Y-m-d", $this->dateFin);
+        }
+
+        return response()->streamDownload(function () use ($exportService) {
+            echo $exportService->exportRecapForPilote(
+                [$this->dateDebut, $this->dateFin],
+                $this->pilote
+            )->output();
+        }, 'test.pdf');
     }
 }
