@@ -247,6 +247,10 @@ trait WithReservationForm
                 break;
         }
 
+        if (!$this->reservation->has_steps && $this->reservation->steps !== null) {
+            $this->reservation->steps = null;
+        }
+
         try {
             if ($this->reservation->exists && $this->reservation->isDirty()) {
                 $contacts = [];
@@ -274,8 +278,8 @@ trait WithReservationForm
 
         } catch (\Exception $exception) {
             $this->notification()->error(
-                $title = 'Création impossible',
-                $description = 'Une erreur est survenue pendant la création de la réservation'
+                'Création impossible',
+                'Une erreur est survenue pendant la création de la réservation'
             );
 
             if (App::environment(['local'])) {
@@ -312,6 +316,10 @@ trait WithReservationForm
 
             $this->reservation_back->send_to_passager = $this->reservation->send_to_passager;
             $this->reservation_back->calendar_passager_invitation = $this->reservation->calendar_passager_invitation;
+
+            if (!$this->reservation_back->has_steps && $this->reservation_back->steps !== null) {
+                $this->reservation_back->steps = null;
+            }
 
             try {
                 $this->reservation_back->save();
