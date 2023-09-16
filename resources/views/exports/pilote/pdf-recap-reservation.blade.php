@@ -1,6 +1,8 @@
 @php
     $currentDate = $period[1];
     $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
+    $totalEncaisse = 0;
+    $totalEncompte = 0;
 @endphp
 <html lang="fr">
 <head>
@@ -110,6 +112,14 @@
         .odd {
             background-color: #dbdbdb;
         }
+
+        .bg-motobleu {
+            background-color: #293275;
+        }
+
+        .recap-end {
+            font-weight: bold;
+        }
     </style>
     <title></title>
 </head>
@@ -118,7 +128,10 @@
     <table>
         <tr>
             <td>
-                <img src="{{ storage_path('app/public/logo-pdf.png') }}" alt="Motobleu Paris" width="200" style="padding-left: 30px; padding-top: 12px;">
+                <img src="{{ storage_path('app/public/logo-pdf.png') }}"
+                     alt="Motobleu Paris"
+                     width="200" style="padding-left: 30px; padding-top: 12px;"
+                >
             </td>
         </tr>
     </table>
@@ -151,6 +164,10 @@
     </thead>
     <tbody>
         @foreach($reservations as $reservation)
+            @php
+                $totalEncaisse = $reservation->encaisse_pilote + $totalEncaisse;
+                $totalEncompte = $reservation->encompte_pilote + $totalEncompte;
+            @endphp
             <tr @if($loop->odd)class="odd"@endif >
                 <td>
                     {{ $reservation->pickup_date->format('d/m/Y') }}
@@ -181,6 +198,54 @@
                 </td>
             </tr>
         @endforeach
+
+        <tr class="recap-end">
+            <td>
+                Chiffre d'affaires
+            </td>
+            <td class="bg-motobleu"></td>
+            <td>
+                COM 15%
+            </td>
+            <td class="bg-motobleu"></td>
+            <td>
+                ENCAISSE
+            </td>
+            <td class="bg-motobleu"></td>
+            <td>
+                EN COMPTE
+            </td>
+            <td class="bg-motobleu"></td>
+            <td style="color: red">
+                TOTAL
+            </td>
+        </tr>
+        @php
+            $ca = $totalEncaisse + $totalEncompte;
+            $com15 = $ca * 0.15;
+            $total = $totalEncompte - $com15 ;
+        @endphp
+        <tr class="recap-end">
+            <td>
+                {{ number_format($ca, 2, ',', ' ') . ' €' }}
+            </td>
+            <td class="bg-motobleu"></td>
+            <td>
+                {{ number_format($com15, 2, ',', ' ') . ' €' }}
+            </td>
+            <td class="bg-motobleu"></td>
+            <td>
+                {{ number_format($totalEncaisse, 2, ',', ' ') . ' €' }}
+            </td>
+            <td class="bg-motobleu"></td>
+            <td>
+                {{ number_format($totalEncompte, 2, ',', ' ') . ' €' }}
+            </td>
+            <td class="bg-motobleu"></td>
+            <td style="color: red">
+               {{ number_format($total, 2, ',', ' ') . ' €' }}
+            </td>
+        </tr>
     </tbody>
 </table>
 
