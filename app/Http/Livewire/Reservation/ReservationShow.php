@@ -192,7 +192,8 @@ Votre réservation a bien été prise en compte";
         $this->reservation->statut = ReservationStatus::Canceled;
 
         $this->reservation->update([
-            'statut' => ReservationStatus::Canceled
+            'statut' => ReservationStatus::Canceled,
+            'facture_id' => null
         ]);
 
         ReservationCanceled::dispatch($this->reservation);
