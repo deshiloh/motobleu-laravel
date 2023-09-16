@@ -115,8 +115,16 @@ trait WithReservationForm
         $this->reservation->send_to_passager = true;
         $this->reservation->calendar_passager_invitation = true;
 
+        $this->reservation->has_steps = false;
+
+        if ($this->reservation->steps !== null) {
+            $this->reservation->has_steps = true;
+        }
+
+
         $this->reservation_back->send_to_passager = true;
         $this->reservation_back->calendar_passager_invitation = true;
+        $this->reservation_back->has_steps = false;
     }
 
     public function updatedReservation(): void
