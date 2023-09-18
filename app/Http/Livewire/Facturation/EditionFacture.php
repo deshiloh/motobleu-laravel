@@ -494,7 +494,6 @@ class EditionFacture extends Component
      */
     public function sendEmailTestAction(): void
     {
-        ray($this->facture);
         Mail::to(config('mail.admin.address'))
             ->send(new \App\Mail\BillCreated($this->facture, $this->email['message']));
     }
