@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
+use App\Enum\BillStatut;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use App\Models\Facture;
@@ -66,6 +67,10 @@ class InvoiceService
 
         if ($facture->is_acquitte) {
             $invoice->status('ACQUITTÉE');
+        }
+
+        if ($facture->statut === BillStatut::CANCEL) {
+            $invoice->status('ANNULÉE');
         }
 
         $invoice->template('motobleu');

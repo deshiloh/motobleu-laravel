@@ -79,19 +79,25 @@ class ReservationObserver
         ) {
             $facture = $reservation->facture;
 
-            $reservation->facture()->disassociate();
+            if($facture->reservations->isEmpty()) {
+                $reservation->tarif = 0;
+                $reservation->majoration = 0;
+                $reservation->complement = 0;
 
-            $reservation->tarif = null;
-            $reservation->majoration = null;
-            $reservation->complement = null;
+                $facture->montant_ttc = 0;
+            }
+
+            if ($facture->reservations->count() >= 2) {
+                $reservation->tarif = null;
+                $reservation->majoration = null;
+                $reservation->complement = null;
+
+                $reservation->facture()->disassociate();
+            }
 
             $reservation->updateQuietly();
 
             $facture->refresh();
-
-            if($facture->reservations->isEmpty()) {
-                $facture->delete();
-            }
         }
 
         try {

@@ -32,6 +32,7 @@
             <x-slot:headers>
                 <tr>
                     <x-datatable.th>Référence</x-datatable.th>
+                    <x-datatable.th>Statut</x-datatable.th>
                     <x-datatable.th>Date</x-datatable.th>
                     <x-datatable.th>Acquittée</x-datatable.th>
                     <x-datatable.th>Entreprise</x-datatable.th>
@@ -46,6 +47,18 @@
                 @forelse($facturations as $facture)
                     <x-datatable.tr>
                         <x-datatable.td>{{ $facture->reference }}</x-datatable.td>
+                        <x-datatable.td>
+                            @if($facture->statut === \App\Enum\BillStatut::COMPLETED)
+                                <x-front.badge success>
+                                    Finalisée
+                                </x-front.badge>
+                            @endif
+                            @if($facture->statut === \App\Enum\BillStatut::CANCEL)
+                                <x-front.badge danger>
+                                    Annulée
+                                </x-front.badge>
+                            @endif
+                        </x-datatable.td>
                         <x-datatable.td>{{ $facture->created_at->format('d/m/Y') }}</x-datatable.td>
                         <x-datatable.td>
                             <div class="flex space-x-2">

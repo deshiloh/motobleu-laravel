@@ -45,7 +45,7 @@ class FacturationDataTable extends Component
                         2 => $query->where('is_acquitte', true)
                     };
                 })
-                ->where('statut', BillStatut::COMPLETED->value)
+                ->whereIn('statut', [BillStatut::COMPLETED->value, BillStatut::CANCEL])
                 ->orderBy('factures.id', 'desc')
                 ->paginate($this->perPage)
         ])

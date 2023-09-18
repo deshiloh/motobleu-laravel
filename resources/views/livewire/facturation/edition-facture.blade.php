@@ -3,9 +3,10 @@
     $endYear = \Carbon\Carbon::now()->addYears(4)->year;
 @endphp
 <div>
+    <x-dialog />
     <x-header wire:key="header">
         @if($this->facture)
-            Édition de la facture <span class="text-blue-500">{{ $this->entreprise->nom }}</span>
+            Édition de la facture <span class="text-blue-500">{{ $this->entreprise?->nom }}</span>
             <x-slot:right>
                 <div class="flex gap-4">
                     @if($facture->statut == \App\Enum\BillStatut::COMPLETED)
@@ -18,7 +19,13 @@
                         ) !!}" label="Retourner à la liste" sm />
                     @endif
 
-                    @if($this->entreprise->hasBilledAddress())
+                    @if($facture->reservations()->count() === 1 && $facture->montant_ttc == 0)
+                        <x-button red wire:click="cancelBill">
+                            Annuler la facture
+                        </x-button>
+                    @endif
+
+                    @if($this->entreprise?->hasBilledAddress())
                         @if($facture->statut == \App\Enum\BillStatut::COMPLETED)
                             <x-button wire:click="openSendFactureModal" label="Envoyer la facturation" positive sm />
                         @else

@@ -433,16 +433,14 @@ class EditionFacture extends Component
      */
     public function redirectEvent()
     {
-        if ($this->facture->statut == BillStatut::COMPLETED) {
-            return redirect()->to(route('admin.facturations.index'));
-
-        } else {
-            return redirect()->to(route('admin.facturations.edition', [
+        return match ($this->facture->statut) {
+            BillStatut::COMPLETED, BillStatut::CANCEL => redirect()->to(route('admin.facturations.index')),
+            default => redirect()->to(route('admin.facturations.edition', [
                     'selectedMonth' => $this->selectedMonth,
                     '$selectedYear' => $this->selectedYear
                 ]
-            ));
-        }
+            )),
+        };
     }
 
     /**
@@ -496,5 +494,38 @@ class EditionFacture extends Component
     {
         Mail::to(config('mail.admin.address'))
             ->send(new \App\Mail\BillCreated($this->facture, $this->email['message']));
+    }
+
+    public function cancelBill(): void
+    {
+        $this->dialog()->confirm([
+            'title'       => 'Attention !',
+            'description' => 'Êtes vous sûr de vouloir annuler la facture ?',
+            'icon'        => 'question',
+            'accept'      => [
+                'label'  => 'Oui',
+                'method' => 'cancelBilleAction'
+            ],
+            'reject' => [
+                'label'  => 'Non',
+            ],
+        ]);
+    }
+
+    public function cancelBilleAction(): void
+    {
+        $this->facture->statut = BillStatut::CANCEL->value;
+        $this->facture->updateQuietly([
+            'statut' => BillStatut::CANCEL->value
+        ]);
+
+        $this->notification([
+            'title' => 'Facture annulée.',
+            'description' => 'Vous allez être redirigé vers la page de listing entreprises',
+            'icon' => 'success',
+            'onClose' => [
+                'method' => 'redirectEvent',
+            ],
+        ]);
     }
 }
