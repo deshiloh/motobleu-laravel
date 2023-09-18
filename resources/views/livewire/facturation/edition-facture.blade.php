@@ -21,7 +21,7 @@
 
                     @if($facture->reservations()->count() === 1 && $facture->montant_ttc == 0)
                         <x-button red wire:click="cancelBill">
-                            Annuler la facture
+                            Finaliser, annuler et ne pas envoyer
                         </x-button>
                     @endif
 
