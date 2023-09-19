@@ -52,7 +52,7 @@ class Export extends Component
     private function getFactures(): LengthAwarePaginator
     {
         return Facture::has('reservations')
-            ->where('statut', BillStatut::COMPLETED)
+            ->whereIn('statut', [BillStatut::COMPLETED, BillStatut::CANCEL])
             ->orderBy('id', 'DESC')
             ->when($this->dateDebut && $this->dateFin, function(Builder $query)  {
                 $dateDebut = Carbon::createFromFormat("Y-m-d", $this->dateDebut);
