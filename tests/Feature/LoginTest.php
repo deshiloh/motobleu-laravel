@@ -34,13 +34,24 @@ class LoginTest extends TestCase
      */
     public function testLogin()
     {
-        $user = User::factory()->create();
+        $user = User::find(1);
         $response = $this->post(route('login'), [
             'email' => $user->email,
             'password' => 'test'
         ]);
 
         $response->assertSessionHasNoErrors();
+    }
+
+    public function testLoginWithNoCompanyAttached()
+    {
+        $user = User::factory()->create();
+        $response = $this->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'test'
+        ]);
+
+        $response->assertSessionHasErrors();
     }
 
     public function testLoginWithNonActifAccount()
