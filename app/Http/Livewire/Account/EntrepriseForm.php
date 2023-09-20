@@ -46,10 +46,7 @@ class EntrepriseForm extends Component
                 'onClose' => [
                     'method' => 'redirectToList'
                 ]
-            ])->success(
-                title: "Opération réussite.",
-                description: "Tout s'est bien passé."
-            );
+            ]);
         } catch (\Exception $exception) {
             $this->notification()->error(
                 title: "Erreur",
@@ -67,6 +64,11 @@ class EntrepriseForm extends Component
                 ]);
             }
         }
+    }
+
+    public function redirectToList()
+    {
+        return redirect()->to(route('admin.accounts.index'));
     }
 
     public function refreshData()

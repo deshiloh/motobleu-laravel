@@ -41,6 +41,16 @@ class LoginController extends Controller
                 ]);
             }
 
+            if (Auth::user()->entreprises()->count() === 0) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'email' => 'Aucune entreprise rattachée à se compte.'
+                ]);
+            }
+
             $request->session()->regenerate();
 
             if (Auth::user()->email === 'contact@motobleu-paris.com') {
@@ -49,7 +59,7 @@ class LoginController extends Controller
 
             return (Auth::user()->hasRole('super admin')) ?
                 redirect()->intended(route('admin.homepage')) :
-                redirect()->intended(route('front.home'));
+                redirect()->intended(route('front.reservation.list'));
         }
 
         return back()->withErrors([
