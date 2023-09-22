@@ -120,22 +120,25 @@ class GoogleCalendarService
 
         try {
             if (App::environment(['local', 'prod', 'beta'])) {
-                if (is_null($reservation->event_id)) {
-                    return false;
+                if (!is_null($reservation->event_id)) {
+                    $event = Event::find($reservation->event_id);
+                    $event->delete();
+
+                    $reservation->updateQuietly([
+                        'event_id' => null,
+                    ]);
                 }
 
-                $event = Event::find($reservation->event_id);
-                $event->delete();
+                if (!is_null($reservation->event_secretary_id)) {
+                    $eventSecretary = Event::find($reservation->event_secretary_id);
+                    $eventSecretary->delete();
 
-                $eventSecretary = Event::find($reservation->event_secretary_id);
-                $eventSecretary->delete();
-
-                $reservation->updateQuietly([
-                    'event_id' => null,
-                    'event_secretary_id' => null
-                ]);
+                    $reservation->updateQuietly([
+                        'event_secretary_id' => null
+                    ]);
+                }
             }
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             if (App::environment(['local'])) {
                 ray([
                     'reservation' => $reservation

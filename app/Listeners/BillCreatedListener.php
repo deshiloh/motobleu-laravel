@@ -26,7 +26,7 @@ class BillCreatedListener
             try {
                 Mail::to($recipient)
                     ->send(new MailBillCreated($event->facture, $event->emailData['message']));
-            }catch (\Exception $exception) {
+            } catch (\Exception $exception) {
                 continue;
             }
         }

@@ -67,7 +67,7 @@ class AdresseReservationForm extends Component
 
                 $this->adresseReservation = new AdresseReservation();
             }
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $this->notification()->error(
                 "Erreur pendant le traitement",
                 "Une erreur est survenue pendant le traitement"
