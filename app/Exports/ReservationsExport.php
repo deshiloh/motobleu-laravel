@@ -193,7 +193,9 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
 
     private function getReservations(): Collection
     {
-        return $this->facture->reservations()->get();
+        return $this->facture->reservations()
+            ->orderBy('pickup_date')
+            ->get();
     }
 
     public function headings(): array
