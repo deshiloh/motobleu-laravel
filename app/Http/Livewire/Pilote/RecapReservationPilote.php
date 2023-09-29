@@ -142,11 +142,18 @@ class RecapReservationPilote extends Component
             $this->dateFin = Carbon::createFromFormat("Y-m-d", $this->dateFin);
         }
 
+        $pdfNameFile = sprintf(
+            '%s_%s_%s.pdf',
+            $this->pilote->nom,
+            $this->dateDebut->format('m'),
+            $this->dateDebut->format('Y')
+        );
+
         return response()->streamDownload(function () use ($exportService) {
             echo $exportService->exportRecapForPilote(
                 [$this->dateDebut, $this->dateFin],
                 $this->pilote
             )->output();
-        }, 'test.pdf');
+        }, $pdfNameFile);
     }
 }
