@@ -23,15 +23,17 @@
 
 </div>
 
+@if($reservation->has_steps)
 * **Destinations intermédiaires** : <br>
     {!! nl2br($reservation->steps) !!}
+@endif
 
 <div style="margin-top: 20px">
 
 * Destination :
     * <strong>Lieu de prise en charge :</strong> {{ $reservation->display_to }}
     @if($reservation->drop_off_origin)
-    * <strong>Provenance / N° :</strong> {{ $reservation->drop_off_origin }}
+    * <strong>Destination / N° :</strong> {{ $reservation->drop_off_origin }}
     @endif
 </div>
 

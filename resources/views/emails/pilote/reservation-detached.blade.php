@@ -9,7 +9,9 @@ Vous avez été retiré en tant que pilote pour la réservation N° {{ $reservat
 <strong>Date de départ :</strong> {{ $reservation->pickup_date->format('d/m/Y') }} <br>
 <strong>Heure de départ :</strong> {{ $reservation->pickup_date->format('H:i') }} <br>
 <strong>Lieu de destination :</strong> {{ $reservation->display_to }} <br>
+@if($reservation->has_steps)
 <strong>Destinations intermédiaires :</strong> <br>
 {!! nl2br($reservation->steps) !!} <br>
+@endif
 
 </x-mail::message>

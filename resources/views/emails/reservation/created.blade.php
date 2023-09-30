@@ -29,8 +29,10 @@ Vous allez recevoir prochainement un email de confirmation.
 
 </div>
 
+@if($reservation->has_steps)
 * **Destinations intermédiaires :** <br>
     {!! nl2br($reservation->steps) !!}
+@endif
 
 <div style="margin-top: 20px;">
 

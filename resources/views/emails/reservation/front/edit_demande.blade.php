@@ -19,14 +19,16 @@ L'assistant(e) **{{ $reservation->passager->user->full_name }}** a demandé de m
 * **Provenance / N°** : {{ $reservation->pickup_origin }}
 @endif
 
+@if($reservation->has_steps)
 **Destinations intermédiaires :** <br>
     {!! nl2br($reservation->steps) !!}
+@endif
 
 **Destination :** <br>
 
 * **Lieu de destination** : {{ $reservation->display_to }}
 @if($reservation->drop_off_origin)
-* **Provenance / N°** : {{ $reservation->drop_off_origin }}
+* **Destination / N°** : {{ $reservation->drop_off_origin }}
 @endif
 
 **Commentaire :** <br>
