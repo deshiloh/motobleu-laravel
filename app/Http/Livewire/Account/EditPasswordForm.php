@@ -31,7 +31,7 @@ class EditPasswordForm extends Component
     protected function getRules(): array
     {
         return [
-            'password' => 'required|current_password:web'
+            'password' => 'required'
         ];
     }
 
