@@ -5,6 +5,7 @@ namespace App\Services\EventCalendar;
 use App\Enum\ReservationStatus;
 use App\Models\Pilote;
 use App\Models\Reservation;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Spatie\GoogleCalendar\Event;
@@ -109,7 +110,12 @@ class GoogleCalendarService
     public function generateCommunData(Event $event): Event
     {
         $event->startDateTime = $this->reservation->pickup_date;
-        $event->endDateTime = $this->reservation->pickup_date->addHour();
+        
+        if ($this->forSecretary) {
+            $event->endDateTime = $this->reservation->pickup_date->addMinute();
+        } else {
+            $event->endDateTime = $this->reservation->pickup_date->addHour();
+        }
 
         return $event;
     }
@@ -197,7 +203,7 @@ class GoogleCalendarService
             $description .= "Date de la course: %s\n";
             $description .= "Adresse de départ: %s\n";
             $description .= "Provenance / N°: %s\n\n";
-            $description .= "Destinations intermédiaires : %s\n\n";
+            $description .= $this->reservation->has_steps ? "Destinations intermédiaires : %s\n\n" : '';
             $description .= "Adresse de destination: %s\n";
             $description .= "Destination / N°: %s\n\n";
             $description .= "Commentaires: %s\n\n";
@@ -217,7 +223,7 @@ class GoogleCalendarService
                 $this->reservation->passager->user->email,
                 $this->reservation->pickup_date->format('d/m/Y à H\hi'),
                 $this->reservation->display_from,
-                $this->reservation->steps,
+                $this->reservation->has_steps ? $this->reservation->steps : '',
                 $this->reservation->pickup_origin,
                 $this->reservation->display_to,
                 $this->reservation->drop_off_origin,
@@ -238,7 +244,7 @@ class GoogleCalendarService
             $description .= "Date de la course: %s\n";
             $description .= "Adresse de départ: %s\n";
             $description .= "Provenance / N°: %s\n\n";
-            $description .= "Destinations intermédiaires : %s\n\n";
+            $description .= $this->reservation->has_steps ? "Destinations intermédiaires : %s\n\n" : '';
             $description .= "Adresse de destination: %s\n";
             $description .= "Destination / N°: %s\n\n";
             $description .= "Commentaires: %s\n\n";
@@ -266,7 +272,7 @@ class GoogleCalendarService
                 $this->reservation->pickup_date->format('d/m/Y à H\hi'),
                 $this->reservation->display_from,
                 $this->reservation->pickup_origin,
-                $this->reservation->steps,
+                $this->reservation->has_steps ? $this->reservation->steps : '',
                 $this->reservation->display_to,
                 $this->reservation->drop_off_origin,
                 $this->reservation->comment,
