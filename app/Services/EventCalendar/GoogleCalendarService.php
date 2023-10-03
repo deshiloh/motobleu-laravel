@@ -110,7 +110,7 @@ class GoogleCalendarService
     public function generateCommunData(Event $event): Event
     {
         $event->startDateTime = $this->reservation->pickup_date;
-        
+
         if ($this->forSecretary) {
             $event->endDateTime = $this->reservation->pickup_date->addMinute();
         } else {
@@ -223,8 +223,8 @@ class GoogleCalendarService
                 $this->reservation->passager->user->email,
                 $this->reservation->pickup_date->format('d/m/Y à H\hi'),
                 $this->reservation->display_from,
-                $this->reservation->has_steps ? $this->reservation->steps : '',
                 $this->reservation->pickup_origin,
+                $this->reservation->has_steps ? $this->reservation->steps : '',
                 $this->reservation->display_to,
                 $this->reservation->drop_off_origin,
                 $this->reservation->comment,
