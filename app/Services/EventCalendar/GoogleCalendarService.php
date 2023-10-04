@@ -203,7 +203,7 @@ class GoogleCalendarService
             $description .= "Date de la course: %s\n";
             $description .= "Adresse de départ: %s\n";
             $description .= "Provenance / N°: %s\n\n";
-            $description .= $this->reservation->has_steps ? "Destinations intermédiaires : %s\n\n" : '';
+            $description .= $this->reservation->has_steps ? "Destinations intermédiaires : %s\n\n" : '%s';
             $description .= "Adresse de destination: %s\n";
             $description .= "Destination / N°: %s\n\n";
             $description .= "Commentaires: %s\n\n";
@@ -244,7 +244,7 @@ class GoogleCalendarService
             $description .= "Date de la course: %s\n";
             $description .= "Adresse de départ: %s\n";
             $description .= "Provenance / N°: %s\n\n";
-            $description .= $this->reservation->has_steps ? "Destinations intermédiaires : %s\n\n" : '';
+            $description .= $this->reservation->has_steps ? "Destinations intermédiaires : %s\n\n" : '%s';
             $description .= "Adresse de destination: %s\n";
             $description .= "Destination / N°: %s\n\n";
             $description .= "Commentaires: %s\n\n";
