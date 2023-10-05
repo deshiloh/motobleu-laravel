@@ -73,11 +73,13 @@
                         <x-input label="{{ __('Téléphone portable') }}" wire:model="newPassager.portable"/>
                         <x-input type="email" label="{{ __('Adresse email') }}" wire:model="newPassager.email"/>
                         @if(in_array(Auth::user()->entreprises()->first()->id, app(\app\Settings\BillSettings::class)->entreprises_cost_center_facturation))
-                            <x-select
+                            <x-native-select
                                 wire:key="cost_center"
                                 label="{{ __('Cost Center') }}"
                                 placeholder="{{ __('Sélectionner un Cost Center') }}"
-                                :async-data="route('api.cost_center')"
+                                :options="
+                                \App\Models\CostCenter::orderBy('nom')->where('is_actif', 1)->get(['id', 'nom'])->toArray()
+                                "
                                 option-label="nom"
                                 option-value="id"
                                 wire:model="newPassager.cost_center_id"
