@@ -16,13 +16,12 @@
             <x-input label="{{ __('Téléphone portable') }}" wire:model.defer="passager.portable" />
 
             @if(in_array(Auth::user()->entreprises()->first()->id, $billSettings->entreprises_cost_center_facturation))
-                <x-select
+                <x-native-select
                     label="{{ __('Cost Center') }}"
                     placeholder="{{ __('Sélectionner un Cost Center') }}"
-                    :async-data="route('api.cost_center')"
+                    :options="\App\Models\CostCenter::orderBy('nom')->where('is_actif', 1)->get(['id', 'nom'])->toArray()"
                     option-label="nom"
                     option-value="id"
-                    option-description="entreprise.nom"
                     wire:model.defer="passager.cost_center_id"
                 />
                 <x-select
