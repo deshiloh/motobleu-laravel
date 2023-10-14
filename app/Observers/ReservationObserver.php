@@ -48,7 +48,6 @@ class ReservationObserver
             Mail::to(config('mail.admin.address'))->send(new ReservationCreated($reservation, true));
 
             $this->calendarService->createEventForMotobleu($reservation);
-            $this->calendarService->createEventForSecretary($reservation);
         } catch (\Exception $exception) {
             if (App::environment(['local'])) {
                 ray([

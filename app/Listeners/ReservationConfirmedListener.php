@@ -92,5 +92,22 @@ class ReservationConfirmedListener
                 ]);
             }
         }
+
+        try {
+            $this->calendarService->createEventForSecretary($event->reservation);
+        } catch (\Exception $exception) {
+            if (App::environment(['local'])) {
+                ray([
+                    'reservation' => $event->reservation
+                ])->exception($exception);
+            }
+
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error("Erreur pendant la création de Google Calendar Secrétaire", [
+                    'exception' => $exception,
+                    'reservation' => $event->reservation
+                ]);
+            }
+        }
     }
 }
