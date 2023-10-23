@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\ReservationConfirmed;
 use App\Mail\AdminReservationConfirmed;
+use App\Services\EventCalendar\GoogleCalendarService;
 use App\Services\SentryService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -14,14 +15,16 @@ use Illuminate\Support\Facades\Mail;
 
 class ReservationConfirmedListener
 {
+    private GoogleCalendarService $calendarService;
+
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(GoogleCalendarService $calendarService)
     {
-        //
+        $this->calendarService = $calendarService;
     }
 
     /**
