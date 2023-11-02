@@ -210,10 +210,10 @@
                 {{ $facture->created_at->format('d/m/Y') }}
             </td>
             <td style="text-align: center">
-                @if($facture->is_acquitte)
-                    Oui
+                @if($facture->statut == \App\Enum\BillStatut::CANCEL)
+                    Annulée
                 @else
-                    Non
+                    {{ $facture->is_acquitte ? 'Oui' : 'Non' }}
                 @endif
             </td>
             <td style="text-align: center">

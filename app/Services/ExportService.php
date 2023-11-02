@@ -29,6 +29,16 @@ class ExportService
     {
         $dateDebut = Carbon::createFromFormat("Y-m-d", $dateDebut);
         $dateFin = Carbon::createFromFormat("Y-m-d", $dateFin);
+        $months = [];
+        $years = [];
+
+        for ($i = $dateDebut->month; $i <= $dateFin->month; $i ++) {
+            $months[] = $i;
+        }
+        
+        for ($currentYear = $dateDebut->year; $currentYear <= $dateFin->year; $currentYear ++) {
+            $years[] = $currentYear;
+        }
 
         $factures = Facture::orderBy('id')
             ->whereIn('statut', [BillStatut::COMPLETED, BillStatut::CANCEL])
@@ -37,10 +47,10 @@ class ExportService
                     return $query->where('entreprise_id', $entreprise);
                 });
             })
-            ->when($dateDebut && $dateFin, function(Builder $query) use ($dateDebut, $dateFin) {
+            ->when($dateDebut && $dateFin, function(Builder $query) use ($dateDebut, $dateFin, $months, $years) {
                 return $query
-                    ->whereIn('year', [$dateDebut->year, $dateFin->year])
-                    ->whereIn('month', [$dateDebut->month, $dateFin->month]);
+                    ->whereIn('year', $years)
+                    ->whereIn('month', $months);
             })->get();
 
         return Pdf::loadView('exports.factures.pdf-export', [
