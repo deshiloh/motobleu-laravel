@@ -144,7 +144,10 @@ class EditionFacture extends Component
                     $query
                         ->whereMonth('pickup_date', $this->selectedMonth)
                         ->whereYear('pickup_date', $this->selectedYear)
-                        ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
+                        ->whereIn('statut', [
+                            ReservationStatus::Confirmed->value,
+                            ReservationStatus::CanceledToPay->value
+                        ])
                         ->where(function(Builder $query) {
                             $query
                                 ->whereNull('encaisse_pilote')
