@@ -201,6 +201,8 @@ trait WithReservationForm
                     $this->reservation->adresseReservationFrom()->associate($addressReservationFrom);
                 }
 
+                $this->reservation->pickup_origin = null;
+
                 break;
             case ReservationService::WITH_NEW_ADRESSE:
                 if (null !== $this->reservation->localisationFrom()->exists()) {
@@ -210,6 +212,8 @@ trait WithReservationForm
                 $this->newAdresseReservationFrom->user_id = $this->reservation->passager->user->id;
                 $this->newAdresseReservationFrom->save();
                 $this->reservation->adresseReservationFrom()->associate($this->newAdresseReservationFrom);
+
+                $this->reservation->pickup_origin = null;
 
                 break;
         }
@@ -232,6 +236,8 @@ trait WithReservationForm
 
                     $addressReservationTo = AdresseReservation::find($this->addressReservationTo);
                     $this->reservation->adresseReservationTo()->associate($addressReservationTo);
+
+                    $this->reservation->drop_off_origin = null;
                 }
 
                 break;
@@ -243,6 +249,8 @@ trait WithReservationForm
                 $this->newAdresseReservationTo->user_id = $this->reservation->passager->user->id;
                 $this->newAdresseReservationTo->save();
                 $this->reservation->adresseReservationTo()->associate($this->newAdresseReservationTo);
+
+                $this->reservation->drop_off_origin = null;
 
                 break;
         }

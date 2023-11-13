@@ -75,7 +75,11 @@ Route::get('/oauth', function(Request $request) {
 });
 
 Route::get('/mail-test', function () {
+    if (!App::environment(['local'])) {
+        abort(403, "Pas autorisé");
+    }
+
     $reservation = Reservation::take(1)->first();
 
-    return new \App\Mail\UpdateReservationDemand($reservation, 'test');
+    return new \App\Mail\ReservationConfirmed($reservation, false);
 });

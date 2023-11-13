@@ -202,10 +202,10 @@ class GoogleCalendarService
             $description .= "Email assistante: %s\n\n";
             $description .= "Date de la course: %s\n";
             $description .= "Adresse de départ: %s\n";
-            $description .= "Provenance / N°: %s\n\n";
+            $description .= $this->reservation->pickup_origin ?  "Provenance / N°: %s\n\n" : '%s';
             $description .= $this->reservation->has_steps ? "Destinations intermédiaires : %s\n\n" : '%s';
             $description .= "Adresse de destination: %s\n";
-            $description .= "Destination / N°: %s\n\n";
+            $description .= $this->reservation->drop_off_origin ?  "Destination / N°: %s\n\n" : '%s';
             $description .= "Commentaires: %s\n\n";
             $description .= "\nLien: %s\n";
             $description .= "\n\nMotobleu\n26-28 rue Marius Aufan\n92300 Levallois Perret\nTél: +33647938617\ncontact@motobleu-paris.com\nRCS 824 721 955 NANTERRE"; //company_details
@@ -223,10 +223,10 @@ class GoogleCalendarService
                 $this->reservation->passager->user->email,
                 $this->reservation->pickup_date->format('d/m/Y à H\hi'),
                 $this->reservation->display_from,
-                $this->reservation->pickup_origin,
+                $this->reservation->pickup_origin ?? '',
                 $this->reservation->has_steps ? $this->reservation->steps : '',
                 $this->reservation->display_to,
-                $this->reservation->drop_off_origin,
+                $this->reservation->drop_off_origin ?? '',
                 $this->reservation->comment,
                 route('admin.reservations.show', ['reservation' => $this->reservation->id])
             );
@@ -243,10 +243,10 @@ class GoogleCalendarService
             $description .= "Pilote: %s\n";
             $description .= "Date de la course: %s\n";
             $description .= "Adresse de départ: %s\n";
-            $description .= "Provenance / N°: %s\n\n";
+            $description .= $this->reservation->pickup_origin ? "Provenance / N°: %s\n\n" : '%s';
             $description .= $this->reservation->has_steps ? "Destinations intermédiaires : %s\n\n" : '%s';
             $description .= "Adresse de destination: %s\n";
-            $description .= "Destination / N°: %s\n\n";
+            $description .= $this->reservation->drop_off_origin ? "Destination / N°: %s\n\n" : '%s';
             $description .= "Commentaires: %s\n\n";
             $description .= "Tarif : %s€%s \n\n";
             $description .= "\nLien: %s\n";
@@ -271,10 +271,10 @@ class GoogleCalendarService
                 $piloteLabel,
                 $this->reservation->pickup_date->format('d/m/Y à H\hi'),
                 $this->reservation->display_from,
-                $this->reservation->pickup_origin,
+                $this->reservation->pickup_origin ?? '',
                 $this->reservation->has_steps ? $this->reservation->steps : '',
                 $this->reservation->display_to,
-                $this->reservation->drop_off_origin,
+                $this->reservation->drop_off_origin ?? '',
                 $this->reservation->comment,
                 $tarifValue,
                 $tarifLabelle,
