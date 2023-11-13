@@ -58,7 +58,19 @@ class Reservation extends Model
         static::creating(function ($reservation) {
             if (is_null($reservation->reference)) {
                 $currentDate = Carbon::now();
-                $reservation->reference = $currentDate->format('Ym').Reservation::count() + 1;
+                $prefix = $currentDate->format('Ym');
+
+                if ($currentDate->year >= 2024) {
+                    $reservation->reference = sprintf(
+                        '%s%04d',
+                        $prefix,
+                        Reservation::whereYear(
+                            'created_at', $currentDate->year
+                        )->count() + 1
+                    );
+                } else {
+                    $reservation->reference = $prefix . Reservation::count() + 1;
+                }
             }
         });
     }

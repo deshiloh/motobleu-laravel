@@ -13,6 +13,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use JetBrains\PhpStorm\NoReturn;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -251,5 +252,43 @@ class FacturationTest extends TestCase
             'id' => $facture->id,
             'information' => 'test'
         ]);
+    }
+
+    #[NoReturn]
+    public function testGenerateReferenceAfterYear2024()
+    {
+        Facture::factory(10)->create([
+            'month' => 01,
+            'year' => 2024,
+        ]);
+
+        Facture::factory(10)->create([
+            'month' => 02,
+            'year' => 2024,
+        ]);
+
+        \Date::setTestNow(Carbon::create(2024, 1, 1, 0, 0, 0));
+        $reference = Facture::generateReference('2024', '03');
+
+        $this->assertEquals('FA2024-03-021', $reference);
+    }
+
+    #[NoReturn]
+    public function testGenerateReferenceBefore2024()
+    {
+        Facture::factory(10)->create([
+            'month' => 2,
+            'year' => 2023,
+        ]);
+
+        Facture::factory(2)->create([
+            'month' => 3,
+            'year' => 2023,
+        ]);
+
+        \Date::setTestNow(Carbon::create(2023, 12, 2, 0, 0, 0));
+        $reference = Facture::generateReference('2023', '02');
+
+        $this->assertEquals('FA2023-02-11', $reference);
     }
 }

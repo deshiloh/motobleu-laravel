@@ -92,10 +92,19 @@ class Facture extends Model
      */
     public static function generateReference(string $year, string $month): string
     {
-        return sprintf('FA%04d-%02d-%02d',
-            $year,
-            $month,
-            Facture::where('month', $month)->where('year', $year)->count() + 1
-        );
+        if (Carbon::now()->year >= 2024) {
+            return sprintf(
+                'FA%04d-%02d-%03d',
+                $year,
+                $month,
+                Facture::where('year', $year)->count() + 1
+            );
+        } else {
+            return sprintf('FA%04d-%02d-%02d',
+                $year,
+                $month,
+                Facture::where('month', $month)->where('year', $year)->count() + 1
+            );
+        }
     }
 }
