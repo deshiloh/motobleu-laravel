@@ -128,7 +128,9 @@ class GoogleCalendarService
             if (App::environment(['local', 'prod', 'beta'])) {
                 if (!is_null($reservation->event_id)) {
                     $event = Event::find($reservation->event_id);
-                    $event->delete();
+                    $event->delete(null, [
+                        'sendUpdates' => 'all'
+                    ]);
 
                     $reservation->updateQuietly([
                         'event_id' => null,
@@ -137,7 +139,9 @@ class GoogleCalendarService
 
                 if (!is_null($reservation->event_secretary_id)) {
                     $eventSecretary = Event::find($reservation->event_secretary_id);
-                    $eventSecretary->delete();
+                    $eventSecretary->delete(null, [
+                        'sendUpdates' => 'all'
+                    ]);
 
                     $reservation->updateQuietly([
                         'event_secretary_id' => null
