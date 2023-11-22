@@ -148,7 +148,7 @@
                             wire:model="reservation.localisation_from_id"
                         />
                         @if($reservation->localisation_from_id)
-                            <x-input label="{{ __('Destination / N°') }}" wire:model="reservation.pickup_origin" />
+                            <x-input label="{{ __('Provenance / N°') }}" wire:model="reservation.pickup_origin" />
                         @endif
                     </div>
                 @endif
