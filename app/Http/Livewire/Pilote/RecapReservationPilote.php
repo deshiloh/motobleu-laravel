@@ -53,8 +53,8 @@ class RecapReservationPilote extends Component
     {
         return Reservation::where('pilote_id', $this->pilote->id)
             ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::Billed])
-            ->whereBetween('pickup_date', [$this->dateDebut, $this->dateFin])
-            ->orderBy('pickup_date', 'asc')
+            ->whereBetween('pickup_date', [$this->dateDebut . ' 00:00:00', $this->dateFin . ' 23:59:59'])
+            ->orderBy('pickup_date')
             ->get();
     }
 
