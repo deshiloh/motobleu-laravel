@@ -244,12 +244,12 @@ class GoogleCalendarService
             $description .= "Assistante: %s\n";
             $description .= "Tel assistante: %s\n";
             $description .= "Email assistante: %s\n\n";
-            $description .= "Pilote: %s\n";
-            $description .= "Date de la course: %s\n";
-            $description .= "Adresse de départ: %s\n";
+            $description .= "Pilote: %s\n\n";
+            $description .= "Date de la course: %s\n\n";
+            $description .= "Adresse de départ: %s\n\n";
             $description .= $this->reservation->pickup_origin ? "Provenance / N°: %s\n\n" : '%s';
             $description .= $this->reservation->has_steps ? "Destinations intermédiaires : %s\n\n" : '%s';
-            $description .= "Adresse de destination: %s\n";
+            $description .= "Adresse de destination: %s\n\n";
             $description .= $this->reservation->drop_off_origin ? "Destination / N°: %s\n\n" : '%s';
             $description .= "Commentaires: %s\n\n";
             $description .= "Tarif : %s€%s \n\n";
