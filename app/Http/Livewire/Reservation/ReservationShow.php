@@ -193,35 +193,37 @@ Votre réservation a bien été prise en compte";
 
         $facture = $this->reservation->facture;
 
-        if ($facture->reservations->count() > 1) {
-            $this->reservation->tarif = null;
-            $this->reservation->majoration = null;
-            $this->reservation->complement = null;
+        if ($facture !== null) {
+            if ($facture->reservations->count() > 1) {
+                $this->reservation->tarif = null;
+                $this->reservation->majoration = null;
+                $this->reservation->complement = null;
 
-            $this->reservation->update([
-                'statut' => ReservationStatus::Canceled,
-                'facture_id' => null,
-                'tarif' => null,
-                'majoration' => null,
-                'complement' => null
-            ]);
-        } else {
-            $this->reservation->tarif = 0;
-            $this->reservation->majoration = 0;
-            $this->reservation->complement = 0;
+                $this->reservation->update([
+                    'statut' => ReservationStatus::Canceled,
+                    'facture_id' => null,
+                    'tarif' => null,
+                    'majoration' => null,
+                    'complement' => null
+                ]);
+            } else {
+                $this->reservation->tarif = 0;
+                $this->reservation->majoration = 0;
+                $this->reservation->complement = 0;
 
-            $facture->montant_ttc = 0;
+                $facture->montant_ttc = 0;
 
-            $this->reservation->update([
-                'statut' => ReservationStatus::Billed,
-                'tarif' => 0,
-                'majoration' => 0,
-                'complement' => 0
-            ]);
+                $this->reservation->update([
+                    'statut' => ReservationStatus::Billed,
+                    'tarif' => 0,
+                    'majoration' => 0,
+                    'complement' => 0
+                ]);
 
-            $facture->refresh();
+                $facture->refresh();
+            }
         }
-
+        
         ReservationCanceled::dispatch($this->reservation);
 
         return redirect()->to(route('admin.reservations.index'));
