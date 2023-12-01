@@ -78,20 +78,18 @@ class ReservationObserver
         ) {
             $facture = $reservation->facture;
 
-            if($facture->reservations->isEmpty()) {
-                $reservation->tarif = 0;
-                $reservation->majoration = 0;
-                $reservation->complement = 0;
-
-                $facture->montant_ttc = 0;
-            }
-
-            if ($facture->reservations->count() >= 2) {
+            if ($facture->reservations->count() > 1) {
                 $reservation->tarif = null;
                 $reservation->majoration = null;
                 $reservation->complement = null;
 
                 $reservation->facture()->disassociate();
+            } else {
+                $reservation->tarif = 0;
+                $reservation->majoration = 0;
+                $reservation->complement = 0;
+
+                $facture->montant_ttc = 0;
             }
 
             $reservation->updateQuietly();
