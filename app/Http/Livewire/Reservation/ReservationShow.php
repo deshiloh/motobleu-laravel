@@ -222,8 +222,12 @@ Votre réservation a bien été prise en compte";
 
                 $facture->refresh();
             }
+        } else {
+            $this->reservation->update([
+                'statut' => ReservationStatus::Canceled
+            ]);
         }
-        
+
         ReservationCanceled::dispatch($this->reservation);
 
         return redirect()->to(route('admin.reservations.index'));

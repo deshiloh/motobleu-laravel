@@ -678,11 +678,14 @@ class ReservationTest extends TestCase
         \Event::fake();
 
         $reservation = Reservation::find(1);
+        $reservation->facture_id = null;
+        $reservation->updateQuietly();
 
         Livewire::test(ReservationShow::class, ['reservation' => $reservation])
             ->call('cancelAction')
             ->assertHasNoErrors()
         ;
+
         $this->assertDatabaseHas('reservations', [
             'reference' => $reservation->reference,
             'statut' => ReservationStatus::Canceled
