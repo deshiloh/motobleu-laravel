@@ -260,9 +260,9 @@ trait WithReservationForm
         }
 
         try {
-            if ($this->reservation->exists && $this->reservation->isDirty()) {
-                $contacts = [];
+            $contacts = [];
 
+            if ($this->reservation->exists && $this->reservation->isDirty()) {
                 if (null !== $this->reservation->passager) {
                     $contacts[] = $this->reservation->passager->user->email;
                 }
@@ -270,15 +270,16 @@ trait WithReservationForm
                 if ($this->reservation->send_to_passager) {
                     $contacts[] = $this->reservation->passager->email;
                 }
+            }
 
+            $this->reservation->save();
+
+            if (!empty($contacts)) {
                 foreach ($contacts as $contact) {
                     \Mail::to($contact)
                         ->send(new ReservationUpdated($this->reservation));
                 }
-
             }
-
-            $this->reservation->save();
 
             session()->flash('success', 'Traitement de la réservation traité avec succés.');
             redirect()
