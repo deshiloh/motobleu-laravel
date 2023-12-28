@@ -35,7 +35,7 @@ class ExportService
         for ($i = $dateDebut->month; $i <= $dateFin->month; $i ++) {
             $months[] = $i;
         }
-        
+
         for ($currentYear = $dateDebut->year; $currentYear <= $dateFin->year; $currentYear ++) {
             $years[] = $currentYear;
         }
@@ -78,7 +78,11 @@ class ExportService
     public function exportRecapForPilote(array $period, Pilote $pilote)
     {
         $reservations = Reservation::where('pilote_id', $pilote->id)
-            ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::Billed])
+            ->whereIn('statut', [
+                ReservationStatus::CanceledToPay->value,
+                ReservationStatus::Confirmed->value,
+                ReservationStatus::Billed->value
+            ])
             ->whereDate('pickup_date', '>=', $period[0]->format('Y-m-d'))
             ->whereDate('pickup_date', '<=', $period[1]->format('Y-m-d'))
             ->orderBy('pickup_date')
