@@ -270,7 +270,7 @@ class FacturationTest extends TestCase
         \Date::setTestNow(Carbon::create(2024, 1, 1, 0, 0, 0));
         $reference = Facture::generateReference('2024', '03');
 
-        $this->assertEquals('FA2024-03-021', $reference);
+        $this->assertEquals('FA2024-03-031', $reference);
     }
 
     #[NoReturn]

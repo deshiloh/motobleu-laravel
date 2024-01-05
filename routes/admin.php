@@ -153,4 +153,15 @@ Route::prefix('/admin')->name('admin.')->group(function () {
 
     Route::get('/settings', \App\Http\Livewire\Settings\SettingsForm::class)
         ->name('settings');
+
+    Route::get('/stats/reservations', [\App\Http\Controllers\Admin\StatsController::class, 'reservationsShow'])
+        ->name('stats.reservations');
+
+    Route::prefix('/stats')->name('stats.')->group(function() {
+        Route::get('/reservations', [\App\Http\Controllers\Admin\StatsController::class, 'reservationsShow'])
+            ->name('reservations');
+
+        Route::get('/facturation', [\App\Http\Controllers\Admin\StatsController::class, 'facturationShow'])
+            ->name('facturation');
+    });
 });
