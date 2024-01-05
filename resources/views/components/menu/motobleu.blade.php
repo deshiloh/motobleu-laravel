@@ -39,5 +39,11 @@
     <x-menu.dropdown.item-link href="{{ route('admin.permissions') }}">Permissions</x-menu.dropdown.item-link>
     <x-menu.dropdown.item-link href="{{ route('admin.settings') }}">Paramètres</x-menu.dropdown.item-link>
 </x-menu.dropdown>
-
-
+<x-menu.dropdown title="Stats">
+    <x-menu.dropdown.item-link href="{{ route('admin.stats.reservations') }}">
+        Réservations
+    </x-menu.dropdown.item-link>
+    <x-menu.dropdown.item-link href="{{ route('admin.stats.facturation') }}">
+        Facturation
+    </x-menu.dropdown.item-link>
+</x-menu.dropdown>
