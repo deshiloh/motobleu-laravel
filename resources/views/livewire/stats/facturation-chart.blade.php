@@ -46,12 +46,22 @@
                                 alignToPixels: true,
                                 grid: {
                                     display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 16 // taille de la police pour l'axe X
+                                    }
                                 }
                             },
                             y: {
                                 beginAtZero: true,
                                 grid: {
                                     display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 16 // taille de la police pour l'axe X
+                                    }
                                 }
                             }
                         }
