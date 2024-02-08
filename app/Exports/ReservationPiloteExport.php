@@ -318,7 +318,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $comCell = 'C' . $index + 1;
                 $comLabelle = $sheet->getSheet()->getCell('C' . $index);
                 $comLabelle->setValue(
-                    'COM 15%'
+                    'COM ' . $this->pilote->commission . '%'
                 );
                 $comLabelle->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $comLabelle->getStyle()->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN)
@@ -326,7 +326,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $comLabelle->getStyle()->getFont()->setSize(14);
                 $comValue = $sheet->getSheet()->getCell('C' . $index + 1);
                 $comValue->setValue(
-                    '=(A'. $index + 1 .') * 0.15'
+                    '=(A'. $index + 1 .') * ' . $this->pilote->commission / 100
                 );
                 $comValue->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $comValue->getStyle()->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN)

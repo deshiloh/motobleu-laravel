@@ -13,6 +13,7 @@
             <x-input label="Adresse complément" wire:model.defer="pilote.adresse_complement" />
             <x-input label="Code postal" wire:model.defer="pilote.code_postal" />
             <x-input label="Ville" wire:model.defer="pilote.ville" />
+            <x-input label="Commission" type="number" step="0.01" wire:model="commission"/>
             <x-button type="submit" primary sm >Enregistrer</x-button>
         </form>
     </x-bloc-content>

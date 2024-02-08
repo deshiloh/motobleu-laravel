@@ -12,10 +12,12 @@ class PiloteForm extends Component
     use Actions;
 
     public Pilote $pilote;
+    public $commission = 15;
 
     public function mount(Pilote $pilote)
     {
         $this->pilote = $pilote;
+        $this->commission = $this->pilote->commission;
     }
 
     public function render()
@@ -36,12 +38,15 @@ class PiloteForm extends Component
             'pilote.adresse_complement' => 'nullable',
             'pilote.code_postal' => 'nullable',
             'pilote.ville' => 'nullable',
+            'commission' => 'required'
         ];
     }
 
     public function save()
     {
         $this->validate();
+
+        $this->pilote->commission = $this->commission;
 
         try {
             if ($this->pilote->exists) {
