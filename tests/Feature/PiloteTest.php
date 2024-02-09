@@ -87,6 +87,7 @@ class PiloteTest extends TestCase
             ->set('pilote.adresse_complement', $pilote->adresse_complement)
             ->set('pilote.code_postal', $pilote->code_postal)
             ->set('pilote.ville', $pilote->ville)
+            ->set('commission', 30.57)
             ->call('save')
             ->assertHasNoErrors();
 
@@ -110,6 +111,7 @@ class PiloteTest extends TestCase
             ->set('pilote.adresse_complement', $pilote->adresse_complement)
             ->set('pilote.code_postal', $pilote->code_postal)
             ->set('pilote.ville', $pilote->ville)
+            ->set('commission', 40.4)
             ->call('save')
             ->assertHasNoErrors();
 
