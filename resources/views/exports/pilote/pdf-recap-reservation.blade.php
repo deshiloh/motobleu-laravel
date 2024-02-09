@@ -205,7 +205,7 @@
             </td>
             <td class="bg-motobleu"></td>
             <td>
-                COM 15%
+                COM {{ $pilote->commission }} %
             </td>
             <td class="bg-motobleu"></td>
             <td>
@@ -222,8 +222,8 @@
         </tr>
         @php
             $ca = $totalEncaisse + $totalEncompte;
-            $com15 = $ca * 0.15;
-            $total = $totalEncompte - $com15 ;
+            $com = $ca * ($pilote->commission / 100);
+            $total = $totalEncompte - $com ;
         @endphp
         <tr class="recap-end">
             <td>
@@ -231,7 +231,7 @@
             </td>
             <td class="bg-motobleu"></td>
             <td>
-                {{ number_format($com15, 2, ',', ' ') . ' €' }}
+                {{ number_format($com, 2, ',', ' ') . ' €' }}
             </td>
             <td class="bg-motobleu"></td>
             <td>
