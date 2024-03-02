@@ -76,7 +76,7 @@
                                             label += ': ';
                                         }
                                         if (context.parsed.y !== null) {
-                                            let ttc = context.parsed.y + (context.parsed.y * 0.1);
+                                            let ttc = context.parsed.y;
 
                                             label += new Intl.NumberFormat('fr-FR', {
                                                 style: 'currency',
