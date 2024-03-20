@@ -252,16 +252,26 @@ class GoogleCalendarService
             $description .= "Adresse de destination: %s\n\n";
             $description .= $this->reservation->drop_off_origin ? "Destination / N°: %s\n\n" : '%s';
             $description .= "Commentaires: %s\n\n";
-            $description .= "Tarif : %s€%s \n\n";
+            $description .= ($this->reservation->encompte_pilote !== null || $this->reservation->encaisse_pilote !== null) ? "Tarif : %s€%s \n\n" : '%s%s';
             $description .= "\nLien: %s\n";
             $description .= "\n\nMotobleu\n26-28 rue Marius Aufan\n92300 Levallois Perret\nTél: +33647938617\ncontact@motobleu-paris.com\nRCS 824 721 955 NANTERRE"; //company_details
 
             $phones = implode(' - ', [$this->reservation->passager->telephone, $this->reservation->passager->portable]);
 
-            $tarifLabelle = ($this->reservation->encompte_pilote > 0) ? "/com15 EN COMPTE" : "/com15 A ENCAISSER CB";
-            $tarifValue = ($this->reservation->encompte_pilote > 0) ?
-                $this->reservation->encompte_pilote :
-                $this->reservation->encaisse_pilote;
+            $tarifValue = '';
+            $tarifLabelle = '';
+
+            if ($this->reservation->encaisse_pilote !== null || $this->reservation->encompte_pilote !== null) {
+                $piloteCom = $this->reservation->pilote?->commission ?? 'NC';
+
+                $encompteLabel = "/com" . $piloteCom . " EN COMPTE";
+                $encaisseLabel = "/com" . $piloteCom . " A ENCAISSER CB";
+
+                $tarifLabelle = ($this->reservation->encompte_pilote > 0) ? $encompteLabel : $encaisseLabel;
+                $tarifValue = ($this->reservation->encompte_pilote > 0) ?
+                    $this->reservation->encompte_pilote :
+                    $this->reservation->encaisse_pilote;
+            }
 
             return sprintf(
                 $description,
