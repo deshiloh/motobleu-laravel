@@ -290,7 +290,7 @@ class GoogleCalendarService
                 $this->reservation->display_to,
                 $this->reservation->drop_off_origin ?? '',
                 $this->reservation->comment,
-                $tarifValue,
+                intval($tarifValue),
                 $tarifLabelle,
                 route('admin.reservations.show', ['reservation' => $this->reservation->id])
             );
