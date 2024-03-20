@@ -264,6 +264,10 @@ class GoogleCalendarService
             if ($this->reservation->encaisse_pilote !== null || $this->reservation->encompte_pilote !== null) {
                 $piloteCom = $this->reservation->pilote?->commission ?? 'NC';
 
+                if ($piloteCom !== "NC") {
+                    $piloteCom = intval($piloteCom);
+                }
+
                 $encompteLabel = "/com" . $piloteCom . " EN COMPTE";
                 $encaisseLabel = "/com" . $piloteCom . " A ENCAISSER CB";
 
@@ -290,7 +294,7 @@ class GoogleCalendarService
                 $this->reservation->display_to,
                 $this->reservation->drop_off_origin ?? '',
                 $this->reservation->comment,
-                intval($tarifValue),
+                $tarifValue,
                 $tarifLabelle,
                 route('admin.reservations.show', ['reservation' => $this->reservation->id])
             );
