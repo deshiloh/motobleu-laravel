@@ -48,14 +48,4 @@ class RegisterUserDemand extends Mailable
             markdown: 'emails.users.front.register-demand',
         );
     }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array
-     */
-    public function attachments(): array
-    {
-        return [];
-    }
 }

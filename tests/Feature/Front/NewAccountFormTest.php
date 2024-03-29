@@ -2,82 +2,55 @@
 
 namespace Tests\Feature\Front;
 
-use App\Http\Livewire\Front\Address\AddressDataTable;
-use App\Http\Livewire\Front\Address\AddressForm;
 use App\Http\Livewire\Front\NewAccountForm;
 use App\Mail\ConfirmationRegisterUserDemand;
 use App\Mail\RegisterUserDemand;
-use App\Models\AdresseReservation;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
-use Tests\TestCase;
+use function Pest\Laravel\get;
+use function Pest\Livewire\livewire;
 
-class NewAccountFormTest extends TestCase
-{
-    use RefreshDatabase;
+test("Access to the new account form", function() {
+    get(route('account.new'))
+        ->assertStatus(200);
+});
 
-    protected bool $seed = true;
+test("Send new account registration", function() {
+    \Mail::fake();
 
-    /**
-     * @return void
-     */
-    public function testAccessAddressList(): void
-    {
-        $response = $this->get(route('account.new'));
+    livewire(NewAccountForm::class)
+        ->set('user.nom', 'test')
+        ->set('user.prenom', 'test')
+        ->set('user.email', 'test@test.com')
+        ->set('user.telephone', '0987654434')
+        ->set('user.adresse', '33 rue john doe')
+        ->set('user.code_postal', '34000')
+        ->set('user.ville', 'Montpellier')
+        ->set('entrepriseName', 'Nom de entreprise')
+        ->call('send')
+        ->assertHasNoErrors();
 
-        $response->assertStatus(200);
-    }
+    \Mail::assertSent(RegisterUserDemand::class, function(RegisterUserDemand $mail) {
+        return $mail->hasSubject('MOTOBLEU / Demande de création de compte') &&
+            $mail->assertSeeInHtml('Demande de création de compte');
+    });
 
-    public function testSendRegister()
-    {
-        \Mail::fake();
+    \Mail::assertSent(ConfirmationRegisterUserDemand::class, function(ConfirmationRegisterUserDemand $mail) {
+        return $mail->hasTo('test@test.com') &&
+            $mail->hasSubject('MOTOBLEU / Confirmation de la demande de création de compte') &&
+            $mail->assertSeeInHtml('Nous avons bien reçu votre message, il sera traité dans les plus brefs délais.');
+    });
+});
 
-        Livewire::test(NewAccountForm::class)
-            ->set('user.nom', 'test')
-            ->set('user.prenom', 'test')
-            ->set('user.email', 'test@test.com')
-            ->set('user.telephone', 'test')
-            ->set('user.adresse', 'test')
-            ->set('user.adresse_bis', 'test')
-            ->set('user.code_postal', 'test')
-            ->set('user.ville', 'test')
-            ->set('entrepriseName', 'test')
-            ->call('send')
-            ->assertHasNoErrors()
-            ;
-
-        \Mail::assertSent(RegisterUserDemand::class);
-        \Mail::assertSent(ConfirmationRegisterUserDemand::class);
-    }
-
-    public function testSendErrors()
-    {
-        \Mail::fake();
-
-        Livewire::test(NewAccountForm::class)
-            ->set('user.nom')
-            ->set('user.prenom')
-            ->set('user.email')
-            ->set('user.telephone')
-            ->set('user.adresse')
-            ->set('user.adresse_bis')
-            ->set('user.code_postal')
-            ->set('user.ville')
-            ->set('entrepriseName', '')
-            ->call('send')
-            ->assertHasErrors([
-                'user.nom' => 'required',
-                'user.prenom' => 'required',
-                'user.email' => 'required',
-                'user.telephone' => 'required',
-                'user.adresse' => 'required',
-                'user.code_postal' => 'required',
-                'user.ville' => 'required',
-                'entrepriseName' => 'required'
-            ])
-        ;
-
-        \Mail::assertNothingSent();
-    }
-}
+test("Send new account registration with errors", function() {
+    livewire(NewAccountForm::class)
+        ->call('send')
+        ->assertHasErrors([
+            'user.nom',
+            'user.prenom',
+            'user.email',
+            'user.telephone',
+            'user.adresse',
+            'user.code_postal',
+            'user.ville',
+            'entrepriseName'
+        ]);
+});
