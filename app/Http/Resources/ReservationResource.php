@@ -18,12 +18,12 @@ class ReservationResource extends JsonResource
             'id' => $this->id,
             'reference' => $this->reference,
             'statut' => $this->statut,
-            'encompte_pilote' => $this->encompte_pilote,
-            'encaisse_pilote' => $this->encaisse_pilote,
+            'encompte_pilote' => $this->encompte_pilote ?? 0.0,
+            'encaisse_pilote' => $this->encaisse_pilote ?? 0.0,
             'pickup_date' => $this->pickup_date->format('c'),
             'pickup_origin' => $this->pickup_origin,
-            'locationFrom' => $this->whenLoaded('localisationFrom'),
-            'locationTo' => $this->whenLoaded('localisationTo'),
+            'location_from' => $this->whenLoaded('localisationFrom'),
+            'location_to' => $this->whenLoaded('localisationTo'),
             'adresse_from' => $this->whenLoaded('adresseReservationFrom'),
             'adresse_to' => $this->whenLoaded('adresseReservationTo'),
             'passager' => new PassagerResource($this->whenLoaded('passager')),
@@ -31,7 +31,10 @@ class ReservationResource extends JsonResource
             'entreprise' => $this->whenLoaded('entreprise'),
             'account' => $this->whenLoaded('passager', function() {
                 return new UserResource($this->passager->user);
-            })
+            }),
+            'send_to_passager' => $this->send_to_passager,
+            'calendar_passager_invitation' => $this->calendar_passager_invitation,
+            'comment' => $this->comment
         ];
     }
 }
