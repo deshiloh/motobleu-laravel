@@ -19,7 +19,7 @@
                         ) !!}" label="Retourner à la liste" sm />
                     @endif
 
-                    @if($facture->reservations()->count() === 1 && $facture->montant_ttc == 0)
+                    @if($facture->montant_ttc == 0)
                         <x-button red wire:click="cancelBill">
                             Finaliser, annuler et ne pas envoyer
                         </x-button>
