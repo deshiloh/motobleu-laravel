@@ -197,7 +197,7 @@
     <tbody>
     @php
         $prixTTC = 0;
-        $reservations = $factureSelected->reservations()->get();
+        $reservations = $factureSelected->reservations()->orderBy('pickup_date')->get();
         $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
     @endphp
     @foreach($reservations as $reservation)
