@@ -102,7 +102,9 @@ Route::middleware("auth:sanctum")->group(function() {
         return \App\Http\Resources\PiloteResource::collection(Pilote::orderBy('nom')->get());
     });
 
-    Route::post('/reservation/{reservation}/{action}', [ApiController::class, 'handleAction']);
+    Route::post('/reservation/{reservation}/confirm-reservation', [ApiController::class, 'confirmationAction']);
+
+    //Route::post('/reservation/{reservation}/{action}', [ApiController::class, 'handleAction']);
 });
 
 Route::get("/test", function () {
