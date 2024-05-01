@@ -522,6 +522,13 @@ class EditionFacture extends Component
             'statut' => BillStatut::CANCEL->value
         ]);
 
+        foreach ($this->facture->reservations as $reservation) {
+            $reservation->statut = ReservationStatus::Billed->value;
+            $reservation->updateQuietly([
+                'statut' => ReservationStatus::Billed->value
+            ]);
+        }
+
         $this->notification([
             'title' => 'Facture annulée.',
             'description' => 'Vous allez être redirigé vers la page de listing entreprises',
