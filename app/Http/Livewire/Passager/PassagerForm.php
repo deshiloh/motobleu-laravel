@@ -51,6 +51,7 @@ class PassagerForm extends Component
     public function save(): void
     {
         $this->validate();
+
         try {
             if ($this->passager->exists) {
                 $this->passager->update();

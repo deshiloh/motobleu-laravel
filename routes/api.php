@@ -1,23 +1,15 @@
 <?php
 
-use App\Events\ReservationConfirmed;
 use App\Http\Controllers\ApiController;
+use App\Http\Resources\LocationResource;
 use App\Http\Resources\ReservationResource;
-use App\Mail\PiloteAttached;
-use App\Mail\PiloteDetached;
-use App\Models\AdresseReservation;
-use App\Models\CostCenter;
-use App\Models\Entreprise;
 use App\Models\Passager;
 use App\Models\Pilote;
 use App\Models\Reservation;
-use App\Models\TypeFacturation;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 
@@ -60,8 +52,8 @@ Route::post('/sanctum/token', function (Request $request) {
 Route::middleware("auth:sanctum")->group(function() {
     Route::get("/reservations", function (Request $request) {
         $statut = $request->get("statut");
-        $currentDate = Carbon::now();
-        $twoMonthsAgo = $currentDate->subMonths(1);
+//        $currentDate = Carbon::now();
+//        $twoMonthsAgo = $currentDate->subMonths(1);
 
         return ReservationResource::collection(
             Reservation::whereHas('passager.user')
@@ -74,7 +66,11 @@ Route::middleware("auth:sanctum")->group(function() {
         );
     });
 
-    Route::get("/search", function (Request $request) {
+    Route::get('/reservation/{reservation}', function (Reservation $reservation) {
+        return new ReservationResource($reservation);
+    });
+
+    Route::get("/reservations/search", function (Request $request) {
         $search = $request->get("search");
 
         if (!$request->has('search') || empty($search)) {
@@ -85,26 +81,73 @@ Route::middleware("auth:sanctum")->group(function() {
             Reservation::whereHas('passager.user')
                 ->when($request->has('search'), function (Builder $query) use ($search) {
                     $query
-                        ->where('reference', 'like', '%' . $search . '%')
+                        ->where('reference', 'like', '%' . $search)
                         ->orWhere(function(Builder $query) use ($search) {
                             return $query->whereHas('entreprise', function (Builder $query) use ($search) {
                                 return $query->where('nom', 'like', '%' . $search . '%');
                             });
                         });
                 })
-                ->orderBy('id', 'desc')
+                ->orderBy('pickup_date', 'desc')
                 ->limit(400)
                 ->get()
         );
     });
 
-    Route::get("/pilotes", function(Request $request) {
+    Route::get("/pilotes", function() {
         return \App\Http\Resources\PiloteResource::collection(Pilote::orderBy('nom')->get());
     });
 
-    Route::post('/reservation/{reservation}/confirm-reservation', [ApiController::class, 'confirmationAction']);
+    Route::get('/accounts', function() {
+        return \App\Http\Resources\UserResource::collection(
+            User::orderBy('nom')
+                ->where('is_actif', true)
+                ->get()
+        );
+    });
 
-    //Route::post('/reservation/{reservation}/{action}', [ApiController::class, 'handleAction']);
+    Route::get('/account/{user}/entreprises', function(User $user) {
+        return \App\Http\Resources\EntrepriseResource::collection(
+            $user->entreprises()
+                ->where('is_actif', true)
+                ->orderBy('nom')
+                ->get()
+        );
+    });
+
+    Route::get('/account/{user}/passengers', function(User $user) {
+        return \App\Http\Resources\PassagerResource::collection(
+            $user->passagers()
+                ->where('is_actif', true)
+                ->orderBy('nom')
+                ->get()
+        );
+    });
+
+    Route::get('/account/{user}/adresses', function(User $user) {
+        return \App\Http\Resources\AdressesReservationResource::collection(
+            $user->adresseReservations()
+                ->where('is_actif', true)
+                ->orderBy('adresse')
+                ->get()
+        );
+    });
+
+    Route::get('/locations', function () {
+        return LocationResource::collection(
+            \App\Models\Localisation::where('is_actif', true)
+                ->orderBy('nom')
+                ->get()
+        );
+    });
+
+    Route::post('/reservation/{reservation}/confirm-reservation', [ApiController::class, 'confirmationAction']);
+    Route::post('/reservation/{reservation}/update-pilote', [ApiController::class, 'updatePilote']);
+    Route::post('/reservation/{reservation}/update-statut-cancelled-billed', [ApiController::class, 'updateStatutCancelledBilled']);
+    Route::post('/reservation/{reservation}/cancel', [ApiController::class, 'cancelReservation']);
+    Route::post('/passenger/create', [ApiController::class, 'createPassager']);
+    Route::post('/address-reservation/create', [ApiController::class, 'createAddressReservation']);
+    Route::post('/reservation/create', [ApiController::class, 'createReservation']);
 });
 
 Route::get("/test", function () {

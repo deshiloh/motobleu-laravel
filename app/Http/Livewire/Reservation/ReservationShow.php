@@ -10,6 +10,7 @@ use App\Mail\PiloteAttached;
 use App\Mail\PiloteDetached;
 use App\Models\Pilote;
 use App\Models\Reservation;
+use App\Services\ReservationService;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
@@ -193,61 +194,16 @@ Votre réservation a bien été prise en compte";
         ]);
     }
 
-    public function cancelBilledAction()
+    public function cancelBilledAction(ReservationService $reservationService)
     {
-        $this->reservation->statut = ReservationStatus::CanceledToPay;
-
-        $this->reservation->update([
-            'statut' => ReservationStatus::CanceledToPay,
-        ]);
-
-        ReservationCanceledPay::dispatch($this->reservation);
+        $this->reservation = $reservationService->updateCancelledBilledStatut($this->reservation);
 
         return redirect()->to(route('admin.reservations.index'));
     }
 
-    public function cancelAction()
+    public function cancelAction(ReservationService $reservationService)
     {
-        $this->reservation->statut = ReservationStatus::Canceled;
-
-        $facture = $this->reservation->facture;
-
-        if ($facture !== null) {
-            if ($facture->reservations->count() > 1) {
-                $this->reservation->tarif = null;
-                $this->reservation->majoration = null;
-                $this->reservation->complement = null;
-
-                $this->reservation->update([
-                    'statut' => ReservationStatus::Canceled,
-                    'facture_id' => null,
-                    'tarif' => null,
-                    'majoration' => null,
-                    'complement' => null
-                ]);
-            } else {
-                $this->reservation->tarif = 0;
-                $this->reservation->majoration = 0;
-                $this->reservation->complement = 0;
-
-                $facture->montant_ttc = 0;
-
-                $this->reservation->update([
-                    'statut' => ReservationStatus::Billed,
-                    'tarif' => 0,
-                    'majoration' => 0,
-                    'complement' => 0
-                ]);
-
-                $facture->refresh();
-            }
-        } else {
-            $this->reservation->update([
-                'statut' => ReservationStatus::Canceled
-            ]);
-        }
-
-        ReservationCanceled::dispatch($this->reservation);
+        $reservationService->cancelReservation($this->reservation);
 
         return redirect()->to(route('admin.reservations.index'));
     }

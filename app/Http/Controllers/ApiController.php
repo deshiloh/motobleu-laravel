@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\ReservationStatus;
-use App\Events\ReservationConfirmed;
-use App\Http\Resources\ReservationResource;
-use App\Mail\PiloteAttached;
-use App\Mail\PiloteDetached;
+use App\Http\Requests\AddressReservationRequest;
+use App\Http\Requests\CreatePassengerRequest;
+use App\Http\Requests\ReservationRequest;
+use App\Http\Resources\AdressesReservationResource;
+use App\Http\Resources\PassagerResource;
+use App\Models\AdresseReservation;
+use App\Models\Entreprise;
+use App\Models\Localisation;
+use App\Models\Passager;
 use App\Models\Pilote;
 use App\Models\Reservation;
+use App\Models\User;
+use App\Services\ReservationService;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,140 +27,305 @@ class ApiController extends Controller
     /**
      * @param Request $request
      * @param Reservation $reservation
+     * @param ReservationService $reservationService
      * @return JsonResponse
      */
-    public function confirmationAction(Request $request, Reservation $reservation): JsonResponse
+    public function confirmationAction(Request $request, Reservation $reservation, ReservationService $reservationService): JsonResponse
     {
-        // Vérification que le pilote est bien renseigné dans la request.
-        if (!$request->has('pilote')) {
-            return new JsonResponse([
-                "message" => "Le pilote n'est pas renseigné."
-            ], 400);
-        }
+        $request->validate([
+            'pilote_id' => 'required|integer|exists:pilotes,id',
+            'message' => 'required|string'
+        ]);
 
-        if (!$request->has('message')) {
-            return new JsonResponse([
-                'message' => 'Le message de l\'email est manquant'
-            ], 400);
-        }
+        $pilote = Pilote::find($request->pilote_id);
 
-        // On vérifie que le pilote existe bien dans la base de données
-        try {
-            $pilote = Pilote::findOrFail($request->post('pilote'));
-        } catch (Exception) {
-            return new JsonResponse([
-                "message" => "Pilote non trouvé"
-            ], 404);
-        }
-
-        $reservation->statut = ReservationStatus::Confirmed->value;
-        $reservation->pilote_id = $pilote->id;
-        $reservation->encaisse_pilote = $request->post('encaisse');
-        $reservation->encompte_pilote = $request->post('encompte');
-        $reservation->comment_pilote = $request->post('commentPilote');
-
-        $reservation->update();
-
-        try {
-            \Mail::to($reservation->pilote->email)
-                ->send(new PiloteAttached($reservation));
-        } catch (Exception $exception) {
-            if (\App::environment(['local'])) {
-                ray()->exception($exception);
-            }
-
-            if (App::environment(['beta', 'prod'])) {
-                Log::channel('sentry')->error("Erreur pendant la génération Google Calendar", [
-                    'exception' => $exception,
-                    'reservation' => $reservation
-                ]);
-            }
-        }
-
-        ReservationConfirmed::dispatch($reservation, $request->post('message'));
+        $reservationService->confirmReservation(
+            $reservation,
+            $pilote,
+            $request->post('encompte'),
+            $request->post('encaisse'),
+            $request->post('comment°pilote'),
+            $request->post('message')
+        );
 
         return new JsonResponse([
             'message' => "réservation confirmée"
         ], 200);
     }
 
-    public function handleAction(Request $request, Reservation $reservation, string $action)
+    /**
+     * Met à jour le pilote d'une réservation
+     * @param Request $request
+     * @param Reservation $reservation
+     * @param ReservationService $reservationService
+     * @return JsonResponse
+     */
+    public function updatePilote(Request $request, Reservation $reservation, ReservationService $reservationService): JsonResponse
     {
-        if ($request->has('pilote')) {
-            try {
-                $pilote = Pilote::findOrFail($request->post('pilote'));
-            } catch (Exception) {
-                return new JsonResponse([
-                    "message" => "Pilote non trouvé"
-                ], 404);
+        $request->validate([
+            'pilote' => 'required|integer|exists:pilotes,id'
+        ]);
+
+        $newPilote = Pilote::findOrFail($request->post('pilote'));
+
+        try {
+            $reservationService->updatePilote($reservation, $newPilote);
+        } catch (Exception $exception) {
+            if (\App::environment(['local'])) {
+                ray()->exception($exception);
+            }
+
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error('API : Une erreur est survenue pendant la mise à jour du pilote', [
+                    'exception' => $exception,
+                    'reservation' => $reservation,
+                    'old_pilote' => $reservation->pilote,
+                    'new_pilote' => $newPilote,
+                ]);
+            }
+
+            return new JsonResponse([
+                'message' => 'Une erreur est survenue pendant la mise à jour du pilote.'
+            ], 500);
+        }
+
+        return new JsonResponse([
+            'message' => 'Pilote mis à jour'
+        ], 200);
+    }
+
+    /**
+     * Permet de modifier le statut de la réservation en annulée, mais facturable.
+     * @param Reservation $reservation
+     * @param ReservationService $reservationService
+     * @return JsonResponse
+     */
+    public function updateStatutCancelledBilled(
+        Reservation $reservation,
+        ReservationService $reservationService
+    ): JsonResponse {
+        try {
+            $reservationService->updateCancelledBilledStatut($reservation);
+        } catch (Exception $exception) {
+            if (\App::environment(['local'])) {
+                ray()->exception($exception);
+            }
+
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error('API : Une erreur est survenue pendant la mise à jour du statut de la réservation en annulée mais facturable', [
+                    'exception' => $exception,
+                    'reservation' => $reservation
+                ]);
             }
         }
 
-        $reservation->pilote_id = $pilote->id;
-        $reservation->encaisse_pilote = $request->post("encaisse");
-        $reservation->encompte_pilote = $request->post("encompte");
-        $reservation->comment_pilote = $request->post("comment_pilote");
-
-        switch ($action) {
-            case "confirmation":
-                if (!$request->has('message')) {
-                    return new JsonResponse([
-                        "message" => "message manquant"
-                    ], 400);
-                }
-
-                try {
-                    $this->handleConfirmation($reservation, $request->post('message'));
-                } catch (Exception) {
-                    return new JsonResponse([
-                        "message" => "Une erreur s'est produite pendant la confirmation de la réservation"
-                    ], 500);
-                }
-
-
-                break;
-            case "update-pilote":
-                try {
-                    $this->handleUpdatePilote($reservation);
-                } catch (Exception) {
-                    return new JsonResponse([
-                        "message" => "Une erreur s'est produite pendant la mise à jour du pilote"
-                    ], 500);
-                }
-
-                break;
-            default:
-                return new JsonResponse([
-                    "message" => "action inconnue"
-                ], 400);
-        }
-
-        $reservation->update();
-
-        return new ReservationResource($reservation);
+        return new JsonResponse([
+            'message' => 'Statut correctement mis à jour.'
+        ], 200);
     }
 
-    private function handleConfirmation(Reservation $reservation, string $message)
+    /**
+     * Endpoint d'annulation d'une réservation
+     * @param Reservation $reservation
+     * @param ReservationService $reservationService
+     * @return JsonResponse
+     */
+    public function cancelReservation(Reservation $reservation, ReservationService $reservationService): JsonResponse
     {
-        $reservation->statut = \App\Enum\ReservationStatus::Confirmed;
-        $reservation->refresh();
+        try {
+            $reservationService->cancelReservation($reservation);
+            return new JsonResponse([
+                'message' => 'Réservation annulée'
+            ], 200);
+        } catch (Exception $exception) {
+            if (\App::environment(['local'])) {
+                ray()->exception($exception);
+            }
 
-        \Mail::to($reservation->pilote->email)
-            ->send(new PiloteAttached($reservation));
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error("API : Erreur pendant l'annulation de la réservation", [
+                    'exception' => $exception,
+                    'reservation' => $reservation,
+                ]);
+            }
 
-        ReservationConfirmed::dispatch($reservation, $message);
+            return new JsonResponse([
+                'message' => "Une erreur est survenue pendant l'annulation de la réservation."
+            ], 500);
+        }
     }
 
-    private function handleUpdatePilote(Reservation $reservation)
+    /**
+     * Endpoint de création d'un passager
+     * @param CreatePassengerRequest $request
+     * @return PassagerResource|JsonResponse
+     */
+    public function createPassager(CreatePassengerRequest $request): JsonResponse|PassagerResource
     {
-        if($reservation->isDirty('pilote_id')) {
-            $currentPilote = Pilote::find($reservation->getOriginal('pilote_id'));
-            \Mail::to($currentPilote->email)->send(new PiloteDetached($reservation));
+        $validated = $request->validated();
 
-            $newPilote = Pilote::find($reservation->pilote_id);
-            \Mail::to($newPilote->email)->send(new PiloteAttached($reservation));
+        $user = User::find($validated['user_id']);
+        $passenger = new Passager();
 
-            $reservation->pilote()->associate($newPilote);
+        try {
+            $passenger->nom = $validated['nom'];
+            $passenger->email = $validated['email'];
+            $passenger->telephone = $validated['phone'];
+            $passenger->portable = $validated['portable'];
+
+            $user->passagers()->save($passenger);
+
+            return new PassagerResource($passenger);
+        } catch (Exception $exception) {
+            if (\App::environment(['local'])) {
+                ray()
+                    ->exception($exception);
+            }
+
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error("API : Erreur pendant la création du passager", [
+                    'exception' => $exception,
+                    'data' => $validated
+                ]);
+            }
+
+            return new JsonResponse([
+                'message' => "Erreur pendant la création du passager."
+            ], 500);
         }
+    }
+
+    /**
+     * Endpoint de création d'une nouvelle adresse de réservation
+     * @param AddressReservationRequest $request
+     * @return AdressesReservationResource|JsonResponse
+     */
+    public function createAddressReservation(AddressReservationRequest $request)
+    {
+        $validated = $request->validated();
+        $address = new AdresseReservation();
+
+        try {
+            $address->adresse = $validated['adresse'];
+            $address->adresse_complement = $validated['adresse_complement'];
+            $address->ville = $validated['ville'];
+            $address->code_postal = $validated['code_postal'];
+            $address->user_id = $validated['user_id'];
+
+            $address->save();
+
+            return new AdressesReservationResource(
+                $address
+            );
+        } catch (Exception $exception) {
+            if (\App::environment(['local'])) {
+                ray()->exception($exception);
+            }
+
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error('API : Erreur pendant la création de l\'adresse de réservation', [
+                    'exception' => $exception,
+                    'data' => $validated
+                ]);
+            }
+
+            return new JsonResponse([
+                'message' => 'Erreur pendant la création de l\'adresse.'
+            ], 500);
+        }
+    }
+
+    /**
+     * Endpoint de création d'une réservation
+     */
+    public function createReservation(ReservationRequest $request)
+    {
+        $validated = $request->validated();
+
+        $reservation = new Reservation();
+        $passenger = Passager::find($validated['passager_id']);
+        $entreprise = Entreprise::find($validated['entreprise_id']);
+
+        try {
+            $reservation->pickup_date = Carbon::make($validated['pickup_date']);
+            $reservation->passager()->associate($passenger);
+            $reservation->entreprise()->associate($entreprise);
+
+            // Gestion du lieu de prise en charge
+            $reservation = $this->handleFromReservation(
+                $reservation,
+                $validated['location_from_id'],
+                $validated['address_from_id']
+            );
+
+            // Gestion du lieu de destination
+            $reservation = $this->handleToReservation(
+                $reservation,
+                $validated['location_to_id'],
+                $validated['address_to_id']
+            );
+
+            if (!empty($validated['steps'])) {
+                $reservation->has_steps = true;
+                $reservation->steps = $validated['steps'];
+            }
+
+            $reservation->comment = $validated['comment'];
+
+            $reservation->save();
+        } catch (Exception $exception) {
+            if (\App::environment(['local'])) {
+                ray($validated)->exception($exception);
+            }
+
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error('API : Erreur pendant la création de la réservation', [
+                    'exception' => $exception,
+                    'data' => $validated
+                ]);
+            }
+
+            return new JsonResponse([
+                'message' => 'Erreur pendant la création de la réservation'
+            ], 500);
+        }
+
+        return new JsonResponse([
+            'message' => 'Réservation correctement créée.'
+        ], 201);
+    }
+
+    private function handleFromReservation(Reservation $reservation, ?int $idLocationFrom, ?int $idAddressFrom): Reservation
+    {
+        if ($idLocationFrom != null) {
+            $location = Localisation::find($idLocationFrom);
+            $reservation->localisationFrom()->associate($location);
+            $reservation->adresseReservationFrom()->disassociate();
+        }
+
+        if ($idAddressFrom != null) {
+            $address = AdresseReservation::find($idAddressFrom);
+            $reservation->adresseReservationFrom()->associate($address);
+            $reservation->localisationFrom()->disassociate();
+        }
+
+        return $reservation;
+    }
+
+    private function handleToReservation(Reservation $reservation, ?int $idLocationTo, ?int $idAddressTo): Reservation
+    {
+        if ($idLocationTo != null) {
+            $location = Localisation::find($idLocationTo);
+            $reservation->localisationTo()->associate($location);
+            $reservation->adresseReservationTo()->disassociate();
+        }
+
+        if ($idAddressTo != null) {
+            $address = AdresseReservation::find($idAddressTo);
+            $reservation->adresseReservationTo()->associate($address);
+            $reservation->localisationTo()->disassociate();
+        }
+
+        return $reservation;
     }
 }

@@ -4,8 +4,8 @@
         Réservation : <span class="text-blue-500">{{ $reservation->reference }}</span>
         <x-slot:right>
             <div class="flex items-center justify-center lg:space-x-2 flex-col lg:flex-row space-y-3 lg:space-y-0">
-                @if(!is_null($reservation->event_id) && $reservation->getEvent() !== false)
-                    <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled" />
+                @if($eventLinkHtml = $reservation->getEvent())
+                    <x-button icon="calendar" href="{{ $eventLinkHtml->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled" />
                 @endif
 
                 <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled" />
