@@ -130,20 +130,21 @@ class Reservation extends Model
     {
         return $query->where('statut', ReservationStatus::Created);
     }
-    
-    public function getEvent(): bool|Google_Service_Calendar_Event
-    {
-        $event = false;
 
+    /**
+     * @return false|Google_Service_Calendar_Event
+     */
+    public function getEvent(): ?Google_Service_Calendar_Event
+    {
         if ($this->event_id) {
             try {
-                $event = Event::find($this->event_id)->googleEvent;
-            } catch (\Exception) {
-                return false;
+                return Event::find($this->event_id)->googleEvent;
+            } catch (\Exception $exception) {
+                return null;
             }
         }
 
-        return $event;
+        return null;
     }
 
     public function getDisplayFromAttribute(): ?string

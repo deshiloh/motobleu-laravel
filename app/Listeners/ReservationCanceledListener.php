@@ -33,51 +33,53 @@ class ReservationCanceledListener
      */
     public function handle(ReservationCanceled $event): void
     {
+        $reservation = $event->reservation;
+
         try {
-            $this->calendarService->deleteEvent($event->reservation);
+            $this->calendarService->deleteEvent($reservation);
         } catch (\Exception $exception) {
             if (App::environment(['local'])) {
                 ray([
-                    'reservation' => $event->reservation
+                    'reservation' => $reservation
                 ])->exception($exception);
             }
+
             if (App::environment(['beta', 'prod'])) {
                 Log::channel('sentry')->error("Erreur pendant la suppression de l'évènement", [
                     'exception' => $exception,
-                    'reservation' => $event->reservation
+                    'reservation' => $reservation
                 ]);
             }
         }
 
         // Envois de l'email d'annulation de réservation.
         $recipients = [];
-        if ($event->reservation->send_to_passager) {
-            $recipients[] = $event->reservation->passager->email;
+        if ($reservation->send_to_passager) {
+            $recipients[] = $reservation->passager->email;
         }
 
-        $recipients[] = $event->reservation->passager->user->email;
+        $recipients[] = $reservation->passager->user->email;
 
         foreach ($recipients as $recipient) {
             try {
                 Mail::to($recipient)
-                    ->send(new \App\Mail\ReservationCanceled($event->reservation));
+                    ->send(new \App\Mail\ReservationCanceled($reservation));
             } catch (\Exception $exception) {
                 if (App::environment(['local'])) {
                     ray([
-                        'reservation' => $event->reservation
+                        'reservation' => $reservation
                     ])->exception($exception);
                 }
+
                 if (App::environment(['beta', 'prod'])) {
                     Log::channel('sentry')->error("Erreur pendant l'envoi de mail d'annulation", [
                         'exception' => $exception,
-                        'reservation' => $event->reservation
+                        'reservation' => $reservation
                     ]);
                 }
+
                 continue;
             }
         }
-
-        Mail::to($event->reservation->pilote->email)
-            ->send(new PiloteDetached($event->reservation));
     }
 }

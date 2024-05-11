@@ -2,8 +2,17 @@
 
 namespace App\Services;
 
+use App\Enum\ReservationStatus;
+use App\Events\ReservationCanceled;
+use App\Events\ReservationConfirmed;
+use App\Mail\PiloteAttached;
+use App\Mail\PiloteDetached;
+use App\Models\Pilote;
 use App\Models\Reservation;
 use app\Settings\BillSettings;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class ReservationService
 {
@@ -166,5 +175,170 @@ class ReservationService
             $rules['newAdresseReservationToBack.code_postal'] = 'required';
             $rules['newAdresseReservationToBack.ville'] = 'required';
         }
+    }
+
+    /**
+     * Permet de passer une réservation en statut : annulée, mais facturable
+     * @param Reservation $reservation
+     * @return Reservation
+     */
+    public function updateCancelledBilledStatut(Reservation $reservation): Reservation
+    {
+        $reservation->update([
+            'statut' => ReservationStatus::CanceledToPay->value
+        ]);
+
+        $reservation->refresh();
+
+        ReservationCanceled::dispatch($reservation);
+
+        return $reservation;
+    }
+
+    /**
+     * Permet de mettre à jour le pilote de la réservation
+     * @param Reservation $reservation
+     * @param Pilote $newPilote
+     * @return Reservation
+     */
+    public function updatePilote(Reservation $reservation, Pilote $newPilote): Reservation
+    {
+        $currentPilote = $reservation->pilote;
+        $reservation->pilote()->associate($newPilote);
+        $reservation->save();
+
+        try {
+            \Mail::to($currentPilote->email)->send(new PiloteDetached($reservation));
+        } catch (\Exception $exception) {
+            if (\App::environment(['local'])) {
+                ray()->exception($exception);
+            }
+
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error('Erreur pendant l\'envoi de l\'email à l\'ancien pilote', [
+                    'exception' => $exception,
+                    'reservation' => $reservation,
+                    'pilote' => $currentPilote,
+                ]);
+            }
+        }
+
+        try {
+            \Mail::to($newPilote->email)->send(new PiloteAttached($reservation));
+        } catch (\Exception $exception) {
+            if (\App::environment(['local'])) {
+                ray()->exception($exception);
+            }
+
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error('Erreur pendant l\'envoi de l\'email au nouveau pilote', [
+                    'exception' => $exception,
+                    'reservation' => $reservation,
+                    'pilote' => $newPilote,
+                ]);
+            }
+        }
+
+        return $reservation;
+    }
+
+    /**
+     * Permet de confirmer une réservation
+     * @param Reservation $reservation
+     * @param Pilote $pilote
+     * @param int $encompte
+     * @param int $encaisse
+     * @param string|null $commentPilote
+     * @param string $message
+     * @return Reservation
+     */
+    public function confirmReservation(
+        Reservation $reservation,
+        Pilote $pilote,
+        int $encompte,
+        int $encaisse,
+        ?string $commentPilote,
+        string $message
+    ): Reservation {
+        $reservation->statut = ReservationStatus::Confirmed->value;
+        $reservation->encaisse_pilote = $encaisse;
+        $reservation->encompte_pilote = $encompte;
+        $reservation->comment_pilote = $commentPilote;
+
+        $reservation->pilote()->associate($pilote);
+
+        $reservation->update();
+        $reservation->refresh();
+
+        try {
+            \Mail::to($reservation->pilote->email)
+                ->send(new PiloteAttached($reservation));
+        } catch (\Exception $exception) {
+            if (\App::environment(['local'])) {
+                ray()->exception($exception);
+            }
+
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error("Erreur pendant l'envoi de l'email au pilote", [
+                    'exception' => $exception,
+                    'reservation' => $reservation,
+                    'pilote' => $pilote,
+                ]);
+            }
+        }
+
+        ReservationConfirmed::dispatch($reservation, $message ?? '');
+
+        return $reservation;
+    }
+
+    /**
+     * Annule une réservation
+     * @param Reservation $reservation
+     * @return Reservation
+     */
+    public function cancelReservation(Reservation $reservation): Reservation
+    {
+        $facture = $reservation->facture;
+        $pilote = $reservation->pilote;
+
+        $reservation->statut = ReservationStatus::Canceled->value;
+        $reservation->encompte_pilote = null;
+        $reservation->encaisse_pilote = null;
+
+        if ($facture !== null) {
+            if ($facture->reservations->count() > 1) {
+                $reservation->facture()->disassociate();
+                $reservation->tarif = null;
+                $reservation->majoration = null;
+                $reservation->complement = null;
+            } else {
+                $reservation->statut = ReservationStatus::Billed->value;
+                $reservation->tarif = 0;
+                $reservation->majoration = 0;
+                $reservation->complement = 0;
+
+                $facture->montant_ttc = 0;
+                $facture->update();
+
+                $facture->refresh();
+            }
+        }
+
+        $reservation->pilote()->disassociate();
+        Mail::to($pilote->email)
+            ->send(new PiloteDetached($reservation));
+
+        $reservation->update();
+        $reservation->refresh();
+
+        ReservationCanceled::dispatch($reservation);
+
+        return $reservation;
+    }
+
+    public function createReservation(Reservation $reservation)
+    {
+
     }
 }
