@@ -199,12 +199,23 @@ class ReservationService
      * Permet de mettre à jour le pilote de la réservation
      * @param Reservation $reservation
      * @param Pilote $newPilote
+     * @param float $encompte
+     * @param float $encaisse
+     * @param string $commentPilote
      * @return Reservation
      */
-    public function updatePilote(Reservation $reservation, Pilote $newPilote): Reservation
-    {
+    public function updatePilote(
+        Reservation $reservation,
+        Pilote $newPilote,
+        float $encompte,
+        float $encaisse,
+        string $commentPilote
+    ): Reservation {
         $currentPilote = $reservation->pilote;
         $reservation->pilote()->associate($newPilote);
+        $reservation->encaisse_pilote = $encaisse;
+        $reservation->encompte_pilote = $encompte;
+        $reservation->comment_pilote = $commentPilote;
         $reservation->save();
 
         try {
@@ -325,9 +336,11 @@ class ReservationService
             }
         }
 
-        $reservation->pilote()->disassociate();
-        Mail::to($pilote->email)
-            ->send(new PiloteDetached($reservation));
+        if ($reservation->pilote != null) {
+            $reservation->pilote()->disassociate();
+            Mail::to($pilote->email)
+                ->send(new PiloteDetached($reservation));
+        }
 
         $reservation->update();
         $reservation->refresh();
@@ -335,10 +348,5 @@ class ReservationService
         ReservationCanceled::dispatch($reservation);
 
         return $reservation;
-    }
-
-    public function createReservation(Reservation $reservation)
-    {
-
     }
 }
