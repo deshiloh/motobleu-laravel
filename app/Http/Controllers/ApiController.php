@@ -34,7 +34,8 @@ class ApiController extends Controller
     {
         $request->validate([
             'pilote_id' => 'required|integer|exists:pilotes,id',
-            'message' => 'required|string'
+            'message' => 'required|string',
+            'comment_pilote' => 'nullable|string',
         ]);
 
         $pilote = Pilote::find($request->pilote_id);
@@ -44,7 +45,7 @@ class ApiController extends Controller
             $pilote,
             $request->post('encompte'),
             $request->post('encaisse'),
-            $request->post('comment°pilote'),
+            $request->post('comment_pilote'),
             $request->post('message')
         );
 
@@ -63,13 +64,20 @@ class ApiController extends Controller
     public function updatePilote(Request $request, Reservation $reservation, ReservationService $reservationService): JsonResponse
     {
         $request->validate([
-            'pilote' => 'required|integer|exists:pilotes,id'
+            'pilote_id' => 'required|integer|exists:pilotes,id',
+            'comment_pilote' => 'nullable|string',
         ]);
 
-        $newPilote = Pilote::findOrFail($request->post('pilote'));
+        $newPilote = Pilote::find($request->post('pilote_id'));
 
         try {
-            $reservationService->updatePilote($reservation, $newPilote);
+            $reservationService->updatePilote(
+                $reservation,
+                $newPilote,
+                $request->post('encompte'),
+                $request->post('encaisse'),
+                $request->post('comment_pilote')
+            );
         } catch (Exception $exception) {
             if (\App::environment(['local'])) {
                 ray()->exception($exception);
@@ -132,6 +140,8 @@ class ApiController extends Controller
      */
     public function cancelReservation(Reservation $reservation, ReservationService $reservationService): JsonResponse
     {
+        sleep(10);
+
         try {
             $reservationService->cancelReservation($reservation);
             return new JsonResponse([
