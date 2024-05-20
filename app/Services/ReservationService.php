@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enum\ReservationStatus;
 use App\Events\ReservationCanceled;
+use App\Events\ReservationCanceledPay;
 use App\Events\ReservationConfirmed;
 use App\Mail\PiloteAttached;
 use App\Mail\PiloteDetached;
@@ -190,7 +191,7 @@ class ReservationService
 
         $reservation->refresh();
 
-        ReservationCanceled::dispatch($reservation);
+        ReservationCanceledPay::dispatch($reservation);
 
         return $reservation;
     }
