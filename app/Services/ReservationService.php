@@ -202,7 +202,7 @@ class ReservationService
      * @param Pilote $newPilote
      * @param float $encompte
      * @param float $encaisse
-     * @param string $commentPilote
+     * @param string|null $commentPilote
      * @return Reservation
      */
     public function updatePilote(
@@ -210,7 +210,7 @@ class ReservationService
         Pilote $newPilote,
         float $encompte,
         float $encaisse,
-        string $commentPilote
+        ?string $commentPilote
     ): Reservation {
         $currentPilote = $reservation->pilote;
         $reservation->pilote()->associate($newPilote);
