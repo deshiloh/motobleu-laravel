@@ -140,14 +140,13 @@ Route::middleware("auth:sanctum")->group(function() {
                 ->get()
         );
     });
-
+    Route::post('/reservation/create', [ApiController::class, 'createReservation']);
     Route::post('/reservation/{reservation}/confirm-reservation', [ApiController::class, 'confirmationAction']);
     Route::post('/reservation/{reservation}/update-pilote', [ApiController::class, 'updatePilote']);
     Route::post('/reservation/{reservation}/update-statut-cancelled-billed', [ApiController::class, 'updateStatutCancelledBilled']);
     Route::post('/reservation/{reservation}/cancel', [ApiController::class, 'cancelReservation']);
     Route::post('/passenger/create', [ApiController::class, 'createPassager']);
     Route::post('/address-reservation/create', [ApiController::class, 'createAddressReservation']);
-    Route::post('/reservation/create', [ApiController::class, 'createReservation']);
 });
 
 Route::get("/test", function () {
