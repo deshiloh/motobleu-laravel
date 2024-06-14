@@ -65,7 +65,7 @@ class EditionFacture extends Component
     public function getRules(): array
     {
         $rules = [
-            'email.address' => 'required|email',
+            'email.address' => 'required',
             'email.message' => 'required',
             'email.complement' => 'nullable',
             'isAcquitte' => 'bool'
