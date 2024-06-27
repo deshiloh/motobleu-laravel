@@ -141,6 +141,7 @@ Route::middleware("auth:sanctum")->group(function() {
         );
     });
     Route::post('/reservation/create', [ApiController::class, 'createReservation']);
+    Route::post('/reservation/{reservation}/update', [ApiController::class, 'updateReservation']);
     Route::post('/reservation/{reservation}/confirm-reservation', [ApiController::class, 'confirmationAction']);
     Route::post('/reservation/{reservation}/update-pilote', [ApiController::class, 'updatePilote']);
     Route::post('/reservation/{reservation}/update-statut-cancelled-billed', [ApiController::class, 'updateStatutCancelledBilled']);
