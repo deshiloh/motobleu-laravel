@@ -50,7 +50,7 @@ class InvoiceService
         $months = array_unique($months);
 
         $invoice = Invoice::make($facture->reference)
-            ->date($facture->created_at)
+            ->date($facture->billed_at ?? $facture->created_at)
             ->dateFormat('d/m/Y')
             ->seller($physique)
             ->buyer($facturation)

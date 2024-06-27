@@ -22,6 +22,7 @@ use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Exception;
 use WireUi\Traits\Actions;
+use function Symfony\Component\String\s;
 
 class EditionFacture extends Component
 {
@@ -468,12 +469,14 @@ class EditionFacture extends Component
                 $reservation->statut = ReservationStatus::Billed;
                 $reservation->updateQuietly();
             }
+
+            $this->facture->updateQuietly([
+                'statut' => BillStatut::COMPLETED->value,
+                'billed_at' => Carbon::now()
+            ]);
         }
 
-
-        $this->facture->updateQuietly([
-            'statut' => BillStatut::COMPLETED->value
-        ]);
+        $this->facture->refresh();
 
         BillCreated::dispatch($this->facture, $this->email);
 

@@ -26,7 +26,8 @@ class Facture extends Model
 
     protected $casts = [
         'statut' => BillStatut::class,
-        'is_acquitte' => 'boolean'
+        'is_acquitte' => 'boolean',
+        'billed_at' => 'datetime'
     ];
 
     public function reference(): Attribute

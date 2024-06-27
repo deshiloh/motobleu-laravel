@@ -128,7 +128,13 @@
     @if($facture)
         <x-bloc-content>
             <h3 class="text-xl font-semibold">Informations de la facture</h3>
-            <div class="mb-3">Date de création : {{ $this->facture->created_at->format('d/m/Y H:i') }}</div>
+            <div class="mb-3 flex flex-col">
+                <span>Date de création : {{ $this->facture->created_at->format('d/m/Y H:i') }}</span>
+                @if($this->facture->billed_at)
+                    <span>Date de finalisation : {{ $this->facture->billed_at->format('d/m/Y H:i') }}</span>
+                @endif
+            </div>
+
             <div>Référence : <span class="text-motobleu font-semibold">{{ $this->facture->reference }}</span></div>
             <div>Période : {{ sprintf("%02d", $this->facture->month) }} / {{ $this->facture->year }}</div>
 
