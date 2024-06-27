@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddressReservationRequest;
 use App\Http\Requests\CreatePassengerRequest;
 use App\Http\Requests\ReservationRequest;
+use App\Http\Requests\UpdateReservationRequest;
 use App\Http\Resources\AdressesReservationResource;
 use App\Http\Resources\PassagerResource;
+use App\Http\Resources\ReservationResource;
 use App\Models\AdresseReservation;
 use App\Models\Entreprise;
 use App\Models\Localisation;
@@ -24,6 +26,41 @@ use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
 {
+    /**
+     * Endpoint qui permet de mettre à jour une réservation
+     * @param UpdateReservationRequest $request
+     * @param Reservation $reservation
+     * @param ReservationService $reservationService
+     * @return JsonResponse
+     */
+    public function updateReservation(
+        UpdateReservationRequest $request,
+        Reservation $reservation,
+        ReservationService $reservationService
+    ): JsonResponse {
+        $request->validated();
+
+        try {
+            $reservationService->updateReservation($reservation, $request->all());
+        } catch (Exception $exception) {
+            if (App::environment('local')) {
+                ray()->exception($exception);
+            }
+
+            if (App::environment(['beta', 'prod'])) {
+                Log::channel('sentry')->error('API : Une erreur est survenue pendant la mise à jour de la réservation', [
+                    'exception' => $exception,
+                    'datas' => $request->all(),
+                ]);
+            }
+        }
+
+        return new JsonResponse([
+            'message' => 'La réservation a bien été mise à jour',
+            'reservation' => new ReservationResource($reservation)
+        ], 200);
+    }
+
     /**
      * @param Request $request
      * @param Reservation $reservation

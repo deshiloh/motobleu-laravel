@@ -8,6 +8,7 @@ use App\Events\ReservationCanceledPay;
 use App\Events\ReservationConfirmed;
 use App\Mail\PiloteAttached;
 use App\Mail\PiloteDetached;
+use App\Mail\ReservationUpdated;
 use App\Models\Pilote;
 use App\Models\Reservation;
 use app\Settings\BillSettings;
@@ -347,6 +348,26 @@ class ReservationService
         $reservation->refresh();
 
         ReservationCanceled::dispatch($reservation);
+
+        return $reservation;
+    }
+
+    /**
+     * Mettre à jour la réservation
+     * @param Reservation $reservation
+     * @param array $datas
+     * @return Reservation
+     */
+    public function updateReservation(Reservation $reservation, array $datas): Reservation
+    {
+        $contacts = [];
+
+        $reservation->
+        $reservation->entreprise_id = $datas['company_id'];
+
+        foreach ($contacts as $contact) {
+            Mail::to($contact)->send(new ReservationUpdated($reservation));
+        }
 
         return $reservation;
     }
