@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
 use LaravelDaily\Invoices\Classes\Party;
 use LaravelDaily\Invoices\Invoice;
@@ -25,6 +26,7 @@ class InvoiceService
     public static function generateInvoice(Facture $facture): Invoice
     {
         $entreprise = (new self())->getEntreprise($facture);
+        $months = [];
 
         $physique = new Party([
             'name' => $entreprise->nom,
@@ -37,6 +39,15 @@ class InvoiceService
         ]);
 
         $invoiceDate = Carbon::create($facture->year, $facture->month, 1, 0, 0, 0, 'Europe/Paris');
+        $reservations = $facture->reservations()
+            ->orderBy('pickup_date')
+            ->get();
+
+        foreach ($reservations as $reservation) {
+            $months[] = $reservation->pickup_date->monthName;
+        }
+
+        $months = array_unique($months);
 
         $invoice = Invoice::make($facture->reference)
             ->date($facture->created_at)
@@ -50,7 +61,7 @@ class InvoiceService
             ->addItem(
                 (new InvoiceItem())
                     ->title('Transports pour la période :')
-                    ->description($invoiceDate->monthName . ' ' . $invoiceDate->year)
+                    ->description(implode(', ', $months) . ' ' . $invoiceDate->year)
                     ->pricePerUnit($facture->montant_ht)
             )
             ->taxRate(10)
@@ -89,15 +100,17 @@ class InvoiceService
             ->first();
     }
 
-    /**
-     * @param Entreprise $entreprise
-     * @param AdresseEntrepriseTypeEnum $adresseEntrepriseType
-     * @return AdresseEntreprise|null
-     */
-    private function getAdresse(Entreprise $entreprise, AdresseEntrepriseTypeEnum $adresseEntrepriseType): ?AdresseEntreprise
+    private function getBilledPeriod(Facture $facture): array
     {
-        return AdresseEntreprise::where('entreprise_id', $entreprise->id)
-            ->where('type', $adresseEntrepriseType)
-            ->first();
+        $months = [];
+        $reservations = $facture->reservations()
+            ->orderBy('pickup_date')
+            ->get();
+
+        foreach ($reservations as $reservation) {
+            $months[] = $reservation->pickup_date->monthName;
+        }
+
+        return array_unique($months);
     }
 }

@@ -45,16 +45,19 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
     private string $ttcTextCoordinate;
     private string $ttcValueCoordinate;
     private Entreprise $entreprise;
-    private Carbon|false $datePeriod;
+    private array $datePeriod = [];
     private BillSettings $billSettings;
     private Facture $facture;
+    private int $year;
+    private int $month;
 
     public function __construct(int $year, int $month, Entreprise $entreprise, int $factureId)
     {
+        $this->year = $year;
+        $this->month = $month;
         $this->facture = Facture::find($factureId);
 
         $this->billSettings = app(BillSettings::class);
-        $this->datePeriod = Carbon::create($year, $month, '1');
 
         $htTextColumn = in_array($entreprise->id, $this->billSettings->entreprise_without_command_field) ? 'H' : 'I';
         $tvaTextColumn = in_array($entreprise->id, $this->billSettings->entreprise_without_command_field) ? 'H' : 'I';
@@ -64,6 +67,8 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
         $this->lastColumn = in_array($entreprise->id, $this->billSettings->entreprise_without_command_field) ? 'K' : 'J';
         $this->entreprise = $entreprise;
         $this->reservations = $this->getReservations();
+
+        $this->calculPeriod();
 
         if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
             $this->lastColumn = 'K';
@@ -269,7 +274,7 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $sheet->getSheet()->getCell('A14')->setValue(
-                    'Période : ' . $this->datePeriod->monthName . ' ' . $this->datePeriod->year
+                    'Période : ' . implode(', ', $this->datePeriod) . ' ' . $this->year
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $sheet->getSheet()->getCell('A15')->setValue(
@@ -284,7 +289,7 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $title = $sheet->getSheet()->getCell('G20')->setValue(
-                    'RELEVE DE COURSES / PERIODE ' .$this->datePeriod->monthName . ' ' . $this->datePeriod->year
+                    'RELEVE DE COURSES / PERIODE ' . implode(', ', $this->datePeriod) . ' ' . $this->year
                 );
 
                 $title->getStyle()->getFont()->setBold(true);
@@ -482,5 +487,18 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
             'A' => 20,
             'G' => 40,
         ];
+    }
+
+    private function calculPeriod(): void
+    {
+        $months = [];
+
+        foreach ($this->reservations as $reservation) {
+            $months[] = $reservation->pickup_date->monthName;
+        }
+
+        $months = array_unique($months);
+
+        $this->datePeriod = $months;
     }
 }
