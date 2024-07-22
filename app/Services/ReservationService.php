@@ -12,9 +12,11 @@ use App\Mail\ReservationUpdated;
 use App\Models\Pilote;
 use App\Models\Reservation;
 use app\Settings\BillSettings;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class ReservationService
 {
@@ -360,14 +362,26 @@ class ReservationService
      */
     public function updateReservation(Reservation $reservation, array $datas): Reservation
     {
-        $contacts = [];
-
-        $reservation->
         $reservation->entreprise_id = $datas['company_id'];
+        $reservation->passager_id = $datas['passenger_id'];
+        $reservation->pickup_date = Carbon::parse($datas['pickup_date']);
+        $reservation->adresse_reservation_from_id = $datas['address_from_id'];
+        $reservation->adresse_reservation_to_id = $datas['address_to_id'];
+        $reservation->localisation_from_id = $datas['localisation_from_id'];
+        $reservation->localisation_to_id = $datas['localisation_to_id'];
+        $reservation->steps = $datas['steps'];
+        $reservation->has_steps = !is_null($datas['steps']);
+        $reservation->send_to_passager = $datas['send_to_passager'];
+        $reservation->calendar_passager_invitation = $datas['calendar_passager_invitation'];
 
-        foreach ($contacts as $contact) {
-            Mail::to($contact)->send(new ReservationUpdated($reservation));
+        if ($reservation->statut === ReservationStatus::Canceled) {
+            $reservation->statut = ReservationStatus::Created->value;
         }
+
+        $reservation->save();
+        $reservation->refresh();
+
+        \App\Events\ReservationUpdated::dispatch($reservation);
 
         return $reservation;
     }
