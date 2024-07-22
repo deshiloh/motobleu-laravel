@@ -41,7 +41,7 @@ class ApiController extends Controller
         $request->validated();
 
         try {
-            $reservationService->updateReservation($reservation, $request->all());
+            $reservation = $reservationService->updateReservation($reservation, $request->all());
         } catch (Exception $exception) {
             if (App::environment('local')) {
                 ray()->exception($exception);

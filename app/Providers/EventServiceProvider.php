@@ -6,10 +6,12 @@ use App\Events\BillCreated;
 use App\Events\ReservationCanceled;
 use App\Events\ReservationCanceledPay;
 use App\Events\ReservationConfirmed;
+use App\Events\ReservationUpdated;
 use App\Listeners\BillCreatedListener;
 use App\Listeners\ReservationCanceledListener;
 use App\Listeners\ReservationCanceledPayListener;
 use App\Listeners\ReservationConfirmedListener;
+use App\Listeners\ReservationUpdatedListener;
 use App\Listeners\SendEmailNotification;
 use App\Models\Reservation;
 use App\Models\User;
@@ -34,6 +36,10 @@ class EventServiceProvider extends ServiceProvider
 
         ReservationConfirmed::class => [
             ReservationConfirmedListener::class
+        ],
+
+        ReservationUpdated::class => [
+            ReservationUpdatedListener::class
         ],
 
         ReservationCanceled::class => [
