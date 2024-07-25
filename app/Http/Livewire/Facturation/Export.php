@@ -49,6 +49,15 @@ class Export extends Component
         }, 'export_factures.pdf');
     }
 
+    public function exportExcelAction(ExportService $exportService)
+    {
+        return $exportService->exportFactureExcel(
+            $this->dateDebut,
+            $this->dateFin,
+            $this->entreprise
+        );
+    }
+
     private function getFactures(): LengthAwarePaginator
     {
         return Facture::has('reservations')

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enum\BillStatut;
 use App\Enum\ReservationStatus;
+use App\Exports\FactureExport;
 use App\Exports\ReservationPiloteExport;
 use App\Models\Entreprise;
 use App\Models\Facture;
@@ -59,6 +60,12 @@ class ExportService
             'fin' => $dateFin,
             'factures' => $factures
         ]);
+    }
+
+    public function exportFactureExcel(?string $dateDebut, ?string $dateFin, ?int $entreprise)
+    {
+        $name = sprintf('facture_%s_%s_%s.xlsx', $dateDebut, $dateFin, $entreprise);
+        return Excel::download(new FactureExport($dateDebut, $dateFin, $entreprise), $name);
     }
 
     /**

@@ -41,8 +41,9 @@
                     wire:model="perPage"
                 />
             </div>
-            <div class="flex items-end">
+            <div class="flex items-end space-x-4">
                 <x-button label="Exporter" primary wire:click="exportAction"/>
+                <x-button label="Exporter Excel" primary wire:click="exportExcelAction()"/>
             </div>
         </div>
         <x-datatable>
