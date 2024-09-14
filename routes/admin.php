@@ -15,26 +15,34 @@ use App\Http\Controllers\Admin\FacturationsController;
 use App\Http\Controllers\Admin\LocalisationController;
 use App\Http\Controllers\Admin\PassagerController;
 use App\Http\Controllers\Admin\PiloteController;
+use App\Http\Controllers\Admin\StatsController;
 use App\Http\Controllers\Admin\TypeFacturationController;
 use App\Http\Controllers\AdresseReservationController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Livewire\Account\AccountForm;
 use App\Http\Livewire\Account\EditPasswordForm;
+use App\Http\Livewire\Admin\PermissionForm;
 use App\Http\Livewire\AdresseReservation\AdresseReservationForm;
+use App\Http\Livewire\Carousel\CarouselDataTable;
 use App\Http\Livewire\CostCenter\CostCenterForm;
 use App\Http\Livewire\Entreprise\AdresseEntrepriseForm;
 use App\Http\Livewire\Entreprise\EntrepriseForm;
 use App\Http\Livewire\Facturation\EditionFacture;
+use App\Http\Livewire\Facturation\Export;
 use App\Http\Livewire\Facturation\FacturationDataTable;
 use App\Http\Livewire\Localisation\LocalisationForm;
+use App\Http\Livewire\Pages\PageForm;
 use App\Http\Livewire\Passager\PassagerForm;
 use App\Http\Livewire\Pilote\PiloteForm;
+use App\Http\Livewire\Pilote\PiloteStatMonth;
+use App\Http\Livewire\Pilote\PiloteStatYear;
 use App\Http\Livewire\Pilote\RecapReservationPilote;
 use App\Http\Livewire\Reservation\ReservationForm;
 use App\Http\Livewire\Reservation\ReservationShow;
+use App\Http\Livewire\Settings\SettingsForm;
 use App\Http\Livewire\TypeFacturation\TypeFacturationForm;
 use App\Models\Reservation;
-use App\Models\User;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('/admin')->name('admin.')->group(function () {
 
@@ -90,6 +98,10 @@ Route::prefix('/admin')->name('admin.')->group(function () {
         ->name('pilotes.recap-reservation');
     Route::resource('pilotes', PiloteController::class)
         ->except(['show', 'create', 'store', 'edit', 'update']);
+    Route::get('pilotes/statistiques-mensuelle', PiloteStatMonth::class)
+        ->name('pilotes.stat-month');
+    Route::get('pilotes/statistiques-annuelle', PiloteStatYear::class)
+        ->name('pilotes.stat-year');
 
     // LOCALISATION
     Route::get('localisations/create', LocalisationForm::class)
@@ -139,29 +151,29 @@ Route::prefix('/admin')->name('admin.')->group(function () {
         ->name('facturations.edition');
     Route::get('facturations/{facture}/show', [FacturationsController::class, 'show'])
         ->name('facturations.show');
-    Route::get('facturations/export', \App\Http\Livewire\Facturation\Export::class)
+    Route::get('facturations/export', Export::class)
         ->name('facturations.export');
 
-    Route::get('carousel', \App\Http\Livewire\Carousel\CarouselDataTable::class)
+    Route::get('carousel', CarouselDataTable::class)
         ->name('carousel');
 
-    Route::get('/pages', \App\Http\Livewire\Pages\PageForm::class)
+    Route::get('/pages', PageForm::class)
         ->name('pages');
 
-    Route::get('/permissions', \App\Http\Livewire\Admin\PermissionForm::class)
+    Route::get('/permissions', PermissionForm::class)
         ->name('permissions');
 
-    Route::get('/settings', \App\Http\Livewire\Settings\SettingsForm::class)
+    Route::get('/settings', SettingsForm::class)
         ->name('settings');
 
-    Route::get('/stats/reservations', [\App\Http\Controllers\Admin\StatsController::class, 'reservationsShow'])
+    Route::get('/stats/reservations', [StatsController::class, 'reservationsShow'])
         ->name('stats.reservations');
 
     Route::prefix('/stats')->name('stats.')->group(function() {
-        Route::get('/reservations', [\App\Http\Controllers\Admin\StatsController::class, 'reservationsShow'])
+        Route::get('/reservations', [StatsController::class, 'reservationsShow'])
             ->name('reservations');
 
-        Route::get('/facturation', [\App\Http\Controllers\Admin\StatsController::class, 'facturationShow'])
+        Route::get('/facturation', [StatsController::class, 'facturationShow'])
             ->name('facturation');
     });
 });
