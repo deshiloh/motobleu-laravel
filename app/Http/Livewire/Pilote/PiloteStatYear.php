@@ -18,7 +18,7 @@ class PiloteStatYear extends Component
         'selectedYear' => ['except' => null],
     ];
 
-    public int $perPage = 20;
+    public int $perPage = 200;
 
     public function mount()
     {

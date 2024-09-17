@@ -16,7 +16,7 @@ class PiloteStatMonth extends Component
 
     public ?string $selectedMonth = null;
     public ?string $selectedYear = null;
-    public int $perPage = 20;
+    public int $perPage = 200;
 
     protected $queryString = [
         'selectedMonth' => ['except' => null],
