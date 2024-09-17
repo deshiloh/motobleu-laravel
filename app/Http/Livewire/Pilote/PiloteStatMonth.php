@@ -74,7 +74,7 @@ class PiloteStatMonth extends Component
                 DB::raw('SUM(reservations.encompte_pilote) as total_encompte'),
                 DB::raw('SUM(reservations.encaisse_pilote) as total_encaisse')
             )
-            ->where('pilotes.is_actif', true)
+            ->having('total_encompte', '>', 0)
             ->groupBy('pilotes.id', 'pilotes.nom', 'pilotes.prenom')
             ->orderBy('pilotes.nom')
             ->paginate($this->perPage);
