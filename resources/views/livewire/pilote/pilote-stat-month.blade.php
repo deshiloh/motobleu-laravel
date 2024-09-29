@@ -23,15 +23,14 @@
                 <tr>
                     <x-datatable.th>Pilote</x-datatable.th>
                     <x-datatable.th>Chiffre d'affaire</x-datatable.th>
-                    <x-datatable.th>Total</x-datatable.th>
+                    <x-datatable.th>Commissions</x-datatable.th>
                 </tr>
             </x-slot:headers>
             <x-slot:body>
                 @forelse($pilotes as $pilote)
                     @php
-                        $com = $pilote->total_encompte * 0.15;
-                        $totalAmount = $pilote->total_encompte - $com;
-                        $totalAmount = ($totalAmount * 100) / 100;
+                        $piloteCom = $pilote->commission / 100;
+                        $totalAmount = $pilote->total_encompte * $piloteCom;
 
                         $revenu = $pilote->total_encompte + $pilote->total_encaisse;
                         $revenu = ($revenu * 100) / 100;

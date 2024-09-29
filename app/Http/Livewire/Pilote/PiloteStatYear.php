@@ -43,11 +43,12 @@ class PiloteStatYear extends Component
                 'pilotes.id',
                 'pilotes.nom',
                 'pilotes.prenom',
+                'pilotes.commission',
                 DB::raw('SUM(reservations.encompte_pilote) as total_encompte'),
                 DB::raw('SUM(reservations.encaisse_pilote) as total_encaisse')
             )
             ->having('total_encompte', '>', 0)
-            ->groupBy('pilotes.id', 'pilotes.nom', 'pilotes.prenom')
+            ->groupBy('pilotes.id', 'pilotes.nom', 'pilotes.prenom', 'pilotes.commission')
             ->orderBy('pilotes.nom')
             ->paginate($this->perPage);
 
