@@ -17,18 +17,18 @@
                 <x-datatable.tr>
                     <x-datatable.th>Nom</x-datatable.th>
                     <x-datatable.th>Chiffre d'affaire</x-datatable.th>
-                    <x-datatable.th>Total</x-datatable.th>
+                    <x-datatable.th>Commissions</x-datatable.th>
                 </x-datatable.tr>
             </x-slot:headers>
             <x-slot:body>
                 @forelse($pilotes as $pilote)
                     @php
-                        $com = $pilote->total_encompte * 0.15;
-                        $totalAmount = $pilote->total_encompte - $com;
-                        $totalAmount = ($totalAmount * 100) / 100;
+                        $piloteCom = $pilote->commission / 100;
 
                         $revenu = $pilote->total_encompte + $pilote->total_encaisse;
                         $revenu = ($revenu * 100) / 100;
+
+                        $totalAmount = $revenu * $piloteCom;
                     @endphp
                     <x-datatable.tr>
                         <x-datatable.td>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Pilote;
 
+use App\Enum\ReservationStatus;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -36,6 +37,11 @@ class PiloteStatYear extends Component
         $pilotes = DB::table("pilotes")
             ->leftJoin('reservations', function ($join) {
                 $join->on('pilotes.id', '=', 'reservations.pilote_id')
+                    ->whereIn('reservations.statut', [
+                        ReservationStatus::Confirmed->value,
+                        ReservationStatus::Billed->value,
+                        ReservationStatus::CanceledToPay
+                    ])
                     ->whereYear('reservations.pickup_date', $this->selectedYear);
 
             })

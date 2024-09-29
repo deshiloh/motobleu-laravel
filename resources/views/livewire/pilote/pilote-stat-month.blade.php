@@ -30,10 +30,11 @@
                 @forelse($pilotes as $pilote)
                     @php
                         $piloteCom = $pilote->commission / 100;
-                        $totalAmount = $pilote->total_encompte * $piloteCom;
 
                         $revenu = $pilote->total_encompte + $pilote->total_encaisse;
                         $revenu = ($revenu * 100) / 100;
+
+                        $totalAmount = $revenu * $piloteCom;
                     @endphp
                     <x-datatable.tr>
                         <x-datatable.td>
