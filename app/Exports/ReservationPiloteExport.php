@@ -85,7 +85,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             $row->encaisse_pilote,
             $row->encompte_pilote,
             $row->reference,
-            $row->commission ?? 'NC'
+            $row->commission ?? $row->pilote->commission
         ];
     }
 
@@ -488,7 +488,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
         $total = 0;
 
         foreach ($this->reservations as $reservation) {
-            $price = ($reservation->encaisse_pilote + $reservation->encompte_pilote) * ($reservation->commission / 100);
+            $commission = $reservation->commission ? $reservation->commission : $reservation->pilote->commission;
+            $price = ($reservation->encaisse_pilote + $reservation->encompte_pilote) * ($commission / 100);
             $total += $price;
         }
 

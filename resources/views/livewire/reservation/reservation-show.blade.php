@@ -133,7 +133,7 @@
 
                     <x-input label="Encaisse pilote" wire:model.defer="reservation.encaisse_pilote" type="number" />
                     <x-input label="En compte pilote" wire:model.defer="reservation.encompte_pilote" type="number" />
-                    <x-input label="Commission" wire:model="reservation.commission" type="number" step=".01"/>
+                    <x-input label="Commission" wire:model.defer="resaComm" type="number" step=".01"/>
                     <x-textarea label="Commentaire" wire:model.defer="reservation.comment_pilote" />
 
                     @if($reservation->pilote()->exists() && $reservation->statut >= \App\Enum\ReservationStatus::Confirmed)

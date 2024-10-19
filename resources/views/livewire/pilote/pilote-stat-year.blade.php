@@ -21,11 +21,17 @@
                 </x-datatable.tr>
             </x-slot:headers>
             <x-slot:body>
+                @php
+                    $totalCa = 0;
+                    $totalCom = 0;
+                @endphp
                 @forelse($pilotes as $pilote)
                     @php
                         $revenu = ($pilote->chiffre_affaire * 100) / 100;
+                        $totalCa += $revenu;
 
-                        $totalCom = ($pilote->total_commission * 100) / 100;
+                        $commission = ($pilote->total_commission * 100) / 100;
+                        $totalCom += $commission;
                     @endphp
                     <x-datatable.tr>
                         <x-datatable.td>
@@ -35,7 +41,7 @@
                             {{ number_format($revenu, 2, '.', '') }} €
                         </x-datatable.td>
                         <x-datatable.td>
-                            {{ number_format($totalCom, 2, '.', '') }} €
+                            {{ number_format($commission, 2, '.', '') }} €
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty
@@ -43,6 +49,17 @@
                         <x-datatable.td colspan="3" class="text-center">Rien à afficher</x-datatable.td>
                     </x-datatable.tr>
                 @endforelse
+                <x-datatable.tr>
+                    <x-datatable.td>
+                        Total
+                    </x-datatable.td>
+                    <x-datatable.td>
+                        <div class="font-bold">{{ number_format($totalCa, 2, '.', '') }} €</div>
+                    </x-datatable.td>
+                    <x-datatable.td>
+                        <div class="font-bold">{{ number_format($totalCom, 2, '.', '') }} €</div>
+                    </x-datatable.td>
+                </x-datatable.tr>
             </x-slot:body>
         </x-datatable>
         <x-front.pagination :pagination="$pilotes" :per-page="$perPage" />

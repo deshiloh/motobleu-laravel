@@ -20,7 +20,7 @@ class ReservationShow extends Component
 
     public Reservation $reservation;
     public string $message;
-    public bool $firstDisplay = true;
+    public ?float $resaComm = null;
 
     public function mount(Reservation $reservation)
     {
@@ -35,21 +35,17 @@ Votre réservation a bien été prise en compte";
         }
 
         if (is_null($this->reservation->commission)) {
-            $selectedPilote = Pilote::find($this->reservation->pilote_id);
-            $this->reservation->commission = $selectedPilote->commission;
+            $selectedPilote = Pilote::find($reservation->pilote_id);
+            $this->resaComm = $selectedPilote->commission;
+        } else {
+            $this->resaComm = $this->reservation->commission;
         }
     }
 
     public function render()
     {
-        if (!$this->firstDisplay) {
-            $selectedPilote = Pilote::find($this->reservation->pilote_id);
-            $this->reservation->commission = $selectedPilote->commission;
-        }
-
-        if ($this->firstDisplay) {
-            $this->firstDisplay = false;
-        }
+        $selectedPilote = Pilote::find($this->reservation->pilote_id);
+        $this->resaComm = $selectedPilote->commission;
 
         return view('livewire.reservation.reservation-show')
             ->layout('components.layout');
@@ -65,7 +61,7 @@ Votre réservation a bien été prise en compte";
             'reservation.encaisse_pilote' => 'nullable|numeric',
             'reservation.encompte_pilote' => 'nullable|numeric',
             'reservation.comment_pilote' => 'nullable',
-            'reservation.commission' => 'nullable|numeric',
+            'resaComm' => 'nullable|numeric',
         ];
     }
 

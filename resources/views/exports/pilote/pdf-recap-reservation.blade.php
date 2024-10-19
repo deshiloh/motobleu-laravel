@@ -167,7 +167,9 @@
     <tbody>
         @foreach($reservations as $reservation)
             @php
-                $price = ($reservation->encaisse_pilote + $reservation->encompte_pilote) * ($reservation->commission / 100);
+                $resaComm = $reservation->commission ? $reservation->commission : $pilote->commission;
+
+                $price = ($reservation->encaisse_pilote + $reservation->encompte_pilote) * ($resaComm / 100);
                 $totalCom += $price;
                 $totalEncaisse = $reservation->encaisse_pilote + $totalEncaisse;
                 $totalEncompte = $reservation->encompte_pilote + $totalEncompte;
@@ -201,7 +203,7 @@
                     {{ $reservation->reference }}
                 </td>
                 <td>
-                    {{ $reservation->commission }}
+                    {{ $reservation->commission ?? $reservation->pilote->commission}}
                 </td>
             </tr>
         @endforeach
