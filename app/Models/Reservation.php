@@ -6,11 +6,9 @@ use App\Enum\ReservationStatus;
 use Carbon\Carbon;
 use Google_Service_Calendar_Event;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Laravel\Scout\Searchable;
 use Spatie\GoogleCalendar\Event;
 
 /**
@@ -132,16 +130,19 @@ class Reservation extends Model
     {
         return $query->where('statut', ReservationStatus::Created);
     }
-
-    /**
-     * @return false|Google_Service_Calendar_Event
-     */
-    public function getEvent()
+    
+    public function getEvent(): bool|Google_Service_Calendar_Event
     {
         $event = false;
+
         if ($this->event_id) {
-            $event = Event::find($this->event_id)->googleEvent;
+            try {
+                $event = Event::find($this->event_id)->googleEvent;
+            } catch (\Exception) {
+                return false;
+            }
         }
+
         return $event;
     }
 

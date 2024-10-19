@@ -9,7 +9,6 @@ use App\Http\Livewire\Reservation\ReservationForm;
 use App\Http\Livewire\Reservation\ReservationShow;
 use App\Mail\PiloteAttached;
 use App\Mail\PiloteDetached;
-use App\Mail\ReservationCanceledPay;
 use App\Mail\ReservationUpdated;
 use App\Models\AdresseReservation;
 use App\Models\Localisation;
@@ -21,8 +20,6 @@ use App\Services\ReservationService;
 use app\Settings\BillSettings;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutEvents;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -773,6 +770,37 @@ class ReservationTest extends TestCase
         $this->assertDatabaseHas('reservations', [
             'reference' => $reservation->reference,
             'encompte_pilote' => 300
+        ]);
+    }
+
+    public function testUpdateWithCommissionOk()
+    {
+        $reservation = Reservation::factory([
+            'statut' => ReservationStatus::Confirmed,
+            'encaisse_pilote' => 0,
+            'encompte_pilote' => 200,
+            'pilote_id' => 1,
+            'entreprise_id' => 1,
+            'passager_id' => 1,
+            'localisation_from_id' => 1,
+            'localisation_to_id' => 2
+        ])->create();
+
+        Livewire::test(ReservationShow::class, ['reservation' => $reservation])
+            ->set('reservation.pilote_id', 1)
+            ->set('reservation.encaisse_pilote', 0)
+            ->set('reservation.encompte_pilote', 300)
+            ->set('reservation.commission', 15.00)
+            ->set('reservation.calendar_passager_invitation', true)
+            ->call('updatePilote')
+            ->assertHasNoErrors()
+            ->assertStatus(200);
+
+
+        $this->assertDatabaseHas('reservations', [
+            'reference' => $reservation->reference,
+            'encompte_pilote' => 300,
+            'commission' => 15.00
         ]);
     }
 }

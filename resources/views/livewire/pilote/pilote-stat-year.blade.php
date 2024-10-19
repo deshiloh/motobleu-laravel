@@ -23,12 +23,9 @@
             <x-slot:body>
                 @forelse($pilotes as $pilote)
                     @php
-                        $piloteCom = $pilote->commission / 100;
+                        $revenu = ($pilote->chiffre_affaire * 100) / 100;
 
-                        $revenu = $pilote->total_encompte + $pilote->total_encaisse;
-                        $revenu = ($revenu * 100) / 100;
-
-                        $totalAmount = $revenu * $piloteCom;
+                        $totalCom = ($pilote->total_commission * 100) / 100;
                     @endphp
                     <x-datatable.tr>
                         <x-datatable.td>
@@ -38,7 +35,7 @@
                             {{ number_format($revenu, 2, '.', '') }} €
                         </x-datatable.td>
                         <x-datatable.td>
-                            {{ number_format($totalAmount, 2, '.', '') }} €
+                            {{ number_format($totalCom, 2, '.', '') }} €
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty
