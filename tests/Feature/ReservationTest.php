@@ -615,7 +615,8 @@ class ReservationTest extends TestCase
         $this->assertDatabaseHas('reservations', [
             'id' => $reservation->id,
             'pilote_id' => $pilote->id,
-            'statut' => ReservationStatus::Confirmed
+            'statut' => ReservationStatus::Confirmed,
+            'commission' => $pilote->commission,
         ]);
 
         \Mail::assertSent(PiloteAttached::class);
@@ -778,7 +779,7 @@ class ReservationTest extends TestCase
             ->set('reservation.pilote_id', 1)
             ->set('reservation.encaisse_pilote', 0)
             ->set('reservation.encompte_pilote', 300)
-            ->set('reservation.commission', 15.00)
+            ->set('resaComm', 15.00)
             ->set('reservation.calendar_passager_invitation', true)
             ->call('updatePilote')
             ->assertHasNoErrors()

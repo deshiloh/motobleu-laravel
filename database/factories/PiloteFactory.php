@@ -26,7 +26,8 @@ class PiloteFactory extends Factory
             'code_postal' => $this->faker->postcode,
             'ville' => $this->faker->city,
             'is_actif' => true,
-            'entreprise' => $this->faker->company
+            'entreprise' => $this->faker->company,
+            'commission' => 15.00,
         ];
     }
 }

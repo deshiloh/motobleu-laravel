@@ -82,6 +82,8 @@ Votre réservation a bien été prise en compte";
             $this->reservation->encaisse_pilote = (float) $this->reservation->encaisse_pilote;
             $this->reservation->encompte_pilote = (float) $this->reservation->encompte_pilote;
 
+            $this->reservation->commission = $this->resaComm;
+
             $this->reservation->update();
 
             $this->reservation->refresh();
@@ -147,11 +149,15 @@ Votre réservation a bien été prise en compte";
             'encompte_pilote',
             'encaisse_pilote',
             'comment_pilote',
-            'commission'
         ])) {
+            $this->reservation->commission = $this->resaComm;
             $this->reservation->update();
 
             return redirect()->to(route('admin.reservations.index'));
+        }
+
+        if ($this->reservation->commission !== $this->resaComm) {
+            $this->reservation->commission = $this->resaComm;
         }
     }
 
