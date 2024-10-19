@@ -3,6 +3,7 @@
     $fmt = new NumberFormatter('fr_FR', NumberFormatter::CURRENCY);
     $totalEncaisse = 0;
     $totalEncompte = 0;
+    $totalCom = 0;
 @endphp
 <html lang="fr">
 <head>
@@ -160,11 +161,14 @@
             <td>Encaisse</td>
             <td>Encompte</td>
             <td>Course N°</td>
+            <td>COM</td>
         </tr>
     </thead>
     <tbody>
         @foreach($reservations as $reservation)
             @php
+                $price = ($reservation->encaisse_pilote + $reservation->encompte_pilote) * ($reservation->commission / 100);
+                $totalCom += $price;
                 $totalEncaisse = $reservation->encaisse_pilote + $totalEncaisse;
                 $totalEncompte = $reservation->encompte_pilote + $totalEncompte;
             @endphp
@@ -196,6 +200,9 @@
                 <td>
                     {{ $reservation->reference }}
                 </td>
+                <td>
+                    {{ $reservation->commission }}
+                </td>
             </tr>
         @endforeach
 
@@ -205,7 +212,7 @@
             </td>
             <td class="bg-motobleu"></td>
             <td>
-                COM {{ $pilote->commission }} %
+                COM
             </td>
             <td class="bg-motobleu"></td>
             <td>
@@ -219,11 +226,11 @@
             <td style="color: red">
                 TOTAL
             </td>
+            <td class="bg-motobleu"></td>
         </tr>
         @php
             $ca = $totalEncaisse + $totalEncompte;
-            $com = $ca * ($pilote->commission / 100);
-            $total = $totalEncompte - $com ;
+            $total = $totalEncompte - $totalCom ;
         @endphp
         <tr class="recap-end">
             <td>
@@ -231,7 +238,7 @@
             </td>
             <td class="bg-motobleu"></td>
             <td>
-                {{ number_format($com, 2, ',', ' ') . ' €' }}
+                {{ number_format($totalCom, 2, ',', ' ') . ' €' }}
             </td>
             <td class="bg-motobleu"></td>
             <td>
@@ -245,6 +252,7 @@
             <td style="color: red">
                {{ number_format($total, 2, ',', ' ') . ' €' }}
             </td>
+            <td class="bg-motobleu"></td>
         </tr>
     </tbody>
 </table>

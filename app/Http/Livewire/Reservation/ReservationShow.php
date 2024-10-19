@@ -20,6 +20,7 @@ class ReservationShow extends Component
 
     public Reservation $reservation;
     public string $message;
+    public bool $firstDisplay = true;
 
     public function mount(Reservation $reservation)
     {
@@ -32,10 +33,24 @@ Votre réservation a bien été prise en compte";
             $defaultPilote = Pilote::firstWhere('email', 'pilotes.motobleu@gmail.com');
             $reservation->pilote_id = $defaultPilote->id;
         }
+
+        if (is_null($this->reservation->commission)) {
+            $selectedPilote = Pilote::find($this->reservation->pilote_id);
+            $this->reservation->commission = $selectedPilote->commission;
+        }
     }
 
     public function render()
     {
+        if (!$this->firstDisplay) {
+            $selectedPilote = Pilote::find($this->reservation->pilote_id);
+            $this->reservation->commission = $selectedPilote->commission;
+        }
+
+        if ($this->firstDisplay) {
+            $this->firstDisplay = false;
+        }
+
         return view('livewire.reservation.reservation-show')
             ->layout('components.layout');
     }
@@ -50,6 +65,7 @@ Votre réservation a bien été prise en compte";
             'reservation.encaisse_pilote' => 'nullable|numeric',
             'reservation.encompte_pilote' => 'nullable|numeric',
             'reservation.comment_pilote' => 'nullable',
+            'reservation.commission' => 'nullable|numeric',
         ];
     }
 
@@ -134,7 +150,8 @@ Votre réservation a bien été prise en compte";
         if ($this->reservation->isDirty([
             'encompte_pilote',
             'encaisse_pilote',
-            'comment_pilote'
+            'comment_pilote',
+            'commission'
         ])) {
             $this->reservation->update();
 

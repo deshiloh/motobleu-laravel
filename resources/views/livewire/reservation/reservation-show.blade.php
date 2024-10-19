@@ -4,7 +4,7 @@
         Réservation : <span class="text-blue-500">{{ $reservation->reference }}</span>
         <x-slot:right>
             <div class="flex items-center justify-center lg:space-x-2 flex-col lg:flex-row space-y-3 lg:space-y-0">
-                @if(!is_null($reservation->event_id))
+                @if(!is_null($reservation->event_id) && $reservation->getEvent() !== false)
                     <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled" />
                 @endif
 
@@ -111,7 +111,7 @@
                         option-label="full_name"
                         option-value="id"
                         option-description="email"
-                        wire:model.defer="reservation.pilote_id"
+                        wire:model="reservation.pilote_id"
                     />
                     @if($reservation->statut == \App\Enum\ReservationStatus::Created)
                         <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
@@ -133,6 +133,7 @@
 
                     <x-input label="Encaisse pilote" wire:model.defer="reservation.encaisse_pilote" type="number" />
                     <x-input label="En compte pilote" wire:model.defer="reservation.encompte_pilote" type="number" />
+                    <x-input label="Commission" wire:model="reservation.commission" type="number" step=".01"/>
                     <x-textarea label="Commentaire" wire:model.defer="reservation.comment_pilote" />
 
                     @if($reservation->pilote()->exists() && $reservation->statut >= \App\Enum\ReservationStatus::Confirmed)

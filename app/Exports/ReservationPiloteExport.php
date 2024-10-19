@@ -41,6 +41,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
      */
     private array|Collection $reservations;
 
+    private float $totalCommission = 0;
+
     public function __construct(array $period, Pilote $pilote)
     {
         $this->period = $period;
@@ -48,7 +50,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
 
         $this->indexDepart = 13;
 
-        $this->lastColumn = 'I';
+        $this->lastColumn = 'J';
 
         $this->reservations = Reservation::where('pilote_id', $pilote->id)
             ->whereIn('statut', [
@@ -82,7 +84,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             $row->comment_pilote,
             $row->encaisse_pilote,
             $row->encompte_pilote,
-            $row->reference
+            $row->reference,
+            $row->commission ?? 'NC'
         ];
     }
 
@@ -97,7 +100,8 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             'Commentaire',
             'Encaisse',
             'Encompte',
-            'Course N°'
+            'Course N°',
+            'COM',
         ];
     }
 
@@ -183,7 +187,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             }
         }
 
-        foreach (['B', 'D', 'F', 'H'] as $column) {
+        foreach (['B', 'D', 'F', 'H', 'J'] as $column) {
             $styles[$column . $this->indexDepart + $this->reservations->count() + 2] = [
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
@@ -192,7 +196,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
             ];
         }
 
-        foreach (['B', 'D', 'F', 'H'] as $column) {
+        foreach (['B', 'D', 'F', 'H', 'J'] as $column) {
             $styles[$column . $this->indexDepart + $this->reservations->count() + 3] = [
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
@@ -229,6 +233,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
         return [
             $this->encompteColumns() => NumberFormat::FORMAT_CURRENCY_EUR,
             $this->encaisseColumns() => NumberFormat::FORMAT_CURRENCY_EUR,
+            $this->comColumns() => NumberFormat::FORMAT_NUMBER_00,
         ];
     }
 
@@ -258,7 +263,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                         $currentEncaisseCell->setValue(0);
                     }
 
-                    $currentEncompteCell = $currentEncaisseCell = $sheet->getSheet()->getCell('H' . $i);
+                    $currentEncompteCell = $sheet->getSheet()->getCell('H' . $i);
                     $currentEncompteValue = $sheet->getSheet()->getCell('H' . $i)->getValue();
 
                     if (is_null($currentEncompteValue)) {
@@ -322,7 +327,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $comCell = 'C' . $index + 1;
                 $comLabelle = $sheet->getSheet()->getCell('C' . $index);
                 $comLabelle->setValue(
-                    'COM ' . $this->pilote->commission . '%'
+                    'COM'
                 );
                 $comLabelle->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $comLabelle->getStyle()->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN)
@@ -330,7 +335,7 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
                 $comLabelle->getStyle()->getFont()->setSize(14);
                 $comValue = $sheet->getSheet()->getCell('C' . $index + 1);
                 $comValue->setValue(
-                    '=(A'. $index + 1 .') * ' . $this->pilote->commission / 100
+                    $this->getSumCommission()
                 );
                 $comValue->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $comValue->getStyle()->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN)
@@ -436,6 +441,24 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
         ];
     }
 
+
+    public function columnWidths(): array
+    {
+        return [
+            'A' => 20,
+            'D' => 70,
+            'E' => 70
+        ];
+    }
+
+    public function footer(): array
+    {
+        return [
+            [
+                'image' => public_path('storage/motobleu.png')
+            ]
+        ];
+    }
     private function encompteColumns(): string
     {
         return sprintf('H%s:H%s',
@@ -452,21 +475,23 @@ class ReservationPiloteExport implements FromCollection, WithMapping, WithHeadin
         );
     }
 
-    public function footer(): array
+    private function comColumns(): string
     {
-        return [
-            [
-                'image' => public_path('storage/motobleu.png')
-            ]
-        ];
+        return sprintf('J%s:J%s',
+            $this->indexDepart,
+            $this->indexDepart + $this->reservations->count()
+        );
     }
 
-    public function columnWidths(): array
+    private function getSumCommission(): float
     {
-        return [
-            'A' => 20,
-            'D' => 70,
-            'E' => 70
-        ];
+        $total = 0;
+
+        foreach ($this->reservations as $reservation) {
+            $price = ($reservation->encaisse_pilote + $reservation->encompte_pilote) * ($reservation->commission / 100);
+            $total += $price;
+        }
+
+        return $total;
     }
 }

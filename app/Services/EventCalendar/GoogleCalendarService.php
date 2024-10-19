@@ -5,7 +5,6 @@ namespace App\Services\EventCalendar;
 use App\Enum\ReservationStatus;
 use App\Models\Pilote;
 use App\Models\Reservation;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Spatie\GoogleCalendar\Event;
@@ -262,14 +261,14 @@ class GoogleCalendarService
             $tarifLabelle = '';
 
             if ($this->reservation->encaisse_pilote !== null || $this->reservation->encompte_pilote !== null) {
-                $piloteCom = $this->reservation->pilote?->commission ?? 'NC';
+                $reservationCom = $this->reservation->commission ?? 'NC';
 
-                if ($piloteCom !== "NC") {
-                    $piloteCom = intval($piloteCom);
+                if ($reservationCom !== "NC") {
+                    $reservationCom = floatval($reservationCom);
                 }
 
-                $encompteLabel = "/com" . $piloteCom . " EN COMPTE";
-                $encaisseLabel = "/com" . $piloteCom . " A ENCAISSER CB";
+                $encompteLabel = "/com" . $reservationCom . " EN COMPTE";
+                $encaisseLabel = "/com" . $reservationCom . " A ENCAISSER CB";
 
                 $tarifLabelle = ($this->reservation->encompte_pilote > 0) ? $encompteLabel : $encaisseLabel;
                 $tarifValue = ($this->reservation->encompte_pilote > 0) ?

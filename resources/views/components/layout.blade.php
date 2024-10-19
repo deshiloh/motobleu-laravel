@@ -19,8 +19,7 @@
                 <div class="flex items-center justify-between h-16">
                     <div class="flex items-center">
                         <a href="/" class="flex-shrink-0 flex items-center space-x-2">
-                            <img class="h-8 w-8" src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg" alt="Workflow">
-                            <span class="text-white font-bold">{{ config('app.name') }}</span>
+                            <span class="text-white font-bold">Admin</span>
                         </a>
                         <div class="hidden md:block">
                             <div class="ml-10 flex items-baseline space-x-4">
