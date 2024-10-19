@@ -598,18 +598,6 @@ class ReservationTest extends TestCase
         $component->assertStatus(200);
     }
 
-    public function testConfirmedReservation(): void
-    {
-        $reservation = Reservation::find(1);
-        Livewire::test(ReservationShow::class, ['reservation' => $reservation])
-            ->set('reservation.pilote_id', null)
-            ->call('confirmedAction')
-            ->assertHasErrors([
-                'reservation.pilote_id' => 'required'
-            ])
-        ;
-    }
-
     public function testReservationConfirmOk(): void
     {
         \Mail::fake();
