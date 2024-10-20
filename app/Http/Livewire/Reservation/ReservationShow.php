@@ -42,11 +42,18 @@ Votre réservation a bien été prise en compte";
         }
     }
 
-    public function render()
+    /**
+     * Event Livewire quand la réservation est modifiée.
+     * @return void
+     */
+    public function updatedReservation(): void
     {
         $selectedPilote = Pilote::find($this->reservation->pilote_id);
         $this->resaComm = $selectedPilote->commission;
+    }
 
+    public function render()
+    {
         return view('livewire.reservation.reservation-show')
             ->layout('components.layout');
     }
@@ -122,6 +129,7 @@ Votre réservation a bien été prise en compte";
     {
         $this->handleConfirmedAndUpdateValidation();
 
+        $this->reservation->commission = $this->resaComm;
         $this->reservation->encaisse_pilote = (float) $this->reservation->encaisse_pilote;
         $this->reservation->encompte_pilote = (float) $this->reservation->encompte_pilote;
 
@@ -149,15 +157,11 @@ Votre réservation a bien été prise en compte";
             'encompte_pilote',
             'encaisse_pilote',
             'comment_pilote',
+            'commission'
         ])) {
-            $this->reservation->commission = $this->resaComm;
             $this->reservation->update();
 
             return redirect()->to(route('admin.reservations.index'));
-        }
-
-        if ($this->reservation->commission !== $this->resaComm) {
-            $this->reservation->commission = $this->resaComm;
         }
     }
 
