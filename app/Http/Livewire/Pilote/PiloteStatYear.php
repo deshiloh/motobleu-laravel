@@ -49,13 +49,12 @@ class PiloteStatYear extends Component
                 'pilotes.id',
                 'pilotes.nom',
                 'pilotes.prenom',
-                'pilotes.commission',
                 DB::raw('SUM(reservations.encompte_pilote) as total_encompte'),
                 DB::raw('SUM(reservations.encaisse_pilote + reservations.encompte_pilote) as chiffre_affaire'),
                 DB::raw('SUM((reservations.encompte_pilote + reservations.encaisse_pilote) * (COALESCE(reservations.commission, pilotes.commission) / 100)) as total_commission'),
             )
             ->having('total_encompte', '>', 0)
-            ->groupBy('pilotes.id', 'pilotes.nom', 'pilotes.prenom', 'pilotes.commission', 'reservations.commission')
+            ->groupBy('pilotes.id', 'pilotes.nom', 'pilotes.prenom')
             ->orderBy('chiffre_affaire', 'desc')
             ->paginate($this->perPage);
 

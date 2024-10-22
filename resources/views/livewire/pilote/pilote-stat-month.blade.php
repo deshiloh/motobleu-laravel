@@ -41,7 +41,7 @@
                     @endphp
                     <x-datatable.tr>
                         <x-datatable.td>
-                            {{ $pilote->nom }} {{ $pilote->prenom }}
+                            {{ $pilote->id }} {{ $pilote->nom }} {{ $pilote->prenom }}
                         </x-datatable.td>
                         <x-datatable.td>
                             {{ number_format($revenu, 2, '.', '') }} €

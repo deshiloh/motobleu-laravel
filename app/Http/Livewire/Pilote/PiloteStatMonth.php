@@ -62,6 +62,15 @@ class PiloteStatMonth extends Component
     private function getDatas()
     {
         return DB::table('pilotes')
+            ->distinct()
+            ->select(
+                'pilotes.id',
+                'pilotes.nom',
+                'pilotes.prenom',
+                DB::raw('SUM(reservations.encompte_pilote) as total_encompte'),
+                DB::raw('SUM(reservations.encaisse_pilote + reservations.encompte_pilote) as chiffre_affaire'),
+                DB::raw('SUM((reservations.encompte_pilote + reservations.encaisse_pilote) * (COALESCE(reservations.commission, pilotes.commission) / 100)) as total_commission'),
+            )
             ->leftJoin('reservations', function ($join) {
                 $join->on('pilotes.id', '=', 'reservations.pilote_id')
                     ->whereIn('reservations.statut', [
@@ -73,17 +82,8 @@ class PiloteStatMonth extends Component
                     ->whereYear('reservations.pickup_date', $this->selectedYear);
 
             })
-            ->select(
-                'pilotes.id',
-                'pilotes.nom',
-                'pilotes.prenom',
-                'pilotes.commission',
-                DB::raw('SUM(reservations.encompte_pilote) as total_encompte'),
-                DB::raw('SUM(reservations.encaisse_pilote + reservations.encompte_pilote) as chiffre_affaire'),
-                DB::raw('SUM((reservations.encompte_pilote + reservations.encaisse_pilote) * (COALESCE(reservations.commission, pilotes.commission) / 100)) as total_commission'),
-            )
             ->having('total_encompte', '>', 0)
-            ->groupBy('pilotes.id', 'pilotes.nom', 'pilotes.prenom', 'pilotes.commission', 'reservations.commission')
+            ->groupBy('pilotes.id', 'pilotes.nom', 'pilotes.prenom')
             ->orderBy('chiffre_affaire', 'desc')
             ->paginate($this->perPage);
     }
