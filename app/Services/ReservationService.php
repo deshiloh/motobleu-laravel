@@ -8,7 +8,6 @@ use App\Events\ReservationCanceledPay;
 use App\Events\ReservationConfirmed;
 use App\Mail\PiloteAttached;
 use App\Mail\PiloteDetached;
-use App\Mail\ReservationUpdated;
 use App\Models\Pilote;
 use App\Models\Reservation;
 use app\Settings\BillSettings;
@@ -16,7 +15,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Throwable;
 
 class ReservationService
 {
@@ -205,6 +203,7 @@ class ReservationService
      * @param Pilote $newPilote
      * @param float $encompte
      * @param float $encaisse
+     * @param float $commission
      * @param string|null $commentPilote
      * @return Reservation
      */
@@ -213,12 +212,14 @@ class ReservationService
         Pilote $newPilote,
         float $encompte,
         float $encaisse,
+        float $commission,
         ?string $commentPilote
     ): Reservation {
         $currentPilote = $reservation->pilote;
         $reservation->pilote()->associate($newPilote);
         $reservation->encaisse_pilote = $encaisse;
         $reservation->encompte_pilote = $encompte;
+        $reservation->commission = $commission;
         $reservation->comment_pilote = $commentPilote;
         $reservation->save();
 
@@ -263,6 +264,7 @@ class ReservationService
      * @param Pilote $pilote
      * @param int $encompte
      * @param int $encaisse
+     * @param float $commission
      * @param string|null $commentPilote
      * @param string $message
      * @return Reservation
@@ -272,12 +274,14 @@ class ReservationService
         Pilote $pilote,
         int $encompte,
         int $encaisse,
+        float $commission,
         ?string $commentPilote,
         string $message
     ): Reservation {
         $reservation->statut = ReservationStatus::Confirmed->value;
         $reservation->encaisse_pilote = $encaisse;
         $reservation->encompte_pilote = $encompte;
+        $reservation->commission = $commission;
         $reservation->comment_pilote = $commentPilote;
 
         $reservation->pilote()->associate($pilote);

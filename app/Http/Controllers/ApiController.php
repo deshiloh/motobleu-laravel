@@ -73,6 +73,7 @@ class ApiController extends Controller
             'pilote_id' => 'required|integer|exists:pilotes,id',
             'message' => 'required|string',
             'comment_pilote' => 'nullable|string',
+            'commission' => 'required|decimal:1,2',
         ]);
 
         $pilote = Pilote::find($request->pilote_id);
@@ -82,6 +83,7 @@ class ApiController extends Controller
             $pilote,
             $request->post('encompte'),
             $request->post('encaisse'),
+            $request->post('commission'),
             $request->post('comment_pilote'),
             $request->post('message')
         );
@@ -103,6 +105,7 @@ class ApiController extends Controller
         $request->validate([
             'pilote_id' => 'required|integer|exists:pilotes,id',
             'comment_pilote' => 'nullable|string',
+            'commission' => 'required|decimal:1,2',
         ]);
 
         $newPilote = Pilote::find($request->post('pilote_id'));
@@ -113,6 +116,7 @@ class ApiController extends Controller
                 $newPilote,
                 $request->post('encompte'),
                 $request->post('encaisse'),
+                $request->post('commission'),
                 $request->post('comment_pilote')
             );
         } catch (Exception $exception) {

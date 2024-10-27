@@ -3,7 +3,6 @@
 use App\Http\Controllers\ApiController;
 use App\Http\Resources\LocationResource;
 use App\Http\Resources\ReservationResource;
-use App\Models\Passager;
 use App\Models\Pilote;
 use App\Models\Reservation;
 use App\Models\User;

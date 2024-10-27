@@ -35,7 +35,8 @@ class ReservationResource extends JsonResource
             'send_to_passager' => $this->send_to_passager,
             'calendar_passager_invitation' => $this->calendar_passager_invitation,
             'comment_pilote' => $this->comment_pilote ?? "",
-            'comment' => $this->comment ?? ""
+            'comment' => $this->comment ?? "",
+            'commission' => (float) $this->commission
         ];
     }
 }
