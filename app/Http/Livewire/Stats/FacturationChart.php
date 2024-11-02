@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Stats;
 
+use App\Enum\BillStatut;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use Carbon\Carbon;
@@ -130,6 +131,7 @@ class FacturationChart extends Component
             $datas[] = Facture::whereHas('reservations', function (Builder $builder) use ($entreprise) {
                 $builder->where('entreprise_id', $entreprise->id);
             })
+                ->whereStatut(BillStatut::COMPLETED->value)
                 ->where('month', $currentMonth->month)
                 ->where('year', $currentMonth->year)
                 ->sum('montant_ttc');

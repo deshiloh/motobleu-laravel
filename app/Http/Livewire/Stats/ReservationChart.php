@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Stats;
 
+use App\Enum\ReservationStatus;
 use App\Models\Entreprise;
 use App\Models\Reservation;
 use Carbon\Carbon;
@@ -130,6 +131,11 @@ class ReservationChart extends Component
             $datas[] = Reservation::where('entreprise_id', $entreprise->id)
                 ->whereMonth('pickup_date', $currentMonth->month)
                 ->whereYear('pickup_date', $currentMonth->year)
+                ->whereIn('statut', [
+                    ReservationStatus::Billed->value,
+                    ReservationStatus::CanceledToPay->value,
+                    ReservationStatus::Confirmed->value,
+                ])
                 ->count();
         }
 
