@@ -65,9 +65,7 @@ class GoogleCalendarService
             ]);
         }
 
-        $savedEvent = $event->save(null, [
-            'sendUpdates' => 'all'
-        ]);
+        $savedEvent = $event->save();
 
         if (empty($this->reservation->event_secretary_id)) {
             $this->reservation->updateQuietly([
