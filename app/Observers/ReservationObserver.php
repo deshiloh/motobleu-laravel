@@ -99,7 +99,7 @@ class ReservationObserver
 
         try {
             $this->calendarService->createEventForMotobleu($reservation);
-            $this->calendarService->createEventForSecretary($reservation);
+            // $this->calendarService->createEventForSecretary($reservation);
         } catch (\Exception $exception) {
             if (App::environment(['local'])) {
                 ray()->exception($exception);

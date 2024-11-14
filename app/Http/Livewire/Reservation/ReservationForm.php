@@ -2,11 +2,10 @@
 
 namespace App\Http\Livewire\Reservation;
 
-use App\Models\AdresseReservation;
-use app\Settings\BillSettings;
-use App\Traits\WithReservationForm;
 use App\Models\Reservation;
+use App\Services\EventCalendar\GoogleCalendarService;
 use App\Services\ReservationService;
+use App\Traits\WithReservationForm;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -43,10 +42,15 @@ class ReservationForm extends Component
     }
 
     /**
+     * @param GoogleCalendarService $calendarService
      * @return void
      */
-    public function saveReservation(): void
+    public function saveReservation(GoogleCalendarService $calendarService): void
     {
         $this->createReservationWithRedirection(route('admin.reservations.index'));
+
+        if (\App::environment(['local', 'beta', 'prod']) && $this->reservation->exists) {
+            $calendarService->createEventForSecretary($this->reservation);
+        }
     }
 }
