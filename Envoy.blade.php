@@ -1,30 +1,4 @@
-@servers(['web' => 'pascalgavalda@172.16.78.131'])
-
-@task('beta', ['confirm' => true, 'on' => 'web'])
-    cd /var/www/vhosts/motobleu-paris.com/test.motobleu-paris.com/
-    mkdir temp
-
-    cd /var/www/vhosts/motobleu-paris.com/test.motobleu-paris.com/temp
-    git clone -b develop https://github.com/deshiloh/motobleu-laravel ./
-
-    cp ../.env-beta ./.env
-    /opt/plesk/php/8.1/bin/php /usr/lib/plesk-9.0/composer.phar install --optimize-autoloader --no-dev
-    npm install && npm run build
-    /opt/plesk/php/8.1/bin/php artisan key:generate
-    /opt/plesk/php/8.1/bin/php artisan migrate --force
-    /opt/plesk/php/8.1/bin/php artisan route:cache
-    /opt/plesk/php/8.1/bin/php artisan view:cache
-
-    cd /var/www/vhosts/motobleu-paris.com/test.motobleu-paris.com/
-    cp -R ./www/storage/app/photos ./photos
-    rm -rf www/
-    mv ./temp/ ./www/
-    mv ./photos ./www/storage/app/photos
-    cp -R ./google-calendar ./www/storage/app/
-
-    cd /var/www/vhosts/motobleu-paris.com/test.motobleu-paris.com/www
-    /opt/plesk/php/8.1/bin/php artisan storage:link
-@endtask
+@servers(['web' => 'pascalgavalda@51.38.226.127'])
 
 @task('reloadBetaDatabase', ['confirm' => true])
     cd /var/www/vhosts/motobleu-paris.com/test.motobleu-paris.com/www
@@ -32,29 +6,67 @@
     /opt/plesk/php/8.1/bin/php artisan app:import
 @endtask
 
-@task('prod', ['confirm' => true])
-cd /var/www/vhosts/motobleu-paris.com/new/
-mkdir temp
+@story('deploy')
+    install-temp-project
+    install-dependencies
+    backup
+    restore-backup
+    set-current
+    clean
+@endstory
 
-cd /var/www/vhosts/motobleu-paris.com/new/temp
-git clone -b develop https://github.com/deshiloh/motobleu-laravel ./
+@task('install-temp-project')
+    cd /var/www/vhosts/motobleu-paris.com/www/
 
-cp ../.env-prod ./.env
-/opt/plesk/php/8.1/bin/php /usr/lib/plesk-9.0/composer.phar install --optimize-autoloader --no-dev
-npm install && npm run build
-/opt/plesk/php/8.1/bin/php artisan key:generate
-/opt/plesk/php/8.1/bin/php artisan migrate --force
-/opt/plesk/php/8.1/bin/php artisan route:cache
-/opt/plesk/php/8.1/bin/php artisan view:cache
+    git clone -b develop https://github.com/deshiloh/motobleu-laravel ./temp
+    cp ./.env-prod temp/.env
+@endtask
 
-cd /var/www/vhosts/motobleu-paris.com/new/
-cp -R ./www/storage/app/photos ./photos
-cp -R ./www/storage/app/google-calendar ./google-calendar
-rm -rf www/
-mv ./temp/ ./www/
-mv ./photos ./www/storage/app/photos
-cp -R ./google-calendar ./www/storage/app/
+@task('install-dependencies')
+    cd /var/www/vhosts/motobleu-paris.com/www/temp
 
-cd /var/www/vhosts/motobleu-paris.com/new/www
-/opt/plesk/php/8.1/bin/php artisan storage:link
+    source /etc/profile
+
+    /opt/plesk/php/8.1/bin/php /usr/lib/plesk-9.0/composer.phar install --optimize-autoloader --no-dev
+    /opt/plesk/node/23/bin/npm install && /opt/plesk/node/23/bin/npm run build
+    /opt/plesk/php/8.1/bin/php artisan key:generate
+    /opt/plesk/php/8.1/bin/php artisan migrate --force
+    /opt/plesk/php/8.1/bin/php artisan route:cache
+    /opt/plesk/php/8.1/bin/php artisan view:cache
+@endtask
+
+@task('backup')
+    cd /var/www/vhosts/motobleu-paris.com/www/
+
+    if [ -d "/var/www/vhosts/motobleu-paris.com/www/current" ]; then
+        cp -R ./current/storage/app/photos ./photos
+        cp -R ./current/storage/app/google-calendar ./google-calendar
+    fi
+@endtask
+
+@task('restore-backup')
+    cd /var/www/vhosts/motobleu-paris.com/www/
+
+    if [ -d "/var/www/vhosts/motobleu-paris.com/www/photos" ]; then
+        mv ./photos ./temp/storage/app/photos
+    fi
+
+    cp -R ./google-calendar ./temp/storage/app/
+@endtask
+
+@task('set-current')
+    cd /var/www/vhosts/motobleu-paris.com/www/
+
+    rm -rf current/
+    mv ./temp/ ./current/
+
+    cd /var/www/vhosts/motobleu-paris.com/www/current
+
+    /opt/plesk/php/8.1/bin/php artisan storage:link
+@endtask
+
+@task('clean')
+    cd /var/www/vhosts/motobleu-paris.com/www/
+
+    rm -rf ./photos
 @endtask
