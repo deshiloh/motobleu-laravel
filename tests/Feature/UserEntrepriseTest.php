@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\Entreprise\UsersEntrepriseDataTable;
+use App\Livewire\Entreprise\UsersEntrepriseDataTable;
 use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -39,7 +39,7 @@ class UserEntrepriseTest extends TestCase
         Livewire::test(UsersEntrepriseDataTable::class, ['entreprise' => $this->entreprise])
             ->set('userId', '')
             ->call('attach')
-            ->assertDispatchedBrowserEvent('wireui:notification');
+            ->assertDispatched('wireui:notification');
     }
 
     public function testAddUserExistInEntreprise(): void
@@ -49,7 +49,7 @@ class UserEntrepriseTest extends TestCase
         Livewire::test(UsersEntrepriseDataTable::class, ['entreprise' => $this->entreprise])
             ->set('userId', $user)
             ->call('attach')
-            ->assertDispatchedBrowserEvent('wireui:notification');
+            ->assertDispatched('wireui:notification');
         $this->assertTrue($this->entreprise->users()->where('id', '=', $user->id)->exists());
     }
 }

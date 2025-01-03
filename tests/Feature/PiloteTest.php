@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\Pilote\PiloteDataTable;
-use App\Http\Livewire\Pilote\PiloteForm;
-use App\Http\Livewire\Pilote\RecapReservationPilote;
+use App\Livewire\Pilote\PiloteDataTable;
+use App\Livewire\Pilote\PiloteForm;
+use App\Livewire\Pilote\RecapReservationPilote;
 use App\Models\Pilote;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -160,7 +160,7 @@ class PiloteTest extends TestCase
                 'encaisse' => '0',
                 'encompte' => '200',
             ])
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
         $this->assertDatabaseMissing('reservations', [
             'tarif_pilote' => ''

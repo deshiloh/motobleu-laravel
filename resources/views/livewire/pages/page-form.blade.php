@@ -36,16 +36,16 @@
             </x-slot:body>
         </x-datatable>
     </x-bloc-content>
-    <x-modal.card title="Formulaire Page" blur wire:model.defer="editPageModal">
+    <x-modal.card title="Formulaire Page" blur wire:model="editPageModal">
         <x-errors />
         @if($selectedPage)
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <x-input label="Titre FR" placeholder="Votre titre" wire:model.defer="data.titleFR"/>
-                <x-input label="Titre EN" placeholder="Votre titre" wire:model.defer="data.titleEN"/>
+                <x-input label="Titre FR" placeholder="Votre titre" wire:model="data.titleFR"/>
+                <x-input label="Titre EN" placeholder="Votre titre" wire:model="data.titleEN"/>
             </div>
             <div class="space-y-2 mt-2">
-                <x-tinymce wire:model="data.contentFR" label="Contenu FR"/>
-                <x-tinymce wire:model="data.contentEN" label="Content EN"/>
+                <x-tinymce wire:model.live="data.contentFR" label="Contenu FR"/>
+                <x-tinymce wire:model.live="data.contentEN" label="Content EN"/>
             </div>
         @endif
         <x-slot name="footer">

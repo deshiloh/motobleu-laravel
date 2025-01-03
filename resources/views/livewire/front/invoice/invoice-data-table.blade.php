@@ -3,7 +3,7 @@
         <x-front.title>
             {{ __('Liste des factures') }}
         </x-front.title>
-        <x-datatable.search wire:model="search"/>
+        <x-datatable.search wire:model.live="search"/>
         <x-datatable>
             <x-slot:headers>
                 <x-datatable.tr>

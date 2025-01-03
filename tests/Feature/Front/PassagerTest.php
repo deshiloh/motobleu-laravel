@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Front;
 
-use App\Http\Livewire\Front\Address\AddressDataTable;
-use App\Http\Livewire\Front\Address\AddressForm;
-use App\Http\Livewire\Front\Passager\PassagerDataTable;
-use App\Http\Livewire\Front\Passager\PassagerForm;
+use App\Livewire\Front\Address\AddressDataTable;
+use App\Livewire\Front\Address\AddressForm;
+use App\Livewire\Front\Passager\PassagerDataTable;
+use App\Livewire\Front\Passager\PassagerForm;
 use App\Models\AdresseReservation;
 use App\Models\Passager;
 use App\Models\User;
@@ -115,7 +115,7 @@ class PassagerTest extends TestCase
         $passager = Passager::factory(['user_id' => 1])->create();
         Livewire::test(PassagerDataTable::class)
             ->call('deletePassenger', $passager)
-            ->assertDispatchedBrowserEvent('wireui:confirm-dialog')
+            ->assertDispatched('wireui:confirm-dialog')
         ;
     }
 
@@ -126,7 +126,7 @@ class PassagerTest extends TestCase
 
         Livewire::test(PassagerDataTable::class)
             ->call('confirmDeletePassenger', $passager)
-            ->assertDispatchedBrowserEvent('wireui:notification');
+            ->assertDispatched('wireui:notification');
 
         $this->assertTrue($passager->is_actif == false);
     }

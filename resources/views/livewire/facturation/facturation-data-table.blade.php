@@ -5,12 +5,12 @@
     <x-bloc-content>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div>
-                <x-input label="Rechercher" icon="search" wire:model="search" />
+                <x-input label="Rechercher" icon="search" wire:model.live="search" />
             </div>
             <div>
                 <x-native-select
                     label="Acquittée"
-                    wire:model="isAcquitte"
+                    wire:model.live="isAcquitte"
                 >
                     <option value="0">Tout</option>
                     <option value="1">Non acquittée</option>
@@ -20,7 +20,7 @@
             <div>
                 <x-select
                     label="Entreprise"
-                    wire:model="entreprise"
+                    wire:model.live="entreprise"
                     placeholder="Rechercher une entreprise"
                     :async-data="route('api.entreprises')"
                     option-label="nom"

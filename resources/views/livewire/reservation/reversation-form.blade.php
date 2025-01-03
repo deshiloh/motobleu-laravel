@@ -5,7 +5,7 @@
     <div class="container mx-auto sm:px-6 lg:px-8">
         <x-errors class="mb-3"/>
     </div>
-    <form wire:submit.prevent="saveReservation" wire:loading.class="opacity-25" wire:key="form_reservation">
+    <form wire:submit="saveReservation" wire:loading.class="opacity-25" wire:key="form_reservation">
         @if(!$reservation->exists)
             <x-bloc-content>
                 <div class="flex flex-col space-y-3">
@@ -13,7 +13,7 @@
                         Réservation avec retour :
                     </div>
                     <div>
-                        <x-toggle wire:model="hasBack" left-label="Non" label="Oui" md/>
+                        <x-toggle wire:model.live="hasBack" left-label="Non" label="Oui" md/>
                     </div>
                 </div>
             </x-bloc-content>
@@ -27,7 +27,7 @@
                     option-label="full_name"
                     option-value="id"
                     option-description="entreprise.nom"
-                    wire:model="userId"
+                    wire:model.live="userId"
                 />
                 <x-select
                     label="Entreprise rattachée *"
@@ -35,10 +35,10 @@
                     :async-data="route('api.entreprises_users', ['userId' => $userId])"
                     option-label="nom"
                     option-value="id"
-                    wire:model="reservation.entreprise_id"
+                    wire:model.live="reservation.entreprise_id"
                 />
                 @if(!is_null($reservation->entreprise_id) && !in_array($reservation->entreprise_id, app(\app\Settings\BillSettings::class)->entreprise_without_command_field))
-                    <x-input label="Numéro De commande / Case code" class="mb-3" wire:model.defer="reservation.commande"/>
+                    <x-input label="Numéro De commande / Case code" class="mb-3" wire:model="reservation.commande"/>
                 @endif
             </div>
         </x-bloc-content>
@@ -49,9 +49,9 @@
                 </div>
 
                 <div class="flex space-x-3">
-                    <x-radio wire:model="passagerMode"
+                    <x-radio wire:model.live="passagerMode"
                              value="{{ \App\Services\ReservationService::EXIST_PASSAGER }}" label="Passager existant"/>
-                    <x-radio wire:model="passagerMode"
+                    <x-radio wire:model.live="passagerMode"
                              value="{{ \App\Services\ReservationService::NEW_PASSAGER }}"
                              label="Créer un nouveau passager"/>
                 </div>
@@ -65,16 +65,16 @@
                         option-label="nom"
                         option-value="id"
                         option-description="email"
-                        wire:model="reservation.passager_id"
+                        wire:model.live="reservation.passager_id"
                     />
                 @endif
 
                 @if($passagerMode == \App\Services\ReservationService::NEW_PASSAGER)
                     <div class="space-y-4">
-                        <x-input label="Nom et prénom" wire:model="newPassager.nom"/>
-                        <x-input label="Téléphone de bureau" wire:model="newPassager.telephone"/>
-                        <x-input label="Téléphone portable" wire:model="newPassager.portable"/>
-                        <x-input type="email" label="Adresse email" wire:model="newPassager.email"/>
+                        <x-input label="Nom et prénom" wire:model.live="newPassager.nom"/>
+                        <x-input label="Téléphone de bureau" wire:model.live="newPassager.telephone"/>
+                        <x-input label="Téléphone portable" wire:model.live="newPassager.portable"/>
+                        <x-input type="email" label="Adresse email" wire:model.live="newPassager.email"/>
                         @if(!is_null($reservation->entreprise_id) && in_array($reservation->entreprise_id, app(\app\Settings\BillSettings::class)->entreprises_cost_center_facturation))
                             <x-select
                                 wire:key="cost_center"
@@ -83,7 +83,7 @@
                                 :async-data="route('api.cost_center')"
                                 option-label="nom"
                                 option-value="id"
-                                wire:model="newPassager.cost_center_id"
+                                wire:model.live="newPassager.cost_center_id"
                             />
                             <x-select
                                 wire:key="type_facturation"
@@ -92,7 +92,7 @@
                                 :async-data="route('api.type_facturation')"
                                 option-label="nom"
                                 option-value="id"
-                                wire:model="newPassager.type_facturation_id"
+                                wire:model.live="newPassager.type_facturation_id"
                             />
                         @endif
                     </div>
@@ -119,7 +119,7 @@
                 display-format="DD/MM/YYYY HH:mm"
                 time-format="24"
                 interval="1"
-                wire:model="reservation.pickup_date"
+                wire:model.live="reservation.pickup_date"
                 :without-timezone="true"
             />
         </x-bloc-content>
@@ -129,11 +129,11 @@
                 <div class="dark:text-white text-xl">Lieu de prise en charge :</div>
 
                 <div class="flex mb-3 space-x-3">
-                    <x-radio wire:model="pickupMode"
+                    <x-radio wire:model.live="pickupMode"
                              value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Aéroports ou gares"/>
-                    <x-radio wire:model="pickupMode"
+                    <x-radio wire:model.live="pickupMode"
                              value="{{ \App\Services\ReservationService::WITH_ADRESSE }}" label="Adresse"/>
-                    <x-radio wire:model="pickupMode"
+                    <x-radio wire:model.live="pickupMode"
                              value="{{ \App\Services\ReservationService::WITH_NEW_ADRESSE }}"
                              label="Créer une nouvelle adresse"/>
                 </div>
@@ -147,10 +147,10 @@
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
-                            wire:model="reservation.localisation_from_id"
+                            wire:model.live="reservation.localisation_from_id"
                         />
                         @if($reservation->localisation_from_id)
-                            <x-input label="Provenance / N°" wire:model="reservation.pickup_origin" />
+                            <x-input label="Provenance / N°" wire:model.live="reservation.pickup_origin" />
                         @endif
                     </div>
                 @endif
@@ -171,17 +171,17 @@
                         :async-data="route('api.adresses', ['user' => $userId])"
                         option-label="full_adresse"
                         option-value="id"
-                        wire:model="addressReservationFrom"
+                        wire:model.live="addressReservationFrom"
                     />
                 @endif
 
                 @if($pickupMode == \App\Services\ReservationService::WITH_NEW_ADRESSE)
                     <div class="space-y-4">
-                        <x-input label="Adresse" wire:model.defer="newAdresseReservationFrom.adresse"/>
+                        <x-input label="Adresse" wire:model="newAdresseReservationFrom.adresse"/>
                         <x-input label="Adresse complémentaire"
-                                 wire:model.defer="newAdresseReservationFrom.adresse_complement"/>
-                        <x-input label="Code postal" wire:model.defer="newAdresseReservationFrom.code_postal"/>
-                        <x-input label="Ville" wire:model.defer="newAdresseReservationFrom.ville"/>
+                                 wire:model="newAdresseReservationFrom.adresse_complement"/>
+                        <x-input label="Code postal" wire:model="newAdresseReservationFrom.code_postal"/>
+                        <x-input label="Ville" wire:model="newAdresseReservationFrom.ville"/>
                     </div>
                 @endif
             </div>
@@ -196,11 +196,11 @@
                 <div class="dark:text-white text-xl">Lieu de destination :</div>
 
                 <div class="flex mb-3 space-x-3">
-                    <x-radio wire:model="dropMode"
+                    <x-radio wire:model.live="dropMode"
                              value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Aéroports ou gares"/>
-                    <x-radio wire:model="dropMode"
+                    <x-radio wire:model.live="dropMode"
                              value="{{ \App\Services\ReservationService::WITH_ADRESSE }}" label="Adresse"/>
-                    <x-radio wire:model="dropMode"
+                    <x-radio wire:model.live="dropMode"
                              value="{{ \App\Services\ReservationService::WITH_NEW_ADRESSE }}"
                              label="Créer une nouvelle adresse"/>
                 </div>
@@ -214,11 +214,11 @@
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
-                            wire:model="reservation.localisation_to_id"
+                            wire:model.live="reservation.localisation_to_id"
                         />
                         @if($reservation->localisation_to_id)
                             <div class="form-group">
-                                <x-input label="Destination / N°" wire:model="reservation.drop_off_origin"/>
+                                <x-input label="Destination / N°" wire:model.live="reservation.drop_off_origin"/>
                             </div>
                         @endif
                     </div>
@@ -241,24 +241,24 @@
                         :async-data="route('api.adresses', ['user' => $userId])"
                         option-label="full_adresse"
                         option-value="id"
-                        wire:model="addressReservationTo"
+                        wire:model.live="addressReservationTo"
                     />
                 @endif
 
                 @if($dropMode == \App\Services\ReservationService::WITH_NEW_ADRESSE)
                     <div class="space-y-4">
-                        <x-input label="Adresse" wire:model.defer="newAdresseReservationTo.adresse"/>
+                        <x-input label="Adresse" wire:model="newAdresseReservationTo.adresse"/>
                         <x-input label="Adresse complémentaire"
-                                 wire:model.defer="newAdresseReservationTo.adresse_complement"/>
-                        <x-input label="Code postal" wire:model.defer="newAdresseReservationTo.code_postal"/>
-                        <x-input label="Ville" wire:model.defer="newAdresseReservationTo.ville"/>
+                                 wire:model="newAdresseReservationTo.adresse_complement"/>
+                        <x-input label="Code postal" wire:model="newAdresseReservationTo.code_postal"/>
+                        <x-input label="Ville" wire:model="newAdresseReservationTo.ville"/>
                     </div>
                 @endif
             </div>
         </x-bloc-content>
 
         <x-bloc-content>
-            <x-textarea placeholder="Votre commentaire..." wire:model.defer="reservation.comment" label="Commentaire" />
+            <x-textarea placeholder="Votre commentaire..." wire:model="reservation.comment" label="Commentaire" />
         </x-bloc-content>
 
         @if($hasBack)
@@ -282,7 +282,7 @@
                     display-format="DD/MM/YYYY HH:mm"
                     time-format="24"
                     interval="1"
-                    wire:model="reservation_back.pickup_date"
+                    wire:model.live="reservation_back.pickup_date"
                     :without-timezone="true"
                 />
             </x-bloc-content-dark>
@@ -291,11 +291,11 @@
                 <div class="space-y-3">
                     <div class="dark:text-white text-xl">Lieu de prise en charge :</div>
                     <div class="flex mb-3 space-x-3">
-                        <x-radio wire:model="backPickupMode"
+                        <x-radio wire:model.live="backPickupMode"
                                  value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Aéroport ou gares"/>
-                        <x-radio wire:model="backPickupMode"
+                        <x-radio wire:model.live="backPickupMode"
                                  value="{{ \App\Services\ReservationService::WITH_ADRESSE }}" label="Adresse"/>
-                        <x-radio wire:model="backPickupMode"
+                        <x-radio wire:model.live="backPickupMode"
                                  value="{{ \App\Services\ReservationService::WITH_NEW_ADRESSE }}"
                                  label="Créer une nouvelle adresse"/>
                     </div>
@@ -307,11 +307,11 @@
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
-                            wire:model="reservation_back.localisation_from_id"
+                            wire:model.live="reservation_back.localisation_from_id"
                         />
                         @if($reservation_back->localisation_from_id)
                             <div class="form-group">
-                                <x-input label="Provenance / N°" wire:model="reservation_back.pickup_origin"/>
+                                <x-input label="Provenance / N°" wire:model.live="reservation_back.pickup_origin"/>
                             </div>
                         @endif
                     @endif
@@ -323,16 +323,16 @@
                             :async-data="route('api.adresses', ['user' => $userId])"
                             option-label="full_adresse"
                             option-value="id"
-                            wire:model="reservation_back.adresse_reservation_from_id"
+                            wire:model.live="reservation_back.adresse_reservation_from_id"
                         />
                     @endif
                     @if($backPickupMode == \App\Services\ReservationService::WITH_NEW_ADRESSE)
                         <div class="space-y-4">
-                            <x-input wire:model.defer="newAdresseReservationFromBack.adresse" label="Adresse"/>
-                            <x-input wire:model.defer="newAdresseReservationFromBack.adresse_complement"
+                            <x-input wire:model="newAdresseReservationFromBack.adresse" label="Adresse"/>
+                            <x-input wire:model="newAdresseReservationFromBack.adresse_complement"
                                      label="Adresse complémentaire"/>
-                            <x-input wire:model.defer="newAdresseReservationFromBack.code_postal" label="Code postal"/>
-                            <x-input wire:model.defer="newAdresseReservationFromBack.ville" label="Ville"/>
+                            <x-input wire:model="newAdresseReservationFromBack.code_postal" label="Code postal"/>
+                            <x-input wire:model="newAdresseReservationFromBack.ville" label="Ville"/>
                         </div>
                     @endif
                 </div>
@@ -346,11 +346,11 @@
                 <div class="space-y-3">
                     <div class="dark:text-white text-xl">Lieu de destination :</div>
                     <div class="flex mb-3 space-x-3">
-                        <x-radio wire:model="backDropMode"
+                        <x-radio wire:model.live="backDropMode"
                                  value="{{ \App\Services\ReservationService::WITH_PLACE }}" label="Aéroport ou gares"/>
-                        <x-radio wire:model="backDropMode"
+                        <x-radio wire:model.live="backDropMode"
                                  value="{{ \App\Services\ReservationService::WITH_ADRESSE }}" label="Adresse"/>
-                        <x-radio wire:model="backDropMode"
+                        <x-radio wire:model.live="backDropMode"
                                  value="{{ \App\Services\ReservationService::WITH_NEW_ADRESSE }}"
                                  label="Créer une nouvelle adresse"/>
                     </div>
@@ -362,11 +362,11 @@
                             :async-data="route('api.pickupplace')"
                             option-label="nom"
                             option-value="id"
-                            wire:model="reservation_back.localisation_to_id"
+                            wire:model.live="reservation_back.localisation_to_id"
                         />
                         @if($reservation_back->localisation_to_id)
                             <div class="form-group">
-                                <x-input label="Destination / N°" wire:model="reservation_back.drop_off_origin"/>
+                                <x-input label="Destination / N°" wire:model.live="reservation_back.drop_off_origin"/>
                             </div>
                         @endif
                     @endif
@@ -378,16 +378,16 @@
                             :async-data="route('api.adresses', ['user' => $userId])"
                             option-label="full_adresse"
                             option-value="id"
-                            wire:model.defer="reservation_back.adresse_reservation_to_id"
+                            wire:model="reservation_back.adresse_reservation_to_id"
                         />
                     @endif
                     @if($backDropMode == \App\Services\ReservationService::WITH_NEW_ADRESSE)
                         <div class="space-y-4">
-                            <x-input label="Adresse" wire:model.defer="newAdresseReservationToBack.adresse"/>
+                            <x-input label="Adresse" wire:model="newAdresseReservationToBack.adresse"/>
                             <x-input label="Adresse complémentaire"
-                                     wire:model.defer="newAdresseReservationToBack.adresse_complement"/>
-                            <x-input label="Code postal" wire:model.defer="newAdresseReservationToBack.code_postal"/>
-                            <x-input label="Ville" wire:model.defer="newAdresseReservationToBack.ville"/>
+                                     wire:model="newAdresseReservationToBack.adresse_complement"/>
+                            <x-input label="Code postal" wire:model="newAdresseReservationToBack.code_postal"/>
+                            <x-input label="Ville" wire:model="newAdresseReservationToBack.ville"/>
                         </div>
                     @endif
                 </div>
@@ -396,15 +396,15 @@
             <x-bloc-content-dark>
                 <div class="mb-4">
                     <x-textarea label="Commentaire" placeholder="Votre commentaire..."
-                                wire:model="reservation_back.comment"/>
+                                wire:model.live="reservation_back.comment"/>
                 </div>
             </x-bloc-content-dark>
         @endif
         <x-bloc-content>
             <div class="flex flex-col space-y-2 my-3">
-                <x-toggle wire:model="reservation.calendar_passager_invitation" md
+                <x-toggle wire:model.live="reservation.calendar_passager_invitation" md
                           label="{{ __('Envoyer une invitation Google Calendar au passager') }}"/>
-                <x-toggle wire:model="reservation.send_to_passager" md
+                <x-toggle wire:model.live="reservation.send_to_passager" md
                           label="{!! __('Envoyer l\'email de création de la réservation au passager') !!}"/>
             </div>
         </x-bloc-content>
@@ -413,9 +413,9 @@
         </x-bloc-content>
     </form>
 
-    <x-modal.card title="Édition du passanger" blur wire:model.defer="ardianPassengerCostFacError">
+    <x-modal.card title="Édition du passanger" blur wire:model="ardianPassengerCostFacError">
         @if($passengerInError)
-            <form id="test" wire:submit.prevent="savePassenger" method="post">
+            <form id="test" wire:submit="savePassenger" method="post">
                 <div class="space-y-3">
                     <div>
                         Passager : {{ $passengerInError->nom }}
@@ -427,7 +427,7 @@
                         :async-data="route('api.cost_center')"
                         option-label="nom"
                         option-value="id"
-                        wire:model="passengerInError.cost_center_id"
+                        wire:model.live="passengerInError.cost_center_id"
                     />
                     <x-select
                         wire:key="type_facturation_exist_passenger"
@@ -436,7 +436,7 @@
                         :async-data="route('api.type_facturation')"
                         option-label="nom"
                         option-value="id"
-                        wire:model="passengerInError.type_facturation_id"
+                        wire:model.live="passengerInError.type_facturation_id"
                     />
                 </div>
             </form>

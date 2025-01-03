@@ -7,7 +7,7 @@
             <x-errors />
             <x-select
                 label="Entreprises"
-                wire:model="entreprises"
+                wire:model.live="entreprises"
                 placeholder="Sélectionnez une ou plusieurs entreprises"
                 multiselect
                 :async-data="route('api.entreprises', ['exclude' => $exclude])"

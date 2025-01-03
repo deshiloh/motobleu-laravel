@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\Account\AccountForm;
-use App\Http\Livewire\Account\EditPasswordForm;
-use App\Http\Livewire\Account\EntrepriseForm;
+use App\Livewire\Account\AccountForm;
+use App\Livewire\Account\EditPasswordForm;
+use App\Livewire\Account\EntrepriseForm;
 use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;

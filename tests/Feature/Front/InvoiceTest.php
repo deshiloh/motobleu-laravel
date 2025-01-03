@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Front;
 
-use App\Http\Livewire\Front\Invoice\InvoiceReservationDataTable;
+use App\Livewire\Front\Invoice\InvoiceReservationDataTable;
 use App\Models\Facture;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

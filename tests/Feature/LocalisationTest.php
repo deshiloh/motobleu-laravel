@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\Localisation\LocalisationForm;
+use App\Livewire\Localisation\LocalisationForm;
 use App\Models\Localisation;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;

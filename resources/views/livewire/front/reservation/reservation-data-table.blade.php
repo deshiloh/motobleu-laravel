@@ -15,7 +15,7 @@
             {{ __('Historique des réservations') }}
         </x-front.title>
 
-        <x-datatable.search wire:model="search" />
+        <x-datatable.search wire:model.live="search" />
         <x-datatable>
             <x-slot name="headers">
                 <tr>
@@ -91,15 +91,15 @@
         <x-front.pagination :pagination="$reservations" :per-page="$perPage" />
     </x-front.card>
 
-    <x-modal.card title="{{ __('Demande de modification') }}" blur wire:model.defer="editAskCard">
-        <form class="w-full" id="udpapteDemandeForm" wire:submit.prevent="sendUpdateReservationEmail">
+    <x-modal.card title="{{ __('Demande de modification') }}" blur wire:model="editAskCard">
+        <form class="w-full" id="udpapteDemandeForm" wire:submit="sendUpdateReservationEmail">
             @if($selectedReservation)
                 <p class="mb-4">{{ __('Votre demande concerne la réservation') }} <span class="font-bold">{{ $selectedReservation->reference }}</span></p>
             @endif
              <div class="mb-3">
                  <x-errors />
              </div>
-            <x-textarea label="{{ __('Message') }}" placeholder="{{ __('Votre message') }}..." wire:model.defer="message"/>
+            <x-textarea label="{{ __('Message') }}" placeholder="{{ __('Votre message') }}..." wire:model="message"/>
         </form>
 
         <x-slot name="footer">
@@ -111,7 +111,7 @@
     </x-modal.card>
 
 
-    <x-modal.card title="{{ __('Demande annulation') }}" blur wire:model.defer="askCancelCard">
+    <x-modal.card title="{{ __('Demande annulation') }}" blur wire:model="askCancelCard">
         @if($selectedReservation != null)
             <div class="rounded-md bg-red-50 p-4">
                 <div class="flex">

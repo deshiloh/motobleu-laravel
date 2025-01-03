@@ -6,7 +6,7 @@
                 <x-button flat label="{{ __('Retour à la liste') }}" href="{{ route('front.invoice.list') }}"/>
             </x-slot:button>
         </x-front.title>
-        <x-datatable.search wire:model="search"/>
+        <x-datatable.search wire:model.live="search"/>
         <x-datatable>
             <x-slot:headers>
                 <x-datatable.tr>

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Front;
 
-use App\Http\Livewire\Front\Reservation\ReservationDataTable;
+use App\Livewire\Front\Reservation\ReservationDataTable;
 use App\Mail\CancelReservationDemand;
 use App\Mail\UpdateReservationDemand;
 use App\Models\Reservation;
@@ -74,8 +74,10 @@ class ReservationTest extends TestCase
     {
         Mail::fake();
 
+        $reservation = Reservation::factory()->create();
+
         Livewire::test(ReservationDataTable::class)
-            ->set('selectedReservation', Reservation::factory()->create())
+            ->set('selectedReservation', $reservation)
             ->set('message', "Ceci est un message")
             ->call('sendUpdateReservationEmail')
             ->assertHasNoErrors()

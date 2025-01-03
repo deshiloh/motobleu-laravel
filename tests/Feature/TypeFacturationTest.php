@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\TypeFacturation\TypeFacturationDataTable;
-use App\Http\Livewire\TypeFacturation\TypeFacturationForm;
+use App\Livewire\TypeFacturation\TypeFacturationDataTable;
+use App\Livewire\TypeFacturation\TypeFacturationForm;
 use App\Models\Entreprise;
 use App\Models\TypeFacturation;
 use App\Models\User;

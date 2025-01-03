@@ -19,28 +19,28 @@ use App\Http\Controllers\Admin\StatsController;
 use App\Http\Controllers\Admin\TypeFacturationController;
 use App\Http\Controllers\AdresseReservationController;
 use App\Http\Controllers\ReservationController;
-use App\Http\Livewire\Account\AccountForm;
-use App\Http\Livewire\Account\EditPasswordForm;
-use App\Http\Livewire\Admin\PermissionForm;
-use App\Http\Livewire\AdresseReservation\AdresseReservationForm;
-use App\Http\Livewire\Carousel\CarouselDataTable;
-use App\Http\Livewire\CostCenter\CostCenterForm;
-use App\Http\Livewire\Entreprise\AdresseEntrepriseForm;
-use App\Http\Livewire\Entreprise\EntrepriseForm;
-use App\Http\Livewire\Facturation\EditionFacture;
-use App\Http\Livewire\Facturation\Export;
-use App\Http\Livewire\Facturation\FacturationDataTable;
-use App\Http\Livewire\Localisation\LocalisationForm;
-use App\Http\Livewire\Pages\PageForm;
-use App\Http\Livewire\Passager\PassagerForm;
-use App\Http\Livewire\Pilote\PiloteForm;
-use App\Http\Livewire\Pilote\PiloteStatMonth;
-use App\Http\Livewire\Pilote\PiloteStatYear;
-use App\Http\Livewire\Pilote\RecapReservationPilote;
-use App\Http\Livewire\Reservation\ReservationForm;
-use App\Http\Livewire\Reservation\ReservationShow;
-use App\Http\Livewire\Settings\SettingsForm;
-use App\Http\Livewire\TypeFacturation\TypeFacturationForm;
+use App\Livewire\Account\AccountForm;
+use App\Livewire\Account\EditPasswordForm;
+use App\Livewire\Admin\PermissionForm;
+use App\Livewire\AdresseReservation\AdresseReservationForm;
+use App\Livewire\Carousel\CarouselDataTable;
+use App\Livewire\CostCenter\CostCenterForm;
+use App\Livewire\Entreprise\AdresseEntrepriseForm;
+use App\Livewire\Entreprise\EntrepriseForm;
+use App\Livewire\Facturation\EditionFacture;
+use App\Livewire\Facturation\Export;
+use App\Livewire\Facturation\FacturationDataTable;
+use App\Livewire\Localisation\LocalisationForm;
+use App\Livewire\Pages\PageForm;
+use App\Livewire\Passager\PassagerForm;
+use App\Livewire\Pilote\PiloteForm;
+use App\Livewire\Pilote\PiloteStatMonth;
+use App\Livewire\Pilote\PiloteStatYear;
+use App\Livewire\Pilote\RecapReservationPilote;
+use App\Livewire\Reservation\ReservationForm;
+use App\Livewire\Reservation\ReservationShow;
+use App\Livewire\Settings\SettingsForm;
+use App\Livewire\TypeFacturation\TypeFacturationForm;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Route;
 
@@ -61,7 +61,7 @@ Route::prefix('/admin')->name('admin.')->group(function () {
         ->name('accounts.create');
     Route::get('accounts/{account}/edit', AccountForm::class)
         ->name('accounts.edit');
-    Route::get('accounts/{account}/entreprise', \App\Http\Livewire\Account\EntrepriseForm::class)
+    Route::get('accounts/{account}/entreprise', \App\Livewire\Account\EntrepriseForm::class)
         ->name('accounts.entreprise.edit');
     Route::resource('accounts', AccountController::class)
         ->except(['show', 'create', 'store', 'edit', 'update']);

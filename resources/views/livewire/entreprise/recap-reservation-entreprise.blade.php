@@ -8,7 +8,7 @@
             without-timezone
             label="Date de début"
             placeholder="Date de début"
-            wire:model="dateDebut"
+            wire:model.live="dateDebut"
             :without-time="true"
         />
         <x-datetime-picker
@@ -16,7 +16,7 @@
             without-timezone
             label="Date de fin"
             placeholder="Date de fin"
-            wire:model="dateFin"
+            wire:model.live="dateFin"
             :without-time="true"
         />
     </div>

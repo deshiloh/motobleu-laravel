@@ -1,19 +1,19 @@
 <div>
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-3 mb-3">
-        <x-input wire:model="search" label="Recherche" placeholder="Tapez votre recherche..." icon="search" class="md:col-span-1"/>
+        <x-input wire:model.live="search" label="Recherche" placeholder="Tapez votre recherche..." icon="search" class="md:col-span-1"/>
         <x-select
             label="Entreprise"
             :async-data="route('api.entreprises')"
             option-label="nom"
             option-value="id"
             placeholder="Recherche par entreprise"
-            wire:model="selectedEntreprise"
+            wire:model.live="selectedEntreprise"
             class="md:col-span-1"
         />
         <x-native-select
             label="Item par page"
             :options="['20', '50', '100', '150', '200']"
-            wire:model="perPage"
+            wire:model.live="perPage"
         />
     </div>
 

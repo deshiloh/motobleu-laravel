@@ -19,7 +19,7 @@
                 without-timezone
                 label="Date de début"
                 placeholder="Date de début"
-                wire:model.defer="dateDebut"
+                wire:model="dateDebut"
                 :clearable="false"
                 display-format="DD/MM/YYYY"
             />
@@ -28,7 +28,7 @@
                 without-timezone
                 label="Date de fin"
                 placeholder="Date de fin"
-                wire:model.defer="dateFin"
+                wire:model="dateFin"
                 :clearable="false"
                 display-format="DD/MM/YYYY"
             />

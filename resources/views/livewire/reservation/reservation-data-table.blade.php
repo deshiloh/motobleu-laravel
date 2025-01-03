@@ -23,13 +23,13 @@
 
     <div class="grid grid-cols-4 gap-6 pb-5">
         <div>
-            <x-input wire:model="search" label="Recherche" placeholder="Tapez votre recherche..." icon="search"/>
+            <x-input wire:model.live="search" label="Recherche" placeholder="Tapez votre recherche..." icon="search"/>
         </div>
         <div>
             <x-native-select
                 label="Item par page"
                 :options="['20', '50', '100', '150', '200']"
-                wire:model="perPage"
+                wire:model.live="perPage"
                 class="col-span-1"
             />
         </div>

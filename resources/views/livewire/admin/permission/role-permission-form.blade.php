@@ -3,7 +3,7 @@
         label="Rôle"
         placeholder="Sélectionnez un rôle"
         :options="$roles"
-        wire:model="selectedRole"
+        wire:model.live="selectedRole"
         option-label="name"
         option-value="id"
     />
@@ -25,7 +25,7 @@
 
                         @foreach($permissionsArray as $permission)
                             <x-datatable.td>
-                                <x-checkbox id="md" md wire:model.defer="permissionsForm" value="{{ $permission['id'] }}"/>
+                                <x-checkbox id="md" md wire:model="permissionsForm" value="{{ $permission['id'] }}"/>
                             </x-datatable.td>
                         @endforeach
 

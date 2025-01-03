@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Front;
 
-use App\Http\Livewire\Front\Address\AddressDataTable;
-use App\Http\Livewire\Front\Address\AddressForm;
-use App\Http\Livewire\Front\NewAccountForm;
+use App\Livewire\Front\Address\AddressDataTable;
+use App\Livewire\Front\Address\AddressForm;
+use App\Livewire\Front\NewAccountForm;
 use App\Mail\ConfirmationRegisterUserDemand;
 use App\Mail\RegisterUserDemand;
 use App\Models\AdresseReservation;

@@ -9,12 +9,12 @@
                 :options="$months"
                 option-label="valeur"
                 option-value="id"
-                wire:model="selectedMonth"
+                wire:model.live="selectedMonth"
             />
             <x-native-select
                 label="Année"
                 :options="$years"
-                wire:model="selectedYear"
+                wire:model.live="selectedYear"
             />
         </div>
 

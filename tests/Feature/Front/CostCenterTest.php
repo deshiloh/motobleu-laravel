@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Front;
 
-use App\Http\Livewire\Front\CostCenter\CostCenterDataTable;
-use App\Http\Livewire\Front\CostCenter\CostCenterForm;
+use App\Livewire\Front\CostCenter\CostCenterDataTable;
+use App\Livewire\Front\CostCenter\CostCenterForm;
 use App\Models\CostCenter;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -102,7 +102,7 @@ class CostCenterTest extends TestCase
             ->set('costCenter.nom', 'test')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
 
         $this->assertTrue(CostCenter::where('nom', 'test')->exists());
@@ -116,7 +116,7 @@ class CostCenterTest extends TestCase
             ->set('costCenter.nom', 'test')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
 
         $this->assertTrue(CostCenter::where('nom', 'test')->exists());

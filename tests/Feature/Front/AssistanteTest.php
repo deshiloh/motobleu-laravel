@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Front;
 
-use App\Http\Livewire\Front\Account\AccountForm;
-use App\Http\Livewire\Front\Address\AddressDataTable;
-use App\Http\Livewire\Front\Address\AddressForm;
+use App\Livewire\Front\Account\AccountForm;
+use App\Livewire\Front\Address\AddressDataTable;
+use App\Livewire\Front\Address\AddressForm;
 use App\Models\AdresseReservation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -136,7 +136,7 @@ class AssistanteTest extends TestCase
             ->set('user.ville', 'test')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
 
         $this->assertTrue(User::where('nom', 'test')->exists());
@@ -157,7 +157,7 @@ class AssistanteTest extends TestCase
             ->set('user.ville', 'test')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
 
         $this->assertTrue(User::where('nom', 'test')->exists());

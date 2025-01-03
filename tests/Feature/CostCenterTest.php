@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\CostCenter\CostCenterDataTable;
-use App\Http\Livewire\CostCenter\CostCenterForm;
+use App\Livewire\CostCenter\CostCenterDataTable;
+use App\Livewire\CostCenter\CostCenterForm;
 use App\Models\CostCenter;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;

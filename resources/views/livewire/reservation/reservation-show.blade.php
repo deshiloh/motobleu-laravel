@@ -111,30 +111,30 @@
                         option-label="full_name"
                         option-value="id"
                         option-description="email"
-                        wire:model="reservation.pilote_id"
+                        wire:model.live="reservation.pilote_id"
                     />
                     @if($reservation->statut == \App\Enum\ReservationStatus::Created)
-                        <x-textarea label="Message" placeholder="Votre message..." wire:model="message"/>
+                        <x-textarea label="Message" placeholder="Votre message..." wire:model.live="message"/>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <div class="dark:text-white">Emails de confirmation</div>
                                 <div class="space-y-3 mt-3">
-                                    <x-toggle wire:model="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
+                                    <x-toggle wire:model.live="reservation.send_to_passager" label="Passager : {{ $reservation->passager->nom }}" md />
                                 </div>
                             </div>
                             <div>
                                 <div class="dark:text-white">Invitation Google Calendar</div>
                                 <div class="space-y-3 mt-3">
-                                    <x-toggle wire:model.defer="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
+                                    <x-toggle wire:model="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
                                 </div>
                             </div>
                         </div>
                     @endif
 
-                    <x-input label="Encaisse pilote" wire:model.defer="reservation.encaisse_pilote" type="number" />
-                    <x-input label="En compte pilote" wire:model.defer="reservation.encompte_pilote" type="number" />
-                    <x-input label="Commission" wire:model.defer="resaComm" type="number" step=".01"/>
-                    <x-textarea label="Commentaire" wire:model.defer="reservation.comment_pilote" />
+                    <x-input label="Encaisse pilote" wire:model="reservation.encaisse_pilote" type="number" />
+                    <x-input label="En compte pilote" wire:model="reservation.encompte_pilote" type="number" />
+                    <x-input label="Commission" wire:model="resaComm" type="number" step=".01"/>
+                    <x-textarea label="Commentaire" wire:model="reservation.comment_pilote" />
 
                     @if($reservation->pilote()->exists() && $reservation->statut >= \App\Enum\ReservationStatus::Confirmed)
                         <x-button label="Mettre à jour le pilote" primary sm wire:loading.attr="disabled" wire:click="updatePilote" spinner="updatePilote"/>

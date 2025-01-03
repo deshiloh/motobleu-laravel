@@ -1,5 +1,5 @@
 <div class="pt-6">
-    <form class="divide-y divide-gray-200 lg:col-span-9" wire:submit.prevent="save">
+    <form class="divide-y divide-gray-200 lg:col-span-9" wire:submit="save">
         <!-- Privacy section -->
         <div class="divide-y divide-gray-200 pt-6">
             <div class="px-4 sm:px-6">
@@ -10,8 +10,8 @@
                 <ul role="list" class="mt-2 divide-y divide-gray-200">
                     <li class="py-4 grid grid-cols-6">
                         <div class="col-span-6 sm:col-span-3 space-y-3">
-                            <x-input type="email" label="Adresse email pour les tests" wire:model="emailTest"/>
-                            <x-toggle label="Mode administrateur (Tous les mails ne sont pas concernés)" wire:model="adminMode" md/>
+                            <x-input type="email" label="Adresse email pour les tests" wire:model.live="emailTest"/>
+                            <x-toggle label="Mode administrateur (Tous les mails ne sont pas concernés)" wire:model.live="adminMode" md/>
                         </div>
                     </li>
                     <li class="flex items-center justify-between py-4">

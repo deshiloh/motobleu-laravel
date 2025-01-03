@@ -1,5 +1,5 @@
 <div
-    x-data="{ value: @entangle($attributes->wire('model')) }"
+    x-data="{ value: @entangle($attributes->wire('model')).live }"
     x-init="
         tinymce.init({
             target: $refs.tinymce,

@@ -6,7 +6,7 @@
                 <x-button primary href="{{ route('front.cost_center.create') }}" label="{{ __('Créer un Cost Center') }}" icon="plus"/>
             </x-slot:button>
         </x-front.title>
-        <x-datatable.search wire:model="search"/>
+        <x-datatable.search wire:model.live="search"/>
         <x-datatable>
             <x-slot:headers>
                 <x-datatable.tr>

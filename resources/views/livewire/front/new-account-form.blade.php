@@ -5,7 +5,7 @@
                {{ __('Formulaire de demande de création de compte') }}
            </x-front.title>
            <x-errors class="mb-2"/>
-           <form class="space-y-6" wire:submit.prevent="send">
+           <form class="space-y-6" wire:submit="send">
                <div class="bg-white px-4 py-5 shadow sm:rounded-lg sm:p-6">
                    <div class="md:grid md:grid-cols-3 md:gap-6">
                        <div class="md:col-span-1">
@@ -15,36 +15,36 @@
                        <div class="mt-5 md:col-span-2 md:mt-0">
                            <div class="grid grid-cols-6 gap-6">
                                <div class="col-span-6 sm:col-span-3">
-                                   <x-input label="{{ __('Nom') }} *" wire:model.defer="user.nom" />
+                                   <x-input label="{{ __('Nom') }} *" wire:model="user.nom" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-3">
-                                   <x-input label="{{ __('Prénom') }} *" wire:model.defer="user.prenom" />
+                                   <x-input label="{{ __('Prénom') }} *" wire:model="user.prenom" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-3">
-                                   <x-input type="email" label="{{ __('Email') }} *" wire:model.defer="user.email" />
+                                   <x-input type="email" label="{{ __('Email') }} *" wire:model="user.email" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-3">
-                                   <x-input label="{{ __('Téléphone') }} *" wire:model.defer="user.telephone" />
+                                   <x-input label="{{ __('Téléphone') }} *" wire:model="user.telephone" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-3">
-                                   <x-input label="{!! __('Nom de l\'Entreprise') !!} *" wire:model.defer="entrepriseName"/>
+                                   <x-input label="{!! __('Nom de l\'Entreprise') !!} *" wire:model="entrepriseName"/>
                                </div>
 
                                <div class="col-span-6 space-y-3">
-                                   <x-input label="{{ __('Adresse') }} *" wire:model.defer="user.adresse" />
-                                   <x-input label="{{ __('Complément adresse') }}" wire:model.defer="user.adresse_bis" />
+                                   <x-input label="{{ __('Adresse') }} *" wire:model="user.adresse" />
+                                   <x-input label="{{ __('Complément adresse') }}" wire:model="user.adresse_bis" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-6 lg:col-span-3">
-                                   <x-input label="{{ __('Code postal') }} *" wire:model.defer="user.code_postal" />
+                                   <x-input label="{{ __('Code postal') }} *" wire:model="user.code_postal" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-3 lg:col-span-3">
-                                   <x-input label="{{ __('Ville') }} *" wire:model.defer="user.ville" />
+                                   <x-input label="{{ __('Ville') }} *" wire:model="user.ville" />
                                </div>
                            </div>
                        </div>
@@ -60,7 +60,7 @@
 
 
 
-           {{--           <form wire:submit.prevent="send" class="space-y-2">--}}
+           {{--           <form wire:submit="send" class="space-y-2">--}}
 {{--               --}}
 {{--               --}}
 {{--               --}}

@@ -1,5 +1,5 @@
 <div class="pt-6">
-    <form class="divide-y divide-gray-200 lg:col-span-9" wire:submit.prevent="save">
+    <form class="divide-y divide-gray-200 lg:col-span-9" wire:submit="save">
         <!-- Profile section -->
         <div class="py-6 px-4 sm:p-6 lg:pb-8">
             <div>
@@ -14,7 +14,7 @@
                         multiselect
                         option-label="nom"
                         option-value="id"
-                        wire:model="entreprisesXls"
+                        wire:model.live="entreprisesXls"
                         hint="Les entreprises sélectionnées auront un fichier XLS au lieu d'un fichier PDF lors de l'envoi de la facture."
                         placeholder="Sélectionnez une ou plusieurs entreprises"
                     />
@@ -27,7 +27,7 @@
                         multiselect
                         option-label="nom"
                         option-value="id"
-                        wire:model="entreprisesCostCenterFacturation"
+                        wire:model.live="entreprisesCostCenterFacturation"
                         hint="Permettra aux entreprises de pouvoir renseigner le Cost Center et la Facturations lors de la création d'une réservation."
                         placeholder="Sélectionnez une ou plusieurs entreprises"
                     />
@@ -39,13 +39,13 @@
                         multiselect
                         option-label="nom"
                         option-value="id"
-                        wire:model="entreprisesWithoutCommandField"
+                        wire:model.live="entreprisesWithoutCommandField"
                         hint="Les entreprises sélectionnées n'auront pas le champ commande dans le formulaire de création d'une réservation"
                         placeholder="Sélectionnez une ou plusieurs entreprises"
                     />
                 </div>
                 <div class="col-span-12 sm:col-span-7">
-                    <x-textarea wire:model="rib" label="Identifiants baancaire" placeholder="Renseignez vos informations bancaire" />
+                    <x-textarea wire:model.live="rib" label="Identifiants baancaire" placeholder="Renseignez vos informations bancaire" />
                 </div>
             </div>
         </div>

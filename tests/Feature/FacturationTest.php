@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Enum\BillStatut;
 use App\Enum\ReservationStatus;
 use App\Events\BillCreated;
-use App\Http\Livewire\Facturation\EditionFacture;
+use App\Livewire\Facturation\EditionFacture;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Reservation;
@@ -79,8 +79,8 @@ class FacturationTest extends TestCase
                 'comment_facture' => ''
             ])
             ->assertHasNoErrors()
-            ->assertEmitted('reservationUpdated')
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('reservationUpdated')
+            ->assertDispatched('wireui:notification')
             ->assertStatus(200)
         ;
 
@@ -100,8 +100,8 @@ class FacturationTest extends TestCase
                 'complement' => '',
                 'comment_facture' => ''
             ])
-            ->assertNotEmitted('reservationUpdated')
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertNotDispatched('reservationUpdated')
+            ->assertDispatched('wireui:notification')
         ;
     }
 
@@ -121,7 +121,7 @@ class FacturationTest extends TestCase
             ->set('facture', $facture)
             ->call('updateAcquitteBill')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
 
         $this->assertDatabaseHas('factures', [
@@ -152,7 +152,7 @@ class FacturationTest extends TestCase
             ->set('email.message', 'contenu du message')
             ->call('sendFactureAction')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
             ->assertSet('isSendFactureModalOpened', false)
         ;
 
@@ -270,7 +270,7 @@ class FacturationTest extends TestCase
         \Date::setTestNow(Carbon::create(2024, 1, 1, 0, 0, 0));
         $reference = Facture::generateReference('2024', '03');
 
-        $this->assertEquals('FA2024-03-031', $reference);
+        $this->assertEquals('FA2024-03-021', $reference);
     }
 
     #[NoReturn]

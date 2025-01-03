@@ -4,7 +4,7 @@
     </x-header>
     <x-bloc-content>
         <x-errors class="mb-5"/>
-        <form wire:submit.prevent="saveImage" x-data="" enctype="multipart/form-data">
+        <form wire:submit="saveImage" x-data="" enctype="multipart/form-data">
             <div class="grid grid-cols-3 gap-5">
                 <div class="w-full h-64 border rounded-lg relative z-0">
                     <div class="absolute inset-0 z-10 bg-gray-50 flex items-center justify-center hidden" wire:loading.class.remove="hidden">
@@ -19,7 +19,7 @@
                 <div>
                     <div class="space-y-3">
                         <x-button x-data="" x-on:click="$refs.fileinput.click()" label="Choisir une photo" gray />
-                        <x-select label="Position" wire:model="position" placeholder="Choisir l'emplacement">
+                        <x-select label="Position" wire:model.live="position" placeholder="Choisir l'emplacement">
                             <x-select.option label="Haut" value="1" />
                             <x-select.option label="Milieu" value="2" />
                             <x-select.option label="Bas" value="3" />
@@ -27,7 +27,7 @@
                     </div>
                 </div>
             </div>
-            <input type="file" x-ref="fileinput" class="hidden" wire:model="photo">
+            <input type="file" x-ref="fileinput" class="hidden" wire:model.live="photo">
             <div class="mt-2 space-x-2">
                 <x-button type="submit" primary label="Enregistrer"/>
                 <x-button type="button" flat label="Annuler" wire:click="resetFields"/>

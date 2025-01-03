@@ -4,7 +4,7 @@
             <x-native-select
                 label="Année"
                 :options="$years"
-                wire:model="selectedYear"
+                wire:model.live="selectedYear"
             />
             <x-select
                 label="Entreprise"
@@ -12,7 +12,7 @@
                 :async-data="route('api.entreprises')"
                 option-label="nom"
                 option-value="id"
-                wire:model="selectedEntreprise"
+                wire:model.live="selectedEntreprise"
             />
         </div>
     </x-bloc-content>

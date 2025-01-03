@@ -6,11 +6,11 @@
                 <x-button flat label="{{ __('Retour à la liste') }}" href="{{ route('front.address.list') }}"/>
             </x-slot:button>
         </x-front.title>
-        <form wire:submit.prevent="save" class="space-y-4">
-            <x-input label="{{ __('Adresse') }}" wire:model.defer="adresseReservation.adresse" />
-            <x-input label="{{ __('Adresse complémentaire') }}" wire:model.defer="adresseReservation.adresse_complement" />
-            <x-input label="{{ __('Code postal') }}" wire:model.defer="adresseReservation.code_postal" />
-            <x-input label="{{ __('Ville') }}" wire:model.defer="adresseReservation.ville" />
+        <form wire:submit="save" class="space-y-4">
+            <x-input label="{{ __('Adresse') }}" wire:model="adresseReservation.adresse" />
+            <x-input label="{{ __('Adresse complémentaire') }}" wire:model="adresseReservation.adresse_complement" />
+            <x-input label="{{ __('Code postal') }}" wire:model="adresseReservation.code_postal" />
+            <x-input label="{{ __('Ville') }}" wire:model="adresseReservation.ville" />
             <x-button primary label="{{ __('Enregistrer') }}" type="submit" wire:loading.attr="disabled" spinner="save"/>
         </form>
     </x-front.card>

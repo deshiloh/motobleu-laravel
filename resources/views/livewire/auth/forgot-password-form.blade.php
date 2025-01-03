@@ -9,12 +9,12 @@
                         <div class="text-sm text-gray-400 mb-2 text-center">
                             {{ __('Renseignez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe') }}
                         </div>
-                        <form wire:submit.prevent="resetAction" class="w-full space-y-4">
+                        <form wire:submit="resetAction" class="w-full space-y-4">
                             <x-input
                                 label="{{ __('Adresse email') }}"
                                 wire:loading.attr="disabled"
                                 wire:loading.class="opacity-25"
-                                wire:model.defer="email"
+                                wire:model="email"
                                 icon="mail"
                             >
                             </x-input>
