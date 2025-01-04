@@ -142,7 +142,7 @@
             <div>Adresse de client : {!! $this->facture->address_client_inline !!}</div>
             <div class="mt-3">
                 @if($facture->statut === \App\Enum\BillStatut::COMPLETED)
-                    <x-toggle left-label="Facture acquittée" wire:model.live="isAcquitte" wire:change="updateAcquitteBill"/>
+                    <x-toggle left-label="Facture acquittée" wire:model.live="isAcquitte" />
                 @else
                     La facture pourra être acquittée qu'une fois finalisée
                 @endif
@@ -245,7 +245,7 @@
         </x-bloc-content>
     @endif
 
-    <x-modal wire:model.live="isSendFactureModalOpened" max-width="6xl">
+    <x-modal wire:model.live="isSendFactureModalOpened" width="6xl">
         @if($facture)
         <x-card title="Envoi de la facture" wire:key="facture">
             <x-errors class="mb-4"/>
@@ -296,7 +296,7 @@
                         reservation: reservationData.id
                     },
                     submission() {
-                        @this.emit('editReservation', this.formData)
+                        Livewire.dispatch('editReservation', {datas: this.formData})
                     }
                 }
             }

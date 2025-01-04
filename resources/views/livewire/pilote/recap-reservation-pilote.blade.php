@@ -92,7 +92,7 @@
                         </x-datatable.td>
                         <x-datatable.td>
                             <input type="hidden">
-                            <x-button label="Valider" primary sm @click="toto({{ $reservation->id }})" wire:loading.attr="disabled" />
+                            <x-button label="Valider" primary sm @click="toto({{ $reservation->id }})" />
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty
@@ -117,7 +117,7 @@
                     },
                     toto(reservationId) {
                         this.formData.reservation = reservationId
-                        @this.emit('editReservation', this.formData)
+                        Livewire.dispatch('editReservation', {datas: this.formData})
                     }
                 }
             }

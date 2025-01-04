@@ -13,7 +13,7 @@
                     :async-data="route('api.user_in_entreprise', ['notIn' => $exclude])"
                     option-label="full_name"
                     option-value="id"
-                    wire:model.live="userId"
+                    wire:model="userId"
                 />
             </div>
             <div class="pt-6">

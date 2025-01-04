@@ -541,4 +541,9 @@ class EditionFacture extends Component
             ],
         ]);
     }
+
+    public function updatedIsAcquitte()
+    {
+        $this->updateAcquitteBill();
+    }
 }

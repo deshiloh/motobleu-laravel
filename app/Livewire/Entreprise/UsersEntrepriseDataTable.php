@@ -7,10 +7,8 @@ use App\Models\Entreprise;
 use App\Models\User;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Log;
@@ -35,7 +33,7 @@ class UsersEntrepriseDataTable extends Component
             'users' => $this->entreprise
                 ->users()
                 ->orderBy('nom')
-                ->paginate(10, ['*'], 'usersPage')
+                ->paginate(10, pageName: "user-entreprise-page")
         ]);
     }
 
