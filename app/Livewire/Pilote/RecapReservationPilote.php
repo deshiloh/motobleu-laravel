@@ -13,11 +13,11 @@ use Livewire\WithPagination;
 use PhpOffice\PhpSpreadsheet\Exception;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class RecapReservationPilote extends Component
 {
-    use WithPagination, Actions;
+    use WithPagination, WireUiActions;
 
     public Pilote $pilote;
     public $reservations = [];

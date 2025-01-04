@@ -12,11 +12,11 @@ use App\Models\Pilote;
 use App\Models\Reservation;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class ReservationShow extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public Reservation $reservation;
     public string $message;

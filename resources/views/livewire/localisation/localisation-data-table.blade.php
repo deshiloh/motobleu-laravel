@@ -1,7 +1,7 @@
 <div>
     <div class="grid grid-cols-1 md:grid-cols-6 gap-3 mb-4">
         <div class="col-span-2">
-            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="search" wire:model.live="search"/>
+            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="magnifying-glass" wire:model.live="search"/>
         </div>
         <div>
             <x-native-select
@@ -31,8 +31,8 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-button.circle icon="pencil" info href="{{ route('admin.localisations.edit', ['localisation' => $localisation->id]) }}" />
-                            <x-button.circle icon="trash" red wire:click="toggleStatus({{ $localisation }})" />
+                            <x-mini-button icon="pencil" info href="{{ route('admin.localisations.edit', ['localisation' => $localisation->id]) }}" />
+                            <x-mini-button icon="trash" red wire:click="toggleStatus({{ $localisation }})" />
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>

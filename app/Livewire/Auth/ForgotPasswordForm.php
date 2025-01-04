@@ -4,11 +4,11 @@ namespace App\Livewire\Auth;
 
 use Illuminate\Support\Facades\Password;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class ForgotPasswordForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public string $email = '';
 

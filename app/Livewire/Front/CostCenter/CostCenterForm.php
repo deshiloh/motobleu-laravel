@@ -4,11 +4,11 @@ namespace App\Livewire\Front\CostCenter;
 
 use App\Models\CostCenter;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class CostCenterForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public CostCenter $costCenter;
     public bool $contextNewCostCenter;

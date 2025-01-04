@@ -5,10 +5,10 @@
 
     <x-bloc-content>
         <form wire:submit="save" class="space-y-4">
-            <x-input label="Adresse" wire:model="adresseReservation.adresse" />
-            <x-input label="Adresse complémentaire" wire:model="adresseReservation.adresse_complement" />
-            <x-input label="Code postal" wire:model="adresseReservation.code_postal" />
-            <x-input label="Ville" wire:model="adresseReservation.ville" />
+            <x-input label="Adresse" wire:model.live="adresseReservation.adresse" />
+            <x-input label="Adresse complémentaire" wire:model.live="adresseReservation.adresse_complement" />
+            <x-input label="Code postal" wire:model.live="adresseReservation.code_postal" />
+            <x-input label="Ville" wire:model.live="adresseReservation.ville" />
             <x-select
                 label="Secrétaire"
                 placeholder="Sélectionner une secrétaire"
@@ -16,7 +16,7 @@
                 option-label="full_name"
                 option-value="id"
                 option-description="entreprise.nom"
-                wire:model="adresseReservation.user_id"
+                wire:model.live="adresseReservation.user_id"
             />
             <x-button info label="Enregistrer" type="submit"/>
         </form>

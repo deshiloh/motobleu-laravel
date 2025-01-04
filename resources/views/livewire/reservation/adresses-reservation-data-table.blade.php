@@ -1,7 +1,7 @@
 <div>
     <div class="grid grid-cols-1 md:grid-cols-6 gap-3 mb-4">
         <div class="col-span-2">
-            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="search" wire:model.live="search"/>
+            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="magnifying-glass" wire:model.live="search"/>
         </div>
         <div>
             <x-native-select
@@ -45,20 +45,20 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="space-x-2">
-                            <x-button.circle info icon="pencil" href="{{ route('admin.adresse-reservation.edit', ['adresseReservation' => $address->id]) }}" />
+                            <x-mini-button info icon="pencil" href="{{ route('admin.adresse-reservation.edit', ['adresseReservation' => $address->id]) }}" />
 
                             @if(!$address->is_deleted)
                                 @if($address->is_actif)
-                                    <x-button.circle red icon="x" wire:click="disableAddress({{ $address }})" />
+                                    <x-mini-button red icon="x-mark" wire:click="disableAddress({{ $address }})" />
                                 @else
-                                    <x-button.circle green icon="check" wire:click="enableAddress({{ $address }})" />
+                                    <x-mini-button green icon="check" wire:click="enableAddress({{ $address }})" />
                                 @endif
                             @endif
 
                             @if($address->is_deleted)
-                                <x-button.circle green icon="plus" wire:click="toggleDeleteAddress({{ $address }})" spinner="toggleDeleteAddress"/>
+                                <x-mini-button green icon="plus" wire:click="toggleDeleteAddress({{ $address }})" spinner="toggleDeleteAddress"/>
                                 @else
-                                <x-button.circle red icon="trash" wire:click="toggleDeleteAddress({{ $address }})" spinner="toggleDeleteAddress"/>
+                                <x-mini-button red icon="trash" wire:click="toggleDeleteAddress({{ $address }})" spinner="toggleDeleteAddress"/>
                             @endif
                         </div>
                     </x-datatable.td>

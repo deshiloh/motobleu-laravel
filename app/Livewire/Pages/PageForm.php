@@ -4,11 +4,11 @@ namespace App\Livewire\Pages;
 
 use App\Models\Page;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class PageForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public bool $contextNewPage = false;
     public bool $editPageModal = false;

@@ -14,11 +14,11 @@ use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Log;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class UsersEntrepriseDataTable extends Component
 {
-    use Actions, WithPagination;
+    use WireUiActions, WithPagination;
 
     public Entreprise $entreprise;
     public ?string $userId = '';

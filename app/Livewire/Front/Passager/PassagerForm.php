@@ -5,11 +5,11 @@ namespace App\Livewire\Front\Passager;
 use App\Models\Passager;
 use Illuminate\Support\Facades\App;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class PassagerForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public Passager $passager;
 

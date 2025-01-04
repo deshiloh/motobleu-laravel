@@ -4,15 +4,15 @@
     </x-header>
     <x-bloc-content>
         <form wire:submit="save" class="space-y-4">
-            <x-input label="Nom *" wire:model="pilote.nom" />
-            <x-input label="Prénom *" wire:model="pilote.prenom" />
-            <x-input label="Téléphone *" wire:model="pilote.telephone" />
-            <x-input label="Adresse email *" wire:model="pilote.email" type="email"/>
-            <x-input label="Nom de l'entreprise" wire:model="pilote.entreprise" />
-            <x-input label="adresse" wire:model="pilote.adresse" />
-            <x-input label="Adresse complément" wire:model="pilote.adresse_complement" />
-            <x-input label="Code postal" wire:model="pilote.code_postal" />
-            <x-input label="Ville" wire:model="pilote.ville" />
+            <x-input label="Nom *" wire:model.live="pilote.nom" />
+            <x-input label="Prénom *" wire:model.live="pilote.prenom" />
+            <x-input label="Téléphone *" wire:model.live="pilote.telephone" />
+            <x-input label="Adresse email *" wire:model.live="pilote.email" type="email"/>
+            <x-input label="Nom de l'entreprise" wire:model.live="pilote.entreprise" />
+            <x-input label="adresse" wire:model.live="pilote.adresse" />
+            <x-input label="Adresse complément" wire:model.live="pilote.adresse_complement" />
+            <x-input label="Code postal" wire:model.live="pilote.code_postal" />
+            <x-input label="Ville" wire:model.live="pilote.ville" />
             <x-input label="Commission" type="number" step="0.01" wire:model.live="commission"/>
             <x-button type="submit" primary sm >Enregistrer</x-button>
         </form>

@@ -19,8 +19,8 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-button.circle icon="pencil" info href="{{ route('admin.typefacturation.edit',['typefacturation' => $typefacturation]) }}" />
-                            <x-button.circle icon="trash" red wire:click="toggleEtatTypeFacturation({{ $typefacturation }})" />
+                            <x-mini-button icon="pencil" info href="{{ route('admin.typefacturation.edit',['typefacturation' => $typefacturation]) }}" />
+                            <x-mini-button icon="trash" red wire:click="toggleEtatTypeFacturation({{ $typefacturation }})" />
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>

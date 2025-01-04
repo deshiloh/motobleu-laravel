@@ -50,7 +50,7 @@
                             <img src="{{ asset('photos/'.$photo->file_name) }}" alt="" class="h-64 rounded-lg">
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-button.circle icon="trash" red lg wire:click="deleteCarousel({{ $photo }})"/>
+                            <x-mini-button icon="trash" red lg wire:click="deleteCarousel({{ $photo }})"/>
                         </x-datatable.td>
                     </x-datatable.tr>
                     @empty
@@ -81,7 +81,7 @@
                             <img src="{{ asset('photos/'.$photo->file_name) }}" alt="" class="h-64 rounded-lg">
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-button.circle icon="trash" red lg wire:click="deleteCarousel({{ $photo }})"/>
+                            <x-mini-button icon="trash" red lg wire:click="deleteCarousel({{ $photo }})"/>
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty
@@ -112,7 +112,7 @@
                             <img src="{{ asset('photos/'.$photo->file_name) }}" alt="" class="h-64 rounded-lg">
                         </x-datatable.td>
                         <x-datatable.td>
-                            <x-button.circle icon="trash" red lg wire:click="deleteCarousel({{ $photo }})"/>
+                            <x-mini-button icon="trash" red lg wire:click="deleteCarousel({{ $photo }})"/>
                         </x-datatable.td>
                     </x-datatable.tr>
                 @empty

@@ -16,11 +16,11 @@ use App\Mail\UserCreated;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class EmailSettingsForm extends Component
 {
-    use Actions;
+    use WireUiActions;
     public string $emailTest = "";
     public bool $adminMode = false;
 

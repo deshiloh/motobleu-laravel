@@ -16,8 +16,8 @@
             <x-input label="{{ __('Adresse Bis') }}" wire:model="user.adresse_bis" />
             <x-input label="{{ __('Code postal') }}" wire:model="user.code_postal"/>
             <x-input label="{{ __('Ville') }}" wire:model="user.ville"/>
-            <x-toggle md label="{{ __('Compte actif') }}" wire:model="user.is_actif" />
-            <x-toggle md label="{{ __('Compte admin Ardian') }}" wire:model="user.is_admin" />
+            <x-toggle md label="{{ __('Compte actif') }}" wire:model="user.is_actif" id="userActif" />
+            <x-toggle md label="{{ __('Compte admin Ardian') }}" wire:model="user.is_admin" id="userAdmin" />
             <x-button type="submit" label="{{ __('Enregistrer') }}" wire:loading.class="disabled" primary sm spinner="save"/>
         </form>
     </x-front.card>

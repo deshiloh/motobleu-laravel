@@ -4,13 +4,13 @@
     </x-header>
     <x-bloc-content>
         <form wire:submit="save" class="space-y-3">
-            <x-input label="Nom de l'adresse" wire:model="adresseEntreprise.nom" />
-            <x-input label="Adresse email de contact" wire:model="adresseEntreprise.email" type="email" hint="En cas de type facturation, elle sera utilisée pour l'envoi de la facture"/>
-            <x-input label="Adresse" wire:model="adresseEntreprise.adresse" />
-            <x-textarea label="Adresse complémentaire" wire:model="adresseEntreprise.adresse_complement"></x-textarea>
-            <x-input label="Code postal" wire:model="adresseEntreprise.code_postal" />
-            <x-input label="Ville" wire:model="adresseEntreprise.ville" />
-            <x-input label="TVA" wire:model="adresseEntreprise.tva" />
+            <x-input label="Nom de l'adresse" wire:model.live="adresseEntreprise.nom" />
+            <x-input label="Adresse email de contact" wire:model.live="adresseEntreprise.email" type="email" hint="En cas de type facturation, elle sera utilisée pour l'envoi de la facture"/>
+            <x-input label="Adresse" wire:model.live="adresseEntreprise.adresse" />
+            <x-textarea label="Adresse complémentaire" wire:model.live="adresseEntreprise.adresse_complement"></x-textarea>
+            <x-input label="Code postal" wire:model.live="adresseEntreprise.code_postal" />
+            <x-input label="Ville" wire:model.live="adresseEntreprise.ville" />
+            <x-input label="TVA" wire:model.live="adresseEntreprise.tva" />
             <x-native-select label="Type de l'adresse" wire:model.live="adresseEntreprise.type" placeholder="Sélectionnez un type d'adresse">
                 @foreach(\App\Enum\AdresseEntrepriseTypeEnum::cases() as $type)
                     <option value="{{ $type->value }}">{{ $type->name }}</option>

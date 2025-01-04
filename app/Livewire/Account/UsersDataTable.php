@@ -10,11 +10,11 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class UsersDataTable extends Component
 {
-    use WithPagination, WithSorting, Actions;
+    use WithPagination, WithSorting, WireUiActions;
 
     public int $perPage = 20;
     public string $search = '';

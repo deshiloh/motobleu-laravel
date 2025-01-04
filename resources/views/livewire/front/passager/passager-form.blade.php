@@ -10,10 +10,10 @@
             </x-slot:button>
         </x-front.title>
         <form wire:submit="save" class="space-y-4">
-            <x-input label="{!! __('Nom & prénom') !!}" wire:model="passager.nom" />
-            <x-input type="email" label="{{ __('Adresse email') }}" wire:model="passager.email" />
-            <x-input type="tel" label="{{ __('Téléphone bureau') }}" wire:model="passager.telephone"/>
-            <x-input label="{{ __('Téléphone portable') }}" wire:model="passager.portable" />
+            <x-input label="{!! __('Nom & prénom') !!}" wire:model.live="passager.nom" />
+            <x-input type="email" label="{{ __('Adresse email') }}" wire:model.live="passager.email" />
+            <x-input type="tel" label="{{ __('Téléphone bureau') }}" wire:model.live="passager.telephone"/>
+            <x-input label="{{ __('Téléphone portable') }}" wire:model.live="passager.portable" />
 
             @if(in_array(Auth::user()->entreprises()->first()->id, $billSettings->entreprises_cost_center_facturation))
                 <x-native-select
@@ -22,7 +22,7 @@
                     :options="\App\Models\CostCenter::orderBy('nom')->where('is_actif', 1)->get(['id', 'nom'])->toArray()"
                     option-label="nom"
                     option-value="id"
-                    wire:model="passager.cost_center_id"
+                    wire:model.live="passager.cost_center_id"
                 />
                 <x-select
                     label="{{ __('Type Facturation') }}"
@@ -31,7 +31,7 @@
                     option-label="nom"
                     option-value="id"
                     option-description="entreprise.nom"
-                    wire:model="passager.type_facturation_id"
+                    wire:model.live="passager.type_facturation_id"
                 />
             @endif
             <x-button type="submit" primary sm label="{{ __('Enregistrer') }}" wire:loading.attr="disabled" spinner="save"/>

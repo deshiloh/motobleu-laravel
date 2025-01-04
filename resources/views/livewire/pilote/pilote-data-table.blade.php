@@ -1,7 +1,7 @@
 <div>
     <div class="grid grid-cols-1 md:grid-cols-6 gap-3 mb-4">
         <div class="col-span-2">
-            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="search" wire:model.live="search"/>
+            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="magnifying-glass" wire:model.live="search"/>
         </div>
         <div>
             <x-native-select
@@ -42,12 +42,12 @@
                         </x-front.badge>
                     </x-datatable.td>
                     <x-datatable.td>
-                        <x-button.circle href="{{ route('admin.pilotes.edit', ['pilote' => $pilote->id]) }}" info sm icon="pencil" />
-                        <x-button.circle href="{{ route('admin.pilotes.recap-reservation', ['pilote' => $pilote->id]) }}" primary sm icon="view-list" />
+                        <x-mini-button href="{{ route('admin.pilotes.edit', ['pilote' => $pilote->id]) }}" info sm icon="pencil" />
+                        <x-mini-button href="{{ route('admin.pilotes.recap-reservation', ['pilote' => $pilote->id]) }}" primary sm icon="list-bullet" />
                         @if($pilote->is_actif)
-                            <x-button.circle wire:click="disablePilote({{ $pilote }})" red sm icon="trash" />
+                            <x-mini-button wire:click="disablePilote({{ $pilote }})" red sm icon="trash" />
                             @else
-                            <x-button.circle wire:click="enablePilote({{ $pilote }})" green sm icon="check" />
+                            <x-mini-button wire:click="enablePilote({{ $pilote }})" green sm icon="check" />
                         @endif
                     </x-datatable.td>
                 </x-datatable.tr>

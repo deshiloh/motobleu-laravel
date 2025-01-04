@@ -14,8 +14,8 @@
                                 label="{{ __('Adresse email') }}"
                                 wire:loading.attr="disabled"
                                 wire:loading.class="opacity-25"
-                                wire:model="email"
-                                icon="mail"
+                                wire:model.live="email"
+                                icon="envelope"
                             >
                             </x-input>
                             <x-button

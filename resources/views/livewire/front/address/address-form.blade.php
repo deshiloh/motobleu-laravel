@@ -7,10 +7,10 @@
             </x-slot:button>
         </x-front.title>
         <form wire:submit="save" class="space-y-4">
-            <x-input label="{{ __('Adresse') }}" wire:model="adresseReservation.adresse" />
-            <x-input label="{{ __('Adresse complémentaire') }}" wire:model="adresseReservation.adresse_complement" />
-            <x-input label="{{ __('Code postal') }}" wire:model="adresseReservation.code_postal" />
-            <x-input label="{{ __('Ville') }}" wire:model="adresseReservation.ville" />
+            <x-input label="{{ __('Adresse') }}" wire:model.live="adresseReservation.adresse" />
+            <x-input label="{{ __('Adresse complémentaire') }}" wire:model.live="adresseReservation.adresse_complement" />
+            <x-input label="{{ __('Code postal') }}" wire:model.live="adresseReservation.code_postal" />
+            <x-input label="{{ __('Ville') }}" wire:model.live="adresseReservation.ville" />
             <x-button primary label="{{ __('Enregistrer') }}" type="submit" wire:loading.attr="disabled" spinner="save"/>
         </form>
     </x-front.card>

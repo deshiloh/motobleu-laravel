@@ -38,7 +38,7 @@
                     wire:model.live="reservation.entreprise_id"
                 />
                 @if(!is_null($reservation->entreprise_id) && !in_array($reservation->entreprise_id, app(\app\Settings\BillSettings::class)->entreprise_without_command_field))
-                    <x-input label="Numéro De commande / Case code" class="mb-3" wire:model="reservation.commande"/>
+                    <x-input label="Numéro De commande / Case code" class="mb-3" wire:model.live="reservation.commande"/>
                 @endif
             </div>
         </x-bloc-content>
@@ -177,11 +177,11 @@
 
                 @if($pickupMode == \App\Services\ReservationService::WITH_NEW_ADRESSE)
                     <div class="space-y-4">
-                        <x-input label="Adresse" wire:model="newAdresseReservationFrom.adresse"/>
+                        <x-input label="Adresse" wire:model.live="newAdresseReservationFrom.adresse"/>
                         <x-input label="Adresse complémentaire"
-                                 wire:model="newAdresseReservationFrom.adresse_complement"/>
-                        <x-input label="Code postal" wire:model="newAdresseReservationFrom.code_postal"/>
-                        <x-input label="Ville" wire:model="newAdresseReservationFrom.ville"/>
+                                 wire:model.live="newAdresseReservationFrom.adresse_complement"/>
+                        <x-input label="Code postal" wire:model.live="newAdresseReservationFrom.code_postal"/>
+                        <x-input label="Ville" wire:model.live="newAdresseReservationFrom.ville"/>
                     </div>
                 @endif
             </div>
@@ -247,18 +247,18 @@
 
                 @if($dropMode == \App\Services\ReservationService::WITH_NEW_ADRESSE)
                     <div class="space-y-4">
-                        <x-input label="Adresse" wire:model="newAdresseReservationTo.adresse"/>
+                        <x-input label="Adresse" wire:model.live="newAdresseReservationTo.adresse"/>
                         <x-input label="Adresse complémentaire"
-                                 wire:model="newAdresseReservationTo.adresse_complement"/>
-                        <x-input label="Code postal" wire:model="newAdresseReservationTo.code_postal"/>
-                        <x-input label="Ville" wire:model="newAdresseReservationTo.ville"/>
+                                 wire:model.live="newAdresseReservationTo.adresse_complement"/>
+                        <x-input label="Code postal" wire:model.live="newAdresseReservationTo.code_postal"/>
+                        <x-input label="Ville" wire:model.live="newAdresseReservationTo.ville"/>
                     </div>
                 @endif
             </div>
         </x-bloc-content>
 
         <x-bloc-content>
-            <x-textarea placeholder="Votre commentaire..." wire:model="reservation.comment" label="Commentaire" />
+            <x-textarea placeholder="Votre commentaire..." wire:model.live="reservation.comment" label="Commentaire" />
         </x-bloc-content>
 
         @if($hasBack)
@@ -328,11 +328,11 @@
                     @endif
                     @if($backPickupMode == \App\Services\ReservationService::WITH_NEW_ADRESSE)
                         <div class="space-y-4">
-                            <x-input wire:model="newAdresseReservationFromBack.adresse" label="Adresse"/>
-                            <x-input wire:model="newAdresseReservationFromBack.adresse_complement"
+                            <x-input wire:model.live="newAdresseReservationFromBack.adresse" label="Adresse"/>
+                            <x-input wire:model.live="newAdresseReservationFromBack.adresse_complement"
                                      label="Adresse complémentaire"/>
-                            <x-input wire:model="newAdresseReservationFromBack.code_postal" label="Code postal"/>
-                            <x-input wire:model="newAdresseReservationFromBack.ville" label="Ville"/>
+                            <x-input wire:model.live="newAdresseReservationFromBack.code_postal" label="Code postal"/>
+                            <x-input wire:model.live="newAdresseReservationFromBack.ville" label="Ville"/>
                         </div>
                     @endif
                 </div>
@@ -378,16 +378,16 @@
                             :async-data="route('api.adresses', ['user' => $userId])"
                             option-label="full_adresse"
                             option-value="id"
-                            wire:model="reservation_back.adresse_reservation_to_id"
+                            wire:model.live="reservation_back.adresse_reservation_to_id"
                         />
                     @endif
                     @if($backDropMode == \App\Services\ReservationService::WITH_NEW_ADRESSE)
                         <div class="space-y-4">
-                            <x-input label="Adresse" wire:model="newAdresseReservationToBack.adresse"/>
+                            <x-input label="Adresse" wire:model.live="newAdresseReservationToBack.adresse"/>
                             <x-input label="Adresse complémentaire"
-                                     wire:model="newAdresseReservationToBack.adresse_complement"/>
-                            <x-input label="Code postal" wire:model="newAdresseReservationToBack.code_postal"/>
-                            <x-input label="Ville" wire:model="newAdresseReservationToBack.ville"/>
+                                     wire:model.live="newAdresseReservationToBack.adresse_complement"/>
+                            <x-input label="Code postal" wire:model.live="newAdresseReservationToBack.code_postal"/>
+                            <x-input label="Ville" wire:model.live="newAdresseReservationToBack.ville"/>
                         </div>
                     @endif
                 </div>
@@ -413,7 +413,7 @@
         </x-bloc-content>
     </form>
 
-    <x-modal.card title="Édition du passanger" blur wire:model="ardianPassengerCostFacError">
+    <x-modal-card title="Édition du passanger" blur wire:model.live="ardianPassengerCostFacError">
         @if($passengerInError)
             <form id="test" wire:submit="savePassenger" method="post">
                 <div class="space-y-3">
@@ -447,5 +447,5 @@
                     <x-button primary label="Enregistrer" type="submit" form="test"/>
                 </div>
             </x-slot>
-    </x-modal.card>
+    </x-modal-card>
 </div>

@@ -62,8 +62,7 @@ class ReservationTest extends TestCase
         Livewire::test(ReservationDataTable::class)
             ->call('sendUpdateReservationEmail')
             ->assertHasErrors([
-                'message' => "required",
-                'selectedReservation' => 'required'
+                'message' => "required"
             ])
         ;
 
@@ -77,7 +76,7 @@ class ReservationTest extends TestCase
         $reservation = Reservation::factory()->create();
 
         Livewire::test(ReservationDataTable::class)
-            ->set('selectedReservation', $reservation)
+            ->call('openAskEditModal', reservation: $reservation)
             ->set('message', "Ceci est un message")
             ->call('sendUpdateReservationEmail')
             ->assertHasNoErrors()

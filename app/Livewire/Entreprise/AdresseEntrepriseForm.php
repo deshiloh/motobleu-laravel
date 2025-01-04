@@ -7,11 +7,11 @@ use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use Illuminate\Support\Facades\App;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class AdresseEntrepriseForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public AdresseEntreprise $adresseEntreprise;
     public Entreprise $entreprise;
@@ -54,7 +54,7 @@ class AdresseEntrepriseForm extends Component
             if ($this->adresseEntreprise->exists) {
                 $this->adresseEntreprise->update();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Adresse modifiée.',
                     'description' => "L'adresse a bien été modifiée..",
                     'icon' => 'success',
@@ -65,7 +65,7 @@ class AdresseEntrepriseForm extends Component
                 ]);
             } else {
                 $this->entreprise->adresseEntreprises()->save($this->adresseEntreprise);
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Adresse crééé.',
                     'description' => "L'adresse a bien été créée.",
                     'icon' => 'success',

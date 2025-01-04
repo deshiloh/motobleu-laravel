@@ -1,7 +1,7 @@
 <div>
     <div class="grid grid-cols-1 md:grid-cols-6 gap-3 mb-4">
         <div class="col-span-2">
-            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="search" wire:model.live="search"/>
+            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="magnifying-glass" wire:model.live="search"/>
         </div>
         <div>
             <x-native-select
@@ -41,11 +41,11 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-button.circle icon="pencil" info href="{{ route('admin.passagers.edit', ['passager' => $passager->id]) }}" />
+                            <x-mini-button icon="pencil" info href="{{ route('admin.passagers.edit', ['passager' => $passager->id]) }}" />
                             @if($passager->is_actif)
-                                <x-button.circle icon="x" red wire:click="disablePassenger({{ $passager }})" spinner="disablePassenger"/>
+                                <x-mini-button icon="x-mark" red wire:click="disablePassenger({{ $passager }})" spinner="disablePassenger"/>
                                 @else
-                                <x-button.circle icon="check" green wire:click="enablePassenger({{ $passager }})" spinner="enablePassenger"/>
+                                <x-mini-button icon="check" green wire:click="enablePassenger({{ $passager }})" spinner="enablePassenger"/>
                             @endif
                         </div>
                     </x-datatable.td>

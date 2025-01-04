@@ -142,7 +142,7 @@
             <div>Adresse de client : {!! $this->facture->address_client_inline !!}</div>
             <div class="mt-3">
                 @if($facture->statut === \App\Enum\BillStatut::COMPLETED)
-                    <x-toggle left-label="Facture acquittée" wire:model="isAcquitte" wire:change="updateAcquitteBill"/>
+                    <x-toggle left-label="Facture acquittée" wire:model.live="isAcquitte" wire:change="updateAcquitteBill"/>
                 @else
                     La facture pourra être acquittée qu'une fois finalisée
                 @endif
@@ -245,7 +245,7 @@
         </x-bloc-content>
     @endif
 
-    <x-modal wire:model="isSendFactureModalOpened" max-width="6xl">
+    <x-modal wire:model.live="isSendFactureModalOpened" max-width="6xl">
         @if($facture)
         <x-card title="Envoi de la facture" wire:key="facture">
             <x-errors class="mb-4"/>
@@ -255,13 +255,13 @@
                 </div>
                 <div>
                     <form wire:submit="sendFactureAction" id="factureForm" class="space-y-4">
-                        <x-input label="Email" wire:model="email.address"/>
+                        <x-input label="Email" wire:model.live="email.address"/>
                         <x-tinymce wire:model.live="email.message"/>
-                        <x-toggle wire:model="facture.is_acquitte" label="Facture acquittée"/>
-                        <x-tinymce wire:model="facture.information" label="Informations"/>
-{{--                        <x-textarea label="Texte information" hint="Ce texte apparaitra sur la facture" wire:model="email.complement" wire:change.debounce="editFactureAction"/>--}}
-                        <x-button wire:click="sendEmailTestAction" primary sm type="button" icon="mail">Envoi d'un email de test</x-button>
-                        <x-button wire:click="exportAction" info sm type="button" icon="download">Récap. des courses</x-button>
+                        <x-toggle wire:model.live="facture.is_acquitte" label="Facture acquittée"/>
+                        <x-tinymce wire:model.live="facture.information" label="Informations"/>
+{{--                        <x-textarea label="Texte information" hint="Ce texte apparaitra sur la facture" wire:model.live="email.complement" wire:change.debounce="editFactureAction"/>--}}
+                        <x-button wire:click="sendEmailTestAction" primary sm type="button" icon="envelope">Envoi d'un email de test</x-button>
+                        <x-button wire:click="exportAction" info sm type="button" icon="arrow-down-tray">Récap. des courses</x-button>
                     </form>
                 </div>
             </div>

@@ -9,14 +9,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class AccountForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public User $user;
     public bool $isAdmin = false;
+    public bool $isActif = false;
 
     public function mount(User $account): void
     {
@@ -25,9 +26,12 @@ class AccountForm extends Component
         if (!$this->user->exists) {
             $this->user->is_actif = true;
             $this->user->is_admin = true;
+            $this->isActif = true;
         } else {
             $this->isAdmin = $this->user->is_admin_role;
         }
+
+        $this->isActif = $this->user->is_actif;
     }
 
     public function getRules(): array
@@ -72,7 +76,7 @@ class AccountForm extends Component
 
                 $this->user->update();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Compte modifié',
                     'description' => 'Le compte a bien été modifié',
                     'icon' => 'success',
@@ -87,7 +91,7 @@ class AccountForm extends Component
 
                 $this->user->save();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Compte créé',
                     'description' => 'Le compte a bien été créé',
                     'icon' => 'success',

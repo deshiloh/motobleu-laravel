@@ -25,7 +25,7 @@
 
                         @foreach($permissionsArray as $permission)
                             <x-datatable.td>
-                                <x-checkbox id="md" md wire:model="permissionsForm" value="{{ $permission['id'] }}"/>
+                                <x-checkbox id="md" md wire:model.live="permissionsForm" value="{{ $permission['id'] }}"/>
                             </x-datatable.td>
                         @endforeach
 

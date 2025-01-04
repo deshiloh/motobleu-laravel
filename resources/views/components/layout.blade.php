@@ -7,7 +7,9 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="{{ asset('build/js/tinymce/tinymce.min.js') }}"></script>
+    <wireui:scripts />
     @livewireStyles()
+    @livewireScripts()
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -74,10 +76,7 @@
     {{ $slot }}
         <x-notifications />
 </div>
-<wireui:scripts />
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
-@livewireScripts()
 @stack('scripts')
 </body>
 </html>

@@ -5,11 +5,11 @@ namespace App\Livewire\Entreprise;
 use App\Models\Entreprise;
 use Illuminate\Support\Facades\App;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class EntrepriseForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public Entreprise $entreprise;
 
@@ -51,7 +51,7 @@ class EntrepriseForm extends Component
         try {
             if ($this->entreprise->exists) {
                 $this->entreprise->update();
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Entreprise modifiée.',
                     'description' => "L'entreprise a bien été modifiée.",
                     'icon' => 'success',
@@ -62,7 +62,7 @@ class EntrepriseForm extends Component
                 ]);
             } else {
                 $this->entreprise->save();
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Entreprise créée.',
                     'description' => "L'entreprise a bien été créée.",
                     'icon' => 'success',

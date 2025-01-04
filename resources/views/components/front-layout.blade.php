@@ -11,8 +11,7 @@
         href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css"
     />
 
-    @wireUiScripts
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <wireui:scripts />
 
     @stack('styles')
     @livewireStyles()
@@ -20,7 +19,7 @@
 </head>
 
 @php
-    $bgmotobleu = in_array(Route::currentRouteName(), [
+    $bgmotobleu = in_array(\Illuminate\Support\Facades\Route::currentRouteName(), [
             'front.home',
             'account.new'
             ]);
@@ -32,7 +31,8 @@
     'bg-gray-200' => !$bgmotobleu
     ])
 >
-    <x-notifications />
+    <x-notifications z-index="z-50" />
+
     <div class="min-h-screen h-full relative">
         <nav @class([
                 'text-white z-10 relative',

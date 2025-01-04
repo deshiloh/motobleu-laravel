@@ -10,11 +10,11 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class EntreprisesDataTable extends Component
 {
-    use WithPagination, WithSorting, Actions;
+    use WithPagination, WithSorting, WireUiActions;
 
     public string $search = '';
     public string $sortField = 'nom';

@@ -9,11 +9,11 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class AdressesEntrepriseDataTable extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public Entreprise $entreprise;
 

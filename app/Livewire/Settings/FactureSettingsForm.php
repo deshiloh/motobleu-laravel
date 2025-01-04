@@ -4,11 +4,11 @@ namespace App\Livewire\Settings;
 
 use app\Settings\BillSettings;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class FactureSettingsForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public array $entreprisesXls;
     public array $entreprisesCostCenterFacturation;

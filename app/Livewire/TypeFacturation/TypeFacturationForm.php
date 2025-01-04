@@ -5,11 +5,11 @@ namespace App\Livewire\TypeFacturation;
 use App\Models\TypeFacturation;
 use Illuminate\Support\Facades\App;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class TypeFacturationForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public TypeFacturation $typeFacturation;
 
@@ -39,7 +39,7 @@ class TypeFacturationForm extends Component
             if ($this->typeFacturation->exists) {
                 $this->typeFacturation->update();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Type de facturation modifié.',
                     'description' => "Type de facturation correctement modifié.",
                     'icon' => 'success',
@@ -50,7 +50,7 @@ class TypeFacturationForm extends Component
                 ]);
             } else {
                 $this->typeFacturation->save();
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Type de facturation créé.',
                     'description' => "Type de facturation correctement créé.",
                     'icon' => 'success',

@@ -5,11 +5,11 @@ namespace App\Livewire\Account;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class EditPasswordForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public User $user;
     public string $password = '';
@@ -50,7 +50,7 @@ class EditPasswordForm extends Component
             'password' => Hash::make($this->password)
         ]);
 
-        $this->notification([
+        $this->notification()->send([
             'title' => 'Mot de pass changé.',
             'description' => 'Le mot de passe a bien été changé.',
             'icon' => 'success',

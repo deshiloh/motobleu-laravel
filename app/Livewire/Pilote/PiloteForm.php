@@ -5,11 +5,11 @@ namespace App\Livewire\Pilote;
 use App\Models\Pilote;
 use Illuminate\Support\Facades\App;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class PiloteForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public Pilote $pilote;
     public $commission = 15;
@@ -51,7 +51,7 @@ class PiloteForm extends Component
         try {
             if ($this->pilote->exists) {
                 $this->pilote->update();
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Pilote modifié.',
                     'description' => 'Le pilote a bien été modifié',
                     'icon' => 'success',
@@ -62,7 +62,7 @@ class PiloteForm extends Component
                 ]);
             } else {
                 $this->pilote->save();
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Pilote créé.',
                     'description' => 'Le pilote a bien été créé',
                     'icon' => 'success',

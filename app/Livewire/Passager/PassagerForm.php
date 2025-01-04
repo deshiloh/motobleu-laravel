@@ -5,11 +5,11 @@ namespace App\Livewire\Passager;
 use App\Models\Passager;
 use Illuminate\Support\Facades\App;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class PassagerForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public Passager $passager;
 
@@ -55,7 +55,7 @@ class PassagerForm extends Component
             if ($this->passager->exists) {
                 $this->passager->update();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Passager modifié.',
                     'description' => 'Le passager a bien été modifié',
                     'icon' => 'success',
@@ -67,7 +67,7 @@ class PassagerForm extends Component
             } else {
                 $this->passager->save();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Passager créé.',
                     'description' => 'Le passager a bien été créé',
                     'icon' => 'success',

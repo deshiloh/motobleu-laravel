@@ -7,11 +7,11 @@ use App\Services\EventCalendar\GoogleCalendarService;
 use App\Services\ReservationService;
 use App\Traits\WithReservationForm;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class ReservationForm extends Component
 {
-    use Actions, WithReservationForm;
+    use WireUiActions, WithReservationForm;
 
     public function mount(Reservation $reservation): void
     {

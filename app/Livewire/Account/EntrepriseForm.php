@@ -5,11 +5,11 @@ namespace App\Livewire\Account;
 use App\Models\Entreprise;
 use App\Models\User;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class EntrepriseForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public User $user;
     public array $entreprises = [];
@@ -39,7 +39,7 @@ class EntrepriseForm extends Component
             $this->user->entreprises()->attach($this->entreprises);
             $this->refreshData();
             $this->reset('entreprises');
-            $this->notification([
+            $this->notification()->send([
                 'title' => 'Opération réussite.',
                 'description' => "Tout s'est bien passé.",
                 'icon' => "success",

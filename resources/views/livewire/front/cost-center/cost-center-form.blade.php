@@ -8,8 +8,8 @@
         </x-front.title>
         <x-errors class="mb-2"/>
         <form wire:submit="save" class="space-y-3">
-            <x-input label="{{ __('Nom') }}" wire:model="costCenter.nom" />
-            <x-toggle wire:model="costCenter.is_actif" md label="{{ __('Actif') }}" />
+            <x-input label="{{ __('Nom') }}" wire:model.live="costCenter.nom" />
+            <x-toggle wire:model.live="costCenter.is_actif" md label="{{ __('Actif') }}" />
             <x-button type="submit" primary sm label="{{ __('Enregistrer') }}" wire:loading.attr="disabled" spinner="save"/>
         </form>
     </x-front.card>

@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class AccountForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public User $user;
     public int $userId;

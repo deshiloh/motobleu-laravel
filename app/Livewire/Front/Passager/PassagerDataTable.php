@@ -5,11 +5,11 @@ namespace App\Livewire\Front\Passager;
 use App\Models\Passager;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class PassagerDataTable extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public int $perPage = 20;
     public string $search = '';

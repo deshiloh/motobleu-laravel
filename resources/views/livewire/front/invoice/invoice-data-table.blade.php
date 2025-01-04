@@ -23,8 +23,8 @@
                         <x-datatable.td>
                             <div class="space-x-2">
                                 @can('see facture')
-                                    <x-button.circle icon="eye" primary target="_blank" href="{{ route('front.invoice.show', ['facture' => $facture]) }}"/>
-                                    <x-button.circle icon="view-list" positive href="{{ route('front.invoice.reservations', ['invoice' => $facture]) }}"/>
+                                    <x-mini-button icon="eye" primary target="_blank" href="{{ route('front.invoice.show', ['facture' => $facture]) }}"/>
+                                    <x-mini-button icon="list-bullet" positive href="{{ route('front.invoice.reservations', ['invoice' => $facture]) }}"/>
                                 @endcan
                             </div>
                         </x-datatable.td>

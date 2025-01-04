@@ -29,17 +29,17 @@
                         <x-datatable.td>
                             <div class="space-x-2">
                                 @can('edit address reservation')
-                                    <x-button.circle primary icon="pencil" href="{{ route('front.address.edit', ['address' => $address->id]) }}"/>
+                                    <x-mini-button primary icon="pencil" href="{{ route('front.address.edit', ['address' => $address->id]) }}"/>
 
                                     @if($address->is_actif)
-                                        <x-button.circle warning icon="x" wire:click="toggleAddress({{ $address }})"/>
+                                        <x-mini-button warning icon="x-mark" wire:click="toggleAddress({{ $address }})"/>
                                         @else
-                                        <x-button.circle positive icon="check" wire:click="toggleAddress({{ $address }})"/>
+                                        <x-mini-button positive icon="check" wire:click="toggleAddress({{ $address }})"/>
                                     @endif
                                 @endcan
 
                                 @can('delete address reservation')
-                                    <x-button.circle red icon="trash" wire:click="deleteAddress({{ $address }})"/>
+                                    <x-mini-button red icon="trash" wire:click="deleteAddress({{ $address }})"/>
                                 @endcan
                             </div>
                         </x-datatable.td>

@@ -1,7 +1,7 @@
 <div>
     <div class="grid grid-cols-6 gap-4 mb-4">
         <div class="col-span-2">
-            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="search" wire:model.live="search"/>
+            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="magnifying-glass" wire:model.live="search"/>
         </div>
         <div class="col-span-1">
             <x-native-select
@@ -30,12 +30,12 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-button.circle icon="eye" info href="{{ route('admin.entreprises.show', ['entreprise' => $entreprise->id]) }}" />
-                            <x-button.circle icon="pencil" primary href="{{ route('admin.entreprises.edit', ['entreprise' => $entreprise->id]) }}" />
+                            <x-mini-button icon="eye" info href="{{ route('admin.entreprises.show', ['entreprise' => $entreprise->id]) }}" />
+                            <x-mini-button icon="pencil" primary href="{{ route('admin.entreprises.edit', ['entreprise' => $entreprise->id]) }}" />
                             @if($entreprise->is_actif)
-                                <x-button.circle icon="trash" red wire:click="disableEntreprise({{ $entreprise }})" />
+                                <x-mini-button icon="trash" red wire:click="disableEntreprise({{ $entreprise }})" />
                                 @else
-                                <x-button.circle icon="check" green wire:click="enableEntreprise({{ $entreprise }})" />
+                                <x-mini-button icon="check" green wire:click="enableEntreprise({{ $entreprise }})" />
                             @endif
 
                         </div>

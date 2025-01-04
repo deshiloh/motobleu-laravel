@@ -1,6 +1,6 @@
 <div>
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-3 mb-3">
-        <x-input wire:model.live="search" label="Recherche" placeholder="Tapez votre recherche..." icon="search" class="md:col-span-1"/>
+        <x-input wire:model.live="search" label="Recherche" placeholder="Tapez votre recherche..." icon="magnifying-glass" class="md:col-span-1"/>
         <x-select
             label="Entreprise"
             :async-data="route('api.entreprises')"
@@ -47,13 +47,13 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-button.circle icon="pencil" primary href="{{ route('admin.accounts.edit', ['account' => $user->id]) }}" />
-                            <x-button.circle icon="key" info href="{{ route('admin.accounts.password.edit', ['account' => $user->id]) }}" />
-                            <x-button.circle icon="office-building" emerald href="{{ route('admin.accounts.entreprise.edit', ['account' => $user->id]) }}"/>
+                            <x-mini-button icon="pencil" primary href="{{ route('admin.accounts.edit', ['account' => $user->id]) }}" />
+                            <x-mini-button icon="key" info href="{{ route('admin.accounts.password.edit', ['account' => $user->id]) }}" />
+                            <x-mini-button icon="building-office" emerald href="{{ route('admin.accounts.entreprise.edit', ['account' => $user->id]) }}"/>
                             @if($user->is_actif)
-                                <x-button.circle icon="trash" red wire:click="disableAccount({{ $user }})" />
+                                <x-mini-button icon="trash" red wire:click="disableAccount({{ $user }})" />
                                 @else
-                                <x-button.circle icon="check" green wire:click="enableAccount({{ $user }})" />
+                                <x-mini-button icon="check" green wire:click="enableAccount({{ $user }})" />
                             @endif
 
                         </div>

@@ -10,19 +10,20 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class ReservationDataTable extends Component
 {
-    use WithPagination, Actions;
+    use WithPagination, WireUiActions;
 
     public int $perPage = 20;
     public bool $editAskCard = false;
     public bool $askCancelCard = false;
     public ?string $message = null;
-    public ?Reservation $selectedReservation;
+    public ?Reservation $selectedReservation = null;
     public string $search = '';
 
     protected function rules(): array
@@ -64,6 +65,8 @@ class ReservationDataTable extends Component
      */
     public function sendUpdateReservationEmail(): void
     {
+        $this->validate();
+
         try {
             Mail::to(config('mail.admin.address'))
                 ->send(

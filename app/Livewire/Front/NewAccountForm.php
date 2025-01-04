@@ -6,11 +6,11 @@ use App\Mail\ConfirmationRegisterUserDemand;
 use App\Mail\RegisterUserDemand;
 use App\Models\User;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class NewAccountForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public User $user;
     public string $entrepriseName;

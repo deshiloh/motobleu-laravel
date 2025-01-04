@@ -10,11 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Livewire\Component;
 use Livewire\WithPagination;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class FacturationDataTable extends Component
 {
-    use WithPagination, Actions;
+    use WithPagination, WireUiActions;
 
     public string $search = '';
     public ?int $entreprise = null;
@@ -68,7 +68,7 @@ class FacturationDataTable extends Component
                 'is_acquitte' => !$facture->is_acquitte
             ]);
 
-            $this->notification([
+            $this->notification()->send([
                 'title' => 'Opération réussite',
                 'description' => 'L\'état a bien été changé.',
                 'timeout' => config('wireui.timeout'),

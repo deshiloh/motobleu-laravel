@@ -22,7 +22,8 @@
         "spatie/laravel-permission": "^6.0",
         "spatie/laravel-settings": "^3.0",
         "spatie/laravel-translatable": "^6.4",
-        "wireui/wireui": "^1.19.3"
+        "wireui/heroicons": "^2.7",
+        "wireui/wireui": "^2.2"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.4",

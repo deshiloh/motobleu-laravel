@@ -8,7 +8,7 @@
                     <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled" />
                 @endif
 
-                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled" />
+                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-square" primary label="Éditer" wire:loading.attr="disabled" />
 
                 @if($reservation->statut == \App\Enum\ReservationStatus::Canceled || $reservation->statut == \App\Enum\ReservationStatus::CanceledToPay)
                     <x-button positive label="Confirmer" icon="check" wire:loading.attr="disabled" wire:click="confirmedStatusAction" spinner="confirmedStatusAction" />
@@ -125,16 +125,16 @@
                             <div>
                                 <div class="dark:text-white">Invitation Google Calendar</div>
                                 <div class="space-y-3 mt-3">
-                                    <x-toggle wire:model="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
+                                    <x-toggle wire:model.live="reservation.calendar_passager_invitation" label="Passager : {{ $reservation->passager->nom }}" md />
                                 </div>
                             </div>
                         </div>
                     @endif
 
-                    <x-input label="Encaisse pilote" wire:model="reservation.encaisse_pilote" type="number" />
-                    <x-input label="En compte pilote" wire:model="reservation.encompte_pilote" type="number" />
-                    <x-input label="Commission" wire:model="resaComm" type="number" step=".01"/>
-                    <x-textarea label="Commentaire" wire:model="reservation.comment_pilote" />
+                    <x-input label="Encaisse pilote" wire:model.live="reservation.encaisse_pilote" type="number" />
+                    <x-input label="En compte pilote" wire:model.live="reservation.encompte_pilote" type="number" />
+                    <x-input label="Commission" wire:model.live="resaComm" type="number" step=".01"/>
+                    <x-textarea label="Commentaire" wire:model.live="reservation.comment_pilote" />
 
                     @if($reservation->pilote()->exists() && $reservation->statut >= \App\Enum\ReservationStatus::Confirmed)
                         <x-button label="Mettre à jour le pilote" primary sm wire:loading.attr="disabled" wire:click="updatePilote" spinner="updatePilote"/>
@@ -199,7 +199,7 @@
                                     <div class="ml-2 flex-1 w-0 truncate flex justify-between items-center">
                                         <div>{{ $adresse->adresse_full }}</div>
                                         <div>
-                                            <x-button.circle
+                                            <x-mini-button
                                                 icon="pencil"
                                                 info
                                                 sm

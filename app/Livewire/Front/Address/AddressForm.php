@@ -4,11 +4,12 @@ namespace App\Livewire\Front\Address;
 
 use App\Models\AdresseReservation;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class AddressForm extends Component
 {
-    use Actions;
+    use WireUiActions;
+
     public AdresseReservation $adresseReservation;
 
     protected array $rules = [

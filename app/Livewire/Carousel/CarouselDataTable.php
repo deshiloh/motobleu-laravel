@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\App;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class CarouselDataTable extends Component
 {
-    use WithFileUploads, Actions;
+    use WithFileUploads, WireUiActions;
 
     /**
      * @var TemporaryUploadedFile

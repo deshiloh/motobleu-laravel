@@ -6,11 +6,11 @@ use App\Models\CostCenter;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class CostCenterForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public CostCenter $costCenter;
 
@@ -44,7 +44,7 @@ class CostCenterForm extends Component
             if ($this->costCenter->exists) {
                 $this->costCenter->update();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Cost Center modifié.',
                     'description' => "Le Cost Center a bien été modifié.",
                     'icon' => 'success',
@@ -58,7 +58,7 @@ class CostCenterForm extends Component
 
                 $this->costCenter = new CostCenter();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Cost Center créé.',
                     'description' => "Le Cost Center a bien été créé.",
                     'icon' => 'success',

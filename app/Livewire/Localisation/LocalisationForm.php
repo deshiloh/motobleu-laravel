@@ -5,11 +5,11 @@ namespace App\Livewire\Localisation;
 use App\Models\Localisation;
 use Illuminate\Support\Facades\App;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class LocalisationForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public Localisation $localisation;
 
@@ -45,7 +45,7 @@ class LocalisationForm extends Component
             if ($this->localisation->exists) {
                 $this->localisation->update();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Localisation modifée.',
                     'description' => 'La localisation a bien été modifiée',
                     'icon' => 'success',
@@ -57,7 +57,7 @@ class LocalisationForm extends Component
             } else {
                 $this->localisation->save();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Localisation créée.',
                     'description' => 'La localisation a bien été créée',
                     'icon' => 'success',

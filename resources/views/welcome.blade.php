@@ -93,7 +93,7 @@
                         <x-datatable.td>{{ $reservation->display_to }}</x-datatable.td>
                         <x-datatable.td>{{ $reservation->entreprise->nom }}</x-datatable.td>
                         <x-datatable.td>
-                            <x-button.circle
+                            <x-mini-button
                                 href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}"
                                 icon="eye" primary/>
                         </x-datatable.td>

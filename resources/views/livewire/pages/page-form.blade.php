@@ -19,8 +19,8 @@
                         <x-datatable.td>{{ $page->title }}</x-datatable.td>
                         <x-datatable.td>
                             <div class="space-x-2">
-                                <x-button.circle primary icon="eye" wire:click="selectedPage({{ $page }})"/>
-                                <x-button.circle red icon="trash" wire:click="deletePage({{ $page }})"/>
+                                <x-mini-button primary icon="eye" wire:click="selectedPage({{ $page }})"/>
+                                <x-mini-button red icon="trash" wire:click="deletePage({{ $page }})"/>
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>
@@ -36,12 +36,12 @@
             </x-slot:body>
         </x-datatable>
     </x-bloc-content>
-    <x-modal.card title="Formulaire Page" blur wire:model="editPageModal">
+    <x-modal-card title="Formulaire Page" blur wire:model.live="editPageModal">
         <x-errors />
         @if($selectedPage)
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <x-input label="Titre FR" placeholder="Votre titre" wire:model="data.titleFR"/>
-                <x-input label="Titre EN" placeholder="Votre titre" wire:model="data.titleEN"/>
+                <x-input label="Titre FR" placeholder="Votre titre" wire:model.live="data.titleFR"/>
+                <x-input label="Titre EN" placeholder="Votre titre" wire:model.live="data.titleEN"/>
             </div>
             <div class="space-y-2 mt-2">
                 <x-tinymce wire:model.live="data.contentFR" label="Contenu FR"/>
@@ -54,5 +54,5 @@
                 <x-button primary label="Enregistrer" wire:click="savePage" />
             </div>
         </x-slot>
-    </x-modal.card>
+    </x-modal-card>
 </div>

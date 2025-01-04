@@ -36,13 +36,13 @@
                         <x-datatable.td>
                             <div class="space-x-2">
                                 @can('edit user')
-                                    <x-button.circle primary icon="pencil" href="{{ route('front.user.edit', ['account' => $user->id]) }}"/>
+                                    <x-mini-button primary icon="pencil" href="{{ route('front.user.edit', ['account' => $user->id]) }}"/>
                                 @endcan
                                 @can('delete user')
                                     @if($user->reservations()->exists())
                                             <x-button red icon="trash" disabled label="{{ __('Suppression impossible') }}" />
                                         @else
-                                            <x-button.circle red icon="trash" wire:click="deleteAccountAction('{{ $user->id }}')" wire:key="{{ $user->id }}" />
+                                            <x-mini-button red icon="trash" wire:click="deleteAccountAction('{{ $user->id }}')" wire:key="{{ $user->id }}" />
                                     @endif
                                 @endcan
                             </div>

@@ -23,7 +23,7 @@
 
     <div class="grid grid-cols-4 gap-6 pb-5">
         <div>
-            <x-input wire:model.live="search" label="Recherche" placeholder="Tapez votre recherche..." icon="search"/>
+            <x-input wire:model.live="search" label="Recherche" placeholder="Tapez votre recherche..." icon="magnifying-glass"/>
         </div>
         <div>
             <x-native-select
@@ -83,8 +83,8 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-button.circle icon="eye" primary sm href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" />
-                            <x-button.circle icon="pencil" info sm href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}" />
+                            <x-mini-button icon="eye" primary sm href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" />
+                            <x-mini-button icon="pencil" info sm href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}" />
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>

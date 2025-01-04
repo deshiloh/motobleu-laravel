@@ -21,12 +21,12 @@ use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Exception;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 use function Symfony\Component\String\s;
 
 class EditionFacture extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public ?int $selectedMonth = null;
     public ?int $selectedYear = null;
@@ -403,7 +403,7 @@ class EditionFacture extends Component
 
         $this->uniqID = uniqid('facture_');
 
-        $this->notification([
+        $this->notification()->send([
             'title' => 'Opération réussite',
             'description' => 'Modification correctement effectuée',
             'icon' => 'success',
@@ -480,7 +480,7 @@ class EditionFacture extends Component
 
         BillCreated::dispatch($this->facture, $this->email);
 
-        $this->notification([
+        $this->notification()->send([
             'title' => 'Facture envoyée.',
             'description' => 'Vous allez être redirigé vers la page de listing entreprises',
             'icon' => 'success',
@@ -532,7 +532,7 @@ class EditionFacture extends Component
             ]);
         }
 
-        $this->notification([
+        $this->notification()->send([
             'title' => 'Facture annulée.',
             'description' => 'Vous allez être redirigé vers la page de listing entreprises',
             'icon' => 'success',

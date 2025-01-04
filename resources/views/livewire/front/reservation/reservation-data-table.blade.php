@@ -3,7 +3,7 @@
         <div class="flex justify-between">
             <div class="text-2xl">{{ __("Bonjour") }} <span class="font-bold">{{ ucfirst(Auth::user()->prenom) }}</span></div>
             @can('create reservation')
-                <x-button primary label="{{ __('Nouvelle réservation') }}" icon="plus" href="{{ route('front.reservation.create') }}" />
+                <x-button primary label="{{ __('Nouvelle réservation') }}" href="{{ route('front.reservation.create') }}" />
             @endcan
         </div>
 
@@ -68,10 +68,10 @@
                                     $reservation->statut == \App\Enum\ReservationStatus::Confirmed
                                 )
                                     @can('edit reservation')
-                                        <x-button.circle icon="pencil" info sm wire:click="openAskEditModal({{ $reservation }})" />
+                                        <x-mini-button icon="pencil" info sm wire:click="openAskEditModal({{ $reservation }})" />
                                     @endcan
                                     @can('delete reservation')
-                                        <x-button.circle icon="x" red sm wire:click="openAskCancelModal({{ $reservation }})" />
+                                        <x-mini-button icon="plus" red sm wire:click="openAskCancelModal({{ $reservation }})" />
                                     @endcan
                                     @else
                                      <x-front.badge warning-secondary>
@@ -91,7 +91,7 @@
         <x-front.pagination :pagination="$reservations" :per-page="$perPage" />
     </x-front.card>
 
-    <x-modal.card title="{{ __('Demande de modification') }}" blur wire:model="editAskCard">
+    <x-modal-card title="{{ __('Demande de modification') }}" blur wire:model="editAskCard">
         <form class="w-full" id="udpapteDemandeForm" wire:submit="sendUpdateReservationEmail">
             @if($selectedReservation)
                 <p class="mb-4">{{ __('Votre demande concerne la réservation') }} <span class="font-bold">{{ $selectedReservation->reference }}</span></p>
@@ -108,10 +108,10 @@
                 <x-button primary label="{{ __('Envoyer') }}" form="udpapteDemandeForm" type="submit"/>
             </div>
         </x-slot>
-    </x-modal.card>
+    </x-modal-card>
 
 
-    <x-modal.card title="{{ __('Demande annulation') }}" blur wire:model="askCancelCard">
+    <x-modal-card title="{{ __('Demande annulation') }}" blur wire:model="askCancelCard">
         @if($selectedReservation != null)
             <div class="rounded-md bg-red-50 p-4">
                 <div class="flex">
@@ -131,5 +131,5 @@
                 <x-button primary label="{{ __('Confirmer') }}" wire:click="sendCancelReservationEmail"/>
             </div>
         </x-slot>
-    </x-modal.card>
+    </x-modal-card>
 </div>

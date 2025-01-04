@@ -5,11 +5,11 @@ namespace App\Livewire\AdresseReservation;
 use App\Models\AdresseReservation;
 use Illuminate\Support\Facades\App;
 use Livewire\Component;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class AdresseReservationForm extends Component
 {
-    use Actions;
+    use WireUiActions;
 
     public AdresseReservation $adresseReservation;
 
@@ -43,7 +43,7 @@ class AdresseReservationForm extends Component
             if ($this->adresseReservation->exists) {
                 $this->adresseReservation->update();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Adresse modifiée.',
                     'description' => "L'adresse a bien été modifée.",
                     'icon' => 'success',
@@ -55,7 +55,7 @@ class AdresseReservationForm extends Component
             } else {
                 $this->adresseReservation->save();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Adresse créée.',
                     'description' => "L'adresse a bien été modifiée.",
                     'icon' => 'success',

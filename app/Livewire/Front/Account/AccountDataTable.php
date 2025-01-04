@@ -6,11 +6,11 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
-use WireUi\Traits\Actions;
+use WireUi\Traits\WireUiActions;
 
 class AccountDataTable extends Component
 {
-    use WithPagination, Actions;
+    use WithPagination, WireUiActions;
 
     public int $perPage = 20;
 
