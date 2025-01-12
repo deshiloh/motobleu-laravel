@@ -2,7 +2,7 @@
 
 @if($pagination->total() > $perPage)
     <div class="mt-4">
-        {{ $pagination->links() }}
+        {{ $pagination->links(data: ['scrollTo' => false]) }}
     </div>
 @endif
 
