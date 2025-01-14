@@ -15,19 +15,19 @@
                        <div class="mt-5 md:col-span-2 md:mt-0">
                            <div class="grid grid-cols-6 gap-6">
                                <div class="col-span-6 sm:col-span-3">
-                                   <x-input label="{{ __('Nom') }} *" wire:model.live="user.nom" />
+                                   <x-input label="{{ __('Nom') }} *" wire:model.live="user.nom" id="userNom" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-3">
-                                   <x-input label="{{ __('Prénom') }} *" wire:model.live="user.prenom" />
+                                   <x-input label="{{ __('Prénom') }} *" wire:model.live="user.prenom" id="userPrenom" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-3">
-                                   <x-input type="email" label="{{ __('Email') }} *" wire:model.live="user.email" />
+                                   <x-input type="email" label="{{ __('Email') }} *" wire:model.live="user.email" id="userEmail" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-3">
-                                   <x-input label="{{ __('Téléphone') }} *" wire:model.live="user.telephone" />
+                                   <x-input label="{{ __('Téléphone') }} *" wire:model.live="user.telephone" id="userTelephone" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-3">
@@ -35,16 +35,16 @@
                                </div>
 
                                <div class="col-span-6 space-y-3">
-                                   <x-input label="{{ __('Adresse') }} *" wire:model.live="user.adresse" />
-                                   <x-input label="{{ __('Complément adresse') }}" wire:model.live="user.adresse_bis" />
+                                   <x-input label="{{ __('Adresse') }} *" wire:model.live="user.adresse" id="userAdresse" />
+                                   <x-input label="{{ __('Complément adresse') }}" wire:model.live="user.adresse_bis" id="userAdresseBis" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-6 lg:col-span-3">
-                                   <x-input label="{{ __('Code postal') }} *" wire:model.live="user.code_postal" />
+                                   <x-input label="{{ __('Code postal') }} *" wire:model.live="user.code_postal" id="userCodePostal" />
                                </div>
 
                                <div class="col-span-6 sm:col-span-3 lg:col-span-3">
-                                   <x-input label="{{ __('Ville') }} *" wire:model.live="user.ville" />
+                                   <x-input label="{{ __('Ville') }} *" wire:model.live="user.ville" id="userVille" />
                                </div>
                            </div>
                        </div>
@@ -52,7 +52,7 @@
                </div>
                <div class="flex justify-end space-x-3">
                    <x-button white label="{{ __('Annuler') }}"  href="{{ route('front.home') }}"/>
-                   <x-button type="submit" primary label="{{ __('Envoyer') }}" />
+                   <x-button type="submit" primary label="{{ __('Envoyer') }}" id="submitButton" />
                </div>
            </form>
 

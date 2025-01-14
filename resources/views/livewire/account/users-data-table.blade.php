@@ -1,6 +1,6 @@
 <div>
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-3 mb-3">
-        <x-input wire:model.live="search" label="Recherche" placeholder="Tapez votre recherche..." icon="magnifying-glass" class="md:col-span-1"/>
+        <x-input id="createUser" wire:model.live="search" label="Recherche" placeholder="Tapez votre recherche..." icon="magnifying-glass" class="md:col-span-1"/>
         <x-select
             label="Entreprise"
             :async-data="route('api.entreprises')"
