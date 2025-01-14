@@ -99,5 +99,6 @@
     "Tous les champs avec * sont obligatoires" : "All fields with * are required",
     "Téléphone" : "Phone",
     "Nom de l'Entreprise" : "Company Name",
-    "Complément adresse" : "Additional address"
+    "Complément adresse" : "Additional address",
+    "Ajouter une ou plusieurs destinations intermédiaires" : "Add one or more intermediate destinations"
 }
