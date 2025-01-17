@@ -45,6 +45,12 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware(['web', 'auth:web'])
                 ->prefix('api-interne')
                 ->group(base_path('routes/interne-api.php'));
+
+            if ($this->app->environment(['local', 'testing'])) {
+                Route::middleware(['api'])
+                    ->prefix('cypress')
+                    ->group(base_path('routes/cypress-api.php'));
+            }
         });
     }
 
