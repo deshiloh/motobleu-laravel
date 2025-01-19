@@ -147,9 +147,9 @@ Route::get('/users', function (Request $request){
         ->when(
             $search, function (Builder $query, $search) {
             $query->where(function (Builder $query) use ($search) {
-                $query->where('nom', 'like', "%$search%")
-                    ->orWhere('email', 'like', "%$search%")
-                    ->orWhere('prenom', 'like', "%$search%");
+                $query->where('nom', 'like', "%$search")
+                    ->orWhere('email', 'like', "%$search")
+                    ->orWhere('prenom', 'like', "%$search");
                 });
             }
         )

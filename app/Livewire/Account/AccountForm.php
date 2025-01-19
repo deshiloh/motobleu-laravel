@@ -26,7 +26,6 @@ class AccountForm extends Component
         if (!$this->user->exists) {
             $this->user->is_actif = true;
             $this->user->is_admin = true;
-            $this->isActif = true;
         } else {
             $this->isAdmin = $this->user->is_admin_role;
         }
@@ -70,6 +69,8 @@ class AccountForm extends Component
     public function save(): void
     {
         $this->validate();
+
+        $this->user->is_actif = $this->isActif;
 
         try {
             if ($this->user->exists) {

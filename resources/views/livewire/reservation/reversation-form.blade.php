@@ -5,7 +5,7 @@
     <div class="container mx-auto sm:px-6 lg:px-8">
         <x-errors class="mb-3"/>
     </div>
-    <form wire:submit="saveReservation" wire:loading.class="opacity-25" wire:key="form_reservation">
+    <form wire:submit="saveReservation" wire:key="form_reservation">
         @if(!$reservation->exists)
             <x-bloc-content>
                 <div class="flex flex-col space-y-3">
@@ -28,6 +28,7 @@
                     option-value="id"
                     option-description="entreprise.nom"
                     wire:model.live="userId"
+                    wire:key="select_user"
                 />
                 <x-select
                     label="Entreprise rattachée *"
@@ -36,9 +37,10 @@
                     option-label="nom"
                     option-value="id"
                     wire:model.live="reservation.entreprise_id"
+                    wire:key="select_entreprise"
                 />
                 @if(!is_null($reservation->entreprise_id) && !in_array($reservation->entreprise_id, app(\app\Settings\BillSettings::class)->entreprise_without_command_field))
-                    <x-input label="Numéro De commande / Case code" class="mb-3" wire:model.live="reservation.commande"/>
+                    <x-input label="Numéro De commande / Case code" class="mb-3" wire:model="reservation.commande"/>
                 @endif
             </div>
         </x-bloc-content>
@@ -71,10 +73,10 @@
 
                 @if($passagerMode == \App\Services\ReservationService::NEW_PASSAGER)
                     <div class="space-y-4">
-                        <x-input label="Nom et prénom" wire:model.live="newPassager.nom"/>
-                        <x-input label="Téléphone de bureau" wire:model.live="newPassager.telephone"/>
-                        <x-input label="Téléphone portable" wire:model.live="newPassager.portable"/>
-                        <x-input type="email" label="Adresse email" wire:model.live="newPassager.email"/>
+                        <x-input label="Nom et prénom" wire:model="newPassager.nom"/>
+                        <x-input label="Téléphone de bureau" wire:model="newPassager.telephone"/>
+                        <x-input label="Téléphone portable" wire:model="newPassager.portable"/>
+                        <x-input type="email" label="Adresse email" wire:model="newPassager.email"/>
                         @if(!is_null($reservation->entreprise_id) && in_array($reservation->entreprise_id, app(\app\Settings\BillSettings::class)->entreprises_cost_center_facturation))
                             <x-select
                                 wire:key="cost_center"
@@ -119,7 +121,7 @@
                 display-format="DD/MM/YYYY HH:mm"
                 time-format="24"
                 interval="1"
-                wire:model.live="reservation.pickup_date"
+                wire:model="reservation.pickup_date"
                 :without-timezone="true"
             />
         </x-bloc-content>
@@ -150,7 +152,7 @@
                             wire:model.live="reservation.localisation_from_id"
                         />
                         @if($reservation->localisation_from_id)
-                            <x-input label="Provenance / N°" wire:model.live="reservation.pickup_origin" />
+                            <x-input label="Provenance / N°" wire:model="reservation.pickup_origin" />
                         @endif
                     </div>
                 @endif
@@ -171,7 +173,7 @@
                         :async-data="route('api.adresses', ['user' => $userId])"
                         option-label="full_adresse"
                         option-value="id"
-                        wire:model.live="addressReservationFrom"
+                        wire:model="addressReservationFrom"
                     />
                 @endif
 
@@ -218,7 +220,7 @@
                         />
                         @if($reservation->localisation_to_id)
                             <div class="form-group">
-                                <x-input label="Destination / N°" wire:model.live="reservation.drop_off_origin"/>
+                                <x-input label="Destination / N°" wire:model="reservation.drop_off_origin"/>
                             </div>
                         @endif
                     </div>
@@ -258,7 +260,7 @@
         </x-bloc-content>
 
         <x-bloc-content>
-            <x-textarea placeholder="Votre commentaire..." wire:model.live="reservation.comment" label="Commentaire" />
+            <x-textarea placeholder="Votre commentaire..." wire:model="reservation.comment" label="Commentaire" />
         </x-bloc-content>
 
         @if($hasBack)
@@ -282,7 +284,7 @@
                     display-format="DD/MM/YYYY HH:mm"
                     time-format="24"
                     interval="1"
-                    wire:model.live="reservation_back.pickup_date"
+                    wire:model="reservation_back.pickup_date"
                     :without-timezone="true"
                 />
             </x-bloc-content-dark>
@@ -311,7 +313,7 @@
                         />
                         @if($reservation_back->localisation_from_id)
                             <div class="form-group">
-                                <x-input label="Provenance / N°" wire:model.live="reservation_back.pickup_origin"/>
+                                <x-input label="Provenance / N°" wire:model="reservation_back.pickup_origin"/>
                             </div>
                         @endif
                     @endif
@@ -396,7 +398,7 @@
             <x-bloc-content-dark>
                 <div class="mb-4">
                     <x-textarea label="Commentaire" placeholder="Votre commentaire..."
-                                wire:model.live="reservation_back.comment"/>
+                                wire:model="reservation_back.comment"/>
                 </div>
             </x-bloc-content-dark>
         @endif

@@ -27,6 +27,8 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
+use Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -39,7 +41,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $this->permissionsAndRolesSetting();
 
@@ -99,8 +101,8 @@ class DatabaseSeeder extends Seeder
                 'en' => Factory::create('en')->paragraph
             ],
             'slug' => [
-                'fr' => \Str::slug('Politique Coookies'),
-                'en' => \Str::slug('Cookies Policy')
+                'fr' => Str::slug('Politique Coookies'),
+                'en' => Str::slug('Cookies Policy')
             ]
         ]);
 
@@ -114,8 +116,8 @@ class DatabaseSeeder extends Seeder
                 'en' => Factory::create('en')->paragraph
             ],
             'slug' => [
-                'fr' => \Str::slug('Mentions légales'),
-                'en' => \Str::slug('Legals Mentions')
+                'fr' => Str::slug('Mentions légales'),
+                'en' => Str::slug('Legals Mentions')
             ]
         ]);
 

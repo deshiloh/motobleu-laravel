@@ -22,7 +22,7 @@ trait WithReservationForm
     public bool $hasBack = false;
     public bool $ardianPassengerCostFacError = false;
 
-    public ?string $userId = '';
+    public $userId;
 
     public Reservation $reservation;
     public Reservation $reservation_back;
