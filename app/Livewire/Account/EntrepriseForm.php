@@ -22,7 +22,9 @@ class EntrepriseForm extends Component
     public function mount(User $account)
     {
         $this->user = $account;
-        $this->exclude = $this->user->entreprises()->pluck('id')->toArray();
+        $this->exclude = $this->user->entreprises()
+            ->pluck('id')
+            ->toArray();
     }
 
     public function render()
