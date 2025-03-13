@@ -25,7 +25,7 @@
                 </x-datatable.tr>
             </x-slot:headers>
             <x-slot:body>
-                @forelse($user->entreprises()->get() as $entreprise)
+                @forelse($user->entreprises()->orderBy('nom')->get() as $entreprise)
                     <x-datatable.tr>
                         <x-datatable.td>{{ $entreprise->nom }}</x-datatable.td>
                         <x-datatable.td>
