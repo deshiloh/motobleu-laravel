@@ -35,8 +35,13 @@ class RecapReservationPilote extends Component
     public function mount(Pilote $pilote): void
     {
         $this->pilote = $pilote;
-        $this->dateDebut = $this->dateDebut ?? Carbon::now("Europe/Paris")->startOfMonth()->addHours(3);
-        $this->dateFin = $this->dateFin ?? Carbon::today()->endOfMonth();
+        $this->dateDebut = $this->dateDebut ?? Carbon::now("Europe/Paris")
+            ->startOfMonth()
+            ->addHours(3)
+            ->format('Y-m-d');
+        $this->dateFin = $this->dateFin ?? Carbon::today('Europe/Paris')
+            ->endOfMonth()
+            ->format('Y-m-d');
         $this->reservations = $this->handleQuery();
     }
 
