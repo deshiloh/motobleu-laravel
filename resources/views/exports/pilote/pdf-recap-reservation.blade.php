@@ -16,8 +16,8 @@
 
         /** Define now the real margins of every page in the PDF **/
         body {
-            margin-top: 10px;
-            margin-bottom: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
             font-family: 'Roboto', sans-serif;
             padding-top: 2.1cm;
             padding-bottom: 2.5cm;
@@ -77,7 +77,7 @@
         }
 
         #title {
-            padding: 20px 10px;
+            padding: 10px 10px;
             font-size: 14px;
         }
 
