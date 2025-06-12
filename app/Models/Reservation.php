@@ -130,7 +130,7 @@ class Reservation extends Model
     {
         return $query->where('statut', ReservationStatus::Created);
     }
-    
+
     public function getEvent(): bool|Google_Service_Calendar_Event
     {
         $event = false;
@@ -138,7 +138,13 @@ class Reservation extends Model
         if ($this->event_id) {
             try {
                 $event = Event::find($this->event_id)->googleEvent;
-            } catch (\Exception) {
+            } catch (\Exception $exception) {
+                logger()->channel('sentry')->error('Erreur pendant la récupération de event google', [
+                    'exception' => $exception,
+                    'event' => $this->event_id,
+                    'reservation' => $this->reference
+                ]);
+
                 return false;
             }
         }
