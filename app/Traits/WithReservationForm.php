@@ -8,6 +8,7 @@ use App\Models\Passager;
 use App\Models\Reservation;
 use App\Services\ReservationService;
 use app\Settings\BillSettings;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
@@ -160,8 +161,16 @@ trait WithReservationForm
      */
     private function createReservationWithRedirection(string $toRoute): void
     {
-        $this->withValidator(function (Validator $validator) {
-            $validator->after(function ($validator) {
+        $this->withValidator(function (Validator $validator) use ($toRoute) {
+            $validator->after(function ($validator) use ($toRoute) {
+                $validReservationDate = Carbon::now()->addMinutes(14);
+
+                if (!str_contains($toRoute, 'admin') && $this->reservation->pickup_date !== null) {
+                    if (!$this->reservation->pickup_date->greaterThanOrEqualTo($validReservationDate)) {
+                        $validator->errors()->add('reservation.pickup_date', 'Les réservations effectuées moins de 15 minutes avant l’heure actuelle ne sont pas autorisées.');
+                    }
+                }
+
                 if ($this->hasBack &&
                     !empty($this->reservation->pickup_date) &&
                     $this->reservation->pickup_date->greaterThanOrEqualTo($this->reservation_back->pickup_date)

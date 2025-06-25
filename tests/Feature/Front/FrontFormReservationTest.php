@@ -26,12 +26,14 @@ class FrontFormReservationTest extends TestCase
      * @var bool
      */
     protected $seed = true;
+    private Carbon $pickupDate;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->actingAs(User::find(1));
+        $this->pickupDate = Carbon::now()->addMinutes(15);
 
         \Event::fake();
     }
@@ -293,7 +295,7 @@ class FrontFormReservationTest extends TestCase
 
     public function testCreateReservationWithPlaceAndPassagerExistOk()
     {
-        $pickupDate = Carbon::now();
+        $pickupDate = Carbon::now()->addMinutes(15);
 
         Livewire::test(ReservationForm::class)
             ->set('userId', 1)
@@ -315,7 +317,7 @@ class FrontFormReservationTest extends TestCase
 
     public function testCreateReservationWithNewPassagerOK()
     {
-        $pickupDate = Carbon::now();
+        $pickupDate = Carbon::now()->addMinutes(15);
         BillSettings::fake([
             'entreprises_cost_center_facturation' => [1]
         ]);
@@ -346,7 +348,7 @@ class FrontFormReservationTest extends TestCase
 
     public function testCreateReservationWithExistAddressOK()
     {
-        $pickupDate = Carbon::now();
+        $pickupDate = Carbon::now()->addMinutes(15);
         Livewire::test(ReservationForm::class)
             ->set('userId', 1)
             ->set('reservation.entreprise_id', 1)
@@ -368,7 +370,7 @@ class FrontFormReservationTest extends TestCase
 
     public function testCreateReservationWithNewAddressOk()
     {
-        $pickupDate = Carbon::now();
+        $pickupDate = Carbon::now()->addMinutes(15);
 
         Livewire::test(ReservationForm::class)
             ->set('userId', 1)
@@ -399,7 +401,7 @@ class FrontFormReservationTest extends TestCase
 
     public function testCreateBackReservationWithPlaceOk()
     {
-        $pickupDate = Carbon::now();
+        $pickupDate = Carbon::now()->addMinutes(15);
         $backPickUpDate = Carbon::now()->addDay();
 
         Livewire::test(ReservationForm::class)
@@ -431,7 +433,7 @@ class FrontFormReservationTest extends TestCase
 
     public function testCreateBackReservationWithExistedAddressOk(): void
     {
-        $pickupDate = Carbon::now();
+        $pickupDate = Carbon::now()->addMinutes(15);
         $backPickUpDate = Carbon::now()->addDay();
 
         Livewire::test(ReservationForm::class)
@@ -465,7 +467,7 @@ class FrontFormReservationTest extends TestCase
 
     public function testCreateBackReservationWithNewAddressOk()
     {
-        $pickupDate = Carbon::now();
+        $pickupDate = Carbon::now()->addMinutes(15);
         $backPickUpDate = Carbon::now()->addDay();
 
         Livewire::test(ReservationForm::class)

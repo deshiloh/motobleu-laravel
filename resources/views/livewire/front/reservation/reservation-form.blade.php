@@ -118,7 +118,7 @@
                 interval="1"
                 wire:model="reservation.pickup_date"
                 :without-timezone="true"
-                min="{{ \Carbon\Carbon::now() }}"
+                min="{{ \Carbon\Carbon::now()->addMinutes(15) }}"
             />
         </x-front.card>
 
