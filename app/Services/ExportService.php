@@ -95,10 +95,12 @@ class ExportService
             ->orderBy('pickup_date')
             ->get();
 
+        $reservationsChunk = $reservations->chunk(10);
+
         return Pdf::loadView('exports.pilote.pdf-recap-reservation', [
             'pilote' => $pilote,
             'period' => $period,
-            'reservations' => $reservations
+            'reservationsChunk' => $reservationsChunk
         ]);
     }
 }

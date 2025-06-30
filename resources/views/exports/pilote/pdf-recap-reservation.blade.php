@@ -81,7 +81,7 @@
             font-size: 14px;
         }
 
-        .listing {
+        .listing, .listing-end {
             border-spacing: 0;
             border: 0;
             width: 100%;
@@ -149,6 +149,7 @@
         Tél:+33647938617 - contact@motobleu-paris.com
     </div>
 </footer>
+@foreach($reservationsChunk as $chunk)
 <table class="listing">
     <thead>
         <tr>
@@ -165,7 +166,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($reservations as $reservation)
+        @foreach($chunk as $reservation)
             @php
                 $resaComm = $reservation->commission ? $reservation->commission : $pilote->commission;
 
@@ -207,7 +208,8 @@
                 </td>
             </tr>
         @endforeach
-
+    </tbody>
+    @if($loop->last)
         <tr class="recap-end">
             <td>
                 Chiffre d'affaires
@@ -252,12 +254,15 @@
             </td>
             <td class="bg-motobleu"></td>
             <td style="color: red">
-               {{ number_format($total, 2, ',', ' ') . ' €' }}
+                {{ number_format($total, 2, ',', ' ') . ' €' }}
             </td>
             <td class="bg-motobleu"></td>
         </tr>
-    </tbody>
+    @endif
 </table>
-
+@if(! $loop->last)
+    <div style="page-break-after: always;"></div>
+@endif
+@endforeach
 </body>
 </html>
