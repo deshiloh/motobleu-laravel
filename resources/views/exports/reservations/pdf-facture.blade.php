@@ -1,6 +1,6 @@
 <html lang="fr">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style>
         @page {
             margin: 0.25cm 0.25cm;
@@ -12,7 +12,7 @@
             margin-top: 2cm;
             margin-bottom: 2cm;
             color: #293275;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Roboto', "DejaVu Sans", sans-serif;
             padding-top: 2.1cm;
             padding-bottom: 2.5cm;
         }
