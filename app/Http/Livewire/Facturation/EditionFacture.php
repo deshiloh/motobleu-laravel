@@ -469,14 +469,16 @@ class EditionFacture extends Component
                 $reservation->statut = ReservationStatus::Billed;
                 $reservation->updateQuietly();
             }
+        }
 
+        if ($this->facture->statut != BillStatut::COMPLETED) {
             $this->facture->updateQuietly([
                 'statut' => BillStatut::COMPLETED->value,
                 'billed_at' => Carbon::now()
             ]);
+        } else {
+            $this->facture->updateQuietly();
         }
-
-        $this->facture->refresh();
 
         BillCreated::dispatch($this->facture, $this->email);
 
