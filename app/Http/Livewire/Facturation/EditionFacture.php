@@ -75,6 +75,8 @@ class EditionFacture extends Component
         if (null !== $this->facture) {
             $rules['facture.is_acquitte'] = 'boolean';
             $rules['facture.information'] = 'nullable';
+            $rules['facture.adresse_client'] = 'required';
+            $rules['facture.adresse_facturation'] = 'required';
         }
 
         return $rules;
