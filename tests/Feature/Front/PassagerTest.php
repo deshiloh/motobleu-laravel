@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Front;
 
-use App\Http\Livewire\Front\Address\AddressDataTable;
-use App\Http\Livewire\Front\Address\AddressForm;
-use App\Http\Livewire\Front\Passager\PassagerDataTable;
-use App\Http\Livewire\Front\Passager\PassagerForm;
+use App\Livewire\Front\Address\AddressDataTable;
+use App\Livewire\Front\Address\AddressForm;
+use App\Livewire\Front\Passager\PassagerDataTable;
+use App\Livewire\Front\Passager\PassagerForm;
 use App\Models\AdresseReservation;
 use App\Models\Passager;
 use App\Models\User;

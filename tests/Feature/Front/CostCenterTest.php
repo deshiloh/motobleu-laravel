@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Front;
 
-use App\Http\Livewire\Front\CostCenter\CostCenterDataTable;
-use App\Http\Livewire\Front\CostCenter\CostCenterForm;
+use App\Livewire\Front\CostCenter\CostCenterDataTable;
+use App\Livewire\Front\CostCenter\CostCenterForm;
 use App\Models\CostCenter;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

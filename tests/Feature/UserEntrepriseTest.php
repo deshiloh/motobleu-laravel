@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\Entreprise\UsersEntrepriseDataTable;
+use App\Livewire\Entreprise\UsersEntrepriseDataTable;
 use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

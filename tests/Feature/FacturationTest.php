@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Enum\BillStatut;
 use App\Enum\ReservationStatus;
 use App\Events\BillCreated;
-use App\Http\Livewire\Facturation\EditionFacture;
+use App\Livewire\Facturation\EditionFacture;
 use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Reservation;

@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\LoginController;
-use App\Http\Livewire\Auth\ForgotPasswordForm;
+use App\Livewire\Auth\ForgotPasswordForm;
 use App\Mail\AdminReservationConfirmed;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
@@ -44,7 +44,7 @@ Route::middleware('guest')->group(function () {
     })->name('pages');
 });
 
-Route::get('/account/new', \App\Http\Livewire\Front\NewAccountForm::class)
+Route::get('/account/new', \App\Livewire\Front\NewAccountForm::class)
     ->name('account.new');
 
 

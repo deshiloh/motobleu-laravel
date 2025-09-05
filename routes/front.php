@@ -8,19 +8,19 @@
 */
 
 use App\Http\Controllers\Admin\FacturationsController;
-use App\Http\Livewire\Front\Account\AccountDataTable;
-use App\Http\Livewire\Front\Account\AccountForm;
-use App\Http\Livewire\Front\Address\AddressDataTable;
-use App\Http\Livewire\Front\Address\AddressForm;
-use App\Http\Livewire\Front\CostCenter\CostCenterDataTable;
-use App\Http\Livewire\Front\CostCenter\CostCenterForm;
-use App\Http\Livewire\Front\DashboardHome;
-use App\Http\Livewire\Front\Invoice\InvoiceDataTable;
-use App\Http\Livewire\Front\Invoice\InvoiceReservationDataTable;
-use App\Http\Livewire\Front\Passager\PassagerDataTable;
-use App\Http\Livewire\Front\Passager\PassagerForm;
-use App\Http\Livewire\Front\Reservation\ReservationDataTable;
-use App\Http\Livewire\Front\Reservation\ReservationForm;
+use App\Livewire\Front\Account\AccountDataTable;
+use App\Livewire\Front\Account\AccountForm;
+use App\Livewire\Front\Address\AddressDataTable;
+use App\Livewire\Front\Address\AddressForm;
+use App\Livewire\Front\CostCenter\CostCenterDataTable;
+use App\Livewire\Front\CostCenter\CostCenterForm;
+use App\Livewire\Front\DashboardHome;
+use App\Livewire\Front\Invoice\InvoiceDataTable;
+use App\Livewire\Front\Invoice\InvoiceReservationDataTable;
+use App\Livewire\Front\Passager\PassagerDataTable;
+use App\Livewire\Front\Passager\PassagerForm;
+use App\Livewire\Front\Reservation\ReservationDataTable;
+use App\Livewire\Front\Reservation\ReservationForm;
 
 Route::prefix('dashboard')->name('front.')->group(function () {
 

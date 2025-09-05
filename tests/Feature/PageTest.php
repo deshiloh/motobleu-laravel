@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\Account\AccountForm;
-use App\Http\Livewire\Account\EditPasswordForm;
-use App\Http\Livewire\Pages\PageForm;
+use App\Livewire\Account\AccountForm;
+use App\Livewire\Account\EditPasswordForm;
+use App\Livewire\Pages\PageForm;
 use App\Models\Entreprise;
 use App\Models\Page;
 use App\Models\User;

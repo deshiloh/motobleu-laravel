@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Front;
 
-use App\Http\Livewire\Front\Reservation\ReservationDataTable;
+use App\Livewire\Front\Reservation\ReservationDataTable;
 use App\Mail\CancelReservationDemand;
 use App\Mail\UpdateReservationDemand;
 use App\Models\Reservation;

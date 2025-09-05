@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enum\AdresseEntrepriseTypeEnum;
-use App\Http\Livewire\Entreprise\AdresseEntrepriseForm;
+use App\Livewire\Entreprise\AdresseEntrepriseForm;
 use App\Models\AdresseEntreprise;
 use App\Models\Entreprise;
 use App\Models\User;

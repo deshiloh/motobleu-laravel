@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\Passager\PassagerForm;
-use App\Http\Livewire\Passager\PassagersDataTable;
+use App\Livewire\Passager\PassagerForm;
+use App\Livewire\Passager\PassagersDataTable;
 use App\Models\Passager;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;

@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Front;
 
-use App\Http\Livewire\Front\Address\AddressDataTable;
-use App\Http\Livewire\Front\Address\AddressForm;
+use App\Livewire\Front\Address\AddressDataTable;
+use App\Livewire\Front\Address\AddressForm;
 use App\Models\AdresseReservation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

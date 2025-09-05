@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Front;
 
-use App\Http\Livewire\Front\Reservation\ReservationForm;
+use App\Livewire\Front\Reservation\ReservationForm;
 use App\Models\AdresseReservation;
 use App\Models\Localisation;
 use App\Models\Passager;

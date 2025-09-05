@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\Auth\ForgotPasswordForm;
+use App\Livewire\Auth\ForgotPasswordForm;
 use App\Models\User;
 use App\Notifications\ResetPasswordNotification;
 use Database\Factories\UserFactory;

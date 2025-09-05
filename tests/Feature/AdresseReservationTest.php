@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\Reservation\AdressesReservationDataTable;
+use App\Livewire\Reservation\AdressesReservationDataTable;
 use App\Models\AdresseReservation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

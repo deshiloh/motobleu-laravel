@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\Entreprise\EntrepriseForm;
-use App\Http\Livewire\Entreprise\EntreprisesDataTable;
-use App\Http\Livewire\Entreprise\UsersEntrepriseDataTable;
+use App\Livewire\Entreprise\EntrepriseForm;
+use App\Livewire\Entreprise\EntreprisesDataTable;
+use App\Livewire\Entreprise\UsersEntrepriseDataTable;
 use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
