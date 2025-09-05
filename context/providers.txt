@@ -1,0 +1,8 @@
+total 40
+drwxr-xr-x@  7 deshiloh  staff   224 Sep  5 10:24 .
+drwxr-xr-x@ 19 deshiloh  staff   608 Sep  5 10:24 ..
+-rw-r--r--@  1 deshiloh  staff   843 Sep  5 10:24 AppServiceProvider.php
+-rw-r--r--@  1 deshiloh  staff   728 Sep  5 10:24 AuthServiceProvider.php
+-rw-r--r--@  1 deshiloh  staff   380 Sep  5 10:24 BroadcastServiceProvider.php
+-rw-r--r--@  1 deshiloh  staff  1904 Sep  5 10:24 EventServiceProvider.php
+-rw-r--r--@  1 deshiloh  staff  1712 Sep  5 10:24 RouteServiceProvider.php
