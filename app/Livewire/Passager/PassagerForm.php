@@ -55,31 +55,41 @@ class PassagerForm extends Component
             if ($this->passager->exists) {
                 $this->passager->update();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Passager modifié.',
                     'description' => 'Le passager a bien été modifié',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             } else {
                 $this->passager->save();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Passager créé.',
                     'description' => 'Le passager a bien été créé',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
 
                 $this->passager = new Passager();
             }
         } catch (\Exception $exception) {
+            $this->notification()->error(
+                title: 'Une erreur est survenue',
+                description: 'Erreur pendant le traitement'
+            );
             if (App::environment(['local'])) {
                 ray([
                     'passager' => $this->passager

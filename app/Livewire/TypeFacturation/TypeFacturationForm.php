@@ -39,25 +39,31 @@ class TypeFacturationForm extends Component
             if ($this->typeFacturation->exists) {
                 $this->typeFacturation->update();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Type de facturation modifié.',
-                    'description' => "Type de facturation correctement modifié.",
+                    'description' => 'Type de facturation correctement modifié.',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             } else {
                 $this->typeFacturation->save();
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Type de facturation créé.',
-                    'description' => "Type de facturation correctement créé.",
+                    'description' => 'Type de facturation correctement créé.',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             }
         } catch (\Exception $exception) {

@@ -51,25 +51,31 @@ class EntrepriseForm extends Component
         try {
             if ($this->entreprise->exists) {
                 $this->entreprise->update();
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Entreprise modifiée.',
-                    'description' => "L'entreprise a bien été modifiée.",
+                    'description' => 'L\'entreprise a bien été modifiée.',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             } else {
                 $this->entreprise->save();
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Entreprise créée.',
-                    'description' => "L'entreprise a bien été créée.",
+                    'description' => 'L\'entreprise a bien été créée.',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             }
         } catch (\Exception $exception) {

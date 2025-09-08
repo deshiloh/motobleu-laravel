@@ -50,14 +50,17 @@ class EditPasswordForm extends Component
             'password' => Hash::make($this->password)
         ]);
 
-        $this->notification([
-            'title' => 'Mot de pass changé.',
+        $this->notification()->send([
+            'title' => 'Mot de passe changé.',
             'description' => 'Le mot de passe a bien été changé.',
             'icon' => 'success',
-            'onClose' => [
+            'timeout' => config('wireui.timeout'),
+            'onTimeout' => [
                 'method' => 'redirectToList'
             ],
-            'timeout' => config('wireui.timeout')
+            'onClose' => [
+                'method' => 'redirectToList'
+            ]
         ]);
     }
 

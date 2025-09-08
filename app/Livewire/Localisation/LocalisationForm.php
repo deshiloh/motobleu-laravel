@@ -45,34 +45,40 @@ class LocalisationForm extends Component
             if ($this->localisation->exists) {
                 $this->localisation->update();
 
-                $this->notification([
-                    'title' => 'Localisation modifée.',
+                $this->notification()->send([
+                    'title' => 'Localisation modifiée.',
                     'description' => 'La localisation a bien été modifiée',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             } else {
                 $this->localisation->save();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Localisation créée.',
                     'description' => 'La localisation a bien été créée',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
 
                 $this->localisation = new Localisation();
             }
         } catch (\Exception $exception) {
             $this->notification()->error(
-                $title = "Erreur pendant le traitement.",
-                $description = "Une erreur est survenue pendant le traitement."
+                title: 'Erreur pendant le traitement.',
+                description: 'Une erreur est survenue pendant le traitement.'
             );
             if (App::environment(['local'])) {
                 ray([

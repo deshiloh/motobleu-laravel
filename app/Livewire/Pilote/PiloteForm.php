@@ -51,25 +51,31 @@ class PiloteForm extends Component
         try {
             if ($this->pilote->exists) {
                 $this->pilote->update();
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Pilote modifié.',
                     'description' => 'Le pilote a bien été modifié',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             } else {
                 $this->pilote->save();
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Pilote créé.',
                     'description' => 'Le pilote a bien été créé',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             }
         } catch (\Exception $exception) {

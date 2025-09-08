@@ -54,25 +54,31 @@ class AdresseEntrepriseForm extends Component
             if ($this->adresseEntreprise->exists) {
                 $this->adresseEntreprise->update();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Adresse modifiée.',
-                    'description' => "L'adresse a bien été modifiée..",
+                    'description' => 'L\'adresse a bien été modifiée.',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             } else {
                 $this->entreprise->adresseEntreprises()->save($this->adresseEntreprise);
-                $this->notification([
-                    'title' => 'Adresse crééé.',
-                    'description' => "L'adresse a bien été créée.",
+                $this->notification()->send([
+                    'title' => 'Adresse créée.',
+                    'description' => 'L\'adresse a bien été créée.',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             }
         } catch (\Exception $exception) {

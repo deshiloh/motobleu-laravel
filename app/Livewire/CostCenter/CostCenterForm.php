@@ -44,28 +44,34 @@ class CostCenterForm extends Component
             if ($this->costCenter->exists) {
                 $this->costCenter->update();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Cost Center modifié.',
-                    'description' => "Le Cost Center a bien été modifié.",
+                    'description' => 'Le Cost Center a bien été modifié.',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             } else {
                 $this->costCenter->save();
 
                 $this->costCenter = new CostCenter();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Cost Center créé.',
-                    'description' => "Le Cost Center a bien été créé.",
+                    'description' => 'Le Cost Center a bien été créé.',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             }
         } catch (\Exception $exception) {

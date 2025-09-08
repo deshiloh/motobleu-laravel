@@ -68,12 +68,10 @@ class FacturationDataTable extends Component
                 'is_acquitte' => !$facture->is_acquitte
             ]);
 
-            $this->notification([
-                'title' => 'Opération réussite',
-                'description' => 'L\'état a bien été changé.',
-                'timeout' => config('wireui.timeout'),
-                'icon' => 'success'
-            ]);
+            $this->notification()->success(
+                title: 'Opération réussie',
+                description: 'L\'état a bien été changé.'
+            );
         } catch (\Exception $exception) {
             $this->notification()->error(
                 "Erreur pendant le traitement",

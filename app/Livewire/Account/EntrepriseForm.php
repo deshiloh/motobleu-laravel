@@ -39,10 +39,14 @@ class EntrepriseForm extends Component
             $this->user->entreprises()->attach($this->entreprises);
             $this->refreshData();
             $this->reset('entreprises');
-            $this->notification([
-                'title' => 'Opération réussite.',
-                'description' => "Tout s'est bien passé.",
-                'icon' => "success",
+            $this->notification()->send([
+                'title' => 'Opération réussie.',
+                'description' => 'Tout s\'est bien passé.',
+                'icon' => 'success',
+                'timeout' => config('wireui.timeout'),
+                'onTimeout' => [
+                    'method' => 'redirectToList'
+                ],
                 'onClose' => [
                     'method' => 'redirectToList'
                 ]

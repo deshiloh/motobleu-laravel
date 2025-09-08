@@ -5,6 +5,7 @@ namespace App\Livewire\Front;
 use App\Mail\ConfirmationRegisterUserDemand;
 use App\Mail\RegisterUserDemand;
 use App\Models\User;
+use Illuminate\Support\Facades\App;
 use Livewire\Component;
 use WireUi\Traits\WireUiActions;
 
@@ -83,6 +84,9 @@ class NewAccountForm extends Component
                 title: "Une erreur est survenue",
                 description: "Une erreur est survenue pendant l'enregistrement de la demande, veuillez essayer ultérieurement."
             );
+            if (App::environment(['local'])) {
+                ray()->exception($exception);
+            }
             if (\App::environment(['prod', 'beta'])) {
                 \Log::channel("sentry")->error("Erreur pendant la demande de création de compte", [
                     'exception' => $exception,

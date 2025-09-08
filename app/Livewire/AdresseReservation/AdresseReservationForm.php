@@ -43,26 +43,32 @@ class AdresseReservationForm extends Component
             if ($this->adresseReservation->exists) {
                 $this->adresseReservation->update();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Adresse modifiée.',
-                    'description' => "L'adresse a bien été modifée.",
+                    'description' => "L'adresse a bien été modifiée.",
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             } else {
                 $this->adresseReservation->save();
 
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Adresse créée.',
-                    'description' => "L'adresse a bien été modifiée.",
+                    'description' => "L'adresse a bien été créée.",
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
 
                 $this->adresseReservation = new AdresseReservation();

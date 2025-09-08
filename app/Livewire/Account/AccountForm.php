@@ -76,29 +76,39 @@ class AccountForm extends Component
             $user = $this->form->save();
 
             if ($isNewUser) {
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Compte créé',
                     'description' => 'Le compte a bien été créé',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             } else {
-                $this->notification([
+                $this->notification()->send([
                     'title' => 'Compte modifié',
                     'description' => 'Le compte a bien été modifié',
                     'icon' => 'success',
-                    'onClose' => [
+                    'timeout' => config('wireui.timeout'),
+                    'onTimeout' => [
                         'method' => 'redirectToList'
                     ],
-                    'timeout' => config('wireui.timeout')
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ]
                 ]);
             }
 
             $this->handlePermission($user);
         } catch (\Exception $exception) {
+            $this->notification()->error(
+                title: 'Une erreur est survenue',
+                description: 'Erreur pendant le traitement'
+            );
             if (App::environment(['local'])) {
                 ray([
                     'form' => $this->form->all()
