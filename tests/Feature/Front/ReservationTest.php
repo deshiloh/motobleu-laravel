@@ -62,8 +62,7 @@ class ReservationTest extends TestCase
         Livewire::test(ReservationDataTable::class)
             ->call('sendUpdateReservationEmail')
             ->assertHasErrors([
-                'message' => "required",
-                'selectedReservation' => 'required'
+                'message' => "required"
             ])
         ;
 
@@ -104,6 +103,7 @@ class ReservationTest extends TestCase
         $this->actingAs(User::factory()->create());
 
         Livewire::test(ReservationDataTable::class)
+            ->set('selectedReservation', Reservation::factory()->create())
             ->call('sendCancelReservationEmail')
             ->assertHasNoErrors()
             ->assertSet('selectedReservation', null)

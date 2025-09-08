@@ -51,12 +51,14 @@ class UserForm extends Form
             'is_actif' => $this->is_actif,
         ];
 
-
         if ($this->user && $this->user->id) {
             // User has ID, so it exists - update it
             $this->user->update($data);
         } else {
-            // New user - create it
+            // New user - create it, include password if set
+            if ($this->user && $this->user->password) {
+                $data['password'] = $this->user->password;
+            }
             $this->user = User::create($data);
         }
 

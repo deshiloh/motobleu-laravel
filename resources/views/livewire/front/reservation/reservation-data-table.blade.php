@@ -91,45 +91,49 @@
         <x-front.pagination :pagination="$reservations" :per-page="$perPage" />
     </x-front.card>
 
-    <x-modal.card title="{{ __('Demande de modification') }}" blur wire:model.defer="editAskCard">
-        <form class="w-full" id="udpapteDemandeForm" wire:submit.prevent="sendUpdateReservationEmail">
-            @if($selectedReservation)
-                <p class="mb-4">{{ __('Votre demande concerne la réservation') }} <span class="font-bold">{{ $selectedReservation->reference }}</span></p>
-            @endif
-             <div class="mb-3">
-                 <x-errors />
-             </div>
-            <x-textarea label="{{ __('Message') }}" placeholder="{{ __('Votre message') }}..." wire:model.defer="message"/>
-        </form>
+    <x-modal blur wire:model.defer="editAskCard">
+        <x-card title="{{ __('Demande de modification') }}">
+            <form class="w-full" id="udpapteDemandeForm" wire:submit.prevent="sendUpdateReservationEmail">
+                @if($selectedReservation)
+                    <p class="mb-4">{{ __('Votre demande concerne la réservation') }} <span class="font-bold">{{ $selectedReservation->reference }}</span></p>
+                @endif
+                 <div class="mb-3">
+                     <x-errors />
+                 </div>
+                <x-textarea label="{{ __('Message') }}" placeholder="{{ __('Votre message') }}..." wire:model.defer="message"/>
+            </form>
 
-        <x-slot name="footer">
-            <div class="flex justify-end">
-                <x-button flat label="{{ __('Annuler') }}" wire:click="closeModal" />
-                <x-button primary label="{{ __('Envoyer') }}" form="udpapteDemandeForm" type="submit"/>
-            </div>
-        </x-slot>
-    </x-modal.card>
+            <x-slot name="footer">
+                <div class="flex justify-end">
+                    <x-button flat label="{{ __('Annuler') }}" wire:click="closeModal" />
+                    <x-button primary label="{{ __('Envoyer') }}" form="udpapteDemandeForm" type="submit"/>
+                </div>
+            </x-slot>
+        </x-card>
+    </x-modal>
 
 
-    <x-modal.card title="{{ __('Demande annulation') }}" blur wire:model.defer="askCancelCard">
-        @if($selectedReservation != null)
-            <div class="rounded-md bg-red-50 p-4">
-                <div class="flex">
-                    <div class="ml-3">
-                        <h3 class="text-sm font-medium text-red-800">{{ __("Attention") }} !</h3>
-                        <div class="mt-2 text-sm text-red-700">
-                            {{ __('Vous êtes sur le point de demander une annulation de la réservation') }} : <span class="font-bold">{{ $selectedReservation->reference }}</span>
+    <x-modal blur wire:model.defer="askCancelCard">
+        <x-card title="{{ __('Demande annulation') }}">
+            @if($selectedReservation != null)
+                <div class="rounded-md bg-red-50 p-4">
+                    <div class="flex">
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">{{ __("Attention") }} !</h3>
+                            <div class="mt-2 text-sm text-red-700">
+                                {{ __('Vous êtes sur le point de demander une annulation de la réservation') }} : <span class="font-bold">{{ $selectedReservation->reference }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        @endif
+            @endif
 
-        <x-slot name="footer">
-            <div class="flex justify-end">
-                <x-button flat label="{{ __('Annuler') }}" wire:click="closeModal" />
-                <x-button primary label="{{ __('Confirmer') }}" wire:click="sendCancelReservationEmail"/>
-            </div>
-        </x-slot>
-    </x-modal.card>
+            <x-slot name="footer">
+                <div class="flex justify-end">
+                    <x-button flat label="{{ __('Annuler') }}" wire:click="closeModal" />
+                    <x-button primary label="{{ __('Confirmer') }}" wire:click="sendCancelReservationEmail"/>
+                </div>
+            </x-slot>
+        </x-card>
+    </x-modal>
 </div>

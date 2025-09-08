@@ -37,11 +37,11 @@ class SearchBar extends Component
 
     public function updatedSelectedYear($value): void
     {
-        $this->emit('onChangeSelectedYear', $value);
+        $this->dispatch('onChangeSelectedYear', $value);
     }
 
     public function updatedSelectedEntreprise($value): void
     {
-        $this->emit('onChangeSelectedEntreprise', $value);
+        $this->dispatch('onChangeSelectedEntreprise', $value);
     }
 }

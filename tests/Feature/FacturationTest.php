@@ -79,7 +79,7 @@ class FacturationTest extends TestCase
                 'comment_facture' => ''
             ])
             ->assertHasNoErrors()
-            ->assertEmitted('reservationUpdated')
+            ->assertDispatched('reservationUpdated')
             ->assertDispatched('wireui:notification')
             ->assertStatus(200)
         ;
@@ -100,7 +100,7 @@ class FacturationTest extends TestCase
                 'complement' => '',
                 'comment_facture' => ''
             ])
-            ->assertNotEmitted('reservationUpdated')
+            ->assertNotDispatched('reservationUpdated')
             ->assertDispatched('wireui:notification')
         ;
     }

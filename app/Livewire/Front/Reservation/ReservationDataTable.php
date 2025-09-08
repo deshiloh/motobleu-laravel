@@ -20,17 +20,16 @@ class ReservationDataTable extends Component
     public bool $editAskCard = false;
     public bool $askCancelCard = false;
     public ?string $message = null;
-    public ?Reservation $selectedReservation;
+    public ?Reservation $selectedReservation = null;
     public string $search = '';
 
     protected array $rules = [
-        'message' => 'required',
-        'selectedReservation' => 'required'
+        'message' => 'required'
     ];
 
     public function mount()
     {
-        $this->selectedReservation = new Reservation();
+        // selectedReservation is initialized to null by default
     }
 
     public function render()
@@ -63,6 +62,10 @@ class ReservationDataTable extends Component
         $this->validate();
 
         try {
+            if (is_null($this->selectedReservation) || !$this->selectedReservation->exists) {
+                throw new \Exception("Aucune réservation sélectionnée pour la demande de modification");
+            }
+            
             Mail::to(config('mail.admin.address'))
                 ->send(
                     new UpdateReservationDemand($this->selectedReservation, $this->message)

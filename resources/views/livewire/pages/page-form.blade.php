@@ -36,23 +36,25 @@
             </x-slot:body>
         </x-datatable>
     </x-bloc-content>
-    <x-modal.card title="Formulaire Page" blur wire:model.defer="editPageModal">
-        <x-errors />
-        @if($selectedPage)
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <x-input label="Titre FR" placeholder="Votre titre" wire:model.defer="data.titleFR"/>
-                <x-input label="Titre EN" placeholder="Votre titre" wire:model.defer="data.titleEN"/>
-            </div>
-            <div class="space-y-2 mt-2">
-                <x-tinymce wire:model="data.contentFR" label="Contenu FR"/>
-                <x-tinymce wire:model="data.contentEN" label="Content EN"/>
-            </div>
-        @endif
-        <x-slot name="footer">
-            <div class="flex justify-end">
-                <x-button flat label="Annuler" x-on:click="close" />
-                <x-button primary label="Enregistrer" wire:click="savePage" />
-            </div>
-        </x-slot>
-    </x-modal.card>
+    <x-modal blur wire:model.defer="editPageModal">
+        <x-card title="Formulaire Page">
+            <x-errors />
+            @if($selectedPage)
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <x-input label="Titre FR" placeholder="Votre titre" wire:model.defer="data.titleFR"/>
+                    <x-input label="Titre EN" placeholder="Votre titre" wire:model.defer="data.titleEN"/>
+                </div>
+                <div class="space-y-2 mt-2">
+                    <x-tinymce wire:model="data.contentFR" label="Contenu FR"/>
+                    <x-tinymce wire:model="data.contentEN" label="Content EN"/>
+                </div>
+            @endif
+            <x-slot name="footer">
+                <div class="flex justify-end">
+                    <x-button flat label="Annuler" x-on:click="close" />
+                    <x-button primary label="Enregistrer" wire:click="savePage" />
+                </div>
+            </x-slot>
+        </x-card>
+    </x-modal>
 </div>

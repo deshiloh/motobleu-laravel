@@ -79,7 +79,7 @@ class ReservationsChart extends Component
     public function reloadData()
     {
         $dataset = $this->getDatas();
-        $this->emit('updateHomeReservationChart', $dataset);
+        $this->dispatch('updateHomeReservationChart', $dataset);
     }
 
     private function getPeriod()

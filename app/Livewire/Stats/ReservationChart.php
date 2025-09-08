@@ -50,7 +50,7 @@ class ReservationChart extends Component
         $labels = $this->getLabels();
         $dataset = $this->getDataSets();
 
-        $this->emit('updateChart', [
+        $this->dispatch('updateChart', [
             'datasets' => $dataset,
             'labels' => $labels,
         ]);
@@ -68,7 +68,7 @@ class ReservationChart extends Component
         $labels = $this->getLabels();
         $dataset = $this->getDataSets();
 
-        $this->emit('updateChart', [
+        $this->dispatch('updateChart', [
             'datasets' => $dataset,
             'labels' => $labels,
         ]);

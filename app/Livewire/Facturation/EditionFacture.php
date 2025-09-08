@@ -313,7 +313,7 @@ class EditionFacture extends Component
             'comment_facture' => $datas['comment_facture'],
         ]);
 
-        $this->emit('reservationUpdated');
+        $this->dispatch('reservationUpdated');
 
         $this->notification()->success('Opération réussite', 'Modifications correctement effectuées');
 
@@ -405,15 +405,7 @@ class EditionFacture extends Component
 
         $this->uniqID = uniqid('facture_');
 
-        $this->notification([
-            'title' => 'Opération réussite',
-            'description' => 'Modification correctement effectuée',
-            'icon' => 'success',
-            'onClose' => [
-                'method' => 'redirectFacturationList'
-            ],
-            'timeout' => 3000
-        ]);
+        $this->notification()->success('Opération réussite', 'Modification correctement effectuée');
     }
 
     public function redirectFacturationList()
@@ -484,14 +476,7 @@ class EditionFacture extends Component
 
         BillCreated::dispatch($this->facture, $this->email);
 
-        $this->notification([
-            'title' => 'Facture envoyée.',
-            'description' => 'Vous allez être redirigé vers la page de listing entreprises',
-            'icon' => 'success',
-            'onTimeout' => [
-                'method' => 'redirectEvent',
-            ],
-        ]);
+        $this->notification()->success('Facture envoyée.', 'Vous allez être redirigé vers la page de listing entreprises');
 
         $this->isSendFactureModalOpened = false;
     }
@@ -536,13 +521,6 @@ class EditionFacture extends Component
             ]);
         }
 
-        $this->notification([
-            'title' => 'Facture annulée.',
-            'description' => 'Vous allez être redirigé vers la page de listing entreprises',
-            'icon' => 'success',
-            'onClose' => [
-                'method' => 'redirectEvent',
-            ],
-        ]);
+        $this->notification()->success('Facture annulée.', 'Vous allez être redirigé vers la page de listing entreprises');
     }
 }

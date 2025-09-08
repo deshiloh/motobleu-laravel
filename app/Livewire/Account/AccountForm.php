@@ -19,9 +19,17 @@ class AccountForm extends Component
     public UserForm $form;
     public bool $isAdmin = false;
 
-    public function mount(User $account = null): void
+    public function mount($account = null): void
     {
-        if (!$account) {
+        if ($account) {
+            // If $account is already a User model, use it directly
+            // Otherwise, treat it as an ID and find the user
+            if ($account instanceof User) {
+                $account = $account;
+            } else {
+                $account = User::findOrFail($account);
+            }
+        } else {
             $account = new User();
         }
         
@@ -59,28 +67,13 @@ class AccountForm extends Component
         try {
             $isNewUser = !$this->form->user || !$this->form->user->id;
             
-            // Use direct creation for now (UserForm has issues with $this->all())
+            // Set password for new users before saving
             if ($isNewUser) {
-                $user = User::create([
-                    'nom' => $this->form->nom,
-                    'prenom' => $this->form->prenom,
-                    'email' => $this->form->email,
-                    'telephone' => $this->form->telephone,
-                    'adresse' => $this->form->adresse,
-                    'adresse_bis' => $this->form->adresse_bis,
-                    'code_postal' => $this->form->code_postal,
-                    'ville' => $this->form->ville,
-                    'is_actif' => $this->form->is_actif,
-                ]);
-                $this->form->user = $user;
-            } else {
-                $user = $this->form->save();
+                $this->form->user->password = Hash::make(uniqid());
             }
-
-            if ($isNewUser) {
-                $user->password = Hash::make(uniqid());
-                $user->save();
-            }
+            
+            // Use the UserForm save method  
+            $user = $this->form->save();
 
             if ($isNewUser) {
                 $this->notification([
@@ -120,6 +113,11 @@ class AccountForm extends Component
                     'data' => $this->form->all()
                 ]);
             }
+            
+            // Re-throw in testing environment to help with debugging
+            if (App::environment('testing')) {
+                throw $exception;
+            }
         }
     }
 
@@ -130,9 +128,16 @@ class AccountForm extends Component
 
     private function handlePermission(User $user): void
     {
-        $user->removeRole('user_ardian');
-        $user->removeRole('admin');
-        $user->removeRole('user');
+        // Remove roles safely (only if they exist)
+        if ($user->hasRole('user_ardian')) {
+            $user->removeRole('user_ardian');
+        }
+        if ($user->hasRole('admin')) {
+            $user->removeRole('admin');
+        }
+        if ($user->hasRole('user')) {
+            $user->removeRole('user');
+        }
 
         if ($this->isAdmin) {
             $user->assignRole('admin');
