@@ -15,4 +15,8 @@ class TypeFacturation extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    protected $casts = [
+        'is_actif' => 'boolean',
+    ];
 }

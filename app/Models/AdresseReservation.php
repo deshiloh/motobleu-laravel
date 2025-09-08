@@ -21,6 +21,10 @@ class AdresseReservation extends Model
         'full_adresse'
     ];
 
+    protected $casts = [
+        'is_actif' => 'boolean',
+    ];
+
     /**
      * @return BelongsTo
      */

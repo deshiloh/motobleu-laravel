@@ -29,7 +29,7 @@
                 </div>
 
                 <div>
-                    <x-button type="submit" primary label="{{ __('Se connecter') }}" full/>
+                    <x-button type="submit" primary label="{{ __('Se connecter') }}" full />
                     <div class="relative py-4">
                         <div class="absolute inset-0 flex items-center">
                             <div class="w-full border-t border-gray-300"></div>

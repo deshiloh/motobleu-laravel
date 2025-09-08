@@ -37,6 +37,7 @@ class Reservation extends Model
         'pickup_date' => 'datetime:Y-m-d H:i:s',
         'drop_date' => 'datetime:Y-m-d H:i:s',
         'has_back' => 'boolean',
+        'has_steps' => 'boolean',
         'send_to_passager' => 'boolean',
         'calendar_passager_invitation' => 'boolean',
         'tarif' => 'float',
