@@ -21,6 +21,16 @@ class CostCenterDataTable extends Component
             ->layout('components.front-layout');
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
     public function toggleActifCostCenter(CostCenter $center)
     {
         $center->update([

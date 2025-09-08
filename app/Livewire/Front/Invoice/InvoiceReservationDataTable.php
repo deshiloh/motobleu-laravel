@@ -17,9 +17,10 @@ class InvoiceReservationDataTable extends Component
     public int $perPage = 50;
     public string $search = "";
 
-    public $queryString = [
-        'search' => ['except' => '']
-    ];
+    // Temporarily disabled to prevent page refresh
+    // public $queryString = [
+    //     'search' => ['except' => '']
+    // ];
 
     public function mount(Facture $invoice): void
     {
@@ -36,5 +37,15 @@ class InvoiceReservationDataTable extends Component
                 ->paginate($this->perPage)
         ])
             ->layout('components.front-layout');
+    }
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
     }
 }

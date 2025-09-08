@@ -21,10 +21,26 @@ class UsersDataTable extends Component
     public string $sortField = 'nom';
     public ?int $selectedEntreprise = null;
 
-    public $queryString = [
-        'search' => ['except' => ''],
-        'selectedEntreprise' => ['except' => null]
-    ];
+    // Temporarily disabled to prevent page refresh
+    // public $queryString = [
+    //     'search' => ['except' => ''],
+    //     'selectedEntreprise' => ['except' => null]
+    // ];
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSelectedEntreprise()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
 
     /**
      * @return Application|Factory|View
@@ -34,8 +50,11 @@ class UsersDataTable extends Component
         return view('livewire.account.users-data-table', [
             'users' => User::query()
                 ->when($this->search, function (Builder $query) {
-                    $query->where('nom', 'like', '%'. $this->search . '%');
-                    $query->orWhere('prenom', 'like', '%'.$this->search.'%');
+                    $query->where(function (Builder $subQuery) {
+                        $subQuery->where('nom', 'like', '%'. $this->search . '%')
+                                ->orWhere('prenom', 'like', '%'.$this->search.'%')
+                                ->orWhere('email', 'like', '%'.$this->search.'%');
+                    });
                 })
                 ->when($this->selectedEntreprise, function (Builder $query) {
                     $query->whereHas('entreprises', function (Builder $query) {

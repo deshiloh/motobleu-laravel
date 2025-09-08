@@ -34,6 +34,16 @@ class PassagersDataTable extends Component
         ]);
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
     /**
      * Désactive un passager sélectionné.
      * @param Passager $passager

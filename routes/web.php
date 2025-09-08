@@ -83,3 +83,4 @@ Route::get('/mail-test', function () {
 
     return new \App\Mail\ReservationConfirmed($reservation, false);
 });
+

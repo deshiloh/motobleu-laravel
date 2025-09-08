@@ -5,16 +5,18 @@
     <x-bloc-content>
         <div class="space-y-3">
             <x-errors />
+            
+            
             <x-select
                 label="Entreprises"
-                wire:model="entreprises"
+                wire:model.defer="entreprises"
                 placeholder="Sélectionnez une ou plusieurs entreprises"
                 multiselect
                 :async-data="route('api.entreprises', ['exclude' => $exclude])"
                 option-label="nom"
                 option-value="id"
             />
-            <x-button label="Entregistrer" primary wire:click="save" :disabled="empty($entreprises)" />
+            <x-button label="Entregistrer" primary wire:click="save" />
         </div>
         <hr class="my-5">
         <x-datatable>

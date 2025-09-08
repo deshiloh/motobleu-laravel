@@ -34,6 +34,16 @@ class PassagerDataTable extends Component
             ->layout('components.front-layout');
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
     /**
      * Demande confirmation de supprimer le passager
      * @param Passager $passager

@@ -34,6 +34,16 @@ class LocalisationDataTable extends Component
         ]);
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
     public function toggleStatus(Localisation $localisation)
     {
         $localisation->is_actif = !$localisation->is_actif;

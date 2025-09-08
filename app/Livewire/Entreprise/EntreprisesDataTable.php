@@ -35,6 +35,16 @@ class EntreprisesDataTable extends Component
         ]);
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
     public function disableEntreprise(Entreprise $entreprise)
     {
         $entreprise->is_actif = false;

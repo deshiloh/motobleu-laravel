@@ -34,6 +34,16 @@ class TypeFacturationDataTable extends Component
         ]);
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
     public function toggleEtatTypeFacturation(TypeFacturation $typeFacturation)
     {
         $typeFacturation->is_actif = !$typeFacturation->is_actif;

@@ -32,14 +32,15 @@ class AccountForm extends Component
         } else {
             $account = new User();
         }
-        
+
         $this->form->setUser($account);
 
         if (!$account->exists) {
             $this->form->is_actif = true;
             $this->isAdmin = true;
         } else {
-            $this->isAdmin = $account->is_admin_role;
+            // Only check for 'admin' role, not 'super admin' which can't be changed via toggle
+            $this->isAdmin = $account->hasRole('admin');
         }
     }
 
@@ -66,13 +67,13 @@ class AccountForm extends Component
 
         try {
             $isNewUser = !$this->form->user || !$this->form->user->id;
-            
+
             // Set password for new users before saving
             if ($isNewUser) {
                 $this->form->user->password = Hash::make(uniqid());
             }
-            
-            // Use the UserForm save method  
+
+            // Use the UserForm save method
             $user = $this->form->save();
 
             if ($isNewUser) {
@@ -123,7 +124,7 @@ class AccountForm extends Component
                     'data' => $this->form->all()
                 ]);
             }
-            
+
             // Re-throw in testing environment to help with debugging
             if (App::environment('testing')) {
                 throw $exception;
@@ -138,6 +139,18 @@ class AccountForm extends Component
 
     private function handlePermission(User $user): void
     {
+        // Don't modify super admin role - it's permanent
+        if ($user->hasRole('super admin')) {
+            // For super admin users, only manage the additional admin role
+            if ($this->isAdmin && !$user->hasRole('admin')) {
+                $user->assignRole('admin');
+            } elseif (!$this->isAdmin && $user->hasRole('admin')) {
+                $user->removeRole('admin');
+            }
+            return;
+        }
+
+        // For non-super admin users, manage roles normally
         // Remove roles safely (only if they exist)
         if ($user->hasRole('user_ardian')) {
             $user->removeRole('user_ardian');

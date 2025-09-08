@@ -36,6 +36,16 @@ class PiloteDataTable extends Component
         ]);
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
     public function disablePilote(Pilote $pilote)
     {
         $pilote->is_actif = false;

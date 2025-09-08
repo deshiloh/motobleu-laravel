@@ -19,7 +19,8 @@ class ReservationDataTable extends Component
     public string $search = '';
     public int $perPage = 100;
     public string $sortField = 'id';
-    protected $queryString = ['querySort' => ['except' => '']];
+    // Temporarily disabled to prevent page refresh
+    // protected $queryString = ['querySort' => ['except' => '']];
     public string $querySort = '';
     public array $listPerPage = [
         20,
@@ -52,5 +53,15 @@ class ReservationDataTable extends Component
             'reservations' => $reservations->paginate($this->perPage),
             'countReservationToConfirmed' => Reservation::toConfirmed()->count()
         ]);
+    }
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
     }
 }

@@ -21,11 +21,12 @@ class FacturationDataTable extends Component
     public int $perPage = 10;
     public ?int $isAcquitte = null;
 
-    protected $queryString = [
-        'search' => ['except' => ''],
-        'isAcquitte' => ['except' => 0],
-        'entreprise' => ['except' => null]
-    ];
+    // Temporarily disabled to prevent page refresh
+    // protected $queryString = [
+    //     'search' => ['except' => ''],
+    //     'isAcquitte' => ['except' => 0],
+    //     'entreprise' => ['except' => null]
+    // ];
 
     public function render()
     {
@@ -49,6 +50,26 @@ class FacturationDataTable extends Component
                 ->paginate($this->perPage)
         ])
             ->layout('components.layout');
+    }
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedEntreprise()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedIsAcquitte()
+    {
+        $this->resetPage();
     }
 
     public function getEntreprise(Facture $facture): Model|Builder|null

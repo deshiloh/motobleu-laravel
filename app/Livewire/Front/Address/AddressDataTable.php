@@ -37,6 +37,16 @@ class AddressDataTable extends Component
             ->layout('components.front-layout');
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
     /**
      * Permet de désactiver une adresse de réservations
      * @param AdresseReservation $adresseReservation

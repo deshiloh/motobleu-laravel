@@ -30,6 +30,16 @@ class AdressesReservationDataTable extends Component
         ]);
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
     /**
      * Permet de désactiver l'adresse de réservation sélectionnée.
      * @param AdresseReservation $address

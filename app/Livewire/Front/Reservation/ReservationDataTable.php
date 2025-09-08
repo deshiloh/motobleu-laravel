@@ -47,6 +47,16 @@ class ReservationDataTable extends Component
         ])->layout('components.front-layout');
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
     public function openAskEditModal(Reservation $reservation)
     {
         $this->selectedReservation = $reservation;

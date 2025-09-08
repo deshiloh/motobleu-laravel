@@ -34,6 +34,16 @@ class CostCenterDataTable extends Component
         ]);
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
     public function toggleStatutCostCenter(CostCenter $costCenter)
     {
         $costCenter->is_actif = !$costCenter->is_actif;
