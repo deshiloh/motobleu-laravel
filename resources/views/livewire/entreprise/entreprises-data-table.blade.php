@@ -1,7 +1,7 @@
 <div>
     <div class="grid grid-cols-6 gap-4 mb-4">
         <div class="col-span-2">
-            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="search" wire:model="search"/>
+            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="magnifying-glass" wire:model="search"/>
         </div>
         <div class="col-span-1">
             <x-native-select

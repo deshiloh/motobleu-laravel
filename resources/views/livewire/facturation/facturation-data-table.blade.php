@@ -5,7 +5,7 @@
     <x-bloc-content>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div>
-                <x-input label="Rechercher" icon="search" wire:model="search" />
+                <x-input label="Rechercher" icon="magnifying-glass" wire:model="search" />
             </div>
             <div>
                 <x-native-select
@@ -86,7 +86,7 @@
                         <x-datatable.td>
                             <x-button label="Voir" href="{{ route('admin.facturations.show', ['facture' => $facture->id]) }}" target="_blank" icon="eye" info sm />
 
-                            <x-button label="Liste des courses" icon="view-list" primary sm href="{!! route('admin.facturations.edition', [
+                            <x-button label="Liste des courses" icon="view-columns" primary sm href="{!! route('admin.facturations.edition', [
                                     'selectedMonth' => $facture->month,
                                     'selectedYear' => $facture->year,
                                     'factureSelected' => $facture->id

@@ -8,7 +8,7 @@
                     <x-button icon="calendar" href="{{ $reservation->getEvent()->getHtmlLink() }}" target="_blank" label="Google Agenda" info wire:loading.attr="disabled" />
                 @endif
 
-                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-alt" primary label="Éditer" wire:loading.attr="disabled" />
+                <x-button href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}"  icon="pencil-square" primary label="Éditer" wire:loading.attr="disabled" />
 
                 @if($reservation->statut == \App\Enum\ReservationStatus::Canceled || $reservation->statut == \App\Enum\ReservationStatus::CanceledToPay)
                     <x-button positive label="Confirmer" icon="check" wire:loading.attr="disabled" wire:click="confirmedStatusAction" spinner="confirmedStatusAction" />

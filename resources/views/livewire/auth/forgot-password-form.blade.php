@@ -15,7 +15,7 @@
                                 wire:loading.attr="disabled"
                                 wire:loading.class="opacity-25"
                                 wire:model.defer="email"
-                                icon="mail"
+                                icon="envelope"
                             >
                             </x-input>
                             <x-button

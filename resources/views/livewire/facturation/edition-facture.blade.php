@@ -262,8 +262,8 @@
                         <x-tinymce wire:model.defer="facture.adresse_client" label="Adresse client"/>
                         <x-tinymce wire:model.defer="facture.adresse_facturation" label="Adresse Facturation"/>
 {{--                        <x-textarea label="Texte information" hint="Ce texte apparaitra sur la facture" wire:model.defer="email.complement" wire:change.debounce="editFactureAction"/>--}}
-                        <x-button wire:click="sendEmailTestAction" primary sm type="button" icon="mail">Envoi d'un email de test</x-button>
-                        <x-button wire:click="exportAction" info sm type="button" icon="download">Récap. des courses</x-button>
+                        <x-button wire:click="sendEmailTestAction" primary sm type="button" icon="envelope">Envoi d'un email de test</x-button>
+                        <x-button wire:click="exportAction" info sm type="button" icon="arrow-down-tray">Récap. des courses</x-button>
                     </form>
                 </div>
             </div>

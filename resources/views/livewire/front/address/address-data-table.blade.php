@@ -32,7 +32,7 @@
                                     <x-button.circle primary icon="pencil" href="{{ route('front.address.edit', ['address' => $address->id]) }}"/>
 
                                     @if($address->is_actif)
-                                        <x-button.circle warning icon="x" wire:click="toggleAddress({{ $address }})"/>
+                                        <x-button.circle warning icon="x-mark" wire:click="toggleAddress({{ $address }})"/>
                                         @else
                                         <x-button.circle positive icon="check" wire:click="toggleAddress({{ $address }})"/>
                                     @endif

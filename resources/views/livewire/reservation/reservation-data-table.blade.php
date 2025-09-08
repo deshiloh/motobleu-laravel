@@ -23,7 +23,7 @@
 
     <div class="grid grid-cols-4 gap-6 pb-5">
         <div>
-            <x-input wire:model="search" label="Recherche" placeholder="Tapez votre recherche..." icon="search"/>
+            <x-input wire:model="search" label="Recherche" placeholder="Tapez votre recherche..." icon="magnifying-glass"/>
         </div>
         <div>
             <x-native-select

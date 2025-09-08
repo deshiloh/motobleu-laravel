@@ -71,7 +71,7 @@
                                         <x-button.circle icon="pencil" info sm wire:click="openAskEditModal({{ $reservation }})" />
                                     @endcan
                                     @can('delete reservation')
-                                        <x-button.circle icon="x" red sm wire:click="openAskCancelModal({{ $reservation }})" />
+                                        <x-button.circle icon="x-mark" red sm wire:click="openAskCancelModal({{ $reservation }})" />
                                     @endcan
                                     @else
                                      <x-front.badge warning-secondary>

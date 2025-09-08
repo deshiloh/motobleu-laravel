@@ -1,7 +1,7 @@
 <div>
     <div class="grid grid-cols-1 md:grid-cols-6 gap-3 mb-4">
         <div class="col-span-2">
-            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="search" wire:model="search"/>
+            <x-input label="Recherche" placeholder="Tapez votre recherche..." icon="magnifying-glass" wire:model="search"/>
         </div>
         <div>
             <x-native-select
@@ -49,7 +49,7 @@
 
                             @if(!$address->is_deleted)
                                 @if($address->is_actif)
-                                    <x-button.circle red icon="x" wire:click="disableAddress({{ $address }})" />
+                                    <x-button.circle red icon="x-mark" wire:click="disableAddress({{ $address }})" />
                                 @else
                                     <x-button.circle green icon="check" wire:click="enableAddress({{ $address }})" />
                                 @endif

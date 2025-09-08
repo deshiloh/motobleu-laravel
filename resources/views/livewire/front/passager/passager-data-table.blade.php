@@ -37,7 +37,7 @@
                                     <x-button.circle icon="pencil" primary href="{{ route('front.passager.edit', ['passager' => $passager->id]) }}"/>
                                 @endcan
                                 @can('delete passenger')
-                                    <x-button.circle icon="x" red wire:click="deletePassenger({{ $passager }})"/>
+                                    <x-button.circle icon="x-mark" red wire:click="deletePassenger({{ $passager }})"/>
                                 @endcan
                             </div>
                         </x-datatable.td>

@@ -33,7 +33,7 @@
                                 <x-button.circle primary icon="eye" href="{{ route('admin.entreprises.show', [
                                     'entreprise' => $entreprise->id
                                 ]) }}"/>
-                                <x-button.circle red icon="x" wire:click="detach({{ $entreprise }})"/>
+                                <x-button.circle red icon="x-mark" wire:click="detach({{ $entreprise }})"/>
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>
