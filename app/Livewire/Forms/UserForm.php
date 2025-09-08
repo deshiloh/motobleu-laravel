@@ -39,11 +39,24 @@ class UserForm extends Form
     {
         $this->validate($this->rules());
         
-        $data = collect($this->all())->except(['user'])->toArray();
+        $data = [
+            'nom' => $this->nom,
+            'prenom' => $this->prenom,
+            'email' => $this->email,
+            'telephone' => $this->telephone,
+            'adresse' => $this->adresse,
+            'adresse_bis' => $this->adresse_bis,
+            'code_postal' => $this->code_postal,
+            'ville' => $this->ville,
+            'is_actif' => $this->is_actif,
+        ];
 
-        if ($this->user && $this->user->exists) {
+
+        if ($this->user && $this->user->id) {
+            // User has ID, so it exists - update it
             $this->user->update($data);
         } else {
+            // New user - create it
             $this->user = User::create($data);
         }
 

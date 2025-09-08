@@ -50,6 +50,7 @@ class AccountTest extends TestCase
 
     public function testAccessCreatePageAccount(): void
     {
+        $this->withoutExceptionHandling();
         $response = $this->get(route('admin.accounts.create'));
         $response->assertStatus(200);
     }
@@ -117,19 +118,16 @@ class AccountTest extends TestCase
     {
         $entreprise = Entreprise::factory()->create();
         $user = User::factory()->make();
-        Livewire::test(AccountForm::class)
-            ->set('form.nom', $user->nom)
+        $component = Livewire::test(AccountForm::class);
+        
+        $component->set('form.nom', $user->nom)
             ->set('form.prenom', $user->prenom)
             ->set('form.email', $user->email)
-            ->set('form.telephone', $user->telephone)
-            ->set('form.adresse', $user->adresse)
-            ->set('form.adresse_bis', $user->adresse_bis)
-            ->set('form.code_postal', $user->code_postal)
-            ->set('form.ville', $user->ville)
-            ->set('form.is_actif', true)
-            ->call('save');
-            // ->assertHasNoErrors()
-            // ->assertStatus(200);
+            ->set('form.is_actif', true);
+            
+        $component->call('save')
+            ->assertHasNoErrors()
+            ->assertStatus(200);
 
         $this->assertTrue(User::where('nom', $user->nom)->exists());
     }

@@ -54,7 +54,7 @@
         </x-front.menu.item>
     @endif
 
-    @if(in_array(Auth::user()->entreprises()->first()->id, app(\app\Settings\BillSettings::class)->entreprise_without_command_field))
+    @if(Auth::user()->entreprises()->first() && in_array(Auth::user()->entreprises()->first()->id, app(\app\Settings\BillSettings::class)->entreprise_without_command_field))
         @can('see cost center')
             <x-front.menu.item :active="in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['front.cost_center.list', 'front.cost_center.create', 'front.cost_center.edit'])" href="{{ route('front.cost_center.list') }}">
                 <x-slot:icon>

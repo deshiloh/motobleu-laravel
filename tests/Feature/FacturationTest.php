@@ -80,7 +80,7 @@ class FacturationTest extends TestCase
             ])
             ->assertHasNoErrors()
             ->assertEmitted('reservationUpdated')
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
             ->assertStatus(200)
         ;
 
@@ -101,7 +101,7 @@ class FacturationTest extends TestCase
                 'comment_facture' => ''
             ])
             ->assertNotEmitted('reservationUpdated')
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
     }
 
@@ -121,7 +121,7 @@ class FacturationTest extends TestCase
             ->set('facture', $facture)
             ->call('updateAcquitteBill')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
 
         $this->assertDatabaseHas('factures', [
@@ -152,7 +152,7 @@ class FacturationTest extends TestCase
             ->set('email.message', 'contenu du message')
             ->call('sendFactureAction')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
             ->assertSet('isSendFactureModalOpened', false)
         ;
 

@@ -136,7 +136,7 @@ class AssistanteTest extends TestCase
             ->set('user.ville', 'test')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
 
         $this->assertTrue(User::where('nom', 'test')->exists());
@@ -157,7 +157,7 @@ class AssistanteTest extends TestCase
             ->set('user.ville', 'test')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
 
         $this->assertTrue(User::where('nom', 'test')->exists());

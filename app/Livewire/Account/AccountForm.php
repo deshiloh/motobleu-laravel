@@ -57,8 +57,25 @@ class AccountForm extends Component
         $this->validate();
 
         try {
-            $isNewUser = !$this->form->user || !$this->form->user->exists;
-            $user = $this->form->save();
+            $isNewUser = !$this->form->user || !$this->form->user->id;
+            
+            // Use direct creation for now (UserForm has issues with $this->all())
+            if ($isNewUser) {
+                $user = User::create([
+                    'nom' => $this->form->nom,
+                    'prenom' => $this->form->prenom,
+                    'email' => $this->form->email,
+                    'telephone' => $this->form->telephone,
+                    'adresse' => $this->form->adresse,
+                    'adresse_bis' => $this->form->adresse_bis,
+                    'code_postal' => $this->form->code_postal,
+                    'ville' => $this->form->ville,
+                    'is_actif' => $this->form->is_actif,
+                ]);
+                $this->form->user = $user;
+            } else {
+                $user = $this->form->save();
+            }
 
             if ($isNewUser) {
                 $user->password = Hash::make(uniqid());

@@ -15,7 +15,7 @@
             <x-input type="tel" label="{{ __('Téléphone bureau') }}" wire:model.defer="passager.telephone"/>
             <x-input label="{{ __('Téléphone portable') }}" wire:model.defer="passager.portable" />
 
-            @if(in_array(Auth::user()->entreprises()->first()->id, $billSettings->entreprises_cost_center_facturation))
+            @if(Auth::user()->entreprises()->first() && in_array(Auth::user()->entreprises()->first()->id, $billSettings->entreprises_cost_center_facturation))
                 <x-native-select
                     label="{{ __('Cost Center') }}"
                     placeholder="{{ __('Sélectionner un Cost Center') }}"

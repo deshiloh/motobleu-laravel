@@ -71,7 +71,7 @@ class PageTest extends TestCase
             ->set('data.contentEN', 'test')
             ->call('savePage')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
 
         $this->assertTrue(Page::where('title->fr','test')->exists());
@@ -91,7 +91,7 @@ class PageTest extends TestCase
             ->set('data.contentEN', 'test en')
             ->call('savePage')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
 
         $this->assertTrue(Page::where('title->en','tutu')->exists());

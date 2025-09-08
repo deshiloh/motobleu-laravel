@@ -160,7 +160,7 @@ class PiloteTest extends TestCase
                 'encaisse' => '0',
                 'encompte' => '200',
             ])
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
         $this->assertDatabaseMissing('reservations', [
             'tarif_pilote' => ''

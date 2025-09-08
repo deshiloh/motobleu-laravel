@@ -24,7 +24,7 @@
         </x-front.card>
         <x-front.card>
             <div class="space-y-3">
-                @if(!in_array(Auth::user()->entreprises()->first()->id, app(\app\Settings\BillSettings::class)->entreprise_without_command_field))
+                @if(Auth::user()->entreprises()->first() && !in_array(Auth::user()->entreprises()->first()->id, app(\app\Settings\BillSettings::class)->entreprise_without_command_field))
                     <x-input label="{{ __('Numéro de commande / Case code') }}" wire:model="reservation.commande" />
                 @endif
 
@@ -72,7 +72,7 @@
                         <x-input label="{{ __('Téléphone de bureau') }}" wire:model="newPassager.telephone"/>
                         <x-input label="{{ __('Téléphone portable') }}" wire:model="newPassager.portable"/>
                         <x-input type="email" label="{{ __('Adresse email') }}" wire:model="newPassager.email"/>
-                        @if(in_array(Auth::user()->entreprises()->first()->id, app(\app\Settings\BillSettings::class)->entreprises_cost_center_facturation))
+                        @if(Auth::user()->entreprises()->first() && in_array(Auth::user()->entreprises()->first()->id, app(\app\Settings\BillSettings::class)->entreprises_cost_center_facturation))
                             <x-native-select
                                 wire:key="cost_center"
                                 label="{{ __('Cost Center') }}"

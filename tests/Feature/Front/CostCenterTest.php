@@ -102,7 +102,7 @@ class CostCenterTest extends TestCase
             ->set('costCenter.nom', 'test')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
 
         $this->assertTrue(CostCenter::where('nom', 'test')->exists());
@@ -116,7 +116,7 @@ class CostCenterTest extends TestCase
             ->set('costCenter.nom', 'test')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertDispatchedBrowserEvent('wireui:notification')
+            ->assertDispatched('wireui:notification')
         ;
 
         $this->assertTrue(CostCenter::where('nom', 'test')->exists());

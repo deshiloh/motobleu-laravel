@@ -69,7 +69,9 @@ class AccountForm extends Component
                 $this->user->save();
             }
 
-            $this->user->entreprises()->attach(Entreprise::find(\Auth::user()->entreprises()->first()->id));
+            if (\Auth::user()->entreprises()->first()) {
+                $this->user->entreprises()->attach(Entreprise::find(\Auth::user()->entreprises()->first()->id));
+            }
 
             $this->user->update();
 

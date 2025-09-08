@@ -115,7 +115,7 @@ class PassagerTest extends TestCase
         $passager = Passager::factory(['user_id' => 1])->create();
         Livewire::test(PassagerDataTable::class)
             ->call('deletePassenger', $passager)
-            ->assertDispatchedBrowserEvent('wireui:confirm-dialog')
+            ->assertDispatched('wireui:confirm-dialog')
         ;
     }
 
@@ -126,7 +126,7 @@ class PassagerTest extends TestCase
 
         Livewire::test(PassagerDataTable::class)
             ->call('confirmDeletePassenger', $passager)
-            ->assertDispatchedBrowserEvent('wireui:notification');
+            ->assertDispatched('wireui:notification');
 
         $this->assertTrue($passager->is_actif == false);
     }
