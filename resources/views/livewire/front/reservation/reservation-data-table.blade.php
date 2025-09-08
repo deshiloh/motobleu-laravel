@@ -68,10 +68,10 @@
                                     $reservation->statut == \App\Enum\ReservationStatus::Confirmed
                                 )
                                     @can('edit reservation')
-                                        <x-button.circle icon="pencil" info sm wire:click="openAskEditModal({{ $reservation }})" />
+                                        <x-mini-button rounded icon="pencil" info sm wire:click="openAskEditModal({{ $reservation }})" />
                                     @endcan
                                     @can('delete reservation')
-                                        <x-button.circle icon="x-mark" red sm wire:click="openAskCancelModal({{ $reservation }})" />
+                                        <x-mini-button rounded icon="x-mark" red sm wire:click="openAskCancelModal({{ $reservation }})" />
                                     @endcan
                                     @else
                                      <x-front.badge warning-secondary>

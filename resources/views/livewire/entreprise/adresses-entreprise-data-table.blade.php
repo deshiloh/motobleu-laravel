@@ -42,8 +42,8 @@
                     <x-datatable.td>{{ $adresse->email }}</x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-button.circle icon="pencil" primary href="{{ route('admin.entreprises.adresses.edit', ['adress' => $adresse->id, 'entreprise' => $entreprise]) }}" />
-                            <x-button.circle icon="trash" red wire:click="deleteAddress({{ $adresse }})"/>
+                            <x-mini-button rounded icon="pencil" primary href="{{ route('admin.entreprises.adresses.edit', ['adress' => $adresse->id, 'entreprise' => $entreprise]) }}" />
+                            <x-mini-button rounded icon="trash" red wire:click="deleteAddress({{ $adresse }})"/>
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Account;
 
+use App\Livewire\Forms\UserForm;
 use App\Models\Entreprise;
 use App\Models\User;
 use Illuminate\Support\Facades\App;
@@ -15,42 +16,30 @@ class AccountForm extends Component
 {
     use WireUiActions;
 
-    public User $user;
+    public UserForm $form;
     public bool $isAdmin = false;
 
-    public function mount(User $account): void
+    public function mount(User $account = null): void
     {
-        $this->user = $account;
+        if (!$account) {
+            $account = new User();
+        }
+        
+        $this->form->setUser($account);
 
-        if (!$this->user->exists) {
-            $this->user->is_actif = true;
-            $this->user->is_admin = true;
+        if (!$account->exists) {
+            $this->form->is_actif = true;
+            $this->isAdmin = true;
         } else {
-            $this->isAdmin = $this->user->is_admin_role;
+            $this->isAdmin = $account->is_admin_role;
         }
     }
 
-    public function getRules(): array
+    protected function rules(): array
     {
-        $rules = [
-            'user.nom' => 'required',
-            'user.prenom' => 'required',
-            'user.telephone' => 'nullable',
-            'user.adresse' => 'nullable',
-            'user.adresse_bis' => 'nullable',
-            'user.code_postal' => 'nullable',
-            'user.ville' => 'nullable',
-            'user.is_actif' => 'boolean',
-            'isAdmin' => 'boolean',
-            'user.email' => 'required|email|unique:users,email'
-
+        return [
+            'isAdmin' => 'boolean'
         ];
-
-        if ($this->user->exists) {
-            $rules['user.email'] = 'required|email';
-        }
-
-        return $rules;
     }
 
     /**
@@ -68,25 +57,15 @@ class AccountForm extends Component
         $this->validate();
 
         try {
-            if ($this->user->exists) {
+            $isNewUser = !$this->form->user || !$this->form->user->exists;
+            $user = $this->form->save();
 
-                $this->user->update();
+            if ($isNewUser) {
+                $user->password = Hash::make(uniqid());
+                $user->save();
+            }
 
-                $this->notification([
-                    'title' => 'Compte modifié',
-                    'description' => 'Le compte a bien été modifié',
-                    'icon' => 'success',
-                    'onClose' => [
-                        'method' => 'redirectToList'
-                    ],
-                    'timeout' => config('wireui.timeout')
-                ]);
-
-            } else {
-                $this->user->password = Hash::make(uniqid());
-
-                $this->user->save();
-
+            if ($isNewUser) {
                 $this->notification([
                     'title' => 'Compte créé',
                     'description' => 'Le compte a bien été créé',
@@ -96,13 +75,23 @@ class AccountForm extends Component
                     ],
                     'timeout' => config('wireui.timeout')
                 ]);
+            } else {
+                $this->notification([
+                    'title' => 'Compte modifié',
+                    'description' => 'Le compte a bien été modifié',
+                    'icon' => 'success',
+                    'onClose' => [
+                        'method' => 'redirectToList'
+                    ],
+                    'timeout' => config('wireui.timeout')
+                ]);
             }
 
-            $this->handlePermission();
+            $this->handlePermission($user);
         } catch (\Exception $exception) {
             if (App::environment(['local'])) {
                 ray([
-                    'user' => $this->user
+                    'form' => $this->form->all()
                 ])->exception($exception);
             }
 
@@ -111,7 +100,7 @@ class AccountForm extends Component
                     'user_id' => \Auth::user()->id,
                     'email' => \Auth::user()->email,
                     'exception' => $exception,
-                    'data' => $this->user
+                    'data' => $this->form->all()
                 ]);
             }
         }
@@ -122,21 +111,21 @@ class AccountForm extends Component
         $this->redirect(route('admin.accounts.index'));
     }
 
-    private function handlePermission(): void
+    private function handlePermission(User $user): void
     {
-        $this->user->removeRole('user_ardian');
-        $this->user->removeRole('admin');
-        $this->user->removeRole('user');
+        $user->removeRole('user_ardian');
+        $user->removeRole('admin');
+        $user->removeRole('user');
 
         if ($this->isAdmin) {
-            $this->user->assignRole('admin');
+            $user->assignRole('admin');
         } else {
-            if ($this->user->is_ardian) {
-                $this->user->assignRole('user_ardian');
+            if ($user->is_ardian) {
+                $user->assignRole('user_ardian');
                 return;
             }
 
-            $this->user->assignRole('user');
+            $user->assignRole('user');
         }
     }
 }

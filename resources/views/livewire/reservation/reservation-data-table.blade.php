@@ -83,8 +83,8 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-button.circle icon="eye" primary sm href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" />
-                            <x-button.circle icon="pencil" info sm href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}" />
+                            <x-mini-button rounded icon="eye" primary sm href="{{ route('admin.reservations.show', ['reservation' => $reservation->id]) }}" />
+                            <x-mini-button rounded icon="pencil" info sm href="{{ route('admin.reservations.edit', ['reservation' => $reservation->id]) }}" />
                         </div>
                     </x-datatable.td>
                 </x-datatable.tr>

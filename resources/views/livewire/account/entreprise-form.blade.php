@@ -30,10 +30,10 @@
                         <x-datatable.td>{{ $entreprise->nom }}</x-datatable.td>
                         <x-datatable.td>
                             <div class="space-x-2">
-                                <x-button.circle primary icon="eye" href="{{ route('admin.entreprises.show', [
+                                <x-mini-button rounded primary icon="eye" href="{{ route('admin.entreprises.show', [
                                     'entreprise' => $entreprise->id
                                 ]) }}"/>
-                                <x-button.circle red icon="x-mark" wire:click="detach({{ $entreprise }})"/>
+                                <x-mini-button rounded red icon="x-mark" wire:click="detach({{ $entreprise }})"/>
                             </div>
                         </x-datatable.td>
                     </x-datatable.tr>

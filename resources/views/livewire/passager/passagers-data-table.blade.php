@@ -41,11 +41,11 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-button.circle icon="pencil" info href="{{ route('admin.passagers.edit', ['passager' => $passager->id]) }}" />
+                            <x-mini-button rounded icon="pencil" info href="{{ route('admin.passagers.edit', ['passager' => $passager->id]) }}" />
                             @if($passager->is_actif)
-                                <x-button.circle icon="x-mark" red wire:click="disablePassenger({{ $passager }})" spinner="disablePassenger"/>
+                                <x-mini-button rounded icon="x-mark" red wire:click="disablePassenger({{ $passager }})" spinner="disablePassenger"/>
                                 @else
-                                <x-button.circle icon="check" green wire:click="enablePassenger({{ $passager }})" spinner="enablePassenger"/>
+                                <x-mini-button rounded icon="check" green wire:click="enablePassenger({{ $passager }})" spinner="enablePassenger"/>
                             @endif
                         </div>
                     </x-datatable.td>

@@ -47,13 +47,13 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="flex space-x-2">
-                            <x-button.circle icon="pencil" primary href="{{ route('admin.accounts.edit', ['account' => $user->id]) }}" />
-                            <x-button.circle icon="key" info href="{{ route('admin.accounts.password.edit', ['account' => $user->id]) }}" />
-                            <x-button.circle icon="building-office" emerald href="{{ route('admin.accounts.entreprise.edit', ['account' => $user->id]) }}"/>
+                            <x-mini-button rounded icon="pencil" primary href="{{ route('admin.accounts.edit', ['account' => $user->id]) }}" />
+                            <x-mini-button rounded icon="key" info href="{{ route('admin.accounts.password.edit', ['account' => $user->id]) }}" />
+                            <x-mini-button rounded icon="building-office" emerald href="{{ route('admin.accounts.entreprise.edit', ['account' => $user->id]) }}"/>
                             @if($user->is_actif)
-                                <x-button.circle icon="trash" red wire:click="disableAccount({{ $user }})" />
+                                <x-mini-button rounded icon="trash" red wire:click="disableAccount({{ $user }})" />
                                 @else
-                                <x-button.circle icon="check" green wire:click="enableAccount({{ $user }})" />
+                                <x-mini-button rounded icon="check" green wire:click="enableAccount({{ $user }})" />
                             @endif
 
                         </div>

@@ -199,7 +199,7 @@
                                     <div class="ml-2 flex-1 w-0 truncate flex justify-between items-center">
                                         <div>{{ $adresse->adresse_full }}</div>
                                         <div>
-                                            <x-button.circle
+                                            <x-mini-button rounded
                                                 icon="pencil"
                                                 info
                                                 sm

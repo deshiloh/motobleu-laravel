@@ -45,20 +45,20 @@
                     </x-datatable.td>
                     <x-datatable.td>
                         <div class="space-x-2">
-                            <x-button.circle info icon="pencil" href="{{ route('admin.adresse-reservation.edit', ['adresseReservation' => $address->id]) }}" />
+                            <x-mini-button rounded info icon="pencil" href="{{ route('admin.adresse-reservation.edit', ['adresseReservation' => $address->id]) }}" />
 
                             @if(!$address->is_deleted)
                                 @if($address->is_actif)
-                                    <x-button.circle red icon="x-mark" wire:click="disableAddress({{ $address }})" />
+                                    <x-mini-button rounded red icon="x-mark" wire:click="disableAddress({{ $address }})" />
                                 @else
-                                    <x-button.circle green icon="check" wire:click="enableAddress({{ $address }})" />
+                                    <x-mini-button rounded green icon="check" wire:click="enableAddress({{ $address }})" />
                                 @endif
                             @endif
 
                             @if($address->is_deleted)
-                                <x-button.circle green icon="plus" wire:click="toggleDeleteAddress({{ $address }})" spinner="toggleDeleteAddress"/>
+                                <x-mini-button rounded green icon="plus" wire:click="toggleDeleteAddress({{ $address }})" spinner="toggleDeleteAddress"/>
                                 @else
-                                <x-button.circle red icon="trash" wire:click="toggleDeleteAddress({{ $address }})" spinner="toggleDeleteAddress"/>
+                                <x-mini-button rounded red icon="trash" wire:click="toggleDeleteAddress({{ $address }})" spinner="toggleDeleteAddress"/>
                             @endif
                         </div>
                     </x-datatable.td>

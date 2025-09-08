@@ -42,12 +42,12 @@
                         </x-front.badge>
                     </x-datatable.td>
                     <x-datatable.td>
-                        <x-button.circle href="{{ route('admin.pilotes.edit', ['pilote' => $pilote->id]) }}" info sm icon="pencil" />
-                        <x-button.circle href="{{ route('admin.pilotes.recap-reservation', ['pilote' => $pilote->id]) }}" primary sm icon="view-columns" />
+                        <x-mini-button rounded href="{{ route('admin.pilotes.edit', ['pilote' => $pilote->id]) }}" info sm icon="pencil" />
+                        <x-mini-button rounded href="{{ route('admin.pilotes.recap-reservation', ['pilote' => $pilote->id]) }}" primary sm icon="view-columns" />
                         @if($pilote->is_actif)
-                            <x-button.circle wire:click="disablePilote({{ $pilote }})" red sm icon="trash" />
+                            <x-mini-button rounded wire:click="disablePilote({{ $pilote }})" red sm icon="trash" />
                             @else
-                            <x-button.circle wire:click="enablePilote({{ $pilote }})" green sm icon="check" />
+                            <x-mini-button rounded wire:click="enablePilote({{ $pilote }})" green sm icon="check" />
                         @endif
                     </x-datatable.td>
                 </x-datatable.tr>
