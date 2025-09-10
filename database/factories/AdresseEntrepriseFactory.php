@@ -29,7 +29,8 @@ class AdresseEntrepriseFactory extends Factory
             'ville' => $this->faker->city,
             'email' => $this->faker->email,
             'nom' => 'Facturation',
-            'tva' => Str::random(10)
+            'tva' => Str::random(10),
+            'type' => AdresseEntrepriseTypeEnum::FACTURATION
         ];
     }
 

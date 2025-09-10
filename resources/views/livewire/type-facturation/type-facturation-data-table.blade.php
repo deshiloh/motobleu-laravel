@@ -41,5 +41,5 @@
         </x-slot>
         </x-datatable>
     </div>
-    <x-front.pagination :pagination="$typefacturations" :per-page="$perPage"/>
+    <x-front.pagination :pagination="$typefacturations" :perPage="$perPage" />
 </div>

@@ -15,6 +15,8 @@ class AdressesReservationDataTable extends Component
 {
     use WithPagination, WireUiActions;
 
+    protected $paginationTheme = 'tailwind';
+
     public string $search = '';
     public int $perPage = 20;
 

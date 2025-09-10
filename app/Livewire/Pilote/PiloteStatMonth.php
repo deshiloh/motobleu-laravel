@@ -12,6 +12,8 @@ class PiloteStatMonth extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'tailwind';
+
     public array $months;
     public array $years;
 

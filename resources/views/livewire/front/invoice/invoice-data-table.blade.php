@@ -50,6 +50,6 @@
             </x-slot:body>
             </x-datatable>
         </div>
-        <x-front.pagination :pagination="$factures" :per-page="$perPage"/>
+        <x-front.pagination :pagination="$factures" :perPage="$perPage" />
     </x-front.card>
 </div>

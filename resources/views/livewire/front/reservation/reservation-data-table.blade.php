@@ -98,7 +98,7 @@
             </x-slot>
             </x-datatable>
         </div>
-        <x-front.pagination :pagination="$reservations" :per-page="$perPage" />
+        <x-front.pagination :pagination="$reservations" :perPage="$perPage" />
     </x-front.card>
 
     <x-modal blur wire:model.defer="editAskCard">

@@ -49,6 +49,6 @@
             </x-slot:body>
             </x-datatable>
         </div>
-        <x-front.pagination :pagination="$reservations" :per-page="$perPage"/>
+        <x-front.pagination :pagination="$reservations" :perPage="$perPage" />
     </x-front.card>
 </div>

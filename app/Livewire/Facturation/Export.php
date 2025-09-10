@@ -15,6 +15,8 @@ class Export extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'tailwind';
+
     public ?string $dateDebut = null;
     public ?string $dateFin = null;
     public ?int $entreprise = null;

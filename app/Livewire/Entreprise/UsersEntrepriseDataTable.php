@@ -23,6 +23,7 @@ class UsersEntrepriseDataTable extends Component
     public Entreprise $entreprise;
     public ?string $userId = '';
     public array $exclude = [];
+    public int $perPage = 10;
 
     public function mount()
     {
@@ -35,7 +36,7 @@ class UsersEntrepriseDataTable extends Component
             'users' => $this->entreprise
                 ->users()
                 ->orderBy('nom')
-                ->paginate(10, ['*'], 'usersPage')
+                ->paginate($this->perPage, ['*'], 'usersPage')
         ]);
     }
 

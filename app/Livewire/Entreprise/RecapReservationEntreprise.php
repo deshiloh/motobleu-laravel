@@ -20,6 +20,8 @@ class RecapReservationEntreprise extends Component
 {
     use WithPagination, WireUiActions;
 
+    protected $paginationTheme = 'tailwind';
+
     public Entreprise $entreprise;
     public $dateDebut;
     public $dateFin;

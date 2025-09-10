@@ -19,6 +19,8 @@ class RecapReservationPilote extends Component
 {
     use WithPagination, WireUiActions;
 
+    protected $paginationTheme = 'tailwind';
+
     public Pilote $pilote;
     public $reservations = [];
     public $dateDebut;

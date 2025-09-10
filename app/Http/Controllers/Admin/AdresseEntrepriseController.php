@@ -10,15 +10,16 @@ use Illuminate\Http\RedirectResponse;
 class AdresseEntrepriseController extends Controller
 {
     /**
-     * @param Entreprise $entreprise
-     * @param AdresseEntreprise $adress
+     * @param int $entreprise
+     * @param int $adress
      * @return RedirectResponse
      */
-    public function destroy(Entreprise $entreprise, AdresseEntreprise $adress)
+    public function destroy($entreprise, $adress)
     {
-        $adress->delete();
+        $adresseEntreprise = AdresseEntreprise::findOrFail($adress);
+        $adresseEntreprise->delete();
         return redirect()
-            ->route('admin.entreprises.show', ['entreprise' => $entreprise->id])
+            ->route('admin.entreprises.show', ['entreprise' => $entreprise])
             ->with('success', "L'adresse a bien été supprimée.");
     }
 }

@@ -12,6 +12,8 @@ class InvoiceDataTable extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'tailwind';
+
     public string $search = "";
     public int $perPage = 20;
 

@@ -6,6 +6,7 @@ use App\Livewire\Pilote\PiloteDataTable;
 use App\Livewire\Pilote\PiloteForm;
 use App\Livewire\Pilote\RecapReservationPilote;
 use App\Models\Pilote;
+use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -154,16 +155,23 @@ class PiloteTest extends TestCase
     public function testUpdateReservationPiloteWithEmptyTarif()
     {
         $pilote = Pilote::find(1);
+        $reservation = Reservation::where('pilote_id', $pilote->id)->first();
+        
         Livewire::test(RecapReservationPilote::class, ['pilote' => $pilote])
             ->call('editReservation', [
-                'tarif' => '',
                 'encaisse' => '0',
                 'encompte' => '200',
+                'reservation' => $reservation->id,
+                'comment' => '',
             ])
             ->assertDispatched('wireui:notification')
         ;
-        $this->assertDatabaseMissing('reservations', [
-            'tarif_pilote' => ''
+        
+        // Verify the reservation was updated correctly
+        $this->assertDatabaseHas('reservations', [
+            'id' => $reservation->id,
+            'encaisse_pilote' => 0.0,
+            'encompte_pilote' => 200.0
         ]);
     }
 

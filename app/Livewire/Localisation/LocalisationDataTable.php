@@ -16,6 +16,8 @@ class LocalisationDataTable extends Component
 {
     use WithPagination, WithSorting, WireUiActions;
 
+    protected $paginationTheme = 'tailwind';
+
     public int $perPage = 20;
     public string $sortField = 'nom';
     public string $search = '';

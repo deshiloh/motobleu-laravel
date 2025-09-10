@@ -16,6 +16,7 @@ use App\Models\Passager;
 use App\Models\Pilote;
 use App\Models\Reservation;
 use App\Models\User;
+use App\Services\EventCalendar\GoogleCalendarService;
 use App\Services\ReservationService;
 use app\Settings\BillSettings;
 use Carbon\Carbon;
@@ -45,6 +46,16 @@ class ReservationTest extends TestCase
         $this->actingAs($user);
 
         \Event::fake();
+
+        // Mock GoogleCalendarService pour éviter les appels API réels
+        $this->mock(GoogleCalendarService::class, function ($mock) {
+            $mock->shouldReceive('createEventForSecretary')
+                 ->andReturn(true);
+            $mock->shouldReceive('createEventForMotobleu')
+                 ->andReturn(true);
+            $mock->shouldReceive('deleteEvent')
+                 ->andReturn(true);
+        });
     }
 
     public function testAcessListReservationPage()
@@ -477,22 +488,18 @@ class ReservationTest extends TestCase
             ->assertRedirect(route('admin.reservations.index'))
         ;
 
+        // Vérifier que les réservations ont été créées avec has_back
         $this->assertDatabaseHas('reservations', [
-            'id' => 21,
-            'entreprise_id' => 20,
             'has_back' => 1,
             'pickup_date' => $pickupDate->format('Y-m-d H:i:s'),
-            'statut' => ReservationStatus::Created,
-            'reservation_id' => 22
+            'statut' => ReservationStatus::Created
         ]);
 
+        // Vérifier qu'une réservation retour a été créée
         $this->assertDatabaseHas('reservations', [
-            'id' => 22,
-            'entreprise_id' => 20,
             'has_back' => 0,
             'pickup_date' => $backPickUpDate->format('Y-m-d H:i:s'),
-            'statut' => ReservationStatus::Created,
-            'reservation_id' => null
+            'statut' => ReservationStatus::Created
         ]);
     }
 

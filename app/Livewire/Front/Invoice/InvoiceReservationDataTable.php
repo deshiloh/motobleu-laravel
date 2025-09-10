@@ -13,6 +13,8 @@ class InvoiceReservationDataTable extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'tailwind';
+
     public Facture $facture;
     public int $perPage = 50;
     public string $search = "";

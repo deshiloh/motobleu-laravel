@@ -13,7 +13,7 @@
             <x-native-select
                 label="Item par page"
                 :options="['20', '50', '100', '150', '200']"
-                wire:model="perPage"
+                wire:model.live="perPage"
                 class="col-span-1"
             />
         </div>
@@ -52,5 +52,5 @@
         </x-slot>
         </x-datatable>
     </div>
-    <x-front.pagination :pagination="$costcenters" :per-page="$perPage"/>
+    <x-front.pagination :pagination="$costcenters" :perPage="$perPage" />
 </div>

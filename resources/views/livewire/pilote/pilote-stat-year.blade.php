@@ -62,6 +62,6 @@
                 </x-datatable.tr>
             </x-slot:body>
         </x-datatable>
-        <x-front.pagination :pagination="$pilotes" :per-page="$perPage" />
+        <x-front.pagination :pagination="$pilotes" :perPage="$perPage" />
     </x-bloc-content>
 </div>

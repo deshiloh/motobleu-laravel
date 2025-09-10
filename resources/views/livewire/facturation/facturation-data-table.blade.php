@@ -109,6 +109,6 @@
             </x-slot:body>
             </x-datatable>
         </div>
-        <x-front.pagination :pagination="$facturations" :per-page="$perPage"/>
+        <x-front.pagination :pagination="$facturations" :perPage="$perPage" />
     </x-bloc-content>
 </div>

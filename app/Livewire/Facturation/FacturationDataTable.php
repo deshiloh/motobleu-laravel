@@ -16,6 +16,8 @@ class FacturationDataTable extends Component
 {
     use WithPagination, WireUiActions;
 
+    protected $paginationTheme = 'tailwind';
+
     public string $search = '';
     public ?int $entreprise = null;
     public int $perPage = 10;

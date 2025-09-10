@@ -12,6 +12,8 @@ class AccountDataTable extends Component
 {
     use WithPagination, WireUiActions;
 
+    protected $paginationTheme = 'tailwind';
+
     public int $perPage = 20;
 
     public function render()

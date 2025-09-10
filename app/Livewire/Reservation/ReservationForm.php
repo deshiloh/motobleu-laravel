@@ -6,6 +6,7 @@ use App\Models\Reservation;
 use App\Services\EventCalendar\GoogleCalendarService;
 use App\Services\ReservationService;
 use App\Traits\WithReservationForm;
+use Illuminate\Support\Facades\App;
 use Livewire\Component;
 use WireUi\Traits\WireUiActions;
 

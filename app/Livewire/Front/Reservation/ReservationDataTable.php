@@ -16,6 +16,8 @@ class ReservationDataTable extends Component
 {
     use WithPagination, WireUiActions;
 
+    protected $paginationTheme = 'tailwind';
+
     public int $perPage = 20;
     public bool $editAskCard = false;
     public bool $askCancelCard = false;

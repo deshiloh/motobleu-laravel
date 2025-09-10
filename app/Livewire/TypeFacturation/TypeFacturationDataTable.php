@@ -16,6 +16,8 @@ class TypeFacturationDataTable extends Component
 {
     use WithPagination, WithSorting, WireUiActions;
 
+    protected $paginationTheme = 'tailwind';
+
     public string $search = '';
     public string $sortField = 'nom';
     public int $perPage = 10;

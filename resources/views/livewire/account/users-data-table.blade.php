@@ -15,14 +15,17 @@
             option-label="nom"
             option-value="id"
             placeholder="Recherche par entreprise"
-            wire:model="selectedEntreprise"
+            wire:model.live="selectedEntreprise"
             class="md:col-span-1"
         />
         <x-native-select
             label="Item par page"
             :options="['20', '50', '100', '150', '200']"
-            wire:model="perPage"
+            wire:model.live="perPage"
         />
+        <div class="flex items-end">
+            <x-button secondary label="Réinitialiser" wire:click="clearFilters" class="h-10" />
+        </div>
     </div>
 
     <div wire:loading.class="opacity-50">
@@ -76,5 +79,5 @@
         </x-slot>
         </x-datatable>
     </div>
-    <x-front.pagination :pagination="$users" :per-page="$perPage" />
+    <x-front.pagination :pagination="$users" :perPage="$perPage" />
 </div>

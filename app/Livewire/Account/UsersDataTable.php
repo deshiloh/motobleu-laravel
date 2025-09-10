@@ -16,16 +16,18 @@ class UsersDataTable extends Component
 {
     use WithPagination, WithSorting, WireUiActions;
 
+    protected $paginationTheme = 'tailwind';
+
     public int $perPage = 20;
     public string $search = '';
     public string $sortField = 'nom';
     public ?int $selectedEntreprise = null;
 
-    // Temporarily disabled to prevent page refresh
-    // public $queryString = [
-    //     'search' => ['except' => ''],
-    //     'selectedEntreprise' => ['except' => null]
-    // ];
+    public $queryString = [
+        'search' => ['except' => ''],
+        'selectedEntreprise' => ['except' => null],
+        'perPage' => ['except' => 20]
+    ];
 
     public function updatedSearch()
     {
@@ -39,6 +41,14 @@ class UsersDataTable extends Component
 
     public function updatedPerPage()
     {
+        $this->resetPage();
+    }
+
+    public function clearFilters()
+    {
+        $this->search = '';
+        $this->selectedEntreprise = null;
+        $this->perPage = 20;
         $this->resetPage();
     }
 

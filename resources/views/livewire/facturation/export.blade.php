@@ -38,7 +38,7 @@
                 <x-native-select
                     label="Factures par page"
                     :options="[10, 20, 30, 100, 200]"
-                    wire:model="perPage"
+                    wire:model.live="perPage"
                 />
             </div>
             <div class="flex items-end space-x-4">
@@ -96,6 +96,6 @@
                 @endforelse
             </x-slot:body>
         </x-datatable>
-        <x-front.pagination :pagination="$factures" :per-page="$perPage"/>
+        <x-front.pagination :pagination="$factures" :perPage="$perPage" />
     </x-bloc-content>
 </div>

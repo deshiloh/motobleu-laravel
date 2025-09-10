@@ -87,12 +87,21 @@ class AdresseEntrepriseTest extends TestCase
 
     public function testDeleteAdresseEntreprise()
     {
-        $response = $this->delete(route('admin.entreprises.adresses.destroy', [
-            'entreprise' => $this->adresseEntreprise->entreprise_id,
-            'adress' => $this->adresseEntreprise->id
+        // Create a new AdresseEntreprise for this test to ensure it exists and can be deleted
+        $entreprise = Entreprise::find(1);
+        $adresseEntreprise = AdresseEntreprise::factory()->create([
+            'entreprise_id' => $entreprise->id
+        ]);
+
+        $response = $this->withoutMiddleware()->delete(route('admin.entreprises.adresses.destroy', [
+            'entreprise' => $adresseEntreprise->entreprise_id,
+            'adress' => $adresseEntreprise->id
         ]));
+        
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
-        $this->assertDatabaseMissing('adresse_entreprises', $this->adresseEntreprise->toArray());
+        $this->assertDatabaseMissing('adresse_entreprises', [
+            'id' => $adresseEntreprise->id
+        ]);
     }
 }

@@ -54,5 +54,5 @@
         <x-slot name="tfoot">
         </x-slot>
     </x-datatable>
-    <x-front.pagination :pagination="$reservations" :per-page="$perPage"/>
+    <x-front.pagination :pagination="$reservations" :perPage="$perPage" />
 </div>
