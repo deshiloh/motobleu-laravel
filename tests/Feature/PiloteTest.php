@@ -33,6 +33,9 @@ class PiloteTest extends TestCase
         $user->assignRole('super admin');
 
         $this->actingAs($user);
+        
+        // Disable model events to avoid Google Calendar integration during tests
+        \Illuminate\Support\Facades\Event::fake();
     }
 
     public function testAcessListPilotes()

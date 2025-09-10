@@ -23,6 +23,12 @@ class FacturationTest extends TestCase
 
     protected $seed = true;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Event::fake();
+    }
+
     public function testCanAccessEditionFacturePage()
     {
         Livewire::test(EditionFacture::class)
