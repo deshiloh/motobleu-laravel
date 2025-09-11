@@ -21,6 +21,7 @@ class ReservationService
     public static function generateDefaultRules(array &$rules): void
     {
         $rules =  [
+            'hasBack' => 'bool',
             'userId' => 'required',
             'reservation.entreprise_id' => 'required',
             'reservation.pickup_date' => 'required',
