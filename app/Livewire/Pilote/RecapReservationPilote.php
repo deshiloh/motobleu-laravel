@@ -67,8 +67,14 @@ class RecapReservationPilote extends Component
     }
 
     #[On('editReservation')]
-    public function editReservation($encaisse = null, $encompte = null, $comment = null, $reservation = null): bool
+    public function editReservation($data): bool
     {
+        // Extract values from the data array
+        $encaisse = $data['encaisse'] ?? null;
+        $encompte = $data['encompte'] ?? null;
+        $comment = $data['comment'] ?? null;
+        $reservation = $data['reservation'] ?? null;
+        
         if (!$reservation) {
             $this->notification()->error('Erreur', 'ID de réservation requis');
             return false;
@@ -91,9 +97,12 @@ class RecapReservationPilote extends Component
             return false;
         }
 
+        $encaisseValue = (float) $encaisse;
+        $encompteValue = (float) $encompte;
+        
         $reservationModel->update([
-            'encaisse_pilote' => (float) $encaisse,
-            'encompte_pilote' => empty($encompte) ? 0 : (float) $encompte,
+            'encaisse_pilote' => $encaisseValue,
+            'encompte_pilote' => $encompteValue,
             'comment_pilote' => $comment,
         ]);
 
