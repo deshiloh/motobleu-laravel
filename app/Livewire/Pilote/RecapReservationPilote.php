@@ -7,7 +7,7 @@ use App\Models\Pilote;
 use App\Models\Reservation;
 use App\Services\ExportService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Validator;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 use PhpOffice\PhpSpreadsheet\Exception;
@@ -26,9 +26,6 @@ class RecapReservationPilote extends Component
     public $dateDebut;
     public $dateFin;
     protected $queryString = ['dateDebut', 'dateFin'];
-    protected $listeners = [
-        'editReservation'
-    ];
 
     /**
      * @param Pilote $pilote
@@ -69,44 +66,35 @@ class RecapReservationPilote extends Component
         $this->reservations = $this->handleQuery();
     }
 
-    public function editReservation(array $datas): bool
+    #[On('editReservation')]
+    public function editReservation($encaisse = null, $encompte = null, $comment = null, $reservation = null): bool
     {
-        $validator = Validator::make($datas, [
-            'encaisse' => 'nullable',
-            'encompte' => 'nullable',
-            'comment' => 'nullable',
-            'reservation' => 'required'
-        ]);
-
-        $validator->after(function (\Illuminate\Validation\Validator $validator) {
-            $datas = $validator->getData();
-
-            if (is_null($datas['encaisse']) && is_null($datas['encompte'])) {
-                $validator->errors()->add(
-                    'encompte', 'En compte et encaisse doivent être renseigné'
-                );
-                return false;
-            }
-
-            if ($datas['encaisse'] > 0 && $datas['encompte'] > 0) {
-                $validator->errors()->add(
-                    'encompte', 'Encompte et encaisse ne peuvent pas avoir de valeurs en même temps'
-                );
-                return false;
-            }
-        });
-
-        if ($validator->fails()) {
-            $description = implode('<br>', $validator->errors()->all());
-            $this->notification()->error('Erreur', $description);
+        if (!$reservation) {
+            $this->notification()->error('Erreur', 'ID de réservation requis');
             return false;
         }
 
-        $reservation = Reservation::find($datas['reservation']);
-        $reservation->update([
-            'encaisse_pilote' => (float) $datas['encaisse'],
-            'encompte_pilote' => empty($datas['encompte']) ? 0 : (float) $datas['encompte'],
-            'comment_pilote' => $datas['comment'],
+        if (is_null($encaisse) && is_null($encompte)) {
+            $this->notification()->error('Erreur', 'En compte et encaisse doivent être renseigné');
+            return false;
+        }
+
+        if ($encaisse > 0 && $encompte > 0) {
+            $this->notification()->error('Erreur', 'Encompte et encaisse ne peuvent pas avoir de valeurs en même temps');
+            return false;
+        }
+
+        $reservationModel = Reservation::find($reservation);
+        
+        if (!$reservationModel) {
+            $this->notification()->error('Erreur', 'Réservation introuvable');
+            return false;
+        }
+
+        $reservationModel->update([
+            'encaisse_pilote' => (float) $encaisse,
+            'encompte_pilote' => empty($encompte) ? 0 : (float) $encompte,
+            'comment_pilote' => $comment,
         ]);
 
         $this->reservations = $this->handleQuery();

@@ -59,7 +59,9 @@ class ExportService
             'debut' => $dateDebut,
             'fin' => $dateFin,
             'factures' => $factures
-        ]);
+        ])->setOption('isPhpEnabled', true)
+          ->setOption('isHtml5ParserEnabled', true)
+          ->setOption('defaultFont', 'DejaVu Sans');
     }
 
     public function exportFactureExcel(?string $dateDebut, ?string $dateFin, ?int $entreprise)
@@ -101,6 +103,8 @@ class ExportService
             'pilote' => $pilote,
             'period' => $period,
             'reservationsChunk' => $reservationsChunk
-        ]);
+        ])->setOption('isPhpEnabled', true)
+          ->setOption('isHtml5ParserEnabled', true)
+          ->setOption('defaultFont', 'DejaVu Sans');
     }
 }

@@ -20,7 +20,7 @@ class ReservationDataTable extends Component
     public int $perPage = 100;
     public string $sortField = 'id';
     // Temporarily disabled to prevent page refresh
-    // protected $queryString = ['querySort' => ['except' => '']];
+    protected $queryString = ['querySort' => ['except' => '']];
     public string $querySort = '';
     public array $listPerPage = [
         20,

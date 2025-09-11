@@ -117,7 +117,12 @@
                     },
                     toto(reservationId) {
                         this.formData.reservation = reservationId
-                        @this.emit('editReservation', this.formData)
+                        @this.dispatch('editReservation', {
+                            encaisse: this.formData.encaisse,
+                            encompte: this.formData.encompte,
+                            comment: this.formData.comment,
+                            reservation: this.formData.reservation
+                        })
                     }
                 }
             }
