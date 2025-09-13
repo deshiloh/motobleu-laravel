@@ -365,7 +365,7 @@ class ReservationTest extends TestCase
         $pickupDate = Carbon::now();
 
         BillSettings::fake([
-            'entreprises_cost_center_facturation' => [1]
+            'entreprises_cost_center_facturation' => [999]  // Use a company ID that won't match
         ]);
 
         Livewire::test(ReservationForm::class)

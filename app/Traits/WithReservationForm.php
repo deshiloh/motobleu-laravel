@@ -54,7 +54,16 @@ trait WithReservationForm
         }
 
         ReservationService::generateDefaultRules($this->generatedRules);
-        ReservationService::generatePassagerFromRules($this->generatedRules, $this->passagerMode, $this->reservation->entreprise_id);
+        // In admin context, use the company of the selected user (secretary)
+        $companyId = $this->reservation->entreprise_id;
+        if (!empty($this->userId)) {
+            $user = \App\Models\User::find($this->userId);
+            if ($user && $user->entreprises()->count() > 0) {
+                $companyId = $user->entreprises()->first()->id;
+            }
+        }
+
+        ReservationService::generatePassagerFromRules($this->generatedRules, $this->passagerMode, $companyId);
         ReservationService::generateFromLocalisationRules($this->generatedRules, $this->pickupMode, $this->reservation);
         ReservationService::generateToLocalisationRules($this->generatedRules, $this->dropMode, $this->reservation);
 
