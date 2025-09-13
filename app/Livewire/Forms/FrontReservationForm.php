@@ -2,81 +2,316 @@
 
 namespace App\Livewire\Forms;
 
-use App\Models\Reservation;
 use App\Models\Passager;
-use App\Models\AdresseReservation;
 use App\Services\ReservationService;
-use Livewire\Attributes\Validate;
 use Livewire\Form;
 
-class ReservationForm extends Form
+/**
+ * Classe FrontReservationForm - Livewire Form pour l'interface Client
+ *
+ * Cette classe représente le formulaire Livewire pour la création et modification
+ * de réservations dans l'interface client. Elle est simplifiée par rapport à
+ * l'interface admin et adaptée à l'usage client.
+ *
+ * Fonctionnalités spécifiques front :
+ * - Pas de sélection de secrétaire (utilisateur connecté implicite)
+ * - Validation cost center basée sur l'entreprise sélectionnée directement
+ * - Accès limité aux entreprises de l'utilisateur connecté
+ * - Interface optimisée pour l'expérience client
+ * - Restrictions de sécurité renforcées
+ *
+ * @package App\Livewire\Forms
+ * @author MotoBleue Team
+ * @version 2.0
+ */
+class FrontReservationForm extends Form
 {
-    // User and Mode Selection  
-    public ?string $userId = '';
+    // ===== MODES DE SÉLECTION =====
+
+    /**
+     * Mode de sélection du passager
+     * - EXIST_PASSAGER : sélectionner un passager existant
+     * - NEW_PASSAGER : créer un nouveau passager
+     *
+     * @var int
+     */
     public int $passagerMode = ReservationService::EXIST_PASSAGER;
+
+    /**
+     * Mode de sélection du lieu de départ
+     * - WITH_PLACE : lieu prédéfini (aéroports, gares, etc.)
+     * - WITH_ADRESSE : adresse existante de l'utilisateur
+     * - WITH_NEW_ADRESSE : nouvelle adresse à créer
+     *
+     * @var int
+     */
     public int $pickupMode = ReservationService::WITH_PLACE;
+
+    /**
+     * Mode de sélection du lieu d'arrivée
+     *
+     * @var int
+     */
     public int $dropMode = ReservationService::WITH_PLACE;
+
+    /**
+     * Mode de sélection du lieu de départ pour le retour
+     *
+     * @var int
+     */
     public int $backPickupMode = ReservationService::WITH_PLACE;
+
+    /**
+     * Mode de sélection du lieu d'arrivée pour le retour
+     *
+     * @var int
+     */
     public int $backDropMode = ReservationService::WITH_PLACE;
+
+    /**
+     * Indique si la réservation inclut un trajet retour
+     *
+     * @var bool
+     */
     public bool $hasBack = false;
-    
-    // Core Reservation
+
+    // ===== DONNÉES PRINCIPALES DE LA RÉSERVATION =====
+
+    /**
+     * ID de l'entreprise sélectionnée par l'utilisateur
+     * Limité aux entreprises auxquelles l'utilisateur connecté appartient
+     *
+     * @var int|null
+     */
     public ?int $entreprise_id = null;
+
+    /**
+     * ID du passager (si mode EXIST_PASSAGER)
+     * Limité aux passagers de l'utilisateur connecté
+     *
+     * @var int|null
+     */
     public ?int $passager_id = null;
-    
+
+    /**
+     * Date et heure de départ (format Y-m-d H:i)
+     * Validation front : minimum 15 minutes dans le futur
+     *
+     * @var string|null
+     */
     public ?string $pickup_date = null;
+
+    /**
+     * Numéro de commande ou référence client
+     *
+     * @var string|null
+     */
     public ?string $commande = null;
+
+    /**
+     * Commentaires ou instructions spéciales
+     *
+     * @var string|null
+     */
     public ?string $comment = null;
+
+    /**
+     * Envoyer les détails de la réservation au passager par email
+     * Par défaut activé en interface client
+     *
+     * @var bool
+     */
     public bool $send_to_passager = true;
+
+    /**
+     * Créer un événement de calendrier pour le passager
+     * Par défaut activé en interface client
+     *
+     * @var bool
+     */
     public bool $calendar_passager_invitation = true;
+
+    /**
+     * La réservation inclut des étapes intermédiaires
+     *
+     * @var bool
+     */
     public bool $has_steps = false;
+
+    /**
+     * Description des étapes intermédiaires (JSON)
+     *
+     * @var string|null
+     */
     public ?string $steps = null;
-    
-    // Locations
+
+    // ===== LIEUX ET LOCALISATIONS =====
+
+    /**
+     * ID du lieu de départ prédéfini (si pickupMode = WITH_PLACE)
+     *
+     * @var int|null
+     */
     public ?int $localisation_from_id = null;
+
+    /**
+     * Origine spécifique au lieu de départ (ex: terminal, porte)
+     *
+     * @var string|null
+     */
     public ?string $pickup_origin = null;
+
+    /**
+     * ID du lieu d'arrivée prédéfini (si dropMode = WITH_PLACE)
+     *
+     * @var int|null
+     */
     public ?int $localisation_to_id = null;
+
+    /**
+     * Origine spécifique au lieu d'arrivée
+     *
+     * @var string|null
+     */
     public ?string $drop_off_origin = null;
-    
-    // Addresses
+
+    // ===== ADRESSES EXISTANTES =====
+
+    /**
+     * ID de l'adresse de départ existante (si pickupMode = WITH_ADRESSE)
+     * Limité aux adresses de l'utilisateur connecté
+     *
+     * @var int|null
+     */
     public ?int $addressReservationFrom = null;
+
+    /**
+     * ID de l'adresse d'arrivée existante (si dropMode = WITH_ADRESSE)
+     * Limité aux adresses de l'utilisateur connecté
+     *
+     * @var int|null
+     */
     public ?int $addressReservationTo = null;
-    
-    // Dynamic Data
+
+    // ===== DONNÉES DYNAMIQUES POUR LA CRÉATION =====
+
+    /**
+     * Données pour créer une nouvelle adresse de départ
+     * Structure : ['adresse' => '', 'code_postal' => '', 'ville' => '']
+     *
+     * @var array<string, mixed>
+     */
     public array $newAdresseReservationFrom = [];
+
+    /**
+     * Données pour créer une nouvelle adresse d'arrivée
+     *
+     * @var array<string, mixed>
+     */
     public array $newAdresseReservationTo = [];
+
+    /**
+     * Données pour créer un nouveau passager
+     * Structure : ['nom' => '', 'email' => '', 'portable' => '', ...]
+     * En front, automatiquement lié à l'utilisateur connecté
+     *
+     * @var array<string, mixed>
+     */
     public array $newPassager = [];
+
+    /**
+     * Données pour la réservation de retour
+     * Structure similaire à une réservation standard
+     *
+     * @var array<string, mixed>
+     */
     public array $reservation_back = [];
+
+    /**
+     * Données pour créer une nouvelle adresse de départ retour
+     *
+     * @var array<string, mixed>
+     */
     public array $newAdresseReservationFromBack = [];
+
+    /**
+     * Données pour créer une nouvelle adresse d'arrivée retour
+     *
+     * @var array<string, mixed>
+     */
     public array $newAdresseReservationToBack = [];
-    
-    // Error State
+
+    // ===== GESTION D'ERREURS COST CENTER =====
+
+    /**
+     * Indique si une erreur de cost center/type facturation est détectée
+     * Se produit quand un passager existant manque ces informations
+     * pour une entreprise qui les exige
+     *
+     * @var bool
+     */
     public bool $ardianPassengerCostFacError = false;
+
+    /**
+     * Passager en erreur de cost center à corriger
+     *
+     * @var Passager|null
+     */
     public ?Passager $passengerInError = null;
-    
-    // Validation Control
+
+    // ===== CONTRÔLE DE VALIDATION =====
+
+    /**
+     * Active/désactive la validation du formulaire
+     * Utilisé pour déléguer la validation au trait dans certains cas
+     *
+     * @var bool
+     */
     public bool $useFormValidation = true;
-    
+
+    // ===== CHAMP SPÉCIFIQUE FRONT (RÉTROCOMPATIBILITÉ) =====
+
+    /**
+     * ID de l'utilisateur (pour rétrocompatibilité avec le trait)
+     * En front, correspond à l'utilisateur connecté (auth()->id())
+     * N'est PAS éditable par l'utilisateur front
+     *
+     * @var string|null
+     */
+    public ?string $userId = '';
+
+    /**
+     * Génère les règles de validation pour l'interface client
+     *
+     * Les règles front sont plus strictes sur les dates et n'incluent pas
+     * la validation userId (utilisateur connecté implicite).
+     *
+     * @return array<string, string>
+     */
     public function rules(): array
     {
-        // If form validation is disabled (used with trait validation), return empty rules
+        // Si la validation du formulaire est désactivée, délègue au trait
         if (!$this->useFormValidation) {
             return [];
         }
-        
+
         return array_merge(
-            $this->getBaseRules(),
+            $this->getFrontBaseRules(),
             $this->getPassengerRules(),
             $this->getLocationRules(),
             $this->getBackReservationRules()
         );
     }
 
-    private function getBaseRules(): array
+    /**
+     * Règles de base spécifiques à l'interface client
+     */
+    private function getFrontBaseRules(): array
     {
         return [
-            'userId' => 'nullable',
-            'pickup_date' => 'required|date',
+            'hasBack' => 'boolean',
+            'entreprise_id' => 'required|integer', // Obligatoire en front
+            'pickup_date' => 'required|date|after:' . now()->addMinutes(14)->toDateTimeString(), // Min 15 min dans le futur
             'commande' => 'nullable|string',
             'comment' => 'nullable|string',
             'send_to_passager' => 'boolean',
@@ -86,47 +321,55 @@ class ReservationForm extends Form
         ];
     }
 
+    /**
+     * Règles de validation pour les passagers (front limité aux passagers de l'utilisateur)
+     */
     private function getPassengerRules(): array
     {
         if ($this->passagerMode === ReservationService::EXIST_PASSAGER) {
             return ['passager_id' => 'required|integer'];
         }
-        
+
         if ($this->passagerMode === ReservationService::NEW_PASSAGER) {
             $rules = [
                 'newPassager.nom' => 'required|string',
                 'newPassager.email' => 'required|email',
                 'newPassager.portable' => 'required|string',
                 'newPassager.telephone' => 'nullable|string',
-                'userId' => 'required',
             ];
-            
-            // Add cost center validation for specific companies
-            if (!is_null($this->entreprise_id) && 
+
+            // Validation cost center pour les entreprises spécifiques
+            if (!is_null($this->entreprise_id) &&
                 in_array($this->entreprise_id, \app(\app\Settings\BillSettings::class)->entreprises_cost_center_facturation)) {
                 $rules['newPassager.cost_center_id'] = 'required';
                 $rules['newPassager.type_facturation_id'] = 'required';
             }
-            
+
             return $rules;
         }
-        
+
         return [];
     }
 
+    /**
+     * Règles de validation pour les localisations
+     */
     private function getLocationRules(): array
     {
         $rules = [];
-        
-        // Pickup location rules
+
+        // Règles de départ
         $rules = array_merge($rules, $this->getPickupRules());
-        
-        // Drop-off location rules  
+
+        // Règles d'arrivée
         $rules = array_merge($rules, $this->getDropOffRules());
-        
+
         return $rules;
     }
 
+    /**
+     * Règles de validation pour le lieu de départ
+     */
     private function getPickupRules(): array
     {
         return match ($this->pickupMode) {
@@ -146,6 +389,9 @@ class ReservationForm extends Form
         };
     }
 
+    /**
+     * Règles de validation pour le lieu d'arrivée
+     */
     private function getDropOffRules(): array
     {
         return match ($this->dropMode) {
@@ -165,6 +411,9 @@ class ReservationForm extends Form
         };
     }
 
+    /**
+     * Règles de validation pour la réservation retour
+     */
     private function getBackReservationRules(): array
     {
         if (!$this->hasBack) {
@@ -172,13 +421,13 @@ class ReservationForm extends Form
         }
 
         $rules = [
-            'reservation_back.pickup_date' => 'required|date',
+            'reservation_back.pickup_date' => 'required|date|after:pickup_date', // Après la date aller
             'reservation_back.comment' => 'nullable|string',
             'reservation_back.has_steps' => 'boolean',
             'reservation_back.steps' => 'nullable|string',
         ];
 
-        // Back pickup rules
+        // Règles de départ retour
         $rules = array_merge($rules, match ($this->backPickupMode) {
             ReservationService::WITH_PLACE => [
                 'reservation_back.localisation_from_id' => 'required|integer',
@@ -195,7 +444,7 @@ class ReservationForm extends Form
             default => []
         });
 
-        // Back drop-off rules
+        // Règles d'arrivée retour
         $rules = array_merge($rules, match ($this->backDropMode) {
             ReservationService::WITH_PLACE => [
                 'reservation_back.localisation_to_id' => 'required|integer',
@@ -214,7 +463,10 @@ class ReservationForm extends Form
 
         return $rules;
     }
-    
+
+    /**
+     * Réinitialise les champs dépendants (version simplifiée front)
+     */
     public function resetDependentFields(): void
     {
         $this->resetMainFields();
@@ -224,6 +476,9 @@ class ReservationForm extends Form
         $this->resetModes();
     }
 
+    /**
+     * Réinitialise les champs principaux
+     */
     private function resetMainFields(): void
     {
         $this->entreprise_id = null;
@@ -232,6 +487,9 @@ class ReservationForm extends Form
         $this->reservation_back = [];
     }
 
+    /**
+     * Réinitialise les champs d'adresses
+     */
     private function resetAddressFields(): void
     {
         $this->addressReservationFrom = null;
@@ -242,6 +500,9 @@ class ReservationForm extends Form
         $this->newAdresseReservationToBack = [];
     }
 
+    /**
+     * Réinitialise les champs de localisation
+     */
     private function resetLocationFields(): void
     {
         $this->localisation_from_id = null;
@@ -250,22 +511,23 @@ class ReservationForm extends Form
         $this->drop_off_origin = null;
     }
 
+    /**
+     * Réinitialise l'état d'erreur
+     */
     private function resetErrorState(): void
     {
         $this->ardianPassengerCostFacError = false;
         $this->passengerInError = null;
     }
 
+    /**
+     * Réinitialise les modes par défaut
+     */
     private function resetModes(): void
     {
         $this->pickupMode = ReservationService::WITH_PLACE;
         $this->dropMode = ReservationService::WITH_PLACE;
         $this->backPickupMode = ReservationService::WITH_PLACE;
         $this->backDropMode = ReservationService::WITH_PLACE;
-    }
-    
-    private function hasValue(string $array, string $key): bool
-    {
-        return isset($this->{$array}[$key]) && !empty($this->{$array}[$key]);
     }
 }

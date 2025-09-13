@@ -5,17 +5,65 @@ namespace App\Services;
 use App\Models\Reservation;
 use app\Settings\BillSettings;
 
+/**
+ * Service ReservationService
+ *
+ * Ce service centralise la logique métier liée aux réservations,
+ * notamment la génération dynamique des règles de validation
+ * selon les différents modes et contextes.
+ *
+ * Responsabilités :
+ * - Génération des règles de validation dynamiques
+ * - Constantes pour les modes de sélection
+ * - Logique de validation contextuelle (cost center, entreprises)
+ * - Support des réservations aller-retour
+ *
+ * Modes supportés :
+ * - Passagers : EXIST_PASSAGER, NEW_PASSAGER
+ * - Adresses : WITH_PLACE, WITH_ADRESSE, WITH_NEW_ADRESSE
+ *
+ * @package App\Services
+ * @author MotoBleue Team
+ * @version 2.0
+ */
 class ReservationService
 {
-    const EXIST_PASSAGER = 1;
-    const NEW_PASSAGER = 2;
-
-    const WITH_PLACE = 1;
-    const WITH_ADRESSE = 2;
-    const WITH_NEW_ADRESSE = 3;
+    // ===== CONSTANTES DE MODES =====
 
     /**
-     * @param array $rules
+     * Mode passager : utiliser un passager existant
+     */
+    const EXIST_PASSAGER = 1;
+
+    /**
+     * Mode passager : créer un nouveau passager
+     */
+    const NEW_PASSAGER = 2;
+
+    /**
+     * Mode localisation : utiliser un lieu prédéfini (aéroport, gare, etc.)
+     */
+    const WITH_PLACE = 1;
+
+    /**
+     * Mode localisation : utiliser une adresse existante de l'utilisateur
+     */
+    const WITH_ADRESSE = 2;
+
+    /**
+     * Mode localisation : créer une nouvelle adresse
+     */
+    const WITH_NEW_ADRESSE = 3;
+
+    // ===== MÉTHODES DE GÉNÉRATION DES RÈGLES =====
+
+    /**
+     * Génère les règles de validation de base pour toute réservation
+     *
+     * Ces règles sont communes à toutes les réservations, indépendamment
+     * du mode ou du contexte.
+     *
+     * @param array<string, string> $rules Tableau des règles à modifier par référence
      * @return void
      */
     public static function generateDefaultRules(array &$rules): void
@@ -38,9 +86,19 @@ class ReservationService
     }
 
     /**
-     * @param array $rules
-     * @param int $mode
-     * @param int|null $companySelected $
+     * Génère les règles de validation pour les passagers
+     *
+     * Cette méthode adapte les règles selon le mode de sélection du passager :
+     * - EXIST_PASSAGER : valide l'ID du passager sélectionné
+     * - NEW_PASSAGER : valide les champs de création + cost center si nécessaire
+     *
+     * Logique cost center :
+     * Si l'entreprise est dans la liste des entreprises nécessitant un cost center,
+     * les champs cost_center_id et type_facturation_id deviennent obligatoires.
+     *
+     * @param array<string, string> $rules Tableau des règles à modifier
+     * @param int $mode Mode de sélection (EXIST_PASSAGER ou NEW_PASSAGER)
+     * @param int|null $companySelected ID de l'entreprise pour validation cost center
      * @return void
      */
     public static function generatePassagerFromRules(array &$rules, int $mode, ?int $companySelected): void
@@ -126,7 +184,7 @@ class ReservationService
      */
     public static function generateFromLocalisationBackRules(array &$rules, int $mode)
     {
-        $rules['reservation_back.pickup_date'] = 'required';
+        $rules['reservation_back.pickup_date'] = ['required', 'date', 'after:reservation.pickup_date'];
 
         if ($mode == ReservationService::WITH_PLACE) {
             $rules['reservation_back.localisation_from_id'] = 'required';

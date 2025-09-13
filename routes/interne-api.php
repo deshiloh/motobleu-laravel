@@ -140,29 +140,29 @@ Route::get('/users', function (Request $request){
     $search = $request->input('search');
     $selected = $request->input('selected');
 
-    return User::query()
+    $query = User::query()
         ->select('id', 'nom', 'email', 'prenom')
         ->orderBy('nom')
-        ->when(
-            $search, function (Builder $query, $search) {
-            $query->where(function (Builder $query) use ($search) {
-                $query->where('nom', 'like', "%$search%")
-                    ->orWhere('email', 'like', "%$search%")
-                    ->orWhere('prenom', 'like', "%$search%");
-                });
-            }
-        )
-        ->when(
-            $selected,
-            function (Builder $query, $selected) {
-                $query->whereIn('id', $selected);
-            },
-            function (Builder $query) {
-                $query->limit(10);
-            }
-        )
-        ->where('is_actif', true)
-        ->get();
+        ->where('is_actif', true);
+
+    // Only apply search filter if there's a search term
+    if (!empty($search)) {
+        $query->where(function (Builder $query) use ($search) {
+            $query->where('nom', 'like', "%$search%")
+                ->orWhere('email', 'like', "%$search%")
+                ->orWhere('prenom', 'like', "%$search%");
+        });
+    }
+
+    // Handle selected items
+    if (!empty($selected)) {
+        $query->whereIn('id', $selected);
+    } else {
+        // Limit results only when not loading selected items
+        $query->limit(20);
+    }
+
+    return $query->get();
 })->name('api.users');
 
 Route::get('/cost-center', function (Request $request){
