@@ -4,6 +4,7 @@ namespace App\Livewire\Forms;
 
 use App\Models\Passager;
 use App\Services\ReservationService;
+use App\Services\ReservationValidationService;
 use Livewire\Form;
 
 /**
@@ -320,15 +321,21 @@ class AdminReservationForm extends Form
         }
 
         if ($this->passagerMode === ReservationService::NEW_PASSAGER) {
-            $rules = [
-                'newPassager.nom' => 'required|string',
-                'newPassager.email' => 'required|email',
-                'newPassager.portable' => 'required|string',
-                'newPassager.telephone' => 'nullable|string',
-            ];
+            // Utilise les règles communes du service
+            $commonRules = ReservationValidationService::getCommonPassengerRules();
+            $rules = [];
+            foreach ($commonRules as $field => $rule) {
+                $rules["newPassager.{$field}"] = $rule;
+            }
 
-            // NOTE: La validation cost center est gérée par le trait selon l'entreprise de la secrétaire
-            // Pas besoin de la dupliquer ici
+            // Validation cost center pour les entreprises spécifiques (admin)
+            // En admin, on utilise l'entreprise de la secrétaire pour déterminer les exigences
+            if (!is_null($this->entreprise_id) && ReservationValidationService::requiresCostCenter($this->entreprise_id)) {
+                $costCenterRules = ReservationValidationService::getPassengerCorrectionRules();
+                foreach ($costCenterRules as $field => $rule) {
+                    $rules["newPassager.{$field}"] = $rule;
+                }
+            }
 
             return $rules;
         }
@@ -365,11 +372,10 @@ class AdminReservationForm extends Form
             ReservationService::WITH_ADRESSE => [
                 'addressReservationFrom' => 'required|integer'
             ],
-            ReservationService::WITH_NEW_ADRESSE => [
-                'newAdresseReservationFrom.adresse' => 'required|string',
-                'newAdresseReservationFrom.code_postal' => 'required|string',
-                'newAdresseReservationFrom.ville' => 'required|string'
-            ],
+            ReservationService::WITH_NEW_ADRESSE => array_combine(
+                array_map(fn($key) => "newAdresseReservationFrom.{$key}", array_keys(ReservationValidationService::getCommonAddressRules())),
+                array_values(ReservationValidationService::getCommonAddressRules())
+            ),
             default => []
         };
     }
@@ -387,11 +393,10 @@ class AdminReservationForm extends Form
             ReservationService::WITH_ADRESSE => [
                 'addressReservationTo' => 'required|integer'
             ],
-            ReservationService::WITH_NEW_ADRESSE => [
-                'newAdresseReservationTo.adresse' => 'required|string',
-                'newAdresseReservationTo.code_postal' => 'required|string',
-                'newAdresseReservationTo.ville' => 'required|string'
-            ],
+            ReservationService::WITH_NEW_ADRESSE => array_combine(
+                array_map(fn($key) => "newAdresseReservationTo.{$key}", array_keys(ReservationValidationService::getCommonAddressRules())),
+                array_values(ReservationValidationService::getCommonAddressRules())
+            ),
             default => []
         };
     }
@@ -406,7 +411,7 @@ class AdminReservationForm extends Form
         }
 
         $rules = [
-            'reservation_back.pickup_date' => 'required|date',
+            'reservation_back.pickup_date' => 'required|date|after:' . ($this->pickup_date ?: 'now'), // Après la date aller
             'reservation_back.comment' => 'nullable|string',
             'reservation_back.has_steps' => 'boolean',
             'reservation_back.steps' => 'nullable|string',
@@ -421,11 +426,10 @@ class AdminReservationForm extends Form
             ReservationService::WITH_ADRESSE => [
                 'reservation_back.adresse_reservation_from_id' => 'required|integer'
             ],
-            ReservationService::WITH_NEW_ADRESSE => [
-                'newAdresseReservationFromBack.adresse' => 'required|string',
-                'newAdresseReservationFromBack.code_postal' => 'required|string',
-                'newAdresseReservationFromBack.ville' => 'required|string'
-            ],
+            ReservationService::WITH_NEW_ADRESSE => array_combine(
+                array_map(fn($key) => "newAdresseReservationFromBack.{$key}", array_keys(ReservationValidationService::getCommonAddressRules())),
+                array_values(ReservationValidationService::getCommonAddressRules())
+            ),
             default => []
         });
 
@@ -438,11 +442,10 @@ class AdminReservationForm extends Form
             ReservationService::WITH_ADRESSE => [
                 'reservation_back.adresse_reservation_to_id' => 'required|integer'
             ],
-            ReservationService::WITH_NEW_ADRESSE => [
-                'newAdresseReservationToBack.adresse' => 'required|string',
-                'newAdresseReservationToBack.code_postal' => 'required|string',
-                'newAdresseReservationToBack.ville' => 'required|string'
-            ],
+            ReservationService::WITH_NEW_ADRESSE => array_combine(
+                array_map(fn($key) => "newAdresseReservationToBack.{$key}", array_keys(ReservationValidationService::getCommonAddressRules())),
+                array_values(ReservationValidationService::getCommonAddressRules())
+            ),
             default => []
         });
 

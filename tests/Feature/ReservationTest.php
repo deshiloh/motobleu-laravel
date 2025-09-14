@@ -47,6 +47,11 @@ class ReservationTest extends TestCase
 
         \Event::fake();
 
+        // Configure BillSettings pour les tests
+        BillSettings::fake([
+            'entreprises_cost_center_facturation' => [1]
+        ]);
+
         // Mock GoogleCalendarService pour éviter les appels API réels
         $this->mock(GoogleCalendarService::class, function ($mock) {
             $mock->shouldReceive('createEventForSecretary')
@@ -103,7 +108,7 @@ class ReservationTest extends TestCase
             ->set('form.newAdresseReservationToBack.code_postal', '34000')
             ->set('form.newAdresseReservationToBack.ville', 'Montpellier')
             ->call('saveReservation')
-            ->assertHasErrors(['reservation_back.pickup_date'])
+            ->assertHasErrors(['form.reservation_back.pickup_date'])
         ;
     }
 
@@ -114,18 +119,15 @@ class ReservationTest extends TestCase
             ->set('form.passager_id', '')
             ->call('saveReservation')
             ->assertHasErrors([
-                'reservation.passager_id' => 'required',
+                'form.passager_id' => 'required',
             ])
         ;
     }
 
     public function testCreateReservationWithCreatePassagerEmpty()
     {
-        BillSettings::fake([
-            'entreprises_cost_center_facturation' => [1]
-        ]);
-
-        Livewire::test(ReservationForm::class)
+        $component = Livewire::test(ReservationForm::class)
+            ->set('form.userId', 1)  // userId AVANT entreprise_id pour éviter le reset
             ->set('form.passagerMode', ReservationService::NEW_PASSAGER)
             ->set('form.entreprise_id', 1)
             ->set('form.newPassager', [
@@ -135,13 +137,13 @@ class ReservationTest extends TestCase
                 'cost_center_id' => null,
                 'type_facturation_id' => null
             ])
-            ->set('form.userId', 1)
             ->call('saveReservation')
             ->assertHasErrors([
-                'newPassager.nom' => 'required',
-                'newPassager.email' => 'required',
-                'newPassager.cost_center_id' => 'required',
-                'newPassager.type_facturation_id' => 'required'
+                'form.newPassager.nom',
+                'form.newPassager.email',
+                'form.newPassager.portable',
+                'form.newPassager.cost_center_id',
+                'form.newPassager.type_facturation_id'
             ])
         ;
     }
@@ -152,7 +154,7 @@ class ReservationTest extends TestCase
             ->set('form.pickup_date', null)
             ->call('saveReservation')
             ->assertHasErrors([
-                'reservation.pickup_date' => 'required'
+                'form.pickup_date' => 'required'
             ]);
     }
 
@@ -163,7 +165,7 @@ class ReservationTest extends TestCase
             ->set('form.localisation_from_id', '')
             ->call('saveReservation')
             ->assertHasErrors([
-                'reservation.localisation_from_id' => 'required',
+                'form.localisation_from_id' => 'required',
             ])
         ;
     }
@@ -175,7 +177,7 @@ class ReservationTest extends TestCase
             ->set('form.addressReservationFrom')
             ->call('saveReservation')
             ->assertHasErrors([
-                'addressReservationFrom' => 'required',
+                'form.addressReservationFrom' => 'required',
             ])
         ;
     }
@@ -189,9 +191,9 @@ class ReservationTest extends TestCase
             ->set('form.newAdresseReservationFrom.ville', '')
             ->call('saveReservation')
             ->assertHasErrors([
-                'newAdresseReservationFrom.adresse' => 'required',
-                'newAdresseReservationFrom.code_postal' => 'required',
-                'newAdresseReservationFrom.ville' => 'required',
+                'form.newAdresseReservationFrom.adresse' => 'required',
+                'form.newAdresseReservationFrom.code_postal' => 'required',
+                'form.newAdresseReservationFrom.ville' => 'required',
             ])
         ;
     }
@@ -203,7 +205,7 @@ class ReservationTest extends TestCase
             ->set('form.localisation_to_id', '')
             ->call('saveReservation')
             ->assertHasErrors([
-                'reservation.localisation_to_id' => 'required',
+                'form.localisation_to_id' => 'required',
             ])
         ;
     }
@@ -215,7 +217,7 @@ class ReservationTest extends TestCase
             ->set('form.addressReservationTo')
             ->call('saveReservation')
             ->assertHasErrors([
-                'addressReservationTo' => 'required',
+                'form.addressReservationTo' => 'required',
             ])
         ;
     }
@@ -229,9 +231,9 @@ class ReservationTest extends TestCase
             ->set('form.newAdresseReservationTo.ville', '')
             ->call('saveReservation')
             ->assertHasErrors([
-                'newAdresseReservationTo.adresse' => 'required',
-                'newAdresseReservationTo.code_postal' => 'required',
-                'newAdresseReservationTo.ville' => 'required',
+                'form.newAdresseReservationTo.adresse' => 'required',
+                'form.newAdresseReservationTo.code_postal' => 'required',
+                'form.newAdresseReservationTo.ville' => 'required',
             ])
         ;
     }
@@ -243,7 +245,7 @@ class ReservationTest extends TestCase
             ->set('form.reservation_back.pickup_date', null)
             ->call('saveReservation')
             ->assertHasErrors([
-                'reservation_back.pickup_date' => 'required',
+                'form.reservation_back.pickup_date' => 'required',
             ])
         ;
     }
@@ -256,7 +258,7 @@ class ReservationTest extends TestCase
             ->set('form.reservation_back.localisation_from_id', '')
             ->call('saveReservation')
             ->assertHasErrors([
-                'reservation_back.localisation_from_id' => 'required',
+                'form.reservation_back.localisation_from_id' => 'required',
             ])
         ;
     }
@@ -269,7 +271,7 @@ class ReservationTest extends TestCase
             ->set('form.reservation_back.adresse_reservation_from_id', '')
             ->call('saveReservation')
             ->assertHasErrors([
-                'reservation_back.adresse_reservation_from_id' => 'required',
+                'form.reservation_back.adresse_reservation_from_id' => 'required',
             ])
         ;
     }
@@ -284,9 +286,9 @@ class ReservationTest extends TestCase
             ->set('form.newAdresseReservationFromBack.ville', '')
             ->call('saveReservation')
             ->assertHasErrors([
-                'newAdresseReservationFromBack.adresse' => 'required',
-                'newAdresseReservationFromBack.code_postal' => 'required',
-                'newAdresseReservationFromBack.ville' => 'required',
+                'form.newAdresseReservationFromBack.adresse' => 'required',
+                'form.newAdresseReservationFromBack.code_postal' => 'required',
+                'form.newAdresseReservationFromBack.ville' => 'required',
             ])
         ;
     }
@@ -299,7 +301,7 @@ class ReservationTest extends TestCase
             ->set('form.reservation_back.localisation_to_id', '')
             ->call('saveReservation')
             ->assertHasErrors([
-                'reservation_back.localisation_to_id' => 'required',
+                'form.reservation_back.localisation_to_id' => 'required',
             ])
         ;
     }
@@ -312,7 +314,7 @@ class ReservationTest extends TestCase
             ->set('form.reservation_back.adresse_reservation_to_id', '')
             ->call('saveReservation')
             ->assertHasErrors([
-                'reservation_back.adresse_reservation_to_id' => 'required',
+                'form.reservation_back.adresse_reservation_to_id' => 'required',
             ])
         ;
     }
@@ -327,9 +329,9 @@ class ReservationTest extends TestCase
             ->set('form.newAdresseReservationToBack.ville', '')
             ->call('saveReservation')
             ->assertHasErrors([
-                'newAdresseReservationToBack.adresse' => 'required',
-                'newAdresseReservationToBack.code_postal' => 'required',
-                'newAdresseReservationToBack.ville' => 'required',
+                'form.newAdresseReservationToBack.adresse' => 'required',
+                'form.newAdresseReservationToBack.code_postal' => 'required',
+                'form.newAdresseReservationToBack.ville' => 'required',
             ])
         ;
     }

@@ -6,6 +6,7 @@ use App\Livewire\Forms\AdminReservationForm;
 use App\Models\Reservation;
 use App\Services\EventCalendar\GoogleCalendarService;
 use App\Services\ReservationService;
+use App\Services\ReservationValidationService;
 use App\Traits\WithReservationForm;
 use Illuminate\Support\Facades\App;
 use Livewire\Component;
@@ -96,6 +97,11 @@ class ReservationForm extends Component
 
     public function savePassenger(): void
     {
+        // Utiliser le service de validation pour les règles de correction de passager
+        $this->validate(
+            ReservationValidationService::getPassengerCorrectionRulesWithPrefix('form.passengerInError')
+        );
+
         if ($this->form->passengerInError) {
             $this->form->passengerInError->updateQuietly();
             $this->form->ardianPassengerCostFacError = false;
@@ -103,47 +109,6 @@ class ReservationForm extends Component
         }
     }
 
-    protected function rules(): array
-    {
-        // CRITICAL: Sync form to trait BEFORE rule generation
-        $this->syncFormToTraitProperties();
-
-        // Get form rules and prefix them with 'form.'
-        $formRulesRaw = $this->form->rules();
-        $formRules = [];
-        foreach ($formRulesRaw as $key => $rule) {
-            $formRules['form.' . $key] = $rule;
-        }
-
-        // For backward compatibility with tests, add trait-based rules when needed
-        if (app()->runningInConsole() || app()->runningUnitTests()) {
-            // In admin context, use the company of the selected user (secretary)
-            $companyId = $this->form->entreprise_id;
-            if (!empty($this->form->userId) && $this->isAdminContext()) {
-                $user = \App\Models\User::find($this->form->userId);
-                if ($user && $user->entreprises()->count() > 0) {
-                    $companyId = $user->entreprises()->first()->id;
-                }
-            }
-
-            // Generate trait rules for tests that use reservation.* properties
-            $this->generatedRules = [];
-            ReservationService::generateDefaultRules($this->generatedRules);
-            ReservationService::generatePassagerFromRules($this->generatedRules, $this->form->passagerMode, $companyId);
-            ReservationService::generateFromLocalisationRules($this->generatedRules, $this->form->pickupMode, $this->reservation);
-            ReservationService::generateToLocalisationRules($this->generatedRules, $this->form->dropMode, $this->reservation);
-
-            if ($this->form->hasBack) {
-                ReservationService::generateFromLocalisationBackRules($this->generatedRules, $this->form->backPickupMode);
-                ReservationService::generateToLocalisationBackRules($this->generatedRules, $this->form->backDropMode);
-            }
-
-            return $this->generatedRules;
-        }
-
-        // For web UI: use only form rules
-        return $formRules;
-    }
 
     public function render(): mixed
     {
@@ -151,19 +116,6 @@ class ReservationForm extends Component
             ->layout('components.layout');
     }
 
-    public function validateOnly($field, $rules = null, $messages = [], $attributes = [], $dataOverrides = [])
-    {
-        // Synchronize before each validation
-        $this->syncFormToTraitProperties();
-        return parent::validateOnly($field, $rules, $messages, $attributes, $dataOverrides);
-    }
-
-    public function validate($rules = null, $messages = [], $attributes = [])
-    {
-        // Synchronize before validation
-        $this->syncFormToTraitProperties();
-        return parent::validate($rules, $messages, $attributes);
-    }
 
     /**
      * Synchronize form data to trait properties for backward compatibility
@@ -238,7 +190,8 @@ class ReservationForm extends Component
 
     public function saveReservation(GoogleCalendarService $calendarService): void
     {
-        $this->validate();
+        // Valider le formulaire directement
+        $this->form->validate();
 
         // Use trait method which now uses form data
         $this->createReservationWithRedirection(route('admin.reservations.index'));

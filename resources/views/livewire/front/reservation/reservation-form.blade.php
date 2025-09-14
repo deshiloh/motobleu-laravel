@@ -394,13 +394,13 @@
             <x-button type="submit" primary label="{{ __('Enregistrer') }}" wire:loading.attr="disabled" spinner="saveReservation"/>
         </x-front.card>
     </form>
-    <x-modal blur wire:model.defer="ardianPassengerCostFacError">
+    <x-modal blur wire:model.defer="form.ardianPassengerCostFacError">
         <x-card title="Édition du passanger">
-            @if($passengerInError)
+            @if($form->passengerInError)
                 <form id="test" wire:submit.prevent="savePassenger" method="post">
                     <div class="space-y-3">
                         <div>
-                            Passager : {{ $passengerInError->nom }}
+                            Passager : {{ $form->passengerInError->nom }}
                         </div>
                         <x-select
                             wire:key="cost_center_exist_passenger"
@@ -409,7 +409,7 @@
                             :async-data="route('api.cost_center')"
                             option-label="nom"
                             option-value="id"
-                            wire:model="passengerInError.cost_center_id"
+                            wire:model="form.passengerInError.cost_center_id"
                         />
                         <x-select
                             wire:key="type_facturation_exist_passenger"
@@ -418,7 +418,7 @@
                             :async-data="route('api.type_facturation')"
                             option-label="nom"
                             option-value="id"
-                            wire:model="passengerInError.type_facturation_id"
+                            wire:model="form.passengerInError.type_facturation_id"
                         />
                     </div>
                 </form>

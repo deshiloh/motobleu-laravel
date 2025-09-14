@@ -5,6 +5,7 @@ namespace App\Livewire\Front\Reservation;
 use App\Livewire\Forms\FrontReservationForm;
 use App\Models\Reservation;
 use App\Services\ReservationService;
+use App\Services\ReservationValidationService;
 use App\Traits\WithReservationForm;
 use Livewire\Component;
 use WireUi\Traits\WireUiActions;
@@ -47,9 +48,11 @@ class ReservationForm extends Component
     {
         $this->reservation = $reservation ?? new Reservation();
 
+        // En front, toujours utiliser l'utilisateur connecté
+        $this->form->userId = (string) auth()->id();
+
         if ($reservation && $reservation->exists) {
             // Fill form with existing data
-            $this->form->userId = $reservation->passager->user->id ?? '';
             $this->form->entreprise_id = $reservation->entreprise_id;
             $this->form->passager_id = $reservation->passager_id;
             $this->form->pickup_date = $reservation->pickup_date?->format('Y-m-d H:i');
@@ -69,10 +72,10 @@ class ReservationForm extends Component
 
     public function savePassenger(): void
     {
-        $this->validate([
-            'form.passengerInError.cost_center_id' => 'required',
-            'form.passengerInError.type_facturation_id' => 'required'
-        ]);
+        // Utiliser le service de validation pour les règles de correction de passager
+        $this->validate(
+            ReservationValidationService::getPassengerCorrectionRulesWithPrefix('form.passengerInError')
+        );
 
         if ($this->form->passengerInError) {
             $this->form->passengerInError->updateQuietly();
@@ -81,47 +84,6 @@ class ReservationForm extends Component
         }
     }
 
-    protected function rules(): array
-    {
-        // For tests: use trait-based validation (backward compatibility)
-        if (app()->runningInConsole() || app()->runningUnitTests()) {
-            // CRITICAL: Sync form to trait BEFORE rule generation
-            $this->syncFormToTraitProperties();
-
-            // In admin context, use the company of the selected user (secretary)
-            $companyId = $this->form->entreprise_id;
-            if (!empty($this->form->userId) && $this->isAdminContext()) {
-                $user = \App\Models\User::find($this->form->userId);
-                if ($user && $user->entreprises()->count() > 0) {
-                    $companyId = $user->entreprises()->first()->id;
-                }
-            }
-
-            // Generate trait rules for tests that use reservation.* properties
-            $this->generatedRules = [];
-            ReservationService::generateDefaultRules($this->generatedRules);
-            ReservationService::generatePassagerFromRules($this->generatedRules, $this->form->passagerMode, $companyId);
-            ReservationService::generateFromLocalisationRules($this->generatedRules, $this->form->pickupMode, $this->reservation);
-            ReservationService::generateToLocalisationRules($this->generatedRules, $this->form->dropMode, $this->reservation);
-
-            if ($this->form->hasBack) {
-                ReservationService::generateFromLocalisationBackRules($this->generatedRules, $this->form->backPickupMode);
-                ReservationService::generateToLocalisationBackRules($this->generatedRules, $this->form->backDropMode);
-            }
-
-
-            return $this->generatedRules;
-        }
-
-        // For web UI: use form rules with 'form.' prefix
-        $formRulesRaw = $this->form->rules();
-        $formRules = [];
-        foreach ($formRulesRaw as $key => $rule) {
-            $formRules['form.' . $key] = $rule;
-        }
-
-        return $formRules;
-    }
 
     public function render()
     {
@@ -129,21 +91,6 @@ class ReservationForm extends Component
             ->layout('components.front-layout');
     }
 
-    public function validateOnly($field, $rules = null, $messages = [], $attributes = [], $dataOverrides = [])
-    {
-        // Synchronize before each validation
-        $this->syncFormToTraitProperties();
-        return parent::validateOnly($field, $rules, $messages, $attributes, $dataOverrides);
-    }
-
-    public function validate($rules = null, $messages = [], $attributes = [])
-    {
-        // Synchronize before validation
-        $this->syncFormToTraitProperties();
-
-
-        return parent::validate($rules, $messages, $attributes);
-    }
 
     /**
      * Synchronize form data to trait properties for compatibility
@@ -218,7 +165,8 @@ class ReservationForm extends Component
 
     public function saveReservation(): void
     {
-        $this->validate();
+        // Valider le formulaire directement
+        $this->form->validate();
 
         // Use trait method which now uses form data
         $this->createReservationWithRedirection(route('front.reservation.list'));

@@ -11,7 +11,6 @@
         href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css"
     />
 
-    @wireUiScripts
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     @stack('styles')
@@ -149,6 +148,7 @@
 
         {{ $slot }}
     </div>
+    <wireui:scripts />
     <script src="{{ asset('js/tinymce/tinymce.min.js') }}"></script>
     @livewireScripts()
     @stack('scripts')
