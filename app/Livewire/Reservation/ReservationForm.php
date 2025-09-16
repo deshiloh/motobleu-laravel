@@ -7,6 +7,7 @@ use App\Models\Reservation;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Throwable;
 use WireUi\Traits\WireUiActions;
 
 class ReservationForm extends Component
@@ -40,6 +41,9 @@ class ReservationForm extends Component
         }
     }
 
+    /**
+     * @throws Throwable
+     */
     public function saveReservation(): void
     {
         $this->form->createReservation();

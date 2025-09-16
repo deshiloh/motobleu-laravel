@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\Reservation;
+use App\Services\ReservationCreationService;
 use App\Services\ReservationService;
 use App\Services\ReservationValidationService;
 use Livewire\Form;
@@ -10,6 +12,7 @@ class AdminReservationForm extends Form
 {
     public ?int $userId = null;
     public ?int $entrepriseId = null;
+    public ?string $commande = null;
     public int $passengerMode = ReservationService::EXIST_PASSAGER;
     public ?int $passengerId = null;
     public array $newPassager = [];
@@ -140,7 +143,7 @@ class AdminReservationForm extends Form
     {
         if ($this->hasSteps) {
             return [
-                'steps' => 'required|array',
+                'steps' => 'required|string',
             ];
         }
 
@@ -189,9 +192,15 @@ class AdminReservationForm extends Form
         ];
     }
 
-    public function createReservation(): void
+    /**
+     * @throws \Throwable
+     */
+    public function createReservation(): Reservation
     {
         $this->validate();
-        $this->handleCreatePassenger();
+
+        $reservationCreationService = new ReservationCreationService();
+
+        return $reservationCreationService->createReservation($this->all());
     }
 }
