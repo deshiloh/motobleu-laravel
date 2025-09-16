@@ -7,9 +7,34 @@ use App\Services\ReservationService;
 use App\Services\ReservationValidationService;
 use Livewire\Form;
 
-class FrontReservationForm extends Form
+/**
+ * Classe AdminReservationForm - Livewire Form pour l'interface Admin
+ *
+ * Cette classe représente le formulaire Livewire pour la création et modification
+ * de réservations dans l'interface d'administration. Elle inclut toutes les
+ * fonctionnalités avancées nécessaires aux administrateurs.
+ *
+ * Fonctionnalités spécifiques admin :
+ * - Sélection de secrétaire via userId
+ * - Validation cost center basée sur l'entreprise de la secrétaire
+ * - Accès à toutes les entreprises et passagers
+ * - Gestion complète des erreurs et validations
+ *
+ * @package App\Livewire\Forms
+ * @author MotoBleue Team
+ * @version 2.0
+ */
+class AdminReservationFormBack extends Form
 {
-    // ===== MODES DE SÉLECTION =====
+    // ===== SÉLECTION UTILISATEUR ET MODES =====
+
+    /**
+     * ID de l'utilisateur sélectionné (secrétaire en contexte admin)
+     * OBLIGATOIRE en interface admin pour déterminer l'entreprise
+     *
+     * @var string|null
+     */
+    public ?string $userId = '';
 
     /**
      * Mode de sélection du passager
@@ -61,8 +86,8 @@ class FrontReservationForm extends Form
     // ===== DONNÉES PRINCIPALES DE LA RÉSERVATION =====
 
     /**
-     * ID de l'entreprise sélectionnée par l'utilisateur
-     * Limité aux entreprises auxquelles l'utilisateur connecté appartient
+     * ID de l'entreprise pour laquelle la réservation est faite
+     * En admin, déterminé par l'entreprise de la secrétaire sélectionnée
      *
      * @var int|null
      */
@@ -70,7 +95,6 @@ class FrontReservationForm extends Form
 
     /**
      * ID du passager (si mode EXIST_PASSAGER)
-     * Limité aux passagers de l'utilisateur connecté
      *
      * @var int|null
      */
@@ -78,7 +102,6 @@ class FrontReservationForm extends Form
 
     /**
      * Date et heure de départ (format Y-m-d H:i)
-     * Validation front : minimum 15 minutes dans le futur
      *
      * @var string|null
      */
@@ -100,7 +123,6 @@ class FrontReservationForm extends Form
 
     /**
      * Envoyer les détails de la réservation au passager par email
-     * Par défaut activé en interface client
      *
      * @var bool
      */
@@ -108,7 +130,6 @@ class FrontReservationForm extends Form
 
     /**
      * Créer un événement de calendrier pour le passager
-     * Par défaut activé en interface client
      *
      * @var bool
      */
@@ -162,7 +183,6 @@ class FrontReservationForm extends Form
 
     /**
      * ID de l'adresse de départ existante (si pickupMode = WITH_ADRESSE)
-     * Limité aux adresses de l'utilisateur connecté
      *
      * @var int|null
      */
@@ -170,7 +190,6 @@ class FrontReservationForm extends Form
 
     /**
      * ID de l'adresse d'arrivée existante (si dropMode = WITH_ADRESSE)
-     * Limité aux adresses de l'utilisateur connecté
      *
      * @var int|null
      */
@@ -196,7 +215,6 @@ class FrontReservationForm extends Form
     /**
      * Données pour créer un nouveau passager
      * Structure : ['nom' => '', 'email' => '', 'portable' => '', ...]
-     * En front, automatiquement lié à l'utilisateur connecté
      *
      * @var array<string, mixed>
      */
@@ -252,22 +270,11 @@ class FrontReservationForm extends Form
      */
     public bool $useFormValidation = true;
 
-    // ===== CHAMP SPÉCIFIQUE FRONT (RÉTROCOMPATIBILITÉ) =====
-
     /**
-     * ID de l'utilisateur (pour rétrocompatibilité avec le trait)
-     * En front, correspond à l'utilisateur connecté (auth()->id())
-     * N'est PAS éditable par l'utilisateur front
+     * Génère les règles de validation pour l'interface admin
      *
-     * @var string|null
-     */
-    public ?string $userId = '';
-
-    /**
-     * Génère les règles de validation pour l'interface client
-     *
-     * Les règles front sont plus strictes sur les dates et n'incluent pas
-     * la validation userId (utilisateur connecté implicite).
+     * Les règles admin incluent la validation obligatoire de userId (secrétaire)
+     * et gèrent la validation cost center selon l'entreprise de la secrétaire.
      *
      * @return array<string, string>
      */
@@ -279,22 +286,34 @@ class FrontReservationForm extends Form
         }
 
         return array_merge(
-            $this->getFrontBaseRules(),
+            $this->getAdminBaseRules(),
             $this->getPassengerRules(),
             $this->getLocationRules(),
             $this->getBackReservationRules()
         );
     }
 
+    public function createReservationWithRedirection(string $toRoute): void
+    {
+        $this->validate();
+//        $this->validateReservationTiming($toRoute);
+//        $this->processReservationCreation();
+//        $this->saveMainReservation($toRoute);
+//
+//        if ($this->form->hasBack) {
+//            $this->processBackReservation();
+//        }
+    }
+
     /**
-     * Règles de base spécifiques à l'interface client
+     * Règles de base spécifiques à l'interface admin
      */
-    private function getFrontBaseRules(): array
+    private function getAdminBaseRules(): array
     {
         return [
+            'userId' => 'required|string', // OBLIGATOIRE en admin
             'hasBack' => 'boolean',
-            'entreprise_id' => 'required|integer', // Obligatoire en front
-            'pickup_date' => 'required|date|after:' . now()->addMinutes(14)->toDateTimeString(), // Min 15 min dans le futur
+            'pickup_date' => 'required|date',
             'commande' => 'nullable|string',
             'comment' => 'nullable|string',
             'send_to_passager' => 'boolean',
@@ -305,7 +324,7 @@ class FrontReservationForm extends Form
     }
 
     /**
-     * Règles de validation pour les passagers (front limité aux passagers de l'utilisateur)
+     * Règles de validation pour les passagers (admin peut créer pour n'importe qui)
      */
     private function getPassengerRules(): array
     {
@@ -321,8 +340,9 @@ class FrontReservationForm extends Form
                 $rules["newPassager.{$field}"] = $rule;
             }
 
-            // Validation cost center pour les entreprises spécifiques
-            if (ReservationValidationService::requiresCostCenter($this->entreprise_id)) {
+            // Validation cost center pour les entreprises spécifiques (admin)
+            // En admin, on utilise l'entreprise de la secrétaire pour déterminer les exigences
+            if (!is_null($this->entreprise_id) && ReservationValidationService::requiresCostCenter($this->entreprise_id)) {
                 $costCenterRules = ReservationValidationService::getPassengerCorrectionRules();
                 foreach ($costCenterRules as $field => $rule) {
                     $rules["newPassager.{$field}"] = $rule;
@@ -445,7 +465,7 @@ class FrontReservationForm extends Form
     }
 
     /**
-     * Réinitialise les champs dépendants (version simplifiée front)
+     * Réinitialise les champs dépendants lors d'un changement d'utilisateur
      */
     public function resetDependentFields(): void
     {

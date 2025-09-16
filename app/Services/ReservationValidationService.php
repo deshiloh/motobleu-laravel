@@ -38,7 +38,7 @@ class ReservationValidationService
     {
         return [
             'adresse' => 'required|string',
-            'code_postal' => 'required|string',
+            'codePostal' => 'required|string',
             'ville' => 'required|string',
         ];
     }

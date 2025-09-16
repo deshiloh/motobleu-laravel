@@ -437,7 +437,6 @@ trait WithReservationForm
 
     private function validateReservationTiming(string $toRoute): void
     {
-
         $this->withValidator(function (Validator $validator) use ($toRoute) {
             $validator->after(function ($validator) use ($toRoute) {
                 $this->validatePickupDate($validator, $toRoute);
