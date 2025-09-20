@@ -2,9 +2,12 @@
 
 namespace App\Livewire\Reservation;
 
+use App;
 use App\Livewire\Forms\AdminReservationForm;
 use App\Models\Reservation;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Throwable;
@@ -46,6 +49,30 @@ class ReservationForm extends Component
      */
     public function saveReservation(): void
     {
-        $this->form->createReservation();
+        try {
+            $this->form->validate();
+
+            $this->form->createReservationWithoutValidation();
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            $this->notification()->error(
+                title: 'Erreur',
+                description: 'Une erreur est survenue pendant la création de la réservation.'
+            );
+
+            if (App::environment(['local'])) {
+                ray([
+                    'form' => $this->form->all()
+                ])->exception($e);
+            }
+
+            if (App::environment(['prod', 'beta'])) {
+                Log::channel('sentry')->critical('Erreur pendant la création de réservation', [
+                    'exception' => $e,
+                    'form' => $this->form->all()
+                ]);
+            }
+        }
     }
 }

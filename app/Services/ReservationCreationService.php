@@ -8,6 +8,7 @@ use App\Models\Passager;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 /**
  * Service pour la création de réservations
@@ -21,7 +22,7 @@ class ReservationCreationService
 {
     /**
      * Crée une réservation avec toutes ses entités liées
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function createReservation(array $data): Reservation
     {
@@ -33,8 +34,15 @@ class ReservationCreationService
             $addressFromId = $this->handleFromAddress($data);
             $addressToId = $this->handleToAddress($data);
 
-            // 3. Créer la réservation
-            return $this->createReservationRecord($data, $passagerId, $addressFromId, $addressToId);
+            // 3. Créer la réservation aller
+            $reservation = $this->createReservationRecord($data, $passagerId, $addressFromId, $addressToId);
+
+            // 4. Créer la réservation retour si nécessaire
+            if (!empty($data['hasBack'])) {
+                $this->createBackReservation($data, $passagerId, $reservation);
+            }
+
+            return $reservation;
         });
     }
 
@@ -78,7 +86,7 @@ class ReservationCreationService
         if ($data['pickupMode'] === ReservationService::WITH_NEW_ADRESSE) {
             $address = AdresseReservation::create([
                 'adresse' => $data['newAdresseReservationFrom']['adresse'],
-                'adresse_complement' => $data['newAdresseReservationFrom']['adresse_complement'] ?? null,
+                'adresse_complement' => $data['newAdresseReservationFrom']['adresseComplement'] ?? null,
                 'code_postal' => $data['newAdresseReservationFrom']['codePostal'],
                 'ville' => $data['newAdresseReservationFrom']['ville'],
                 'user_id' => $data['userId'],
@@ -107,7 +115,7 @@ class ReservationCreationService
         if ($data['dropMode'] === ReservationService::WITH_NEW_ADRESSE) {
             $address = AdresseReservation::create([
                 'adresse' => $data['newAdresseReservationTo']['adresse'],
-                'adresse_complement' => $data['newAdresseReservationTo']['adresse_complement'] ?? null,
+                'adresse_complement' => $data['newAdresseReservationTo']['adresseComplement'] ?? null,
                 'code_postal' => $data['newAdresseReservationTo']['codePostal'],
                 'ville' => $data['newAdresseReservationTo']['ville'],
                 'user_id' => $data['userId'],
@@ -154,6 +162,123 @@ class ReservationCreationService
             $reservationData['adresse_reservation_to_id'] = $addressToId;
         }
 
+        // Ajouter la commande si elle existe
+        if (!empty($data['commande'])) {
+            $reservationData['commande'] = $data['commande'];
+        }
+
         return Reservation::create($reservationData);
+    }
+
+    /**
+     * Crée la réservation retour
+     * @throws Throwable
+     */
+    private function createBackReservation(array $data, int $passagerId, Reservation $goReservation): Reservation
+    {
+        $backData = $data['reservationBack'] ?? [];
+
+        // Créer les adresses retour si nécessaire
+        $backAddressFromId = $this->handleBackFromAddress($data);
+        $backAddressToId = $this->handleBackToAddress($data);
+
+        $reservationData = [
+            'entreprise_id' => $data['entrepriseId'],
+            'passager_id' => $passagerId,
+            'pickup_date' => Carbon::createFromFormat('d/m/Y H:i', $backData['pickupDate']),
+            'statut' => ReservationStatus::Created,
+            'has_steps' => !empty($backData['hasSteps']),
+            'steps' => !empty($backData['hasSteps']) ? ($backData['steps'] ?? null) : null,
+            'comment' => $backData['comment'] ?? null,
+            'reservation_aller_id' => $goReservation->id,
+        ];
+
+        // Ajouter les localisations selon le mode
+        if ($data['backPickupMode'] === ReservationService::WITH_PLACE) {
+            $reservationData['localisation_from_id'] = $backData['localisationFromId'] ?? null;
+            $reservationData['pickup_origin'] = $backData['pickupOrigin'] ?? null;
+        } else {
+            $reservationData['adresse_reservation_from_id'] = $backAddressFromId;
+        }
+
+        if ($data['backDropMode'] === ReservationService::WITH_PLACE) {
+            $reservationData['localisation_to_id'] = $backData['localisationToId'] ?? null;
+            $reservationData['drop_off_origin'] = $backData['dropOffOrigin'] ?? null;
+        } else {
+            $reservationData['adresse_reservation_to_id'] = $backAddressToId;
+        }
+
+        // Ajouter la commande si elle existe
+        if (!empty($data['commande'])) {
+            $reservationData['commande'] = $data['commande'];
+        }
+
+        return Reservation::create($reservationData);
+    }
+
+    /**
+     * Gère la création de l'adresse de départ retour si nécessaire
+     */
+    private function handleBackFromAddress(array $data): ?int
+    {
+        if ($data['backPickupMode'] === ReservationService::WITH_PLACE) {
+            return null;
+        }
+
+        if ($data['backPickupMode'] === ReservationService::WITH_ADRESSE) {
+            return $data['reservationBack']['adresseReservationFromId'] ?? null;
+        }
+
+        if ($data['backPickupMode'] === ReservationService::WITH_NEW_ADRESSE) {
+            $backFromData = $data['newAdresseReservationFromBack'] ?? [];
+
+            if (!empty($backFromData['adresse'])) {
+                $address = AdresseReservation::create([
+                    'adresse' => $backFromData['adresse'],
+                    'adresse_complement' => $backFromData['adresseComplement'] ?? null,
+                    'code_postal' => $backFromData['codePostal'],
+                    'ville' => $backFromData['ville'],
+                    'user_id' => $data['userId'],
+                    'is_actif' => true,
+                ]);
+
+                return $address->id;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Gère la création de l'adresse de destination retour si nécessaire
+     */
+    private function handleBackToAddress(array $data): ?int
+    {
+        if ($data['backDropMode'] === ReservationService::WITH_PLACE) {
+            return null;
+        }
+
+        if ($data['backDropMode'] === ReservationService::WITH_ADRESSE) {
+            return $data['reservationBack']['adresseReservationToId'] ?? null;
+        }
+
+        if ($data['backDropMode'] === ReservationService::WITH_NEW_ADRESSE) {
+            $backToData = $data['newAdresseReservationToBack'] ?? [];
+
+            if (!empty($backToData['adresse'])) {
+                $address = AdresseReservation::create([
+                    'adresse' => $backToData['adresse'],
+                    'adresse_complement' => $backToData['adresseComplement'] ?? null,
+                    'code_postal' => $backToData['codePostal'],
+                    'ville' => $backToData['ville'],
+                    'user_id' => $data['userId'],
+                    'is_actif' => true,
+                ]);
+
+                return $address->id;
+            }
+        }
+
+        return null;
     }
 }

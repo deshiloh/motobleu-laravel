@@ -6,10 +6,14 @@ use App\Models\Reservation;
 use App\Services\ReservationCreationService;
 use App\Services\ReservationService;
 use App\Services\ReservationValidationService;
+use Carbon\Carbon;
+use Exception;
 use Livewire\Form;
+use Throwable;
 
 class AdminReservationForm extends Form
 {
+    public bool $hasBack = false;
     public ?int $userId = null;
     public ?int $entrepriseId = null;
     public ?string $commande = null;
@@ -30,6 +34,13 @@ class AdminReservationForm extends Form
     public ?int $addressReservationTo = null;
     public array $newAdresseReservationTo = [];
     public ?string $comment = null;
+    public array $reservationBack = [];
+    public int $backPickupMode = ReservationService::WITH_PLACE;
+    public int $backDropMode = ReservationService::WITH_PLACE;
+    public array $newAdresseReservationFromBack = [];
+    public array $newAdresseReservationToBack = [];
+    public bool $calendarPassagerInvitation = true;
+    public bool $sendToPassager = true;
 
     protected function rules(): array
     {
@@ -38,17 +49,21 @@ class AdminReservationForm extends Form
             $this->getPassengerRules(),
             $this->getLocationRules(),
             $this->getStepsRules(),
+            $this->getBackReservationRules()
         );
     }
 
     private function defaultRules(): array
     {
         return [
+            'hasBack' => 'boolean',
             'userId' => 'required|exists:users,id',
             'entrepriseId' => 'required|exists:entreprises,id',
             'pickupDate' => 'required|date_format:d/m/Y H:i',
             'hasSteps' => 'boolean',
             'comment' => 'nullable|string',
+            'calendarPassagerInvitation' => 'boolean',
+            'sendToPassager' => 'boolean',
         ];
     }
 
@@ -152,6 +167,64 @@ class AdminReservationForm extends Form
         ];
     }
 
+    /**
+     * Règles de validation pour la réservation retour
+     */
+    private function getBackReservationRules(): array
+    {
+        if (!$this->hasBack) {
+            return [];
+        }
+
+        $afterDate = '';
+        if ($this->pickupDate) {
+            try {
+                $afterDate = Carbon::createFromFormat('d/m/Y H:i', $this->pickupDate)->format('Y-m-d H:i:s');
+            } catch (Exception $e) {
+                $afterDate = 'now';
+            }
+        }
+
+        $rules = [
+            'reservationBack.pickupDate' => 'required|date|after:' . $afterDate, // Après la date aller
+            'reservationBack.comment' => 'nullable|string',
+            'reservationBack.hasSteps' => 'boolean',
+            'reservationBack.steps' => 'nullable|string',
+        ];
+
+        // Règles de départ retour
+        $rules = array_merge($rules, match ($this->backPickupMode) {
+            ReservationService::WITH_PLACE => [
+                'reservationBack.localisationFromId' => 'required|integer',
+                'reservationBack.pickupOrigin' => 'nullable|string'
+            ],
+            ReservationService::WITH_ADRESSE => [
+                'reservationBack.adresseReservationFromId' => 'required|integer'
+            ],
+            ReservationService::WITH_NEW_ADRESSE => array_combine(
+                array_map(fn($key) => "newAdresseReservationFromBack.{$key}", array_keys(ReservationValidationService::getCommonAddressRules())),
+                array_values(ReservationValidationService::getCommonAddressRules())
+            ),
+            default => []
+        });
+
+        // Règles d'arrivée retour
+        return array_merge($rules, match ($this->backDropMode) {
+            ReservationService::WITH_PLACE => [
+                'reservationBack.localisationToId' => 'required|integer',
+                'reservationBack.dropOffOrigin' => 'nullable|string'
+            ],
+            ReservationService::WITH_ADRESSE => [
+                'reservationBack.adresseReservationToId' => 'required|integer'
+            ],
+            ReservationService::WITH_NEW_ADRESSE => array_combine(
+                array_map(fn($key) => "newAdresseReservationToBack.{$key}", array_keys(ReservationValidationService::getCommonAddressRules())),
+                array_values(ReservationValidationService::getCommonAddressRules())
+            ),
+            default => []
+        });
+    }
+
     protected function validationAttributes(): array
     {
         return [
@@ -189,16 +262,26 @@ class AdminReservationForm extends Form
             'newAdresseReservationTo.adresse_complement' => 'adresse complémentaire de destination',
             'newAdresseReservationTo.codePostal' => 'code postal de destination',
             'newAdresseReservationTo.ville' => 'ville de destination',
+
+            // Réservation retour
+            'reservationBack.pickupDate' => 'date de prise en charge retour',
+            'reservationBack.comment' => 'commentaire retour',
+            'reservationBack.hasSteps' => 'destinations intermédiaires retour',
+            'reservationBack.steps' => 'destinations intermédiaires retour',
+            'reservationBack.localisationFromId' => 'aéroports ou gares de départ retour',
+            'reservationBack.pickupOrigin' => 'provenance / n° retour',
+            'reservationBack.localisationToId' => 'aéroports ou gares de destination retour',
+            'reservationBack.dropOffOrigin' => 'destination / n° retour',
+            'reservationBack.adresseReservationFromId' => 'adresse de prise en charge retour',
+            'reservationBack.adresseReservationToId' => 'adresse de destination retour',
         ];
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function createReservation(): Reservation
+    public function createReservationWithoutValidation(): Reservation
     {
-        $this->validate();
-
         $reservationCreationService = new ReservationCreationService();
 
         return $reservationCreationService->createReservation($this->all());
