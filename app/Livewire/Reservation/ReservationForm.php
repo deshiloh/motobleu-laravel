@@ -53,6 +53,11 @@ class ReservationForm extends Component
             $this->form->validate();
 
             $this->form->createReservationWithoutValidation();
+
+            $this->notification()->success(
+                title: "Réservation créée avec succès",
+                description: "Votre réservation a été enregistrée et sera traitée dans les plus brefs délais."
+            );
         } catch (ValidationException $e) {
             throw $e;
         } catch (Throwable $e) {

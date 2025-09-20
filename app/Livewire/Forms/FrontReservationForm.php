@@ -122,6 +122,13 @@ class FrontReservationForm extends Form
     public bool $has_steps = false;
 
     /**
+     * Alias for has_steps (for view compatibility)
+     *
+     * @var bool
+     */
+    public bool $hasSteps = false;
+
+    /**
      * Description des étapes intermédiaires (JSON)
      *
      * @var string|null
@@ -402,8 +409,20 @@ class FrontReservationForm extends Form
             return [];
         }
 
+        $pickupDateRule = 'required|date|after:now';
+        if ($this->pickup_date) {
+            try {
+                // Try to parse the pickup date and ensure proper formatting for validation
+                $parsedDate = \Carbon\Carbon::parse($this->pickup_date);
+                $pickupDateRule = 'required|date|after:' . $parsedDate->format('Y-m-d H:i:s');
+            } catch (\Exception $e) {
+                // If parsing fails, fall back to 'after:now'
+                $pickupDateRule = 'required|date|after:now';
+            }
+        }
+
         $rules = [
-            'reservation_back.pickup_date' => 'required|date|after:' . ($this->pickup_date ?: 'now'), // Après la date aller
+            'reservation_back.pickup_date' => $pickupDateRule,
             'reservation_back.comment' => 'nullable|string',
             'reservation_back.has_steps' => 'boolean',
             'reservation_back.steps' => 'nullable|string',

@@ -185,12 +185,12 @@ class ReservationCreationService
         $reservationData = [
             'entreprise_id' => $data['entrepriseId'],
             'passager_id' => $passagerId,
-            'pickup_date' => Carbon::createFromFormat('d/m/Y H:i', $backData['pickupDate']),
+            'pickup_date' => Carbon::create($backData['pickupDate']),
             'statut' => ReservationStatus::Created,
             'has_steps' => !empty($backData['hasSteps']),
             'steps' => !empty($backData['hasSteps']) ? ($backData['steps'] ?? null) : null,
             'comment' => $backData['comment'] ?? null,
-            'reservation_aller_id' => $goReservation->id,
+            'reservation_id' => $goReservation->id,
         ];
 
         // Ajouter les localisations selon le mode

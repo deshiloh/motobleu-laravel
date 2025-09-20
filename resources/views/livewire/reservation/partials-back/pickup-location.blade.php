@@ -18,7 +18,7 @@
                 :async-data="route('api.pickupplace')"
                 option-label="nom"
                 option-value="id"
-                wire:model="form.reservationBack.localisationFromId"
+                wire:model.live="form.reservationBack.localisationFromId"
             />
             @if(!empty($form->reservationBack['localisationFromId']))
                 <div class="form-group">

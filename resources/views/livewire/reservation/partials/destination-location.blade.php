@@ -21,7 +21,7 @@
                     :async-data="route('api.pickupplace')"
                     option-label="nom"
                     option-value="id"
-                    wire:model="form.localisationToId"
+                    wire:model.live="form.localisationToId"
                 />
                 @if($form->localisationToId)
                     <div class="form-group">
