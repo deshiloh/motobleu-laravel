@@ -11,8 +11,6 @@
         href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css"
     />
 
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
     @stack('styles')
     @livewireStyles()
     @vite(['resources/css/app.css', 'resources/js/app.js'])

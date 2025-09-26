@@ -74,6 +74,7 @@ class GoogleCalendarService
                 'event_secretary_id' => $savedEvent->id
             ]);
         }
+
         return true;
     }
 

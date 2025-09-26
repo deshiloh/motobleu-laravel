@@ -19,6 +19,7 @@ class ReservationForm extends Component
 
     public AdminReservationForm $form;
     public Reservation $reservation;
+    public bool $isSubmitting = false;
 
     public function mount(Reservation $reservation): void
     {
@@ -49,18 +50,34 @@ class ReservationForm extends Component
      */
     public function saveReservation(): void
     {
+        if ($this->isSubmitting) {
+            return;
+        }
+
+        $this->isSubmitting = true;
+
         try {
             $this->form->validate();
 
             $this->form->createReservationWithoutValidation();
 
-            $this->notification()->success(
-                title: "Réservation créée avec succès",
-                description: "Votre réservation a été enregistrée et sera traitée dans les plus brefs délais."
-            );
+            // Reset du formulaire après création réussie
+            $this->form->reset();
+
+            $this->notification()->send([
+                'icon' => 'success',
+                'title' => 'Réservation créée avec succès!',
+                'description' => 'Votre réservation a été enregistrée et sera traitée dans les plus brefs délais.',
+                'onClose' => [
+                    'method' => 'redirectToList',
+                ],
+            ]);
         } catch (ValidationException $e) {
+            $this->isSubmitting = false;
             throw $e;
         } catch (Throwable $e) {
+            $this->isSubmitting = false;
+
             $this->notification()->error(
                 title: 'Erreur',
                 description: 'Une erreur est survenue pendant la création de la réservation.'
@@ -79,5 +96,10 @@ class ReservationForm extends Component
                 ]);
             }
         }
+    }
+
+    public function redirectToList(): void
+    {
+        $this->redirectRoute('admin.reservations.index', navigate: true);
     }
 }

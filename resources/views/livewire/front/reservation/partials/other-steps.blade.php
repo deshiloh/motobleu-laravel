@@ -1,0 +1,15 @@
+<x-front.card>
+    <div class="flex flex-col space-y-3">
+        <div class="dark:text-white block">
+            {{ __('Ajouter une ou plusieurs destinations intermédiaires') }} :
+        </div>
+        <div>
+            <x-toggle wire:model.live="form.hasSteps" left-label="{{ __('Non') }}" label="{{ __('Oui') }}" md/>
+        </div>
+
+        @if(!empty($form->hasSteps))
+            <x-textarea placeholder="{{ __('Ex : S\'arrêter au domicile du client au 33 avenue de Turenne à Vincennes') }}" wire:model="form.steps" label="{{ __('Indiquez ici la ou les destinations intermédiaires :') }}" />
+        @endif
+    </div>
+</x-front.card>
+

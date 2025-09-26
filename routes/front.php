@@ -14,7 +14,6 @@ use App\Livewire\Front\Address\AddressDataTable;
 use App\Livewire\Front\Address\AddressForm;
 use App\Livewire\Front\CostCenter\CostCenterDataTable;
 use App\Livewire\Front\CostCenter\CostCenterForm;
-use App\Livewire\Front\DashboardHome;
 use App\Livewire\Front\Invoice\InvoiceDataTable;
 use App\Livewire\Front\Invoice\InvoiceReservationDataTable;
 use App\Livewire\Front\Passager\PassagerDataTable;
@@ -31,6 +30,7 @@ Route::prefix('dashboard')->name('front.')->group(function () {
         Route::get('/create', ReservationForm::class)
             ->middleware('can:create reservation')
             ->name('create');
+
     });
 
     Route::prefix('/address')->name('address.')->group(function () {

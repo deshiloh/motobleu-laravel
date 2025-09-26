@@ -3,7 +3,7 @@
         <div class="flex justify-between">
             <div class="text-2xl">{{ __("Bonjour") }} <span class="font-bold">{{ ucfirst(Auth::user()->prenom) }}</span></div>
             @can('create reservation')
-                <x-button primary label="{{ __('Nouvelle réservation') }}" icon="plus" href="{{ route('front.reservation.create') }}" />
+                <x-custom-button icon="plus" href="{{ route('front.reservation.create') }}">{{ __('Nouvelle réservation') }}</x-custom-button>
             @endcan
         </div>
 

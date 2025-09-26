@@ -145,6 +145,8 @@ class ReservationCreationService
             'has_steps' => $data['hasSteps'],
             'steps' => $data['hasSteps'] ? $data['steps'] : null,
             'comment' => $data['comment'],
+            'send_to_passager' => $data['sendToPassager'] ?? true,
+            'calendar_passager_invitation' => $data['calendarPassagerInvitation'] ?? true,
         ];
 
         // Ajouter les localisations selon le mode
@@ -191,6 +193,8 @@ class ReservationCreationService
             'steps' => !empty($backData['hasSteps']) ? ($backData['steps'] ?? null) : null,
             'comment' => $backData['comment'] ?? null,
             'reservation_id' => $goReservation->id,
+            'send_to_passager' => $data['sendToPassager'] ?? true,
+            'calendar_passager_invitation' => $data['calendarPassagerInvitation'] ?? true,
         ];
 
         // Ajouter les localisations selon le mode

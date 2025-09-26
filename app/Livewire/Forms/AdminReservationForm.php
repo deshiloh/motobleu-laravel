@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Forms;
 
+use App\Livewire\Forms\Traits\ReservationFormValidationAttributes;
+use App\Livewire\Forms\Traits\ReservationFormRules;
 use App\Models\Reservation;
 use App\Services\ReservationCreationService;
 use App\Services\ReservationService;
@@ -22,6 +24,8 @@ use Throwable;
  */
 class AdminReservationForm extends Form
 {
+    use ReservationFormValidationAttributes;
+    use ReservationFormRules;
     // === CONFIGURATION GÉNÉRALE ===
     /** Indique si une réservation retour est demandée */
     public bool $hasBack = false;
@@ -152,93 +156,6 @@ class AdminReservationForm extends Form
         ];
     }
 
-    /**
-     * Règles de validation pour la gestion des passagers
-     *
-     * Applique le principe ouvert/fermé (OCP) en utilisant des services
-     * externes pour les règles métier spécialisées.
-     *
-     * @return array<string, string> Règles de validation pour les passagers
-     */
-    private function getPassengerRules(): array
-    {
-        return match ($this->passengerMode) {
-            ReservationService::EXIST_PASSAGER => $this->getExistingPassengerRules(),
-            ReservationService::NEW_PASSAGER => $this->getNewPassengerRules(),
-            default => []
-        };
-    }
-
-    /**
-     * Règles pour un passager existant
-     *
-     * @return array<string, string>
-     */
-    private function getExistingPassengerRules(): array
-    {
-        return ['passengerId' => 'required|integer'];
-    }
-
-    /**
-     * Règles pour un nouveau passager
-     *
-     * @return array<string, string>
-     */
-    private function getNewPassengerRules(): array
-    {
-        $rules = $this->buildNewPassengerBaseRules();
-
-        if ($this->requiresCostCenterValidation()) {
-            $rules = array_merge($rules, $this->buildCostCenterRules());
-        }
-
-        return $rules;
-    }
-
-    /**
-     * Construit les règles de base pour un nouveau passager
-     *
-     * @return array<string, string>
-     */
-    private function buildNewPassengerBaseRules(): array
-    {
-        $commonRules = ReservationValidationService::getCommonPassengerRules();
-        $rules = [];
-
-        foreach ($commonRules as $field => $rule) {
-            $rules["newPassager.{$field}"] = $rule;
-        }
-
-        return $rules;
-    }
-
-    /**
-     * Vérifie si la validation du cost center est requise
-     *
-     * @return bool
-     */
-    private function requiresCostCenterValidation(): bool
-    {
-        return !is_null($this->entrepriseId) &&
-               ReservationValidationService::requiresCostCenter($this->entrepriseId);
-    }
-
-    /**
-     * Construit les règles pour le cost center
-     *
-     * @return array<string, string>
-     */
-    private function buildCostCenterRules(): array
-    {
-        $costCenterRules = ReservationValidationService::getPassengerCorrectionRules();
-        $rules = [];
-
-        foreach ($costCenterRules as $field => $rule) {
-            $rules["newPassager.{$field}"] = $rule;
-        }
-
-        return $rules;
-    }
 
     /**
      * Règles de validation pour les localisations (départ et arrivée)
@@ -357,24 +274,6 @@ class AdminReservationForm extends Form
         return $this->buildAddressRules('newAdresseReservationTo');
     }
 
-    /**
-     * Construit les règles de validation pour une nouvelle adresse
-     *
-     * Méthode utilitaire qui évite la duplication de code entre
-     * les adresses de départ et d'arrivée.
-     *
-     * @param string $prefix Préfixe pour les champs d'adresse
-     * @return array<string, string>
-     */
-    private function buildAddressRules(string $prefix): array
-    {
-        $commonRules = ReservationValidationService::getCommonAddressRules();
-
-        return array_combine(
-            array_map(fn($key) => "{$prefix}.{$key}", array_keys($commonRules)),
-            array_values($commonRules)
-        );
-    }
 
     /**
      * Règles de validation pour les étapes intermédiaires
@@ -426,22 +325,6 @@ class AdminReservationForm extends Form
         ];
     }
 
-    /**
-     * Construit la règle de validation pour la date de retour
-     *
-     * La date de retour doit être postérieure à la date aller.
-     *
-     * @return string Règle de validation Laravel
-     */
-    private function buildBackDateRule(): string
-    {
-        if (!$this->pickupDate) {
-            return 'required|date';
-        }
-
-        $parsedDate = Carbon::createFromFormat('d/m/Y H:i', $this->pickupDate);
-        return 'required|date|after:' . $parsedDate->format('Y-m-d H:i:s');
-    }
 
     /**
      * Règles pour le lieu de départ de la réservation retour
@@ -488,103 +371,11 @@ class AdminReservationForm extends Form
     /**
      * Attributs personnalisés pour les messages d'erreur de validation
      *
-     * Fournit des noms lisibles pour tous les champs du formulaire
-     * afin d'améliorer l'expérience utilisateur.
-     *
      * @return array<string, string> Mapping champ => nom lisible
      */
     protected function validationAttributes(): array
     {
-        return array_merge(
-            $this->getMainFieldsAttributes(),
-            $this->getPassengerFieldsAttributes(),
-            $this->getLocationFieldsAttributes(),
-            $this->getBackReservationFieldsAttributes()
-        );
-    }
-
-    /**
-     * Attributs pour les champs principaux
-     *
-     * @return array<string, string>
-     */
-    private function getMainFieldsAttributes(): array
-    {
-        return [
-            'userId' => 'secrétaire',
-            'entrepriseId' => 'entreprise rattachée',
-            'passengerId' => 'passager',
-            'pickupDate' => 'date de prise en charge',
-            'comment' => 'commentaire',
-            'hasSteps' => 'destinations intermédiaires',
-            'steps' => 'destinations intermédiaires',
-        ];
-    }
-
-    /**
-     * Attributs pour les champs passager
-     *
-     * @return array<string, string>
-     */
-    private function getPassengerFieldsAttributes(): array
-    {
-        return [
-            'newPassager.nom' => 'nom et prénom',
-            'newPassager.telephone' => 'téléphone de bureau',
-            'newPassager.portable' => 'téléphone portable',
-            'newPassager.email' => 'adresse email',
-            'newPassager.cost_center_id' => 'cost center',
-            'newPassager.type_facturation_id' => 'type de facturation',
-        ];
-    }
-
-    /**
-     * Attributs pour les champs de localisation
-     *
-     * @return array<string, string>
-     */
-    private function getLocationFieldsAttributes(): array
-    {
-        return [
-            // Lieu de prise en charge
-            'localisationFromId' => 'aéroports ou gares de départ',
-            'pickupOrigin' => 'provenance / n°',
-            'addressReservationFrom' => 'adresse de prise en charge',
-            'newAdresseReservationFrom.adresse' => 'adresse de prise en charge',
-            'newAdresseReservationFrom.adresseComplement' => 'adresse complémentaire de prise en charge',
-            'newAdresseReservationFrom.codePostal' => 'code postal de prise en charge',
-            'newAdresseReservationFrom.ville' => 'ville de prise en charge',
-
-            // Lieu de destination
-            'localisationToId' => 'aéroports ou gares de destination',
-            'dropOffOrigin' => 'destination / n°',
-            'addressReservationTo' => 'adresse de destination',
-            'newAdresseReservationTo.adresse' => 'adresse de destination',
-            'newAdresseReservationTo.adresse_complement' => 'adresse complémentaire de destination',
-            'newAdresseReservationTo.codePostal' => 'code postal de destination',
-            'newAdresseReservationTo.ville' => 'ville de destination',
-        ];
-    }
-
-    /**
-     * Attributs pour les champs de réservation retour
-     *
-     * @return array<string, string>
-     */
-    private function getBackReservationFieldsAttributes(): array
-    {
-        return [
-            'reservationBack.pickupDate' => 'date de prise en charge retour',
-            'reservationBack.comment' => 'commentaire retour',
-            'reservationBack.hasSteps' => 'destinations intermédiaires retour',
-            'reservationBack.steps' => 'destinations intermédiaires retour',
-            'reservationBack.localisationFromId' => 'aéroports ou gares de départ retour',
-            'reservationBack.pickupOrigin' => 'provenance / n° retour',
-            'reservationBack.localisationToId' => 'aéroports ou gares de destination retour',
-            'reservationBack.dropOffOrigin' => 'destination / n° retour',
-            'reservationBack.adresseReservationFromId' => 'adresse de prise en charge retour',
-            'reservationBack.adresseReservationToId' => 'adresse de destination retour',
-        ];
+        return $this->getValidationAttributes();
     }
 
     /**

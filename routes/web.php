@@ -53,6 +53,10 @@ Route::get('/logout', [LoginController::class, 'logout'])
 
 Route::get('/', function () {
     if (Auth::check()) {
+        if (Auth::user()->hasRole('super admin')) {
+            return to_route('admin.homepage');
+        }
+
         return to_route('front.reservation.list');
     }
 
