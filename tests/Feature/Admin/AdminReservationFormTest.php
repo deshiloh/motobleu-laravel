@@ -55,8 +55,8 @@ class AdminReservationFormTest extends TestCase
             ->assertSet('form.passengerMode', ReservationService::EXIST_PASSAGER)
             ->assertSet('form.pickupMode', ReservationService::WITH_PLACE)
             ->assertSet('form.dropMode', ReservationService::WITH_PLACE)
-            ->assertSet('form.calendarPassagerInvitation', true)
-            ->assertSet('form.sendToPassager', true)
+            ->assertSet('form.calendarPassengerInvitation', true)
+            ->assertSet('form.sendToPassenger', true)
             ->assertSet('form.backPickupMode', ReservationService::WITH_PLACE)
             ->assertSet('form.backDropMode', ReservationService::WITH_PLACE)
             ->assertSet('isSubmitting', false);
@@ -944,8 +944,8 @@ class AdminReservationFormTest extends TestCase
             ->set('form.localisationFromId', $this->localisationFrom->id)
             ->set('form.dropMode', ReservationService::WITH_PLACE)
             ->set('form.localisationToId', $this->localisationTo->id)
-            ->set('form.calendarPassagerInvitation', false)
-            ->set('form.sendToPassager', false)
+            ->set('form.calendarPassengerInvitation', false)
+            ->set('form.sendToPassenger', false)
             ->call('saveReservation')
             ->assertHasNoErrors();
     }
@@ -1337,8 +1337,8 @@ class AdminReservationFormTest extends TestCase
             ->set('form.hasSteps', true)
             ->set('form.steps', 'Stop at hotel first')
             ->set('form.comment', 'VIP passenger')
-            ->set('form.calendarPassagerInvitation', false)
-            ->set('form.sendToPassager', false)
+            ->set('form.calendarPassengerInvitation', false)
+            ->set('form.sendToPassenger', false)
             ->call('saveReservation')
             ->assertHasNoErrors();
     }

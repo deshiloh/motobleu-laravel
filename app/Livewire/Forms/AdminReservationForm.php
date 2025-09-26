@@ -34,8 +34,8 @@ class AdminReservationForm extends BaseReservationForm
             'pickupDate' => 'required|date_format:d/m/Y H:i',
             'hasSteps' => 'boolean',
             'comment' => 'nullable|string',
-            'calendarPassagerInvitation' => 'boolean',
-            'sendToPassager' => 'boolean',
+            'calendarPassengerInvitation' => 'boolean',
+            'sendToPassenger' => 'boolean',
             'commande' => 'nullable|string',
         ];
     }

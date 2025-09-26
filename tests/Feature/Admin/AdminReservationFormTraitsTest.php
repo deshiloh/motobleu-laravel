@@ -374,8 +374,8 @@ class AdminReservationFormTraitsTest extends TestCase
         $booleanFields = [
             'form.hasBack',
             'form.hasSteps',
-            'form.calendarPassagerInvitation',
-            'form.sendToPassager',
+            'form.calendarPassengerInvitation',
+            'form.sendToPassenger',
         ];
 
         foreach ($booleanFields as $field) {
@@ -442,8 +442,8 @@ class AdminReservationFormTraitsTest extends TestCase
                 'hasSteps' => true,
                 'steps' => 'Different route for return',
             ])
-            ->set('form.calendarPassagerInvitation', true)
-            ->set('form.sendToPassager', true);
+            ->set('form.calendarPassengerInvitation', true)
+            ->set('form.sendToPassenger', true);
 
         // Valider que tous les champs sont correctement définis
         $component->assertSet('form.userId', $this->user->id)

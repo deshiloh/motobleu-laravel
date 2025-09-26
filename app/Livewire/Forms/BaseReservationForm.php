@@ -64,8 +64,8 @@ abstract class BaseReservationForm extends Form
     public array $newAdresseReservationToBack = [];
 
     // === NOTIFICATIONS ===
-    public bool $calendarPassagerInvitation = true;
-    public bool $sendToPassager = true;
+    public bool $calendarPassengerInvitation = true;
+    public bool $sendToPassenger = true;
 
     /**
      * Définit les règles de validation complètes du formulaire

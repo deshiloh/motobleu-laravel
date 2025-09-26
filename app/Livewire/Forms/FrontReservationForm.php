@@ -15,12 +15,6 @@ use Throwable;
  */
 class FrontReservationForm extends BaseReservationForm
 {
-    // === NOTIFICATIONS SPÉCIFIQUES AU FRONT ===
-    /** Envoyer une invitation calendrier au passager (nommage front-end) */
-    public bool $calendarPassengerInvitation = true;
-
-    /** Envoyer une notification au passager (nommage front-end) */
-    public bool $sendToPassenger = true;
 
     /**
      * Règles de validation pour les champs de base du formulaire (Front)

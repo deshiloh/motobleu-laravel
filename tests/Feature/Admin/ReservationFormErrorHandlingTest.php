@@ -380,8 +380,8 @@ class ReservationFormErrorHandlingTest extends TestCase
         // These should be converted to boolean or cause validation errors
         $component->set('form.hasBack', 'yes')
             ->set('form.hasSteps', 1)
-            ->set('form.calendarPassagerInvitation', 'true')
-            ->set('form.sendToPassager', 0);
+            ->set('form.calendarPassengerInvitation', 'true')
+            ->set('form.sendToPassenger', 0);
 
         // Laravel/Livewire typically handles type coercion
         // We just ensure the component doesn't crash
