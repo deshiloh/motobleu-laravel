@@ -3,172 +3,72 @@
 namespace App\Livewire\Front\Reservation;
 
 use App\Livewire\Forms\FrontReservationForm;
-use App\Models\Reservation;
-use App\Services\ReservationService;
-use App\Services\ReservationValidationService;
-use App\Traits\WithReservationForm;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Throwable;
 use WireUi\Traits\WireUiActions;
 
-/**
- * Composant Livewire ReservationForm - Interface Client (Front)
- *
- * Ce composant gère les formulaires de réservation dans l'interface client.
- * Il permet aux utilisateurs connectés de créer leurs propres réservations.
- *
- * Fonctionnalités spécifiques front :
- * - Réservations limitées aux entreprises de l'utilisateur connecté
- * - Validation cost center basée sur l'entreprise sélectionnée (pas de secrétaire)
- * - Interface simplifiée centrée sur l'expérience client
- * - Restrictions de sécurité (pas d'accès à toutes les données)
- *
- * Différences avec le composant Admin :
- * - Pas de champ userId (utilisateur connecté implicite)
- * - Validation basée directement sur l'entreprise sélectionnée
- * - Accès restreint aux entreprises de l'utilisateur
- * - Interface optimisée pour l'usage client
- *
- * Routes associées :
- * - front.reservation.create (GET/POST)
- * - front.reservation.edit (GET/POST)
- *
- * Middleware : auth, activeUser
- *
- * @package App\Livewire\Front\Reservation
- * @author MotoBleue Team
- * @version 2.0 (avec Livewire Form)
- */
 class ReservationForm extends Component
 {
-    use WireUiActions, WithReservationForm;
-
+    use WireUiActions;
     public FrontReservationForm $form;
 
-    public function mount(Reservation $reservation = null)
+    public function mount(): void
     {
-        $this->reservation = $reservation ?? new Reservation();
-
-        // En front, toujours utiliser l'utilisateur connecté
-        $this->form->userId = (string) auth()->id();
-
-        if ($reservation && $reservation->exists) {
-            // Fill form with existing data
-            $this->form->entreprise_id = $reservation->entreprise_id;
-            $this->form->passager_id = $reservation->passager_id;
-            $this->form->pickup_date = $reservation->pickup_date?->format('Y-m-d H:i');
-            $this->form->commande = $reservation->commande;
-            $this->form->comment = $reservation->comment;
-            $this->form->send_to_passager = $reservation->send_to_passager ?? true;
-            $this->form->calendar_passager_invitation = $reservation->calendar_passager_invitation ?? true;
-        }
-
-        $this->defaultReset();
+        $this->form->userId = auth()->id();
     }
 
-    public function userSelected(): void
+    #[Layout('components.front-layout')]
+    public function render(): View
     {
-        $this->form->resetDependentFields();
+        return view('livewire.front.reservation.reservation-form');
     }
 
-    public function savePassenger(): void
+    public function redirectToList(): void
     {
-        // Utiliser le service de validation pour les règles de correction de passager
-        $this->validate(
-            ReservationValidationService::getPassengerCorrectionRulesWithPrefix('form.passengerInError')
-        );
-
-        if ($this->form->passengerInError) {
-            $this->form->passengerInError->updateQuietly();
-            $this->form->ardianPassengerCostFacError = false;
-            $this->notification()->success('Passager mis à jour', 'Les informations du passager ont été sauvegardées.');
-        }
+        $this->redirectRoute('front.reservation.list', navigate: true);
     }
 
-
-    public function render()
+    public function createReservation(): void
     {
-        return view('livewire.front.reservation.reservation-form')
-            ->layout('components.front-layout');
-    }
+        try {
+            $this->form->save();
 
+            // Reset du formulaire après création réussie
+            $this->form->reset();
 
-    /**
-     * Synchronize form data to trait properties for compatibility
-     */
-    private function syncFormToTraitProperties(): void
-    {
-        // Form -> Trait sync
-        if ($this->form->userId) $this->userId = $this->form->userId;
-        if ($this->form->passagerMode) $this->passagerMode = $this->form->passagerMode;
-        if ($this->form->pickupMode) $this->pickupMode = $this->form->pickupMode;
-        if ($this->form->dropMode) $this->dropMode = $this->form->dropMode;
-        $this->hasBack = $this->form->hasBack;
-        if ($this->form->backPickupMode) $this->backPickupMode = $this->form->backPickupMode;
-        if ($this->form->backDropMode) $this->backDropMode = $this->form->backDropMode;
-        if ($this->form->addressReservationFrom) $this->addressReservationFrom = $this->form->addressReservationFrom;
-        if ($this->form->addressReservationTo) $this->addressReservationTo = $this->form->addressReservationTo;
-        $this->ardianPassengerCostFacError = $this->form->ardianPassengerCostFacError;
-        $this->passengerInError = $this->form->passengerInError;
+            $this->notification()->send([
+                'icon' => 'success',
+                'title' => 'Réservation créée avec succès!',
+                'description' => 'Votre réservation a été enregistrée et sera traitée dans les plus brefs délais.',
+                'onClose' => [
+                    'method' => 'redirectToList',
+                ],
+            ]);
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            $this->notification()->error(
+                title: 'Erreur',
+                description: 'Une erreur est survenue pendant la création de la réservation.'
+            );
 
-        // Sync reservation data from form
-        if ($this->form->entreprise_id) $this->reservation->entreprise_id = $this->form->entreprise_id;
-        if ($this->form->passager_id) $this->reservation->passager_id = $this->form->passager_id;
-        if ($this->form->pickup_date) $this->reservation->pickup_date = $this->form->pickup_date;
-        if ($this->form->commande) $this->reservation->commande = $this->form->commande;
-        if ($this->form->comment) $this->reservation->comment = $this->form->comment;
-        $this->reservation->send_to_passager = $this->form->send_to_passager;
-        $this->reservation->calendar_passager_invitation = $this->form->calendar_passager_invitation;
-        $this->reservation->has_steps = $this->form->has_steps;
-        if ($this->form->steps) $this->reservation->steps = $this->form->steps;
-        if ($this->form->localisation_from_id) $this->reservation->localisation_from_id = $this->form->localisation_from_id;
-        if ($this->form->pickup_origin) $this->reservation->pickup_origin = $this->form->pickup_origin;
-        if ($this->form->localisation_to_id) $this->reservation->localisation_to_id = $this->form->localisation_to_id;
-        if ($this->form->drop_off_origin) $this->reservation->drop_off_origin = $this->form->drop_off_origin;
+            if (App::environment(['local'])) {
+                ray([
+                    'form' => $this->form->all()
+                ])->exception($e);
+            }
 
-        // Sync complex data arrays to models
-        if (!empty($this->form->newPassager)) {
-            foreach ($this->form->newPassager as $key => $value) {
-                $this->newPassager->{$key} = $value;
+            if (App::environment(['prod', 'beta'])) {
+                Log::channel('sentry')->critical('Erreur pendant la création de réservation', [
+                    'exception' => $e,
+                    'form' => $this->form->all()
+                ]);
             }
         }
-
-        if (!empty($this->form->newAdresseReservationFrom)) {
-            foreach ($this->form->newAdresseReservationFrom as $key => $value) {
-                $this->newAdresseReservationFrom->{$key} = $value;
-            }
-        }
-
-        if (!empty($this->form->newAdresseReservationTo)) {
-            foreach ($this->form->newAdresseReservationTo as $key => $value) {
-                $this->newAdresseReservationTo->{$key} = $value;
-            }
-        }
-
-        if (!empty($this->form->newAdresseReservationFromBack)) {
-            foreach ($this->form->newAdresseReservationFromBack as $key => $value) {
-                $this->newAdresseReservationFromBack->{$key} = $value;
-            }
-        }
-
-        if (!empty($this->form->newAdresseReservationToBack)) {
-            foreach ($this->form->newAdresseReservationToBack as $key => $value) {
-                $this->newAdresseReservationToBack->{$key} = $value;
-            }
-        }
-
-        if (!empty($this->form->reservation_back)) {
-            foreach ($this->form->reservation_back as $key => $value) {
-                $this->reservation_back->{$key} = $value;
-            }
-        }
-    }
-
-    public function saveReservation(): void
-    {
-        // Valider le formulaire directement
-        $this->form->validate();
-
-        // Use trait method which now uses form data
-        $this->createReservationWithRedirection(route('front.reservation.list'));
     }
 }
