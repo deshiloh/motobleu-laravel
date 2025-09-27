@@ -2,6 +2,7 @@
     x-data="{ value: @entangle($attributes->wire('model')) }"
     x-init="
         tinymce.init({
+            license_key: 'gpl',
             target: $refs.tinymce,
             themes: 'modern',
             height: 300,
