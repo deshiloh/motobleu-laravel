@@ -245,7 +245,7 @@
         </x-bloc-content>
     @endif
 
-    <x-modal wire:model.defer="isSendFactureModalOpened" max-width="6xl">
+    <x-modal wire:model.defer="isSendFactureModalOpened" width="full">
         @if($facture)
         <x-card title="Envoi de la facture" wire:key="facture">
             <x-errors class="mb-4"/>
@@ -298,7 +298,7 @@
                         reservation: reservationData.id
                     },
                     submission() {
-                        @this.emit('editReservation', this.formData)
+                        @this.call('editReservation', this.formData)
                     }
                 }
             }

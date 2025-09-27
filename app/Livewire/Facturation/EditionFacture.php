@@ -291,7 +291,7 @@ class EditionFacture extends Component
      * @param array $datas
      * @return bool
      */
-    public function editReservation(array $datas): bool
+    public function editReservation($datas = []): bool
     {
         $validator = \Illuminate\Support\Facades\Validator::make($datas, [
             'tarif' => 'required',

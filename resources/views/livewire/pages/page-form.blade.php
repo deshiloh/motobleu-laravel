@@ -36,7 +36,7 @@
             </x-slot:body>
         </x-datatable>
     </x-bloc-content>
-    <x-modal blur wire:model.defer="editPageModal">
+    <x-modal blur wire:model.defer="editPageModal" width="full">
         <x-card title="Formulaire Page">
             <x-errors />
             @if($selectedPage)

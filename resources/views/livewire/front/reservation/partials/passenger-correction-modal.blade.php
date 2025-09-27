@@ -1,4 +1,4 @@
-<x-modal blur wire:model.defer="form.ardianPassengerCostFacError">
+<x-modal blur wire:model.defer="form.ardianPassengerCostFacError" width="full">
     <x-card title="{{ __('Édition du passager') }}">
         @if($form->passengerInError)
             <form id="passenger_correction" wire:submit.prevent="savePassenger" method="post">

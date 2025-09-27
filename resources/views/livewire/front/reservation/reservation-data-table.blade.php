@@ -101,7 +101,7 @@
         <x-front.pagination :pagination="$reservations" :perPage="$perPage" />
     </x-front.card>
 
-    <x-modal blur wire:model.defer="editAskCard">
+    <x-modal blur wire:model.defer="editAskCard" width="full">
         <x-card title="{{ __('Demande de modification') }}">
             <form class="w-full" id="udpapteDemandeForm" wire:submit.prevent="sendUpdateReservationEmail">
                 @if($selectedReservation)
@@ -123,7 +123,7 @@
     </x-modal>
 
 
-    <x-modal blur wire:model.defer="askCancelCard">
+    <x-modal blur wire:model.defer="askCancelCard" width="full">
         <x-card title="{{ __('Demande annulation') }}">
             @if($selectedReservation != null)
                 <div class="rounded-md bg-red-50 p-4">
