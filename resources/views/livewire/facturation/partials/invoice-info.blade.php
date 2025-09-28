@@ -17,7 +17,7 @@
 
     <div class="mt-3">
         @if($facture->statut === \App\Enum\BillStatut::COMPLETED)
-            <x-toggle left-label="Facture acquittée" wire:model.defer="isAcquitte" wire:change="updateAcquitteBill"/>
+            <x-toggle left-label="Facture acquittée" wire:model.live="isAcquitte"/>
         @else
             La facture pourra être acquittée qu'une fois finalisée
         @endif

@@ -117,7 +117,7 @@
                     },
                     toto(reservationId) {
                         this.formData.reservation = reservationId
-                        @this.dispatch('editReservation', {
+                        @this.call('editReservation', {
                             encaisse: this.formData.encaisse,
                             encompte: this.formData.encompte,
                             comment: this.formData.comment,

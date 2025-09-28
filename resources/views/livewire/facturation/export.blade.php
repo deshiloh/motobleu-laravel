@@ -10,7 +10,7 @@
                     placeholder="Sélectionnez une date de début"
                     :without-time="true"
                     display-format="DD/MM/YYYY"
-                    wire:model="dateDebut"
+                    wire:model.live="dateDebut"
                     :clearable="false"
                 />
             </div>
@@ -20,14 +20,14 @@
                     placeholder="Sélectionnez une date de fin"
                     :without-time="true"
                     display-format="DD/MM/YYYY"
-                    wire:model="dateFin"
+                    wire:model.live="dateFin"
                     :clearable="false"
                 />
             </div>
             <div>
                 <x-select
                     label="Entreprise"
-                    wire:model="entreprise"
+                    wire:model.live="entreprise"
                     placeholder="Rechercher une entreprise"
                     :async-data="route('api.entreprises')"
                     option-label="nom"

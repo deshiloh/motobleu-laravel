@@ -7,7 +7,6 @@ use App\Models\Pilote;
 use App\Models\Reservation;
 use App\Services\ExportService;
 use Carbon\Carbon;
-use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 use PhpOffice\PhpSpreadsheet\Exception;
@@ -34,8 +33,8 @@ class RecapReservationPilote extends Component
     public function mount(Pilote $pilote): void
     {
         $this->pilote = $pilote;
-        $this->dateDebut = $this->dateDebut ?? Carbon::now("Europe/Paris")->startOfMonth()->addHours(3);
-        $this->dateFin = $this->dateFin ?? Carbon::today()->endOfMonth();
+        $this->dateDebut = $this->dateDebut ?? Carbon::now()->startOfMonth()->format('Y-m-d');
+        $this->dateFin = $this->dateFin ?? Carbon::now()->endOfMonth()->format('Y-m-d');
         $this->reservations = $this->handleQuery();
     }
 
@@ -66,8 +65,7 @@ class RecapReservationPilote extends Component
         $this->reservations = $this->handleQuery();
     }
 
-    #[On('editReservation')]
-    public function editReservation($data): bool
+    public function editReservation($data = []): bool
     {
         // Extract values from the data array
         $encaisse = $data['encaisse'] ?? null;

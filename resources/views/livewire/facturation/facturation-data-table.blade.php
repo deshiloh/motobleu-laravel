@@ -16,7 +16,7 @@
             <div>
                 <x-native-select
                     label="Acquittée"
-                    wire:model="isAcquitte"
+                    wire:model.live="isAcquitte"
                 >
                     <option value="0">Tout</option>
                     <option value="1">Non acquittée</option>
@@ -26,7 +26,7 @@
             <div>
                 <x-select
                     label="Entreprise"
-                    wire:model="entreprise"
+                    wire:model.live="entreprise"
                     placeholder="Rechercher une entreprise"
                     :async-data="route('api.entreprises')"
                     option-label="nom"

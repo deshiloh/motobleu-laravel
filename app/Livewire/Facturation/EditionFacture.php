@@ -394,13 +394,13 @@ class EditionFacture extends Component
     }
 
     /**
-     * Event de mise à jour du statut is_acquitte de la facture
+     * Hook appelé quand la propriété isAcquitte est mise à jour
      * @return void
      */
-    public function updateAcquitteBill(): void
+    public function updatedIsAcquitte(): void
     {
         $this->facture->updateQuietly([
-            'is_acquitte' => !$this->facture->is_acquitte
+            'is_acquitte' => $this->isAcquitte
         ]);
 
         $this->uniqID = uniqid('facture_');

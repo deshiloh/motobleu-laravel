@@ -8,7 +8,7 @@
             <x-native-select
                 label="Année"
                 :options="$years"
-                wire:model="selectedYear"
+                wire:model.live="selectedYear"
             />
         </div>
 

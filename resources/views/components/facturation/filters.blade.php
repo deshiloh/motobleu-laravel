@@ -10,7 +10,7 @@
         <x-native-select
             label="Mois"
             placeholder="Sélectionner un mois"
-            wire:model="selectedMonth"
+            wire:model.live="selectedMonth"
         >
             @foreach($months as $numMonth => $labelMonth)
                 <option value="{{ $numMonth }}">{{ $labelMonth }}</option>
@@ -20,7 +20,7 @@
         <x-native-select
             label="Année"
             placeholder="Sélectionner une année"
-            wire:model="selectedYear"
+            wire:model.live="selectedYear"
         >
             @for($startedYear; $startedYear <= $endYear; $startedYear ++)
                 <option value="{{ $startedYear }}">{{ $startedYear }}</option>
@@ -33,7 +33,7 @@
             :async-data="route('api.entreprises')"
             option-label="nom"
             option-value="id"
-            wire:model="entrepriseSearch"
+            wire:model.live="entrepriseSearch"
         />
     </div>
 </div>
