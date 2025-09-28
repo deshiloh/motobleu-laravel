@@ -36,7 +36,7 @@ class ReservationFactory extends Factory
             'send_to_passager' => true,
             'calendar_passager_invitation' => true,
             'has_back' => false,
-            'pickup_date' => $this->faker->dateTime,
+            'pickup_date' => $this->faker->dateTimeBetween('now', '+3 months'),
             'localisation_from_id' => Localisation::factory(),
             'localisation_to_id' => Localisation::factory(),
             'has_steps' => true,

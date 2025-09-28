@@ -69,7 +69,7 @@ class DatabaseSeeder extends Seeder
             }
 
             Reservation::factory([
-                'pickup_date' => Carbon::now(),
+                'pickup_date' => Carbon::now()->addDays(rand(1, 30)),
                 'statut' => ReservationStatus::Confirmed,
                 'entreprise_id' => $user->entreprises()->first()->id,
             ])
