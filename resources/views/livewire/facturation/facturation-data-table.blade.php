@@ -73,16 +73,19 @@
                         </x-datatable.td>
                         <x-datatable.td>{{ $facture->created_at->format('d/m/Y') }}</x-datatable.td>
                         <x-datatable.td>
-                            <div class="flex space-x-2">
-                                @if($facture->statut !== \App\Enum\BillStatut::CREATED)
-                                    <x-toggle wire:change="toggleAcquitte({{ $facture }})" :checked="$facture->is_acquitte" md/>
+                            @if($facture->statut !== \App\Enum\BillStatut::CREATED)
+                                @if($facture->is_acquitte)
+                                    <x-button wire:click="toggleAcquitte({{ $facture }})" positive sm>Oui</x-button>
+                                @else
+                                    <x-button wire:click="toggleAcquitte({{ $facture }})" negative sm>Non</x-button>
                                 @endif
+                            @else
                                 @if($facture->is_acquitte)
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800"> Oui </span>
                                 @else
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800"> Non </span>
                                 @endif
-                            </div>
+                            @endif
                         </x-datatable.td>
                         <x-datatable.td>
                             {{ $facture->reservations->first()->entreprise->nom }}
