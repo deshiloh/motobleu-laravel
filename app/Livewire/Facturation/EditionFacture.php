@@ -408,6 +408,22 @@ class EditionFacture extends Component
         $this->notification()->success('Opération réussite', 'Modification correctement effectuée');
     }
 
+    /**
+     * Met à jour le statut d'acquittement de la facture
+     * @return void
+     */
+    public function updateAcquitteBill(): void
+    {
+        $this->facture->updateQuietly([
+            'is_acquitte' => true
+        ]);
+
+        $this->isAcquitte = true;
+        $this->uniqID = uniqid('facture_');
+
+        $this->notification()->success('Opération réussite', 'Facture marquée comme acquittée');
+    }
+
     public function redirectFacturationList()
     {
         $this->redirect(route('admin.facturations.index'));

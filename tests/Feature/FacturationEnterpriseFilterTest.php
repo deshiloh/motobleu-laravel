@@ -18,30 +18,37 @@ class FacturationEnterpriseFilterTest extends TestCase
 
     public function testEntrepriseFilterWorks()
     {
-        // Set test date to September 2025
-        Carbon::setTestNow(Carbon::create(2025, 9, 15));
+        // Use current date for test to ensure we have data
+        $currentDate = Carbon::now();
 
-        // Test without filter - should show all companies
+        // Create a company and reservation for current month upfront
+        $entreprise = Entreprise::first() ?? Entreprise::factory()->create();
+
+        $reservation = Reservation::factory()->create([
+            'entreprise_id' => $entreprise->id,
+            'pickup_date' => $currentDate,
+            'statut' => \App\Enum\ReservationStatus::Confirmed->value,
+            'encaisse_pilote' => null
+        ]);
+
+        // Test without filter - should show all companies for current month/year
         $component = Livewire::test(EditionFacture::class)
-            ->set('selectedMonth', 9)
-            ->set('selectedYear', 2025)
+            ->set('selectedMonth', $currentDate->month)
+            ->set('selectedYear', $currentDate->year)
             ->assertHasNoErrors();
 
         $allEntreprises = $component->get('entreprises');
         $this->assertGreaterThan(0, $allEntreprises->count());
 
         // Test with filter - should show only selected company
-        $entreprise = Entreprise::whereHas('reservations', function($query) {
-            $query->whereMonth('pickup_date', 9)
-                  ->whereYear('pickup_date', 2025);
-        })->first();
+        $firstEntreprise = $allEntreprises->first();
 
-        if ($entreprise) {
-            $component->set('entrepriseSearch', $entreprise->id);
+        if ($firstEntreprise) {
+            $component->set('entrepriseSearch', $firstEntreprise->id);
 
             $filteredEntreprises = $component->get('entreprises');
             $this->assertEquals(1, $filteredEntreprises->count());
-            $this->assertEquals($entreprise->id, $filteredEntreprises->first()->id);
+            $this->assertEquals($firstEntreprise->id, $filteredEntreprises->first()->id);
         }
     }
 

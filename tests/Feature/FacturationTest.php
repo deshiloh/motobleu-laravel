@@ -203,7 +203,8 @@ class FacturationTest extends TestCase
             ->set('entreprise', $entreprise)
             ->set('facture', $facture)
             ->call('getEntrepriseProperty')
-            ->assertSet('entreprise', $entreprise)
+            ->assertSet('entreprise.id', $entreprise->id)
+            ->assertSet('entreprise.nom', $entreprise->nom)
             ->assertStatus(200);
     }
 
