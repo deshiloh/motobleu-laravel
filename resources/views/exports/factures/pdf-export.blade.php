@@ -220,7 +220,7 @@
                 {{ $facture->reservations->first()->entreprise->nom ?? "Non disponible"}}
             </td>
             <td style="text-align: right; padding-right: 17px">
-                {{ $fmt->formatCurrency($facture->montant_ttc, 'EUR') }}
+                {{ str_replace(["\xE2\x80\xAF", "\xC2\xA0", "\xE2\x82\xAC"], [' ', ' ', 'EUR'], $fmt->formatCurrency($facture->montant_ttc, 'EUR')) }}
             </td>
         </tr>
     @endforeach
