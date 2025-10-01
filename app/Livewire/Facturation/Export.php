@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Export extends Component
+class   Export extends Component
 {
     use WithPagination;
 
@@ -32,8 +32,8 @@ class Export extends Component
 
     public function mount(): void
     {
-        $this->dateDebut = now()->startOfMonth()->format('Y-m-d');
-        $this->dateFin = now()->endOfMonth()->format('Y-m-d');
+        $this->dateDebut = $this->dateDebut ?? now()->startOfMonth()->format('Y-m-d');
+        $this->dateFin = $this->dateFin ?? now()->endOfMonth()->format('Y-m-d');
     }
 
     public function render()

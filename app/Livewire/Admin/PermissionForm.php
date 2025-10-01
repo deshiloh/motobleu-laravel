@@ -8,6 +8,7 @@ class PermissionForm extends Component
 {
     public function render()
     {
-        return view('livewire.admin.permission-form')->layout('components.layout');
+        return view('livewire.admin.permission-form')
+            ->layout('components.layout');
     }
 }

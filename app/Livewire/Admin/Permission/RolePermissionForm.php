@@ -57,7 +57,7 @@ class RolePermissionForm extends Component
 
             return $permissionsData->map(function ($currentPermission) {
                 if ($this->currentRole->hasPermissionTo($currentPermission)) {
-                    $this->permissionsForm[] = $currentPermission->id;
+                    $this->permissionsForm[] = $currentPermission->name;
                 }
 
                 return $currentPermission;
