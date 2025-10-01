@@ -16,6 +16,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
@@ -110,7 +111,14 @@ class EditionFacture extends Component
 
         if ($this->factureSelected) {
             $this->facture = Facture::findOrFail($this->factureSelected);
-            $this->isAcquitte = $this->facture->is_acquitte;
+            $this->isAcquitte = (bool) $this->facture->is_acquitte;
+
+            // Si la facture n'a pas de réservations, essayer d'assigner les réservations éligibles
+            if ($this->facture->reservations->isEmpty()) {
+                $this->assignUnbilledReservationsToFacture();
+                $this->facture->refresh(); // Recharger la facture avec ses nouvelles réservations
+            }
+
             $this->entreprise = $this->facture->reservations->first()->entreprise ?? null;
         }
     }
@@ -131,38 +139,37 @@ class EditionFacture extends Component
     {
         return Entreprise::orderBy('nom')
             ->whereHas('reservations', function (Builder $query) {
-                $query
-                    ->whereMonth('pickup_date', $this->selectedMonth)
-                    ->whereYear('pickup_date', $this->selectedYear)
-                    ->whereIn('statut', [ReservationStatus::Confirmed->value, ReservationStatus::CanceledToPay->value])
-                    ->where(function(Builder $query) {
-                        $query
-                            ->whereNull('encaisse_pilote')
-                            ->orWhere('encaisse_pilote', 0);
-                    })
-                ;
+                $this->applyReservationFilters($query);
             })
             ->withCount([
                 'reservations' => function(Builder $query) {
-                    $query
-                        ->whereMonth('pickup_date', $this->selectedMonth)
-                        ->whereYear('pickup_date', $this->selectedYear)
-                        ->whereIn('statut', [
-                            ReservationStatus::Confirmed->value,
-                            ReservationStatus::CanceledToPay->value
-                        ])
-                        ->where(function(Builder $query) {
-                            $query
-                                ->whereNull('encaisse_pilote')
-                                ->orWhere('encaisse_pilote', 0);
-                        })
-                    ;
+                    $this->applyReservationFilters($query);
                 }]
             )
             ->when($this->entrepriseSearch, function(Builder $query) {
                 $query->where('id', $this->entrepriseSearch);
             })
             ->get();
+    }
+
+    /**
+     * Applique les filtres communs aux réservations
+     * DRY: Évite la duplication des critères de filtrage
+     */
+    private function applyReservationFilters(Builder $query): void
+    {
+        $query
+            ->whereMonth('pickup_date', $this->selectedMonth)
+            ->whereYear('pickup_date', $this->selectedYear)
+            ->whereIn('statut', [
+                ReservationStatus::Confirmed->value,
+                ReservationStatus::CanceledToPay->value
+            ])
+            ->where(function(Builder $query) {
+                $query
+                    ->whereNull('encaisse_pilote')
+                    ->orWhere('encaisse_pilote', 0);
+            });
     }
 
     /**
@@ -181,44 +188,64 @@ class EditionFacture extends Component
 
     public function goToEditPage(int $entrepriseId): void
     {
-        $reservations = Reservation::where('entreprise_id', $entrepriseId)
-            ->whereMonth('pickup_date', $this->selectedMonth)
-            ->whereYear('pickup_date', $this->selectedYear)
-            ->whereIn('statut', [
-                ReservationStatus::Confirmed->value,
-                ReservationStatus::CanceledToPay->value
-            ])
+        $reservations = $this->getEligibleReservations($entrepriseId);
+        $facture = $this->getOrCreateFacture($entrepriseId);
+
+        $this->assignReservationsToFacture($reservations, $facture);
+        $this->setComponentState($facture, $entrepriseId);
+    }
+
+    /**
+     * Récupère les réservations éligibles pour une entreprise
+     * DRY: Centralise la logique de requête des réservations
+     */
+    private function getEligibleReservations(int $entrepriseId): Collection
+    {
+        return Reservation::where('entreprise_id', $entrepriseId)
             ->where(function(Builder $query) {
-                $query
-                    ->whereNull('encaisse_pilote')
-                    ->orWhere('encaisse_pilote', 0);
+                $this->applyReservationFilters($query);
             })
             ->get();
+    }
 
-        // Génère ou récupère une facture
+    /**
+     * Récupère une facture existante ou en crée une nouvelle
+     * SRP: Responsabilité unique de gestion des factures
+     */
+    private function getOrCreateFacture(int $entrepriseId): Facture
+    {
         $facture = $this->getExistFacture($entrepriseId);
 
-        if ($facture === null) {
+        if (!$facture || $facture->statut === BillStatut::COMPLETED) {
             $facture = $this->generateFacture($entrepriseId);
         }
 
-        if ($facture && $facture->statut == BillStatut::COMPLETED) {
-            $facture = $this->generateFacture($entrepriseId);
-        }
+        return $facture;
+    }
 
-        foreach ($reservations as $reservation) {
-            if ($reservation->facture_id === null) {
-                $reservation->updateQuietly([
-                    'facture_id' => $facture->id
-                ]);
-            }
-        }
+    /**
+     * Assigne les réservations non facturées à la facture
+     * SRP: Responsabilité unique d'assignation
+     */
+    private function assignReservationsToFacture(Collection $reservations, Facture $facture): void
+    {
+        $reservations
+            ->whereNull('facture_id')
+            ->each(fn($reservation) => $reservation->updateQuietly(['facture_id' => $facture->id]));
+    }
 
+    /**
+     * Met à jour l'état du composant
+     * SRP: Responsabilité unique de mise à jour de l'état
+     */
+    private function setComponentState(Facture $facture, int $entrepriseId): void
+    {
         $this->facture = $facture;
-        $this->isAcquitte = (boolean) $facture->is_acquitte;
-        $this->facture->refresh();
+        $this->isAcquitte = (bool) $facture->is_acquitte;
         $this->factureSelected = $facture->id;
         $this->entreprise = Entreprise::findOrFail($entrepriseId);
+
+        $this->facture->refresh();
     }
 
     public function getExistFacture(int $entrepriseSelected): ?Facture
@@ -538,5 +565,49 @@ class EditionFacture extends Component
         }
 
         $this->notification()->success('Facture annulée.', 'Vous allez être redirigé vers la page de listing entreprises');
+    }
+
+    /**
+     * Assigne les réservations éligibles non facturées à la facture courante
+     * Uniquement si on peut déterminer l'entreprise de la facture
+     * @return void
+     */
+    private function assignUnbilledReservationsToFacture(): void
+    {
+        if (!$this->facture) {
+            return;
+        }
+
+        // Si la facture a déjà des réservations, déterminer l'entreprise
+        $entrepriseId = null;
+        if ($this->facture->reservations->isNotEmpty()) {
+            $entrepriseId = $this->facture->reservations->first()->entreprise_id;
+        } else {
+            // Si la facture est vide, on ne peut pas déterminer l'entreprise
+            // Cette méthode ne devrait être appelée que si on sait quelle entreprise cibler
+            return;
+        }
+
+        // Récupérer les réservations éligibles pour cette entreprise spécifique
+        $eligibleReservations = Reservation::where('entreprise_id', $entrepriseId)
+            ->whereMonth('pickup_date', $this->facture->month)
+            ->whereYear('pickup_date', $this->facture->year)
+            ->whereIn('statut', [
+                ReservationStatus::Confirmed->value,
+                ReservationStatus::CanceledToPay->value
+            ])
+            ->where(function(Builder $query) {
+                $query->whereNull('encaisse_pilote')
+                    ->orWhere('encaisse_pilote', 0);
+            })
+            ->whereNull('facture_id')
+            ->get();
+
+        // Assigner toutes ces réservations à la facture courante
+        foreach ($eligibleReservations as $reservation) {
+            $reservation->updateQuietly([
+                'facture_id' => $this->facture->id
+            ]);
+        }
     }
 }

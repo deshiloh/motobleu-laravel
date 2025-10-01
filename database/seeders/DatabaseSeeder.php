@@ -68,12 +68,22 @@ class DatabaseSeeder extends Seeder
                 $user->assignRole('user');
             }
 
+            $pickupDate = Carbon::now()->addDays(rand(1, 30));
+
+            // Créer une facture cohérente avec la date de la réservation
+            $facture = Facture::factory([
+                'montant_ttc' => 0,
+                'month' => $pickupDate->month,
+                'year' => $pickupDate->year,
+                'reference' => sprintf('FA%04d-%02d-%03d', $pickupDate->year, $pickupDate->month, rand(1, 999))
+            ])->create();
+
             Reservation::factory([
-                'pickup_date' => Carbon::now()->addDays(rand(1, 30)),
+                'pickup_date' => $pickupDate,
                 'statut' => ReservationStatus::Confirmed,
                 'entreprise_id' => $user->entreprises()->first()->id,
             ])
-                ->for(Facture::factory(['montant_ttc' => 0])->create())
+                ->for($facture)
                 ->for($passager)
                 ->for(Pilote::factory()->create())
                 ->create()
