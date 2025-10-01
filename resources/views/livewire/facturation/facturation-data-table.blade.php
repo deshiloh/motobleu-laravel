@@ -14,14 +14,16 @@
                 </div>
             </div>
             <div>
-                <x-native-select
+                <x-select
+                    :clearable="false"
+                    :searchable="false"
                     label="Acquittée"
                     wire:model.live="isAcquitte"
                 >
-                    <option value="0">Tout</option>
-                    <option value="1">Non acquittée</option>
-                    <option value="2">Acquittée</option>
-                </x-native-select>
+                    <x-select.option label="Tout" :value="0" />
+                    <x-select.option label="Non acquittée" :value="1" />
+                    <x-select.option label="Acquittée" :value="2" />
+                </x-select>
             </div>
             <div>
                 <x-select

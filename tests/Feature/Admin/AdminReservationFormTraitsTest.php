@@ -24,7 +24,6 @@ class AdminReservationFormTraitsTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $seed = true;
     protected User $user;
     protected Entreprise $entreprise;
     protected Passager $passager;
@@ -37,14 +36,20 @@ class AdminReservationFormTraitsTest extends TestCase
     {
         parent::setUp();
 
-        // Create test data
-        $this->user = User::find(1) ?? User::factory()->create();
-        $this->entreprise = Entreprise::find(1) ?? Entreprise::factory()->create();
-        $this->passager = Passager::find(1) ?? Passager::factory()->create();
-        $this->localisationFrom = Localisation::find(1) ?? Localisation::factory()->create();
-        $this->localisationTo = Localisation::find(2) ?? Localisation::factory()->create();
-        $this->addressFrom = AdresseReservation::find(1) ?? AdresseReservation::factory()->create();
-        $this->addressTo = AdresseReservation::find(2) ?? AdresseReservation::factory()->create();
+        // Create test data explicitly without relying on seeding
+        $this->user = User::factory()->create();
+        $this->entreprise = Entreprise::factory()->create();
+        $this->passager = Passager::factory()->create([
+            'user_id' => $this->user->id,
+        ]);
+        $this->localisationFrom = Localisation::factory()->create();
+        $this->localisationTo = Localisation::factory()->create();
+        $this->addressFrom = AdresseReservation::factory()->create([
+            'user_id' => $this->user->id,
+        ]);
+        $this->addressTo = AdresseReservation::factory()->create([
+            'user_id' => $this->user->id,
+        ]);
 
         $this->actingAs($this->user);
     }

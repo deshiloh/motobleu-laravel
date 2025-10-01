@@ -21,6 +21,7 @@ class AccountTest extends TestCase
 
     /**
      * Indicates whether the default seeder should run before each test.
+     * Note: Only runs permissionsAndRolesSetting(), not the full data seeding
      *
      * @var bool
      */
@@ -134,7 +135,7 @@ class AccountTest extends TestCase
 
     public function testUpdateAccount(): void
     {
-        $userExist = User::find(1);
+        $userExist = User::factory()->create();
         $user = User::factory()->make();
 
         Livewire::test(AccountForm::class, ['account' => $userExist])
@@ -175,7 +176,7 @@ class AccountTest extends TestCase
 
     public function testEditPasswordOk()
     {
-        $user = User::find(1);
+        $user = User::factory()->create();
 
         Livewire::test(EditPasswordForm::class, ['account' => $user])
             ->set('password', 'test')
@@ -191,44 +192,54 @@ class AccountTest extends TestCase
 
     public function testAttachEntreprise()
     {
+        // Créer des entreprises pour le test
+        $entreprise1 = Entreprise::factory()->create();
+        $entreprise2 = Entreprise::factory()->create();
+
         Livewire::test(EntrepriseForm::class, ['account' => $this->user])
-            ->set('entreprises', [4,5])
+            ->set('entreprises', [$entreprise1->id, $entreprise2->id])
             ->call('save')
             ->assertHasNoErrors()
         ;
 
         $this->assertDatabaseHas('entreprise_user', [
-            'entreprise_id' => 5,
+            'entreprise_id' => $entreprise1->id,
             'user_id' => $this->user->id
         ]);
 
         $this->assertDatabaseHas('entreprise_user', [
-            'entreprise_id' => 4,
+            'entreprise_id' => $entreprise2->id,
             'user_id' => $this->user->id
         ]);
     }
 
     public function testDetachEntreprise()
     {
-        $user = User::find(1);
+        // Créer un utilisateur et une entreprise pour le test
+        $user = User::factory()->create();
+        $entreprise = Entreprise::factory()->create();
+
+        // Attacher l'entreprise à l'utilisateur
+        $user->entreprises()->attach($entreprise->id);
+
         $this->assertDatabaseHas('entreprise_user', [
-            'entreprise_id' => 1,
+            'entreprise_id' => $entreprise->id,
             'user_id' => $user->id
         ]);
 
         Livewire::test(EntrepriseForm::class, ['account' => $user])
-            ->call('detach', Entreprise::find(1))
+            ->call('detach', $entreprise)
         ;
 
         $this->assertDatabaseMissing('entreprise_user', [
-            'entreprise_id' => 1,
+            'entreprise_id' => $entreprise->id,
             'user_id' => $user->id
         ]);
     }
 
     public function testDisableAccount()
     {
-        $user = User::find(1);
+        $user = User::factory()->create(['is_actif' => true]);
 
         Livewire::test(UsersDataTable::class)
             ->call('disableAccount', $user)
@@ -272,9 +283,14 @@ class AccountTest extends TestCase
 
     public function testSearchWithEntreprise()
     {
+        // Créer une entreprise et un utilisateur associé
+        $entreprise = Entreprise::factory()->create();
+        $user = User::factory(['nom' => 'test-entreprise'])->create();
+        $user->entreprises()->attach($entreprise->id);
+
         Livewire::test(UsersDataTable::class)
-            ->set('selectedEntreprise', 1)
-            ->assertSee('test')
+            ->set('selectedEntreprise', $entreprise->id)
+            ->assertSee('test-entreprise')
             ->assertHasNoErrors()
             ->assertStatus(200);
     }

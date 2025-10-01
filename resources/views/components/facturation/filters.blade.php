@@ -7,25 +7,29 @@
 
 <div class="border-b border-gray-200 pb-3 mb-4">
     <div class="grid grid-cols-4 gap-6">
-        <x-native-select
+        <x-select
+            :searchable="false"
+            :clearable="false"
             label="Mois"
             placeholder="Sélectionner un mois"
             wire:model.live="selectedMonth"
         >
             @foreach($months as $numMonth => $labelMonth)
-                <option value="{{ $numMonth }}">{{ $labelMonth }}</option>
+                <x-select.option :label="$labelMonth" :value="$numMonth" />
             @endforeach
-        </x-native-select>
+        </x-select>
 
-        <x-native-select
+        <x-select
             label="Année"
             placeholder="Sélectionner une année"
             wire:model.live="selectedYear"
+            :searchable="false"
+            :clearable="false"
         >
             @for($startedYear; $startedYear <= $endYear; $startedYear ++)
-                <option value="{{ $startedYear }}">{{ $startedYear }}</option>
+                <x-select.option :label="$startedYear" :value="$startedYear" />
             @endfor
-        </x-native-select>
+        </x-select>
 
         <x-select
             label="Entreprise"

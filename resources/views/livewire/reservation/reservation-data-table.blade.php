@@ -32,9 +32,11 @@
             </div>
         </div>
         <div>
-            <x-native-select
+            <x-select
+                :clearable="false"
+                :searchable="false"
                 label="Item par page"
-                :options="['20', '50', '100', '150', '200']"
+                :options="$listPerPage"
                 wire:model.live="perPage"
                 class="col-span-1"
             />

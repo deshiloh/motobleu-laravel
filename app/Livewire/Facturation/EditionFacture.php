@@ -29,8 +29,8 @@ class EditionFacture extends Component
 {
     use WireUiActions;
 
-    public ?int $selectedMonth = null;
-    public ?int $selectedYear = null;
+    public int $selectedMonth;
+    public int $selectedYear;
     public ?int $entrepriseSearch = null;
     public string $uniqID;
 
@@ -50,9 +50,9 @@ class EditionFacture extends Component
      * @var string[]
      */
     protected $queryString = [
-        'selectedMonth',
-        'selectedYear',
-        'entrepriseSearch',
+        'selectedMonth' => ['except' => ''],
+        'selectedYear' => ['except' => ''],
+        'entrepriseSearch' => ['except' => null],
         'factureSelected' => ['except' => 0]
     ];
 

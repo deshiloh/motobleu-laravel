@@ -18,9 +18,11 @@
             wire:model.live="selectedEntreprise"
             class="md:col-span-1"
         />
-        <x-native-select
+        <x-select
+            :clearable="false"
+            :searchable="false"
             label="Item par page"
-            :options="['20', '50', '100', '150', '200']"
+            :options="[20, 50, 100, 150, 200]"
             wire:model.live="perPage"
         />
         <div class="flex items-end">

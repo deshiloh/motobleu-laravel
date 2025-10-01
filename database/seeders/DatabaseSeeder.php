@@ -45,15 +45,16 @@ class DatabaseSeeder extends Seeder
 
         $this->permissionsAndRolesSetting();
 
-        /** @var [Entreprise] $entreprises */
+        // Créer les entreprises avec leurs adresses
         $entreprises = Entreprise::factory()
             ->count(2)
             ->has(AdresseEntreprise::factory()->facturation())
             ->has(AdresseEntreprise::factory()->physique())
-        ;
+            ->create();
 
+        // Créer les utilisateurs avec leurs relations
         $users = User::factory()
-            ->has($entreprises)
+            ->hasAttached($entreprises)
             ->has(AdresseReservation::factory()->count(5))
             ->count(10)
             ->create();
