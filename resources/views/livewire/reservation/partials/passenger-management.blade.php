@@ -13,6 +13,7 @@
 
         @if($form->passengerMode === \App\Services\ReservationService::EXIST_PASSAGER)
             <x-select
+                id="passenger_select"
                 wire:key="passenger-{{ $form->userId }}"
                 label="Passager existant"
                 placeholder="Sélectionner un passager"
@@ -32,6 +33,7 @@
                 <x-input type="email" label="Adresse email" wire:model="form.newPassager.email"/>
                 @if(!is_null($form->entrepriseId) && in_array($form->entrepriseId, app(\app\Settings\BillSettings::class)->entreprises_cost_center_facturation))
                     <x-select
+                        id="cost_center_select"
                         wire:key="cost_center"
                         label="Cost Center"
                         placeholder="Sélectionner un Cost Center"
@@ -41,6 +43,7 @@
                         wire:model="form.newPassager.cost_center_id"
                     />
                     <x-select
+                        id="type_facturation_select"
                         wire:key="type_facturation"
                         label="Type de facturation"
                         placeholder="Sélectionner un type de facturation"

@@ -12,6 +12,7 @@
         </div>
         @if($form->backPickupMode == \App\Services\ReservationService::WITH_PLACE)
             <x-select
+                id="back_from_place_select"
                 wire:key="back_from_place"
                 label="Lieu"
                 placeholder="Sélectionner un lieu existant"
@@ -28,6 +29,7 @@
         @endif
         @if($form->backPickupMode == \App\Services\ReservationService::WITH_ADRESSE)
             <x-select
+                id="back_from_adresse_select"
                 wire:key="back_from_adresse-{{ $form->userId }}"
                 label="Adresse"
                 placeholder="Sélectionner une adresse"

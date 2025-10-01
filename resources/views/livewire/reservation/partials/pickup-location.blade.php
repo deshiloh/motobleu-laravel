@@ -15,6 +15,7 @@
         @if($form->pickupMode == \App\Services\ReservationService::WITH_PLACE)
             <div class="space-y-4">
                 <x-select
+                    id="from_place_select"
                     wire:key="from_place"
                     label="Aéroports ou gares"
                     placeholder="Sélectionnez une gare ou un aéroport"
@@ -39,6 +40,7 @@
                 </div>
             @endif
             <x-select
+                id="from_adresse_select"
                 wire:key="from_adresse-{{ $form->userId }}"
                 label="Adresse"
                 placeholder="Sélectionner une adresse"

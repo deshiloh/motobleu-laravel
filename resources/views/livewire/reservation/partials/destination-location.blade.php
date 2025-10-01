@@ -15,6 +15,7 @@
         @if($form->dropMode == \App\Services\ReservationService::WITH_PLACE)
             <div class="space-y-4">
                 <x-select
+                    id="to_place_select"
                     wire:key="to_place"
                     label="Aéroports ou gares"
                     placeholder="Aéroports ou gares"
@@ -42,6 +43,7 @@
             @endif
 
             <x-select
+                id="to_adresse_select"
                 wire:key="to_adresse-{{ $form->userId }}"
                 label="Adresse"
                 placeholder="Sélectionner une adresse"

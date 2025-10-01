@@ -12,6 +12,7 @@
         </div>
         @if($form->backDropMode == \App\Services\ReservationService::WITH_PLACE)
             <x-select
+                id="back_to_place_select"
                 wire:key="back_to_place"
                 label="Aéroport ou gares"
                 placeholder="Sélectionnez une gare ou un aéroport"
@@ -28,6 +29,7 @@
         @endif
         @if($form->backDropMode == \App\Services\ReservationService::WITH_ADRESSE)
             <x-select
+                id="back_to_adresse_select"
                 wire:key="back_to_adresse-{{ $form->userId }}"
                 label="Adresse"
                 placeholder="Sélectionner une adresse"
