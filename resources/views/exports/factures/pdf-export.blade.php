@@ -1,6 +1,6 @@
 <html lang="fr">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style>
         @page {
             margin: 0.25cm 0.25cm;
