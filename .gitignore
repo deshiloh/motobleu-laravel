@@ -21,3 +21,4 @@ _ide_helper.php
 helpers/modelsHelpers.php
 .phpunit.cache
 docker-deployer-test
+.claude

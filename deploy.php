@@ -43,17 +43,17 @@ host('local-docker')
     ->set('identity_file', './docker-deployer-test/ssh/id_rsa')
     ->set('http_user', 'deploy')
     ->set('deploy_path', '/var/www/app')
-    ->set('php_path', '/usr/bin/php') // adapté à ton image Docker
+    ->set('php_path', '/usr/local/bin/php')
     ->set('composer_path', '/usr/local/bin/composer')
     ->set('node_path', '/usr/bin'); // à adapter selon ton image
 
 // Hook après installation
 after('deploy:vendors', function () {
-    run('{{php_path}} artisan key:generate');
-    run('{{php_path}} artisan migrate --force');
-    run('{{php_path}} artisan route:cache');
-    run('{{php_path}} artisan view:cache');
-    run('{{php_path}} artisan storage:link');
+    run('cd {{release_path}} && {{php_path}} artisan key:generate');
+    run('cd {{release_path}} && {{php_path}} artisan migrate --force');
+    run('cd {{release_path}} && {{php_path}} artisan route:cache');
+    run('cd {{release_path}} && {{php_path}} artisan view:cache');
+    run('cd {{release_path}} && {{php_path}} artisan storage:link');
 });
 
 // Hook pour npm
