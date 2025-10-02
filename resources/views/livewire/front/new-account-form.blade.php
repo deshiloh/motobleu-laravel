@@ -52,29 +52,9 @@
                </div>
                <div class="flex justify-end space-x-3">
                    <x-button white label="{{ __('Annuler') }}"  href="{{ route('front.home') }}"/>
-                   <x-button type="submit" primary label="{{ __('Envoyer') }}" />
+                   <x-custom-button type="submit" primary>{{ __('Envoyer') }}</x-custom-button>
                </div>
            </form>
-
-
-
-
-
-           {{--           <form wire:submit.prevent="send" class="space-y-2">--}}
-{{--               --}}
-{{--               --}}
-{{--               --}}
-{{--               --}}
-{{--               --}}
-{{--               --}}
-{{--               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">--}}
-{{--                   --}}
-{{--                   --}}
-{{--               </div>--}}
-{{--               --}}
-{{--               <x-button flat label="{{ __('Annuler') }}" href="{{ route('front.home') }}" />--}}
-{{--               <x-button type="submit" label="{{ __('Envoyer') }}" primary wire:loading.attr="disabled"/>--}}
-{{--           </form>--}}
        </x-front.card>
    </div>
 </div>

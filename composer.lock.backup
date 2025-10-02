@@ -9346,11 +9346,6 @@
                 "branch-alias": {
                     "dev-master": "2.15-dev"
                 },
-                "laravel": {
-                    "providers": [
-                        "Barryvdh\\LaravelIdeHelper\\IdeHelperServiceProvider"
-                    ]
-                }
             },
             "autoload": {
                 "psr-4": {

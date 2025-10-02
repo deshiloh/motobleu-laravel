@@ -26,8 +26,8 @@
         "wireui/wireui": "^2.4"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^3.0",
         "brianium/paratest": "^7.0",
+        "deployer/deployer": "^7.5",
         "fakerphp/faker": "^1.9.1",
         "laravel/envoy": "^2.8",
         "laravel/sail": "^1.1",
