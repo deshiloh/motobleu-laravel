@@ -72,7 +72,7 @@ class ReservationService
     {
         if ($mode == ReservationService::WITH_PLACE) {
             $rules['reservation.localisation_from_id'] = 'required';
-            $rules['reservation.pickup_origin'] = 'nullable';
+            $rules['reservation.pickup_origin'] = 'required|string';
         }
 
         if ($mode == ReservationService::WITH_ADRESSE &&
@@ -100,7 +100,7 @@ class ReservationService
     {
         if ($mode == ReservationService::WITH_PLACE) {
             $rules['reservation.localisation_to_id'] = 'required';
-            $rules['reservation.drop_off_origin'] = 'nullable';
+            $rules['reservation.drop_off_origin'] = 'required|string';
         }
 
         if ($mode == ReservationService::WITH_ADRESSE &&
@@ -129,7 +129,7 @@ class ReservationService
 
         if ($mode == ReservationService::WITH_PLACE) {
             $rules['reservation_back.localisation_from_id'] = 'required';
-            $rules['reservation_back.pickup_origin'] = 'nullable';
+            $rules['reservation_back.pickup_origin'] = 'required|string';
         }
 
         if ($mode == ReservationService::WITH_ADRESSE) {
@@ -153,7 +153,7 @@ class ReservationService
     {
         if ($mode == ReservationService::WITH_PLACE) {
             $rules['reservation_back.localisation_to_id'] = 'required';
-            $rules['reservation_back.drop_off_origin'] = 'nullable';
+            $rules['reservation_back.drop_off_origin'] = 'required|string';
         }
 
         if ($mode == ReservationService::WITH_ADRESSE) {

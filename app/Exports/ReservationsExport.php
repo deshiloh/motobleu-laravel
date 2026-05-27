@@ -71,7 +71,7 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
         $this->calculPeriod();
 
         if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
-            $this->lastColumn = 'K';
+            $this->lastColumn = 'J';
         }
 
         $this->coordinatePrices = sprintf(
@@ -233,7 +233,8 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
         }
 
         if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
-            array_push($headers, 'Facturation', 'COST CENTER');
+            // array_push($headers, 'Facturation', 'COST CENTER');
+            array_push($headers, 'COST CENTER');
         }
 
         return $headers;
@@ -275,6 +276,10 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
 
                 $sheet->getSheet()->getCell('A14')->setValue(
                     'Période : ' . implode(', ', $this->datePeriod) . ' ' . $this->year
+                )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+                $sheet->getSheet()->getCell('A13')->setValue(
+                    'Facture associée : ' . $this->facture->reference
                 )->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $sheet->getSheet()->getCell('A15')->setValue(
@@ -405,7 +410,10 @@ class ReservationsExport implements WithStyles, WithCustomStartCell, WithHeading
         }
 
         if (in_array($this->entreprise->id, $this->billSettings->entreprises_cost_center_facturation)) {
-            array_push($datas, $row->passager->typeFacturation->nom ?? 'NC', $row->passager->costCenter->nom ?? 'NC');
+            // array_push($datas, $row->passager->typeFacturation->nom ?? 'NC', $row->passager->costCenter->nom ?? 'NC');
+
+            array_push($datas, $row->passager->costCenter->nom ?? 'NC');
+
         }
 
         return $datas;

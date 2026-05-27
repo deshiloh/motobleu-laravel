@@ -24,8 +24,9 @@
                     option-value="id"
                     wire:model.defer="passager.cost_center_id"
                 />
+			<div class="hidden">
                 <x-select
-                    label="{{ __('Type Facturation') }}"
+                    label="{{ __('Type Facturations') }}"
                     placeholder="{{ __('Sélectionner un type de facturation') }}"
                     :async-data="route('api.type_facturation')"
                     option-label="nom"
@@ -33,6 +34,7 @@
                     option-description="entreprise.nom"
                     wire:model.defer="passager.type_facturation_id"
                 />
+			</div>
             @endif
             <x-button type="submit" primary sm label="{{ __('Enregistrer') }}" wire:loading.attr="disabled" spinner="save"/>
         </form>

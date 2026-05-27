@@ -148,7 +148,7 @@
                             wire:model="reservation.localisation_from_id"
                         />
                         @if($reservation->localisation_from_id)
-                            <x-input label="{{ __('Provenance / N°') }}" wire:model="reservation.pickup_origin" />
+                            <x-input label="{{ __('Provenance / N°') }} *" wire:model="reservation.pickup_origin" required />
                         @endif
                     </div>
                 @endif
@@ -208,7 +208,7 @@
                         />
                         @if($reservation->localisation_to_id)
                             <div class="form-group">
-                                <x-input label="{{ __('Destination / N°') }}" wire:model="reservation.drop_off_origin"/>
+                                <x-input label="{{ __('Destination / N°') }} *" wire:model="reservation.drop_off_origin" required />
                             </div>
                         @endif
                     </div>
@@ -290,7 +290,7 @@
                         />
                         @if($reservation_back->localisation_from_id)
                             <div class="form-group">
-                                <x-input label="{{ __('Destination / N°') }}" wire:model="reservation_back.pickup_origin"/>
+                                <x-input label="{{ __('Destination / N°') }} *" wire:model="reservation_back.pickup_origin" required />
                             </div>
                         @endif
                     @endif
@@ -346,7 +346,7 @@
                         />
                         @if($reservation_back->localisation_to_id)
                             <div class="form-group">
-                                <x-input label="{{ __('Destination / N°') }}" wire:model="reservation_back.drop_off_origin"/>
+                                <x-input label="{{ __('Destination / N°') }} *" wire:model="reservation_back.drop_off_origin" required />
                             </div>
                         @endif
                     @endif

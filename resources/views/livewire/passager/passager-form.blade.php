@@ -26,6 +26,7 @@
                 option-description="entreprise.nom"
                 wire:model.defer="passager.cost_center_id"
             />
+			<div class="hidden">
             <x-select
                 label="Type Facturation"
                 placeholder="Sélectionner un type de facturation"
@@ -35,6 +36,7 @@
                 option-description="entreprise.nom"
                 wire:model.defer="passager.type_facturation_id"
             />
+			</div>
             <x-button type="submit" primary sm  label="Enregistrer"/>
         </form>
     </x-bloc-content>
