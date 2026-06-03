@@ -46,24 +46,24 @@ class GoogleCalendarService
 
         $event = $this->generateCommunData($event);
 
+        // Liste des invités souhaités : assistante (toujours) + passager (si invitation activée).
+        $desiredEmails = [];
+
         // Invitation secrétaire
-        $email = App::environment(['local', 'beta']) ?
+        $desiredEmails[] = App::environment(['local', 'beta']) ?
             'm.alvarez.iglisias@gmail.com' :
             $this->reservation->passager->user->email;
 
-        $event->addAttendee([
-            'email' => trim($email)
-        ]);
-
         if ($this->reservation->calendar_passager_invitation) {
-            $email = App::environment(['local', 'beta']) ?
+            $desiredEmails[] = App::environment(['local', 'beta']) ?
                 'm.alvarez.iglisias@gmail.com' :
                 $this->reservation->passager->email;
-
-            $event->addAttendee([
-                'email' => trim($email)
-            ]);
         }
+
+        // Fusionne avec les invités déjà présents sans jamais en retirer :
+        // un update() Google avec une liste d'invités réduite envoie un
+        // METHOD:CANCEL aux invités retirés (l'évènement disparaît de leur agenda).
+        $this->syncAttendees($event, $desiredEmails);
 
         $savedEvent = $event->save(null, [
             'sendUpdates' => 'all'
@@ -104,6 +104,59 @@ class GoogleCalendarService
         }
 
         return true;
+    }
+
+    /**
+     * Ajoute les invités souhaités à l'évènement en conservant ceux déjà présents.
+     *
+     * Spatie réinitialise la liste d'attendees à chaque Event::find() : sans cette
+     * fusion, un update() repartirait d'une liste vide et retirerait les invités
+     * non ré-ajoutés, ce qui déclenche une annulation (METHOD:CANCEL) côté Google.
+     * On ne retire donc jamais un invité existant lors d'une modification.
+     *
+     * @param Event $event
+     * @param string[] $desiredEmails
+     * @return void
+     */
+    private function syncAttendees(Event $event, array $desiredEmails): void
+    {
+        $byEmail = [];
+
+        // 1. Conserver les invités déjà présents sur l'évènement (cas update).
+        foreach ($event->googleEvent->getAttendees() ?? [] as $attendee) {
+            $email = trim((string) $attendee->getEmail());
+
+            if ($email === '') {
+                continue;
+            }
+
+            $byEmail[mb_strtolower($email)] = [
+                'email' => $email,
+                'responseStatus' => $attendee->getResponseStatus() ?: 'needsAction',
+            ];
+        }
+
+        // 2. Ajouter les invités souhaités sans écraser le statut RSVP existant.
+        foreach ($desiredEmails as $email) {
+            $email = trim((string) $email);
+
+            if ($email === '') {
+                continue;
+            }
+
+            $key = mb_strtolower($email);
+
+            if (!isset($byEmail[$key])) {
+                $byEmail[$key] = [
+                    'email' => $email,
+                    'responseStatus' => 'needsAction',
+                ];
+            }
+        }
+
+        foreach ($byEmail as $attendee) {
+            $event->addAttendee($attendee);
+        }
     }
 
     public function generateCommunData(Event $event): Event

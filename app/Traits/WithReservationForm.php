@@ -113,8 +113,12 @@ trait WithReservationForm
         $this->newAdresseReservationFromBack = new AdresseReservation();
         $this->newAdresseReservationToBack = new AdresseReservation();
 
-        $this->reservation->send_to_passager = true;
-        $this->reservation->calendar_passager_invitation = true;
+        // En édition, on conserve les valeurs stockées (le toggle doit refléter
+        // l'état réel) ; on ne force les valeurs par défaut qu'à la création.
+        if (!$this->reservation->exists) {
+            $this->reservation->send_to_passager = true;
+            $this->reservation->calendar_passager_invitation = true;
+        }
 
         $this->reservation->has_steps = false;
 
