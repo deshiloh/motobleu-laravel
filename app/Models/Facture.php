@@ -76,6 +76,15 @@ class Facture extends Model
         return $this->hasMany(Reservation::class);
     }
 
+    public function invoiceNumber(): Attribute
+    {
+        return new Attribute(
+            get: function ($value, $attributes) {
+                return $attributes['pennylane_invoice_number'] ?? $attributes['reference'];
+            }
+        );
+    }
+
     public function montantHt(): Attribute
     {
         return new Attribute(

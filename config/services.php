@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'pennylane' => [
+        'api_key' => env('PENNYLANE_API_KEY'),
+        'base_url' => env('PENNYLANE_BASE_URL', 'https://app.pennylane.com/api/external/v2'),
+    ],
+
 ];

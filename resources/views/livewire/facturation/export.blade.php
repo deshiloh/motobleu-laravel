@@ -69,7 +69,7 @@
                                     'factureSelected' => $facture->id
                                 ]
                             ) !!}" class="text-motobleu hover:underline">
-                                {{ $facture->reference }}
+                                {{ $facture->invoice_number }}
                             </a>
                         </x-datatable.td>
                         <x-datatable.td>{{ $facture->created_at->format('d/m/Y') }}</x-datatable.td>

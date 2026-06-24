@@ -79,7 +79,7 @@ class FactureExport implements FromCollection, WithMapping, withHeadings, Should
     public function map($row): array
     {
         return [
-            $row->reference,
+            $row->invoice_number,
             $row->created_at->format('d/m/Y'),
             $row->is_acquitte ? 'Oui' : 'Non',
             $row->reservations->first()->entreprise->nom  ?? "Non disponible",

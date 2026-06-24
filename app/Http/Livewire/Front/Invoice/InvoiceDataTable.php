@@ -21,7 +21,7 @@ class InvoiceDataTable extends Component
 
     public function render()
     {
-        $factures = Facture::where('is_acquitte', true)
+        $factures = Facture::where('statut', BillStatut::COMPLETED)
             ->when(\Auth::user()->is_admin_ardian, function (Builder $query) {
                 $query->whereHas('reservations', function(Builder $query) {
                     $query->whereIn('entreprise_id', \Auth::user()->entreprises()->pluck('id')->toArray());

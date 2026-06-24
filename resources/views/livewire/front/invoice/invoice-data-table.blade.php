@@ -17,7 +17,7 @@
                 @php /** @var $facture \App\Models\Facture */ @endphp
                 @forelse($factures as $facture)
                     <x-datatable.tr>
-                        <x-datatable.td>{{ $facture->reference }}</x-datatable.td>
+                        <x-datatable.td>{{ $facture->invoice_number }}</x-datatable.td>
                         <x-datatable.td>{{ $facture->created_at->format('d/m/Y') }}</x-datatable.td>
                         <x-datatable.td>{{ number_format($facture->montant_ttc, '2', ',', ' ') }} €</x-datatable.td>
                         <x-datatable.td>

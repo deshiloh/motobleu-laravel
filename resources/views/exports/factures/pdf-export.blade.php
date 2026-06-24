@@ -204,7 +204,7 @@
         @endphp
         <tr>
             <td style="padding-left: 10px; text-align: center;">
-                {{ $facture->reference }}
+                {{ $facture->invoice_number }}
             </td>
             <td style="text-align: center">
                 {{ $facture->created_at->format('d/m/Y') }}
