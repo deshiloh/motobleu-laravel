@@ -36,6 +36,7 @@ class EntrepriseForm extends Component
     {
         return [
             'entreprise.nom' => 'required',
+            'entreprise.nom_reservation' => 'nullable',
             'entreprise.responsable_name' => 'nullable',
             'entreprise.is_actif' => 'boolean'
         ];

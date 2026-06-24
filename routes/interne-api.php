@@ -114,14 +114,17 @@ Route::get('/entreprises_users', function (Request $request) {
     $userId = $request->input('userId');
 
     return Entreprise::query()
-        ->select('entreprises.id', 'entreprises.nom')
+        ->select('entreprises.id', 'entreprises.nom', 'entreprises.nom_reservation')
         ->join('entreprise_user', 'entreprise_id', '=', 'entreprises.id')
         ->where('entreprise_user.user_id', $userId)
         ->where('is_actif', true)
         ->orderBy('entreprises.nom')
         ->when(
             $search, function (Builder $query, $search) {
-                $query->where('entreprises.nom', 'like', "%$search%");
+                $query->where(function (Builder $query) use ($search) {
+                    $query->where('entreprises.nom', 'like', "%$search%")
+                        ->orWhere('entreprises.nom_reservation', 'like', "%$search%");
+                });
             }
         )
         ->when(
@@ -133,7 +136,13 @@ Route::get('/entreprises_users', function (Request $request) {
                 $query->limit(10);
             }
         )
-        ->get();
+        ->get()
+        ->map(function ($entreprise) {
+            $entreprise->nom_display = $entreprise->nom_reservation
+                ? $entreprise->nom . ' ' . $entreprise->nom_reservation
+                : $entreprise->nom;
+            return $entreprise;
+        });
 })->name('api.entreprises_users');
 
 Route::get('/users', function (Request $request){

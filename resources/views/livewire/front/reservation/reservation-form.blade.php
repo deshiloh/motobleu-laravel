@@ -32,7 +32,7 @@
                     label="{{ __('Entreprise rattachée') }} *"
                     placeholder="{{ __('Sélectionner une entreprise') }}"
                     :async-data="route('api.entreprises_users', ['userId' => $userId])"
-                    option-label="nom"
+                    option-label="nom_display"
                     option-value="id"
                     wire:model="reservation.entreprise_id"
                 />

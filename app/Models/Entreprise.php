@@ -20,7 +20,7 @@ class Entreprise extends Model
     use HasFactory;
 
     protected $guarded = [];
-    protected $fillable = ['nom'];
+    protected $fillable = ['nom', 'nom_reservation'];
     protected $casts = [
         'is_actif' => 'boolean'
     ];
