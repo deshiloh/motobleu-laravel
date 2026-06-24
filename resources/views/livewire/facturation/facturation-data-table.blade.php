@@ -46,7 +46,7 @@
                 @endphp
                 @forelse($facturations as $facture)
                     <x-datatable.tr>
-                        <x-datatable.td>{{ $facture->reference }}</x-datatable.td>
+                        <x-datatable.td>{{ $facture->invoice_number }}</x-datatable.td>
                         <x-datatable.td>
                             @if($facture->statut === \App\Enum\BillStatut::COMPLETED)
                                 <x-front.badge success>

@@ -352,7 +352,7 @@ class EditionFacture extends Component
 
         $this->email['address'] = $addressBillEntreprise->email;
         $this->email['message'] = sprintf("Bonjour, <br> <br> Veuillez trouver ci-joint la facture %s et le récapitulatif des courses pour la période de %s %s.",
-            $this->facture->reference,
+            $this->facture->invoice_number,
             $this->months[$this->facture->month],
             $this->facture->year
         );

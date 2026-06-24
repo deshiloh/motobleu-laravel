@@ -10,9 +10,11 @@ use App\Models\Entreprise;
 use App\Models\Facture;
 use App\Models\Reservation;
 use App\Models\User;
+use App\Services\PennylaneService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 use JetBrains\PhpStorm\NoReturn;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -252,6 +254,67 @@ class FacturationTest extends TestCase
             'id' => $facture->id,
             'information' => 'test'
         ]);
+    }
+
+    public function testSendFactureSyncsWithPennylane()
+    {
+        $this->mock(PennylaneService::class, function ($mock) {
+            $mock->shouldReceive('syncCustomer')->once()->andReturn(1);
+            $mock->shouldReceive('createInvoice')->once()->andReturn([
+                'id'             => 42,
+                'invoice_number' => 'F20240001',
+            ]);
+        });
+
+        Mail::fake();
+
+        $facture = Facture::find(1);
+        $reservation = Reservation::find(1);
+        $reservation->updateQuietly(['facture_id' => $facture->id, 'tarif' => 200]);
+        $entreprise = Entreprise::find(1);
+
+        Livewire::test(EditionFacture::class)
+            ->set('entreprise', $entreprise)
+            ->set('facture', $facture)
+            ->set('selectedMonth', Carbon::now()->month)
+            ->set('selectedYear', Carbon::now()->year)
+            ->set('email.address', 'test@test.com')
+            ->set('email.message', 'contenu du message')
+            ->call('sendFactureAction')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('factures', [
+            'id'                       => $facture->id,
+            'pennylane_invoice_id'     => '42',
+            'pennylane_invoice_number' => 'F20240001',
+            'pennylane_customer_id'    => '1',
+        ]);
+    }
+
+    public function testSendFactureWithPennylaneFailureStillSendsEmail()
+    {
+        $this->mock(PennylaneService::class, function ($mock) {
+            $mock->shouldReceive('syncCustomer')->andThrow(new \RuntimeException('Pennylane unavailable'));
+        });
+
+        Mail::fake();
+
+        $facture = Facture::find(1);
+        $reservation = Reservation::find(1);
+        $reservation->updateQuietly(['facture_id' => $facture->id, 'tarif' => 200]);
+        $entreprise = Entreprise::find(1);
+
+        Livewire::test(EditionFacture::class)
+            ->set('entreprise', $entreprise)
+            ->set('facture', $facture)
+            ->set('selectedMonth', Carbon::now()->month)
+            ->set('selectedYear', Carbon::now()->year)
+            ->set('email.address', 'test@test.com')
+            ->set('email.message', 'contenu du message')
+            ->call('sendFactureAction')
+            ->assertHasNoErrors();
+
+        Mail::assertSent(\App\Mail\BillCreated::class);
     }
 
     #[NoReturn]

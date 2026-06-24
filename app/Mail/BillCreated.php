@@ -5,7 +5,7 @@ namespace App\Mail;
 use App\Exports\ReservationsExport;
 use App\Models\Entreprise;
 use App\Models\Facture;
-use App\Services\InvoiceService;
+use App\Services\PennylaneService;
 use app\Settings\BillSettings;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
@@ -51,14 +51,24 @@ class BillCreated extends Mailable
     {
         $billSettings = app(BillSettings::class);
         $attachments = [];
-        $invoice = InvoiceService::generateInvoice($this->facture);
         $entreprise = $this->getEntreprise();
 
-        $attachments[] = Attachment::fromData(
-            fn() => $invoice->stream()->getContent(),
-            $this->facture->reference.'.pdf'
-        )->withMime('application/pdf');
+        // Attach invoice PDF from Pennylane if the sync succeeded
+        if ($this->facture->pennylane_invoice_id) {
+            try {
+                $pdfContent = app(PennylaneService::class)
+                    ->getInvoicePdf($this->facture->pennylane_invoice_id);
 
+                $attachments[] = Attachment::fromData(
+                    fn() => $pdfContent,
+                    $this->facture->invoice_number . '.pdf'
+                )->withMime('application/pdf');
+            } catch (\Throwable) {
+                // If PDF fetch fails, continue without the invoice attachment
+            }
+        }
+
+        // Reservation recap (XLS or PDF) — unchanged
         if (in_array($entreprise->id, $billSettings->entreprises_xls_file)) {
             $excel = Excel::raw(new ReservationsExport(
                 $this->facture->year,
@@ -103,7 +113,7 @@ class BillCreated extends Mailable
         return new Content(
             markdown: 'emails.bill.created',
             with: [
-                'message' => $this->message
+                'message' => $this->message,
             ]
         );
     }

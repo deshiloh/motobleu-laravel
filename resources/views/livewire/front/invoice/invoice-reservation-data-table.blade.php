@@ -1,7 +1,7 @@
 <div>
     <x-front.card>
         <x-front.title>
-            {{ __('Liste des réservations pour la facture') }} : {{ $facture->reference }}
+            {{ __('Liste des réservations pour la facture') }} : {{ $facture->invoice_number }}
             <x-slot:button>
                 <x-button flat label="{{ __('Retour à la liste') }}" href="{{ route('front.invoice.list') }}"/>
             </x-slot:button>

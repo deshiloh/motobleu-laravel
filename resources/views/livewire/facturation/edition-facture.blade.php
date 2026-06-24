@@ -135,7 +135,7 @@
                 @endif
             </div>
 
-            <div>Référence : <span class="text-motobleu font-semibold">{{ $this->facture->reference }}</span></div>
+            <div>Référence : <span class="text-motobleu font-semibold">{{ $this->facture->invoice_number }}</span></div>
             <div>Période : {{ sprintf("%02d", $this->facture->month) }} / {{ $this->facture->year }}</div>
 
             <div>Adresse de facturation : {!! $this->facture->address_bill_inline !!}</div>
